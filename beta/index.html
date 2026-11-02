@@ -257,8 +257,13 @@ h2{font-size:21px} h3{font-size:17px}
 .seg3{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .seg3 button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:12.5px;padding:4px 10px;cursor:pointer}
 .seg3 button[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
-.addrow{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 4px;border-top:1px dashed var(--line);margin-top:4px}
-.addrow .plus{color:var(--accent);font-weight:800;font-size:18px;text-align:center}
+.quick{display:grid;gap:8px}
+.quick input{font-size:15px;padding:10px 12px}
+.quick .row select{width:auto;padding:6px 8px;font-size:13px}
+.oncetag{font-size:11px;border:1px solid var(--line);border-radius:6px;padding:0 5px;color:var(--muted)}
+.addrow{display:grid;grid-template-columns:22px minmax(0,1fr) auto auto auto;gap:10px;align-items:center;padding:6px 4px;border-top:1px dashed var(--line);margin-top:4px}
+.addrow .plus{color:var(--accent);font-weight:800;font-size:18px;text-align:center;border:0;background:none;padding:0;cursor:pointer;font-family:inherit}
+@media (max-width:520px){.addrow{grid-template-columns:22px minmax(0,1fr) minmax(0,1fr) auto}.addrow input{grid-column:2/4;grid-row:1}.addrow .btn{grid-column:4;grid-row:1}.addrow select{grid-row:2;grid-column:2;width:100%}.addrow select+select{grid-column:3}.addrow select:only-of-type{grid-column:2/4}}
 .addrow input{border:0;background:transparent;padding:6px 0;font-size:14px}
 .addrow input:focus{outline:none;border-bottom:1px solid var(--accent)}
 .addrow select{width:auto;padding:4px 6px;font-size:12.5px}
@@ -494,12 +499,18 @@ details.acc .bd ul{margin:0;padding-left:18px;display:grid;gap:4px}
           <div class="spread tiny muted" style="margin-top:8px"><span>아침 에너지를 고르면 오늘의 시작점이 돼요</span><span class="items" id="equipped"></span></div>
       </div></div>
       <div class="hblock" data-hid="brave"><button class="bravebtn" id="braveHome" data-info="bravebtn"><span class="big">⚡</span><span><b>용기 냈어요</b><span class="quote" id="braveQuote" style="display:block"></span></span><span class="chip br" id="braveHomeXp"></span></button></div>
+      <div class="hblock" data-hid="quick"><div class="panel"><div class="ptitle"><h2>빠른 기록 · 할 일</h2><span class="row" style="gap:2px"><button class="qbtn" data-guide="once" aria-label="설명">?</button><button class="colbtn" data-collapse="quick" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div>
+        <form class="quick" id="quickForm"><input id="qName" maxlength="40" placeholder="무엇을 했나요? 할 건가요? (예: 어항 정리)" enterkeyhint="done" aria-label="빠른 기록">
+          <div class="row"><select id="qType" aria-label="종류"><option value="good">▲ 좋은</option><option value="brave">⚡ 용기</option><option value="bad">▼ 나쁜</option></select><select id="qArea" aria-label="영역"></select><select id="qOnce" aria-label="반복"><option value="1">한 번</option><option value="">반복</option></select>
+          <span style="flex:1"></span><button type="submit" class="btn sm" name="how" value="done">✓ 했어요</button><button type="submit" class="btn sm ghost" name="how" value="todo">할 일로</button></div></form>
+        <p class="tiny muted" style="margin:6px 0 0">Enter = 했어요. 이미 있는 이름이면 그 행동으로 기록돼요.</p>
+        <div class="acts" id="homeTodo" style="margin-top:6px"></div></div></div>
       <div class="hblock" data-hid="sugg"><div class="panel"><div class="ptitle"><h2>지금 하면 좋은 것</h2><span class="row" style="gap:2px"><button class="qbtn" data-guide="flow" aria-label="설명">?</button><button class="colbtn" data-collapse="sugg" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div class="sugg" id="sugg"></div></div></div>
       <div class="hblock" data-hid="quests"><div class="panel">
           <div class="ptitle"><h2>오늘의 일퀘</h2><span class="row" style="gap:2px"><span class="small muted num" id="questCount"></span><button class="qbtn" data-guide="quest" aria-label="설명">?</button><button class="colbtn" data-collapse="quests" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div>
           <div class="row" style="margin-bottom:8px"><div class="track" style="flex:1;min-width:100px"><div class="fill gold" id="questFill"></div></div><span id="chestLbl"></span></div>
           <div class="quests" id="quests"></div>
-          <form class="addrow" data-addform="quest"><span class="plus">＋</span><input id="addQuest" maxlength="40" placeholder="일퀘 추가 (Enter)" aria-label="일퀘 추가"><span></span></form>
+          <form class="addrow" data-addform="quest"><button type="submit" class="plus" aria-label="일퀘 추가">＋</button><input id="addQuest" maxlength="40" placeholder="일퀘 추가" aria-label="일퀘 추가" enterkeyhint="done"><button type="submit" class="btn sm ghost">추가</button></form>
       </div></div>
       <div class="hblock" data-hid="week"><div class="panel"><div class="ptitle"><h2>이번 주</h2><span class="row" style="gap:2px"><span class="tiny muted" id="weekLbl"></span><button class="qbtn" data-guide="week" aria-label="설명">?</button><button class="colbtn" data-collapse="week" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div class="week" id="weekBox"></div></div></div>
       <div class="hblock" data-hid="alerts"><div class="panel"><div class="ptitle"><h2>경보판</h2><span class="row" style="gap:2px"><button class="qbtn" data-guide="alert" aria-label="설명">?</button><button class="colbtn" data-collapse="alerts" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><ul class="alerts" id="alerts"></ul></div></div>
@@ -522,7 +533,7 @@ details.acc .bd ul{margin:0;padding-left:18px;display:grid;gap:4px}
           <p class="quote" id="braveQuote2" style="margin:0 0 6px"></p><p class="help" style="margin-top:0">결과와 상관없이, 해봤으면 기록해요. 가장 큰 점수를 줘요. <b>왼쪽 네모</b>를 누르면 기록, 이름을 누르면 설명·편집이에요.</p>
           <div class="toolbar" id="braveTools"></div>
           <div class="acts" id="braveActs"></div>
-          <form class="addrow" data-addform="courage"><span class="plus">＋</span><input id="addCourage" maxlength="40" placeholder="용기 항목 추가 (Enter)" aria-label="용기 항목 추가"><span></span></form>
+          <form class="addrow" data-addform="courage"><button type="submit" class="plus" aria-label="용기 추가">＋</button><input id="addCourage" maxlength="40" placeholder="용기 할 일 추가" aria-label="용기 추가" enterkeyhint="done"><select id="addCourageOnce" aria-label="반복"><option value="1">한 번</option><option value="">반복</option></select><button type="submit" class="btn sm ghost">추가</button></form>
           <div style="margin-top:12px;display:grid;gap:8px">
             <div class="small" style="font-weight:700">목록에 없는 용기</div>
             <div class="sizes" id="braveSizes"></div>
@@ -534,7 +545,7 @@ details.acc .bd ul{margin:0;padding-left:18px;display:grid;gap:4px}
           <div class="toolbar" id="actTools"></div>
           <p class="help" id="actHelp" style="margin:2px 0 4px"></p>
           <div id="actGroups"></div>
-          <form class="addrow" data-addform="act"><span class="plus">＋</span><input id="addAct" maxlength="40" placeholder="행동 추가 (Enter)" aria-label="행동 추가"><select id="addActArea" aria-label="영역"></select></form>
+          <form class="addrow" data-addform="act"><button type="submit" class="plus" aria-label="행동 추가">＋</button><input id="addAct" maxlength="40" placeholder="할 일·행동 추가" aria-label="행동 추가" enterkeyhint="done"><select id="addActArea" aria-label="영역"></select><select id="addActOnce" aria-label="반복"><option value="1">한 번</option><option value="">반복</option></select><button type="submit" class="btn sm ghost">추가</button></form>
         </div>
       </div>
       <div class="stack">
@@ -765,7 +776,7 @@ const DEFAULT_CONFIG={
   avatar:{kind:'director',outfit:'#3f6fdc',name:'walkinglikeozu'},
   tourSeen:false,
   braveQuotes:[{id:'bq1',text:'준비는 영원히 되지 않아. 끼어들어!'},{id:'bq2',text:'걱정하지 말고 시도하라. 더 빠르게 시도하고, 더 낫게 실패하라. 어차피 운이고 기세다.'}],
-  ui:{skin:'forest',mode:'system',list:{filter:'good',group:'area',sort:'manual'},nav:['home','log','jars','stats'],home:[['profile',1],['brave',1],['sugg',1],['quests',1],['week',1],['alerts',1],['todaylog',1],['journey',0],['jars',0],['stats',0],['body',0],['tip',1]],collapsed:{}},
+  ui:{skin:'forest',mode:'system',list:{filter:'good',group:'area',sort:'manual'},nav:['home','log','jars','stats'],home:[['profile',1],['brave',1],['quick',1],['sugg',1],['quests',1],['week',1],['alerts',1],['todaylog',1],['journey',0],['jars',0],['stats',0],['body',0],['tip',1]],collapsed:{}},
   ideas:''
 };
 const DEFAULT_PROGRESS={xp:0,gold:0,courage:0,marbles:{},badges:{}};
@@ -795,7 +806,7 @@ const NAV_ITEMS=[['home','홈','오늘 한눈에'],['log','기록','용기·행�
 const SKINS=[['forest','숲','#2f7a4a','#e1f1e6'],['mint','민트','#127f74','#dcf2ef'],['sand','모래','#94642a','#ecf0d8'],['sunset','노을','#c4513d','#ddf0ea'],['rose','장미','#b23e6c','#e1f1e6'],['lavender','라벤더','#6a4bc4','#e6e6fa'],['ink','먹','#2b2f38','#e4e5e8'],['blue','파랑','#3550b8','#e2e9fb']];
 function applyTheme(){const r=document.documentElement;r.dataset.skin=C.ui.skin;if(C.ui.mode==='system')delete r.dataset.theme;else r.dataset.theme=C.ui.mode;
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(r).getPropertyValue('--panel').trim()||'#ffffff'}
-const HOME_BLOCKS={profile:'캐릭터·컨디션',brave:'⚡ 용기 버튼',sugg:'지금 하면 좋은 것',quests:'오늘의 일퀘',week:'이번 주 (보스·용기 목표)',alerts:'경보판',todaylog:'오늘 한 일',journey:'여정 (다음 보상)',jars:'유리병 미리보기',stats:'최근 7일 요약',body:'몸무게',tip:'오늘의 팁'};
+const HOME_BLOCKS={profile:'캐릭터·컨디션',brave:'⚡ 용기 버튼',quick:'빠른 기록 · 할 일',sugg:'지금 하면 좋은 것',quests:'오늘의 일퀘',week:'이번 주 (보스·용기 목표)',alerts:'경보판',todaylog:'오늘 한 일',journey:'여정 (다음 보상)',jars:'유리병 미리보기',stats:'최근 7일 요약',body:'몸무게',tip:'오늘의 팁'};
 
 /* ================= 상태 ================= */
 function clone(o){return JSON.parse(JSON.stringify(o))}
@@ -854,6 +865,7 @@ function normConfig(raw){
   c.actions.forEach(a=>{if(a.type==='good'&&a.marble==null)a.marble=''});
   const du=DEFAULT_CONFIG.ui,u=c.ui&&typeof c.ui==='object'?c.ui:{};
   c.ui={skin:SKINS.some(x=>x[0]===u.skin)?u.skin:du.skin,mode:['system','light','dark'].includes(u.mode)?u.mode:'system',list:{...du.list,...(u.list||{})},nav:Array.isArray(u.nav)?u.nav.filter(x=>NAV_ITEMS.some(n=>n[0]===x)).slice(0,5):clone(du.nav),home:Array.isArray(u.home)?u.home.filter(h=>du.home.some(d=>d[0]===h[0])):clone(du.home),collapsed:u.collapsed&&typeof u.collapsed==='object'?u.collapsed:{}};
+  if(!c.ui.home.some(h=>h[0]==='quick')){const i=c.ui.home.findIndex(h=>h[0]==='brave');c.ui.home.splice(i>=0?i+1:1,0,['quick',1])}
   du.home.forEach(d=>{if(!c.ui.home.some(h=>h[0]===d[0]))c.ui.home.push(clone(d))});
   c.v=4;
   return c;
@@ -1091,7 +1103,8 @@ function doAction(a){
   const e={kind:'act',aid:a.id,type:a.type,name:a.name,area:a.area,cond:good?Math.abs(+a.cond||0):-Math.abs(+a.cond||0),gold:good?Math.abs(+a.gold||0):-Math.abs(+a.gold||0),xp};
   if(good)Object.assign(e,marbleFromLink(a.marble));
   if(e.jar)ui.newMarble=e.jar;
-  commit(()=>applyEntry(curDay(),e));
+  commit(()=>{applyEntry(curDay(),e);if(a.once){a.doneAt=curDay().date;save('config')}});
+  if(a.once)toast(`✓ '${a.name}' 완료. 할 일 목록에서 빠졌어요`);
   fxPop(good?`+${xp} XP${e.jar?' · 구슬':''}`:`${e.cond} ${C.areas.find(x=>x.id===a.area)?.name||''}`,good?'var(--good)':'var(--bad)');
   buzz();
 }
@@ -1100,13 +1113,16 @@ function doBrave(k,note){
   let xp=+k.xp||0;if(recoveryActive())xp=Math.round(xp*C.recovery.mult);
   const e={kind:'courage',type:'good',cid:k.id,name:k.name,note:note||'',pts:+k.pts||1,xp,gold:+k.gold||0,area:k.area||'',cond:Math.abs(+k.cond||0),...marbleFromLink(k.marble)};
   if(e.jar)ui.newMarble=e.jar;
-  commit(()=>applyEntry(curDay(),e));
+  commit(()=>{applyEntry(curDay(),e);if(k.once&&k.id!=='free'){k.doneAt=curDay().date;save('config')}});
   fxPop(`⚡ +${xp} XP`,'var(--brave)');buzz(30);
 }
 function removeEntry(date,id){
   const day=DAYS[date];if(!day)return;const e=day.entries.find(x=>x.id===id);if(!e)return;
   const keep=ui.off;ui.off=Math.max(0,diffDays(dateKey(),date));
-  commit(()=>unapplyEntry(day,e),[date]);ui.off=keep;render();toast('되돌렸어요');
+  commit(()=>unapplyEntry(day,e),[date]);ui.off=keep;
+  const src=e.aid?C.actions.find(x=>x.id===e.aid):e.cid?C.courage.find(x=>x.id===e.cid):null;
+  if(src&&src.once&&src.doneAt){delete src.doneAt;save('config')}
+  render();toast(src&&src.once?'되돌렸어요. 할 일 목록에 다시 생겼어요':'되돌렸어요');
 }
 function toggleQuest(q){
   if(!guard())return;const day=curDay();
@@ -1233,7 +1249,7 @@ function suggestions(){
   const ws=weekState(dateKey());if(ws.goal&&ws.brave<ws.goal)add({key:'brave',ic:'⚡',label:'이번 주 용기',why:`${ws.brave}/${ws.goal} · 채우면 +${C.weekly.courageGold}G`,go:'brave'});
   C.dailies.forEach(q=>{if(!questDone(day,q)&&q.action&&!q.action.startsWith('@'))add({key:q.action,ic:'☐',label:q.name,why:`일퀘 · +${q.xp} XP`,act:q.action})});
   const av=areaValues(day);const low=[...C.areas].sort((a,b)=>av[a.id]-av[b.id])[0];
-  if(low){const best=C.actions.filter(a=>a.type==='good'&&a.area===low.id&&!actionDoneOn(day,a.id)).sort((a,b)=>Math.abs(b.cond)-Math.abs(a.cond))[0];if(best)add({key:best.id,ic:'▲',label:best.name,why:`가장 낮은 ${low.name}(${av[low.id]})을 +${best.cond} 올려요`,act:best.id})}
+  if(low){const best=C.actions.filter(a=>a.type==='good'&&!a.once&&a.area===low.id&&!actionDoneOn(day,a.id)).sort((a,b)=>Math.abs(b.cond)-Math.abs(a.cond))[0];if(best)add({key:best.id,ic:'▲',label:best.name,why:`가장 낮은 ${low.name}(${av[low.id]})을 +${best.cond} 올려요`,act:best.id})}
   return out;
 }
 function buildAlerts(){
@@ -1307,6 +1323,11 @@ function renderHome(day,av,ov,L,items,mood,base){
   $('braveHomeXp').textContent='최대 XP +'+kmax;
   const qs=C.braveQuotes.filter(q=>q.text&&q.text.trim()),qq=qs.length?qs[Math.floor(toUTC(day.date)/864e5)%qs.length].text:'결과와 상관없이.';
   $('braveQuote').textContent=qq;$('braveQuote2').textContent=qs.length?'“'+qq+'”':'';
+  // 빠른 기록·할 일
+  {const qa=$('qArea');if(document.activeElement!==qa){const v=qa.value;qa.innerHTML=C.areas.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');if(v)qa.value=v}
+   qa.hidden=$('qType').value==='brave';
+   const todo=[...C.courage.filter(k=>k.once&&!k.doneAt).map(k=>({k,brave:1})),...C.actions.filter(a=>a.once&&!a.doneAt).map(a=>({k:a}))];
+   $('homeTodo').innerHTML=todo.length?todo.map(({k,brave})=>brave?`<div class="act brave" data-info="kbrave:${k.id}" tabindex="0" role="button"><button class="chk" data-brave="${k.id}" aria-label="${esc(k.name)} 했어요"></button><span class="ab"><span class="n">⚡ ${esc(k.name)}</span></span><span class="meta"><span class="xp">+${k.xp}</span></span></div>`:`<div class="act ${k.type}" data-info="act:${k.id}" tabindex="0" role="button"><button class="chk" data-act="${k.id}" aria-label="${esc(k.name)} 했어요"></button><span class="ab"><span class="n">${esc(k.name)}</span></span><span class="meta"><span class="tiny">${esc(C.areas.find(x=>x.id===k.area)?.name||'')}</span><span class="xp">${k.type==='good'?'+'+k.xp:'−'+Math.abs(k.cond)}</span></span></div>`).join(''):'<div class="empty tiny">남은 할 일이 없어요.</div>'}
   // 홈 선택 블록
   const nx=nextStage(L.lv),up=C.roadmap.filter(r=>r.lv>L.lv).sort((a,b)=>a.lv-b.lv).slice(0,3);
   $('homeJourney').innerHTML=`<div class="spread"><b>Lv.${L.lv} · ${esc(items.length?items[items.length-1].name+' 단계':'출발 전')}</b><span class="tiny muted num">${L.rem}/${L.need} XP</span></div><div class="track" style="margin:6px 0 10px"><div class="fill xp" style="width:${L.rem/L.need*100}%"></div></div>`+(up.length?up.map((r,i)=>`<div class="spread small" data-info="road:${r.id}" style="padding:4px 0;border-bottom:1px solid var(--line)"><span><span style="${i?'filter:grayscale(1);opacity:.5':''}">${esc(r.item)}</span> ${esc(r.name)} · ${esc(r.itemName)}${r.real?` <span style="color:var(--gold)">+ ${esc(r.real)}</span>`:''}</span><span class="num muted">Lv.${r.lv} · ${xpTo(r.lv)}XP</span></div>`).join(''):'<div class="empty">모든 단계를 지났어요.</div>');
@@ -1359,14 +1380,14 @@ function renderLog(){
   const ws=weekState(day.date);$('braveWeek').textContent=`이번 주 ${ws.brave}/${ws.goal||'-'}`;
   const LS=C.ui.list,stat=listStats();
   const rowMeta=(id,extra)=>{const st=stat[id]||{};const w=(LS.sort==='recent'||LS.sort==='stale')?`<span class="when">${st.last?ago(st.last):'안 함'}</span>`:(LS.sort==='freq'?`<span class="when">30일 ${st.n30||0}번</span>`:'');return w+extra};
-  const ccList=sortList(C.courage,stat,LS.sort);
+  const ccList=sortList(C.courage.filter(x=>!x.doneAt),stat,LS.sort);
   $('braveTools').innerHTML=`<span class="lbl">정렬</span>${sortSelect('bsort')}`;
   $('braveActs').innerHTML=ccList.map(k=>{const n=day.entries.filter(e=>e.cid===k.id).length,mt=marbleFromLink(k.marble),j=mt.jar?C.jars.find(x=>x.id===mt.jar):null;
-    return `<div class="act brave" data-info="kbrave:${k.id}" tabindex="0" role="button" aria-label="${esc(k.name)} 설명·편집"><button class="chk ${n?'on':''}" data-brave="${k.id}" aria-label="${esc(k.name)} 했어요 기록">${n?(n>1?n:'✓'):''}</button><span class="ab"><span class="n">${esc(k.name)}</span></span><span class="meta">${rowMeta(k.id,`${j?mGlyph(typeOf(j,mt.mt)):''}<span class="xp">+${k.xp}</span>`)}</span></div>`}).join('')||'<div class="empty">아래 ＋로 용기 항목을 추가해요.</div>';
+    return `<div class="act brave" data-info="kbrave:${k.id}" tabindex="0" role="button" aria-label="${esc(k.name)} 설명·편집"><button class="chk ${n?'on':''}" data-brave="${k.id}" aria-label="${esc(k.name)} 했어요 기록">${n?(n>1?n:'✓'):''}</button><span class="ab"><span class="n">${esc(k.name)}${k.once?' <span class="oncetag">한 번</span>':''}</span></span><span class="meta">${rowMeta(k.id,`${j?mGlyph(typeOf(j,mt.mt)):''}<span class="xp">+${k.xp}</span>`)}</span></div>`}).join('')||'<div class="empty">아래 ＋로 용기 항목을 추가해요.</div>';
   $('braveSizes').innerHTML=C.courageSizes.map(s=>`<button class="chipbtn" data-bsize="${s.id}" aria-pressed="${ui.braveSize===s.id}">${esc(s.name)} · XP +${s.xp}</button>`).join('');
   $('actTools').innerHTML=`<span class="seg3">${[['good','▲ 좋은'],['bad','▼ 나쁜'],['all','모두']].map(([v,l])=>`<button data-lfilter="${v}" aria-pressed="${LS.filter===v}">${l}</button>`).join('')}</span><span class="lbl">묶기</span><select id="lgroup" aria-label="묶기">${[['area','영역'],['jar','구슬 병'],['type','좋은·나쁜'],['none','안 묶음']].map(([v,l])=>`<option value="${v}" ${LS.group===v?'selected':''}>${l}</option>`).join('')}</select><span class="lbl">정렬</span>${sortSelect('lsort')}`;
   $('actHelp').textContent=LS.filter==='bad'?'왼쪽 네모를 누르면 기록돼요. 나쁜 행동은 컨디션·골드를 크게 깎고 보스를 회복시켜요.':'왼쪽 네모 = 했어요 기록, 이름 = 설명·편집. 여러 번 하면 여러 번 눌러요.';
-  const pool=sortList(C.actions.filter(x=>LS.filter==='all'||x.type===LS.filter),stat,LS.sort);
+  const pool=sortList(C.actions.filter(x=>!x.doneAt&&(LS.filter==='all'||x.type===LS.filter)),stat,LS.sort);
   let groups;
   if(LS.group==='area')groups=C.areas.map(a=>({key:'a:'+a.id,name:a.name,list:pool.filter(x=>x.area===a.id)}));
   else if(LS.group==='jar')groups=[...C.jars.map(jj=>({key:'j:'+jj.id,name:jj.name+' 병',list:pool.filter(x=>x.marble&&x.marble.split(':')[0]===jj.id)})),{key:'j:',name:'구슬 없음',list:pool.filter(x=>!x.marble||!C.jars.some(jj=>jj.id===x.marble.split(':')[0]))}];
@@ -1374,7 +1395,7 @@ function renderLog(){
   else groups=[{key:'',name:'',list:pool}];
   const row=x=>{const ar=C.areas.find(a=>a.id===x.area),n=day.entries.filter(e=>e.kind==='act'&&e.aid===x.id).length,mt=x.type==='good'?marbleFromLink(x.marble):{},j=mt.jar?C.jars.find(y=>y.id===mt.jar):null;
     const val=x.type==='good'?`<span class="xp">+${x.xp}</span>`:`<span class="xp">${ar?esc(ar.name):''} −${Math.abs(x.cond)}</span>`;
-    return `<div class="act ${x.type}" data-info="act:${x.id}" tabindex="0" role="button" aria-label="${esc(x.name)} 설명·편집"><button class="chk ${n?'on':''}" data-act="${x.id}" aria-label="${esc(x.name)} 했어요 기록">${n?(n>1?n:'✓'):''}</button><span class="ab"><span class="n">${LS.filter==='all'&&LS.group!=='type'?(x.type==='good'?'▲ ':'▼ '):''}${esc(x.name)}</span></span><span class="meta">${rowMeta(x.id,`${j?mGlyph(typeOf(j,mt.mt)):''}${val}`)}</span></div>`};
+    return `<div class="act ${x.type}" data-info="act:${x.id}" tabindex="0" role="button" aria-label="${esc(x.name)} 설명·편집"><button class="chk ${n?'on':''}" data-act="${x.id}" aria-label="${esc(x.name)} 했어요 기록">${n?(n>1?n:'✓'):''}</button><span class="ab"><span class="n">${LS.filter==='all'&&LS.group!=='type'?(x.type==='good'?'▲ ':'▼ '):''}${esc(x.name)}${x.once?' <span class="oncetag">한 번</span>':''}</span></span><span class="meta">${rowMeta(x.id,`${j?mGlyph(typeOf(j,mt.mt)):''}${val}`)}</span></div>`};
   $('actGroups').innerHTML=groups.filter(g=>g.list.length).map(g=>{const shut=g.key&&C.ui.collapsed['g'+g.key];return (g.name?`<button class="ghead ${shut?'shut':''}" data-gcollapse="${g.key}">${ic('chev')}${esc(g.name)} <span class="c">${g.list.length}</span></button>`:'')+(shut?'':`<div class="acts">${g.list.map(row).join('')}</div>`)}).join('')||'<div class="empty">아래 ＋로 행동을 추가해요.</div>';
   const aa=$('addActArea');if(document.activeElement!==aa)aa.innerHTML=C.areas.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');
   $('foodList').innerHTML=C.food.map(f=>{const v=+((day.food||{})[f.id]||0),ar=C.areas.find(a=>a.id===f.area),neg=f.points<0;
@@ -1517,7 +1538,7 @@ function renderEdit(){
   const ae=document.activeElement;if(ae&&$('editBody').contains(ae)&&ae.matches('input,select,textarea'))return;
   $('editNav').innerHTML=EDIT_TABS.map(([k,l])=>`<button class="chipbtn" data-etab="${k}" aria-pressed="${ui.edit===k}">${l}</button>`).join('');
   const areaOpts=C.areas.map(a=>[a.id,a.name]);
-  const goodActs=C.actions.filter(a=>a.type==='good').map(a=>[a.id,a.name]);
+  const goodActs=C.actions.filter(a=>a.type==='good'&&!a.once).map(a=>[a.id,a.name]);
   let h='';const add=(col,label,extra='')=>`<div class="row" style="margin-top:10px"><button class="btn sm" data-addrow="${col}" ${extra}>＋ ${label}</button></div>`;
   if(ui.edit==='screen'){
     const nav=C.ui.nav;
@@ -1531,11 +1552,11 @@ function renderEdit(){
       <div class="row" style="margin-top:10px"><button class="btn ghost sm" id="homeReset">홈 화면 기본값으로</button></div>`;
   }else if(ui.edit==='actions'){
     h=`<p class="help">숫자는 크기만 적어요. 나쁜 행동은 자동으로 깎고 XP는 주지 않아요. '구슬'을 고르면 그 행동을 누를 때 병에 구슬이 같이 들어가요.</p>`+
-      table('actions',[{f:'name',label:'이름',t:'text',w:1.7},{f:'type',label:'종류',t:'sel',w:.8,opts:[['good','▲ 좋음'],['bad','▼ 나쁨']]},{f:'area',label:'영역',t:'sel',w:.7,opts:areaOpts},{f:'cond',label:'컨디션',t:'abs',w:.5,attr:'min="0" max="100"'},{f:'gold',label:'골드',t:'abs',w:.5,attr:'min="0"'},{f:'xp',label:'XP',t:'num',w:.5,attr:'min="0"'},{f:'marble',label:'구슬',t:'sel',w:1.3,opts:marbleOpts()}],C.actions)+
+      table('actions',[{f:'name',label:'이름',t:'text',w:1.7},{f:'type',label:'종류',t:'sel',w:.8,opts:[['good','▲ 좋음'],['bad','▼ 나쁨']]},{f:'area',label:'영역',t:'sel',w:.7,opts:areaOpts},{f:'cond',label:'컨디션',t:'abs',w:.5,attr:'min="0" max="100"'},{f:'gold',label:'골드',t:'abs',w:.5,attr:'min="0"'},{f:'xp',label:'XP',t:'num',w:.5,attr:'min="0"'},{f:'marble',label:'구슬',t:'sel',w:1.3,opts:marbleOpts()},{f:'once',label:'반복',t:'sel',w:.6,opts:[['1','한 번'],['','반복']]}],C.actions.filter(a=>!a.doneAt))+
       `<div class="row" style="margin-top:10px"><button class="btn sm" data-addrow="actions" data-type="good">＋ 좋은 행동</button><button class="btn sm ghost" data-addrow="actions" data-type="bad">＋ 나쁜 행동</button></div>`;
   }else if(ui.edit==='courage'){
     h=`<p class="help">용기는 가장 큰 보상을 줘요. '용기 점수'는 칭호를 올려요(1~3). 구슬을 고르면 기록할 때 병에 자동으로 들어가요.</p>`+
-      table('courage',[{f:'name',label:'용기',t:'text',w:1.8},{f:'xp',label:'XP',t:'num',w:.5,attr:'min="0"'},{f:'gold',label:'골드',t:'num',w:.5,attr:'min="0"'},{f:'pts',label:'용기 점수',t:'num',w:.5,attr:'min="1" max="5"'},{f:'area',label:'영역',t:'sel',w:.7,opts:areaOpts},{f:'cond',label:'컨디션',t:'num',w:.5,attr:'min="0" max="50"'},{f:'marble',label:'구슬',t:'sel',w:1.3,opts:marbleOpts()}],C.courage)+add('courage','용기 추가')+
+      table('courage',[{f:'name',label:'용기',t:'text',w:1.8},{f:'xp',label:'XP',t:'num',w:.5,attr:'min="0"'},{f:'gold',label:'골드',t:'num',w:.5,attr:'min="0"'},{f:'pts',label:'용기 점수',t:'num',w:.5,attr:'min="1" max="5"'},{f:'area',label:'영역',t:'sel',w:.7,opts:areaOpts},{f:'cond',label:'컨디션',t:'num',w:.5,attr:'min="0" max="50"'},{f:'marble',label:'구슬',t:'sel',w:1.3,opts:marbleOpts()},{f:'once',label:'반복',t:'sel',w:.6,opts:[['1','한 번'],['','반복']]}],C.courage.filter(a=>!a.doneAt))+add('courage','용기 추가')+
       `<h3 style="margin-top:18px">용기 버튼 문구</h3><p class="help">홈의 '용기 냈어요' 아래에 날마다 하나씩 돌아가며 보여요. 다 지우면 '결과와 상관없이.'만 보여요.</p>`+table('braveQuotes',[{f:'text',label:'문구',t:'text',w:1}],C.braveQuotes)+add('braveQuotes','문구 추가')+
       `<h3 style="margin-top:18px">목록에 없는 용기 (크기별)</h3>`+table('courageSizes',[{f:'name',label:'이름',t:'text',w:1.2},{f:'xp',label:'XP',t:'num',w:.5,attr:'min="0"'},{f:'gold',label:'골드',t:'num',w:.5,attr:'min="0"'},{f:'pts',label:'용기 점수',t:'num',w:.5,attr:'min="1" max="5"'},{f:'marble',label:'구슬',t:'sel',w:1.3,opts:marbleOpts()}],C.courageSizes,{delOk:()=>false});
   }else if(ui.edit==='jars'){
@@ -1653,6 +1674,7 @@ function renderGuide(){
     ${acc('alert','경보와 방치','잊지 않게',`<ul><li>정해둔 행동을 며칠 넘게 안 하면 그 영역 컨디션이 하루마다 더 깎여요(최대 4배). 한 번 하면 바로 사라져요.</li><li>지난주보다 떨어진 영역, 자주 반복된 나쁜 행동, 곧 가득 찰 병, 곧 받을 보상도 알려줘요.</li></ul>`)}
     ${acc('gold','골드와 상점','현실 보상',`<ul><li>상점에서 현실 보상을 사요. 갖고 싶은 게 떠오르면 보상함에 적어두고 나중에 가격을 정해요.</li><li>레벨 단계마다 '현실 보상'을 정해둘 수도 있어요 (여정 편집).</li></ul>`)}
     ${acc('xp','XP · 레벨 · 업적','영원히 쌓이는 것',`<ul><li>Lv.1→2는 100 XP, 그다음부터 레벨마다 ${C.xpStep} XP씩 더 필요해요.</li><li>레벨이 오르면 영화 제작 여정의 단계가 열리고 아이템을 받아요. 5레벨마다 아바타 단상이 높아져요.</li><li>업적 ${BADGES.length}개: 처음 달성할 때 골드를 줘요.</li></ul>`)}
+    ${acc('once','한 번 · 반복','할 일과 습관',`<ul><li><b>한 번</b>: 어항 정리, 면접 보기처럼 한 번 하고 끝나는 일. 체크하면 기록되고 목록에서 빠져요. 되돌리면 다시 생겨요.</li><li><b>반복</b>: 운동, 일기처럼 계속하는 습관. 체크해도 목록에 남아요.</li><li>홈의 <b>빠른 기록</b>에 적고 Enter를 누르면 바로 '했어요'로 기록돼요. 나중에 할 일이면 '할 일로'를 눌러요.</li><li>행동·용기 이름을 누르면 언제든 한 번 ↔ 반복을 바꿀 수 있어요.</li></ul>`)}
     ${acc('fix','되돌리기와 지난 기록','실수해도 괜찮아요',`<ul><li>잘못 누른 기록은 '오늘 한 일'의 ×로 지우면 효과까지 원래대로 돌아가요.</li><li>＋기록 탭 위에서 어제·그저께를 고르면 그날로 기록할 수 있어요.</li><li>구슬은 유리병 탭에서 지난 날짜 것도 뺄 수 있어요.</li></ul>`)}
   </div>`;
 }
@@ -1692,7 +1714,7 @@ function infoFor(key){
     const up=C.actions.filter(x=>x.type==='good'&&x.area===a).map(x=>x.name),dn=C.actions.filter(x=>x.type==='bad'&&x.area===a).map(x=>x.name);
     return{kind:'컨디션 영역',t:esc(ar.name)+' 영역',b:`<p>오늘 ${esc(ar.name)} 상태예요. 다른 영역과 서로 메꿔지지 않아요.</p><div class="brk"><span>아침 시작점</span><span>${base}</span><span>행동·용기</span><span>${acts>=0?'+':''}${acts}</span><span>식사</span><span>${fd>=0?'+':''}${fd}</span>${ng.map(n=>`<span>방치: ${esc(n.t.name)} ${n.since}일</span><span>−${n.pen}</span>`).join('')}<span><b>오늘</b></span><span><b>${areaValues(day)[a]}</b></span></div>${up.length?`<p class="small"><b style="color:var(--good)">올리는 것</b> ${esc(up.join(', '))}</p>`:''}${dn.length?`<p class="small"><b style="color:var(--bad)">내리는 것</b> ${esc(dn.join(', '))}</p>`:''}`+btns(goE('areas','영역 편집'),goE('actions','행동 편집'))}}
   case 'act':{const x=C.actions.find(y=>y.id===a);if(!x)return null;const w=countAct(e=>e.aid===a,7),m=countAct(e=>e.aid===a,30),all=countAct(e=>e.aid===a);const ar=C.areas.find(y=>y.id===x.area);
-    return{kind:x.type==='good'?'▲ 좋은 행동':'▼ 나쁜 행동',t:esc(x.name),b:`<div class="brk"><span>영역</span><span>${esc(ar?ar.name:'')}</span><span>7일 / 30일 / 전체</span><span>${w.c} / ${m.c} / ${all.c}번</span><span>마지막</span><span>${all.last?fmtD(all.last):'—'}</span></div><p class="tiny muted">${x.type==='good'?'바꾸면 바로 저장돼요. 구슬을 고르면 누를 때 병에도 들어가요.':'나쁜 행동은 컨디션·골드를 깎고 주간 보스를 회복시켜요.'}</p>`+qe('actions',x,[['name','이름','text'],['cond','컨디션','abs','min="0" max="100"'],['gold','골드','abs','min="0"'],...(x.type==='good'?[['xp','XP','num','min="0"'],['marble','구슬','sel',marbleOpts()]]:[])])+btns(`<button class="btn sm" data-act="${x.id}">지금 기록</button>`,goE('actions','전체 편집'))}}
+    return{kind:x.type==='good'?'▲ 좋은 행동':'▼ 나쁜 행동',t:esc(x.name),b:`<div class="brk"><span>영역</span><span>${esc(ar?ar.name:'')}</span><span>7일 / 30일 / 전체</span><span>${w.c} / ${m.c} / ${all.c}번</span><span>마지막</span><span>${all.last?fmtD(all.last):'—'}</span></div><p class="tiny muted">${x.type==='good'?'바꾸면 바로 저장돼요. 구슬을 고르면 누를 때 병에도 들어가요.':'나쁜 행동은 컨디션·골드를 깎고 주간 보스를 회복시켜요.'}</p>`+qe('actions',x,[['name','이름','text'],['cond','컨디션','abs','min="0" max="100"'],['gold','골드','abs','min="0"'],...(x.type==='good'?[['xp','XP','num','min="0"'],['marble','구슬','sel',marbleOpts()]]:[]),['once','반복','sel',[['1','한 번'],['','반복']]]])+`<p class="tiny muted">${x.once?'한 번짜리: 체크하면 기록되고 목록에서 빠져요.':'반복: 체크해도 목록에 남아서 계속 기록할 수 있어요.'}</p>`+btns(x.doneAt?'':`<button class="btn sm" data-act="${x.id}">지금 기록</button>`,`<button class="btn ghost sm" data-del="actions" data-id="${x.id}">지우기</button>`,goE('actions','전체 편집'))}}
   case 'quest':{const q=C.dailies.find(y=>y.id===a);if(!q)return null;return{kind:'일퀘',t:esc(q.name),b:`<p>매일 새로 시작해요. 다 끝내면 상자(+${C.dailyBonus.gold}G)를 열어요.</p>`+qe('dailies',q,[['name','이름','text'],['xp','XP','num','min="0"'],['gold','골드','num','min="0"']])+btns(`<button class="btn sm" data-quest="${q.id}">${questDone(day,q)?'체크 해제':'체크'}</button>`,goE('dailies','일퀘 전체 편집'))}}
   case 'boss':{const ws=weekState(day.date),bs=bossOf(day.date);return{kind:'이번 주 보스',t:'⚔️ '+esc(bs.name),b:`<p>매주 월요일에 새 보스가 나와요. 이번 주에 얻은 XP가 그대로 데미지가 되고, 나쁜 행동은 깎인 컨디션만큼 보스를 회복시켜요.</p><div class="brk"><span>최대 HP</span><span>${ws.hp}</span><span>준 데미지 (이번 주 XP)</span><span>${ws.dmg}</span><span>회복 (나쁜 행동)</span><span>${ws.heal}</span><span><b>남은 HP</b></span><span><b>${ws.left}</b></span><span>처치 보상</span><span>+${C.weekly.bossGold}G · XP +${C.weekly.bossXp}</span></div>`+btns(gd('week'),goE('rules','보스 HP·보상 바꾸기'))}}
   case 'wgoal':{const ws=weekState(day.date);return{kind:'이번 주',t:'⚡ 주간 용기 목표',b:`<p>이번 주 용기를 ${ws.goal}번 기록하면 +${C.weekly.courageGold}G · XP +${C.weekly.courageXp}. 지금 ${ws.brave}번.</p>`+btns(`<button class="btn sm brave" data-sugbrave="1">용기 기록하러 가기</button>`,goE('rules','목표 바꾸기'))}}
@@ -1705,7 +1727,7 @@ function infoFor(key){
   case 'shop':{const x=C.shop.find(y=>y.id===a);if(!x)return null;return{kind:'상점',t:esc(x.name),b:qe('shop',x,[['name','이름','text'],['price','가격(G)','num','min="0"']])+`<p class="tiny muted">가격을 비우면 보상함으로 돌아가요.</p>`}}
   }
   if(k==='kbrave'){const x=C.courage.find(y=>y.id===a);if(!x)return null;const all=countAct(e=>e.cid===a),m=countAct(e=>e.cid===a,30);
-    return{kind:'⚡ 용기',t:esc(x.name),b:`<div class="brk"><span>30일 / 전체</span><span>${m.c} / ${all.c}번</span><span>마지막</span><span>${all.last?fmtD(all.last):'—'}</span></div>`+qe('courage',x,[['name','이름','text'],['xp','XP','num','min="0"'],['gold','골드','num','min="0"'],['pts','용기 점수','num','min="1" max="5"'],['marble','구슬','sel',marbleOpts()]])+btns(`<button class="btn sm brave" data-brave="${x.id}">지금 기록</button>`,`<button class="btn ghost sm" data-del="courage" data-id="${x.id}">목록에서 지우기</button>`,goE('courage','전체 편집'))}}
+    return{kind:'⚡ 용기',t:esc(x.name),b:`<div class="brk"><span>30일 / 전체</span><span>${m.c} / ${all.c}번</span><span>마지막</span><span>${all.last?fmtD(all.last):'—'}</span></div>`+qe('courage',x,[['name','이름','text'],['xp','XP','num','min="0"'],['gold','골드','num','min="0"'],['pts','용기 점수','num','min="1" max="5"'],['marble','구슬','sel',marbleOpts()],['once','반복','sel',[['1','한 번'],['','반복']]]])+btns(`<button class="btn sm brave" data-brave="${x.id}">지금 기록</button>`,`<button class="btn ghost sm" data-del="courage" data-id="${x.id}">목록에서 지우기</button>`,goE('courage','전체 편집'))}}
   return null;
 }
 let infoKey=null,lastInfoAt=0;
@@ -1735,7 +1757,7 @@ function searchIndex(){
   NAV_ITEMS.forEach(([id,l,d])=>add('화면',l,d,()=>location.hash=id));
   add('화면','계정·백업','백업 받기·복원·로그아웃',()=>location.hash='more','backup logout');
   EDIT_TABS.forEach(([id,l])=>add('편집',l+' 편집','편집 → '+l,()=>goEdit(id)));
-  [['flow','컨디션 (HP)','오늘의 몸·마음 상태, 영역, 아침 에너지'],['brave','용기','가장 큰 보상, 칭호, 용기 점수'],['quest','일퀘와 상자','매일 숙제, 연속'],['week','주간 보스와 용기 목표','보스 HP, 데미지, 회복'],['jar','유리병과 구슬','구슬 종류, 합치기, 나누기'],['alert','경보와 방치','방치 페널티, 경보판'],['gold','골드와 상점','현실 보상'],['xp','XP·레벨·업적','레벨 곡선, 업적'],['fix','되돌리기와 지난 기록','어제 기록, 취소']].forEach(([id,t,d])=>add('설명',t,d,()=>openGuide(id)));
+  [['once','한 번 · 반복','할 일, 일회성, 반복 설정, 빠른 기록'],['flow','컨디션 (HP)','오늘의 몸·마음 상태, 영역, 아침 에너지'],['brave','용기','가장 큰 보상, 칭호, 용기 점수'],['quest','일퀘와 상자','매일 숙제, 연속'],['week','주간 보스와 용기 목표','보스 HP, 데미지, 회복'],['jar','유리병과 구슬','구슬 종류, 합치기, 나누기'],['alert','경보와 방치','방치 페널티, 경보판'],['gold','골드와 상점','현실 보상'],['xp','XP·레벨·업적','레벨 곡선, 업적'],['fix','되돌리기와 지난 기록','어제 기록, 취소']].forEach(([id,t,d])=>add('설명',t,d,()=>openGuide(id)));
   [['hp','HP · 컨디션','오늘 상태 0~100'],['xp','XP','영원히 쌓이는 경험치'],['lv','레벨','다음 보상'],['gold','골드','돈'],['brave','용기 점수·칭호','칭호 단계'],['energy','아침 에너지','시작점'],['boss','이번 주 보스','HP, 데미지'],['wgoal','주간 용기 목표','이번 주 용기']].forEach(([k,t,d])=>add('설명',t,d,()=>openInfo(k)));
   [['avg','평균 컨디션'],['clean','깨끗한 날'],['days','기록한 날'],['marble','구슬 수'],['chest','일퀘 상자']].forEach(([k,t])=>add('통계',t,'통계 용어 설명',()=>openInfo('stat:'+k)));
   C.areas.forEach(a=>add('영역',a.name+' 영역','오늘 무엇 때문에 오르고 내렸는지',()=>openInfo('area:'+a.id)));
@@ -1891,6 +1913,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('change',async e=>{
   const t=e.target,d=t.dataset;
+  if(t.id==='qType'){$('qArea').hidden=t.value==='brave';return}
   if(t.id==='lgroup'){C.ui.list.group=t.value;t.blur();save('config');renderLog();return}
   if(d.lsort){C.ui.list.sort=t.value;t.blur();save('config');renderLog();return}
   if(d.navtoggle){const n=C.ui.nav,id=d.navtoggle;if(t.checked){if(n.length>=4){t.checked=false;toast('아래 메뉴는 4개까지예요');return}n.push(id)}else C.ui.nav=n.filter(x=>x!==id);t.blur();save('config');render();return}
@@ -1946,10 +1969,21 @@ $('wForm').addEventListener('submit',e=>{
     if(w)w.name='몸무게 '+day.weight+'kg';else applyEntry(day,{kind:'weigh',type:'good',name:'몸무게 '+day.weight+'kg',xp:+C.weight.xp||0,gold:0})});
   toast('몸무게를 기록했어요');
 });
-document.addEventListener('submit',e=>{const f=e.target.closest('[data-addform]');if(!f)return;e.preventDefault();const inp=f.querySelector('input'),name=inp.value.trim();if(!name){inp.focus();return}const id=uid(),k=f.dataset.addform;
-  if(k==='act'){const filt=C.ui.list.filter,type=filt==='bad'?'bad':'good';C.actions.push({id,name,type,area:$('addActArea').value||C.areas[0].id,cond:type==='good'?5:-15,gold:type==='good'?2:0,xp:type==='good'?10:0,marble:''});inp.value='';save('config');render();toast(`'${name}' 추가했어요. 눌러서 점수·구슬을 정해요`);lastPt={x:innerWidth/2,y:innerHeight/2};openInfo('act:'+id)}
-  if(k==='courage'){C.courage.push({id,name,xp:60,gold:20,pts:2,area:'mind',cond:4,marble:(C.courageSizes[1]||{}).marble||''});inp.value='';save('config');render();toast(`용기 '${name}' 추가했어요`);lastPt={x:innerWidth/2,y:innerHeight/2};openInfo('kbrave:'+id)}
-  if(k==='quest'){C.dailies.push({id,name,action:'',xp:5,gold:5});inp.value='';save('config');render();toast(`일퀘 '${name}' 추가했어요`)}
+document.addEventListener('submit',e=>{const f=e.target.closest('[data-addform]');if(!f)return;e.preventDefault();const inp=f.querySelector('input'),name=inp.value.trim();if(!name){inp.focus();toast('이름을 먼저 적어주세요');return}const id=uid(),k=f.dataset.addform;
+  if(k==='act'){const filt=C.ui.list.filter,type=filt==='bad'?'bad':'good',once=$('addActOnce').value;C.actions.push(newAction(id,name,type,$('addActArea').value||C.areas[0].id,once));inp.value='';inp.blur();save('config');render();toast(`'${name}' 추가했어요${once?' (한 번)':''}. 이름을 누르면 점수를 바꿔요`)}
+  if(k==='courage'){const once=$('addCourageOnce').value;C.courage.push(newCourage(id,name,once));inp.value='';inp.blur();save('config');render();toast(`용기 '${name}' 추가했어요${once?' (한 번)':''}`)}
+  if(k==='quest'){C.dailies.push({id,name,action:'',xp:5,gold:5});inp.value='';inp.blur();save('config');render();toast(`일퀘 '${name}' 추가했어요`)}
+});
+function newAction(id,name,type,area,once){return{id,name,type,area,cond:type==='good'?5:-15,gold:type==='good'?2:0,xp:type==='good'?10:0,marble:'',once:once?'1':''}}
+function newCourage(id,name,once){return{id,name,xp:60,gold:20,pts:2,area:'mind',cond:4,marble:(C.courageSizes[1]||{}).marble||'',once:once?'1':''}}
+$('quickForm').addEventListener('submit',e=>{e.preventDefault();if(!guard())return;
+  const name=$('qName').value.trim();if(!name){$('qName').focus();toast('무엇을 했는지 적어주세요');return}
+  const how=(e.submitter&&e.submitter.value)||'done',type=$('qType').value,once=$('qOnce').value,area=$('qArea').value||C.areas[0].id;
+  if(type==='brave'){let k=C.courage.find(x=>!x.doneAt&&x.name===name);if(!k){k=newCourage(uid(),name,once);C.courage.push(k);save('config')}
+    if(how==='done')doBrave(k);else{render();toast(`할 일 '${name}' 추가했어요`)}}
+  else{let a=C.actions.find(x=>!x.doneAt&&x.type===type&&x.name===name);if(!a){a=newAction(uid(),name,type,area,once);C.actions.push(a);save('config')}
+    if(how==='done')doAction(a);else{render();toast(`할 일 '${name}' 추가했어요`)}}
+  $('qName').value='';$('qName').blur();
 });
 $('wishForm').addEventListener('submit',e=>{e.preventDefault();const n=$('wishName').value.trim();if(!n)return;C.shop.push({id:uid(),name:n,price:null});$('wishName').value='';save('config');render();toast('보상함에 적었어요')});
 
