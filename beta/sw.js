@@ -1,10 +1,10 @@
 // 습관 퀘스트 service worker: 기기 사본으로 바로 열고, 파일은 뒤에서 새로 받아요.
 const BETA = self.location.pathname.includes('/beta/');
 const PRE = BETA ? 'hqb-' : 'hq-';
-const VERSION = PRE + '2026-11-02-8';
+const VERSION = PRE + '2026-11-02-v5a';
 const EXT = VERSION + '-ext';
 const SHELL = ['./', './index.html', './backend.js', './manifest.webmanifest',
-  './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png'];
+  './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png', './icons/favicon.ico'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

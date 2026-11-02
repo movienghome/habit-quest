@@ -87,6 +87,9 @@ async function start() {
     for (const id of ['config', 'progress']) { const s = await F.getDoc(F.doc(fs, `${root()}/game/${id}`)).catch(() => null); if (s && s.exists()) out.game[id] = s.data(); }
     const ds = await F.getDocs(F.collection(fs, `${root()}/days`));
     ds.docs.forEach(d => out.days[d.id] = d.data());
+    out.tasks = {};
+    const ts = await F.getDocs(F.collection(fs, `${root()}/tasks`)).catch(() => ({ docs: [] }));
+    ts.docs.forEach(d => out.tasks[d.id] = d.data());
     return out;
   }
   async function importAll(data) {
@@ -97,13 +100,25 @@ async function start() {
     for (const d of old.docs) { batch.delete(F.doc(fs, `${root()}/days/${d.id}`)); if (++n >= 400) await flush(); }
     for (const id of ['config', 'progress']) if (data.game[id]) { batch.set(F.doc(fs, `${root()}/game/${id}`), data.game[id]); if (++n >= 400) await flush(); }
     for (const [k, v] of Object.entries(data.days || {})) { batch.set(F.doc(fs, `${root()}/days/${k}`), v); if (++n >= 400) await flush(); }
+    if (data.tasks && typeof data.tasks === 'object') {
+      const oldT = await F.getDocs(F.collection(fs, `${root()}/tasks`));
+      for (const d of oldT.docs) { batch.delete(F.doc(fs, `${root()}/tasks/${d.id}`)); if (++n >= 400) await flush(); }
+      for (const [k, v] of Object.entries(data.tasks)) { batch.set(F.doc(fs, `${root()}/tasks/${k}`), v); if (++n >= 400) await flush(); }
+    }
     await flush();
+  }
+  // 할 일 여러 개를 한 번에 (틱틱 가져오기)
+  async function putTasks(list) {
+    let batch = F.writeBatch(fs), n = 0;
+    for (const t of list) { batch.set(F.doc(fs, `${root()}/tasks/${t.id}`), JSON.parse(JSON.stringify(t))); if (++n >= 400) { await fastWrite(batch.commit()); batch = F.writeBatch(fs); n = 0; } }
+    if (n) await fastWrite(batch.commit());
   }
   // 베타는 실제 기록의 복사본으로 시작
   async function copyFromLive() {
     if (!BETA) return;
     const src = `data/users/${uid}/habit`;
-    const live = { game: {}, days: {} };
+    const live = { game: {}, days: {}, tasks: {} };
+    (await F.getDocs(F.collection(fs, `${src}/tasks`)).catch(() => ({ docs: [] }))).docs.forEach(d => live.tasks[d.id] = d.data());
     for (const id of ['config', 'progress']) { const s = await F.getDoc(F.doc(fs, `${src}/game/${id}`)); if (s.exists()) live.game[id] = s.data(); }
     (await F.getDocs(F.collection(fs, `${src}/days`))).docs.forEach(d => live.days[d.id] = d.data());
     await importAll(live);
@@ -120,7 +135,7 @@ async function start() {
         db: { doc: p => docApi(`${root()}/${p}`), collection: p => colApi(`${root()}/${p}`) },
         user: { id: async () => uid, isOwner: () => true, canEdit: () => true, can: () => true },
         account: { email: user.email },
-        exportAll, importAll, copyFromLive,
+        exportAll, importAll, copyFromLive, putTasks,
         logout: async () => { await A.signOut(auth); try { await F.terminate(fs); await F.clearIndexedDbPersistence(fs); } catch (e) {} location.reload(); }
       });
     } else {
