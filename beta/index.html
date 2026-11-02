@@ -56,7 +56,7 @@ h2{font-size:21px} h3{font-size:17px}
 
 /* HUD */
 .hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--panel);border-bottom:2px solid var(--edge)}
-.hud-in{max-width:1100px;margin:0 auto;padding:8px max(14px,env(safe-area-inset-right,0px)) 8px max(14px,env(safe-area-inset-left,0px));display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
+.hud-in{max-width:1340px;margin:0 auto;padding:8px max(12px,env(safe-area-inset-right,0px)) 8px max(12px,env(safe-area-inset-left,0px));display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
 .hud-av{width:52px;height:52px;border-radius:12px;background:var(--stage);border:2px solid var(--edge);display:grid;place-items:center;cursor:pointer;padding:0}
 .hud-av svg{width:48px;height:48px}
 .hud-main{display:grid;gap:4px;min-width:0}
@@ -78,12 +78,66 @@ h2{font-size:21px} h3{font-size:17px}
 .track .base{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink);opacity:.35}
 
 /* 아래 탭바 */
+.ico{width:1.25em;height:1.25em;display:inline-block;vertical-align:-.25em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.hbtn{border:0;background:transparent;color:var(--ink);width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:20px;cursor:pointer;padding:0;flex:none}
+.hbtn:hover{background:var(--panel2)}
+.hud-tools{display:flex;gap:2px}
+[data-info]{-webkit-touch-callout:none}
+.pill[data-info],.mbar[data-info],.tile[data-info],.area[data-info],.rk[data-info],.boss[data-info],.goalbox[data-info]{cursor:help}
 .bnav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--panel);border-top:2px solid var(--edge);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
-.bnav-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);align-items:end}
+.bnav-in{max-width:560px;margin:0 auto;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;align-items:end}
 .bnav a{display:grid;justify-items:center;gap:1px;text-decoration:none;color:var(--muted);font-size:11.5px;font-weight:600;padding:4px 0}
-.bnav a .i{font-size:20px;line-height:1.1}
+.bnav a .i{font-size:22px;line-height:1.1;display:grid;place-items:center;height:26px}
 .bnav a[aria-current="page"]{color:var(--accent)}
-.bnav a.center .i{width:52px;height:52px;margin-top:-26px;border-radius:16px;background:var(--accent);color:var(--panel);display:grid;place-items:center;font-size:28px;font-weight:700;box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 60%,#000)}
+.bnav a.rec .i{color:var(--accent)}
+
+/* 셸·사이드 메뉴 */
+.shell{max-width:1340px;margin:0 auto}
+.side{display:none;flex-direction:column;gap:2px;padding:14px 8px 14px max(10px,env(safe-area-inset-left,0px))}
+.side a,.side button.sl{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;text-decoration:none;color:var(--ink);font:inherit;font-weight:600;font-size:14.5px;background:none;border:0;cursor:pointer;text-align:left}
+.side a:hover,.side button.sl:hover{background:var(--panel)}
+.side a[aria-current="page"]{background:var(--panel);color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.side .sep{height:1px;background:var(--line);margin:8px 6px}
+.side .shead{font-size:11.5px;color:var(--muted);padding:4px 12px;font-weight:700;letter-spacing:.06em}
+.scrim{position:fixed;inset:0;background:color-mix(in srgb,var(--ink) 30%,transparent);z-index:44}
+@media (max-width:959px){.side.open{display:flex;position:fixed;z-index:45;top:0;bottom:0;left:0;width:min(280px,82vw);background:var(--bg);border-right:2px solid var(--edge);overflow:auto;padding-top:calc(14px + env(safe-area-inset-top,0px))}}
+@media (min-width:960px){.shell{display:grid;grid-template-columns:200px minmax(0,1fr)}.side{display:flex;position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);align-self:start;max-height:calc(100vh - 90px);overflow:auto}.bnav{display:none}.wrap{padding-bottom:40px}#menuBtn{display:none}.toast{bottom:24px}}
+
+/* 홈 배치 */
+.homegrid{columns:2 380px;column-gap:14px}
+.hblock{break-inside:avoid;margin-bottom:14px;display:block}
+.hblock.collapsed .panel>:not(.ptitle){display:none}
+.hblock.collapsed .panel .ptitle{margin-bottom:0}
+.colbtn{border:0;background:transparent;color:var(--muted);width:26px;height:26px;border-radius:6px;cursor:pointer;display:grid;place-items:center;padding:0}
+.colbtn:hover{background:var(--panel2)}
+.hblock.collapsed .colbtn svg{transform:rotate(-90deg)}
+.minijars{display:flex;gap:8px;flex-wrap:wrap}
+.minijars a{display:grid;justify-items:center;text-decoration:none;color:var(--ink);font-size:12px;width:62px}
+.minijars svg{width:46px;height:auto}
+.quote{font-size:13px;color:var(--brave);font-style:italic;line-height:1.45}
+
+/* 설명 팝업·검색 */
+.pop{position:fixed;z-index:80;width:min(340px,calc(100vw - 24px));background:var(--panel);border:2px solid var(--accent);border-radius:14px;box-shadow:0 4px 0 var(--accent),0 10px 30px color-mix(in srgb,var(--ink) 25%,transparent);padding:12px 14px;display:grid;gap:8px;max-height:min(70vh,560px);overflow:auto}
+.pop h3{font-size:19px;display:flex;align-items:center;gap:8px}
+.pop .kind{font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.05em}
+.pop p{margin:0;font-size:14px}
+.pop ul{margin:0;padding-left:18px;font-size:13.5px;display:grid;gap:3px}
+.pop .kv{grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px}
+.pop .kv input,.pop .kv select{padding:5px 7px;font-size:13px}
+.pop .close{position:absolute;right:8px;top:8px}
+.pop .brk{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:13px}
+.pop .brk span:nth-child(even){text-align:right;font-family:var(--mono)}
+.searchbox{position:fixed;inset:0;z-index:85;background:color-mix(in srgb,var(--bg) 85%,transparent);display:grid;align-items:start;justify-items:center;padding:calc(16px + env(safe-area-inset-top,0px)) 12px 12px}
+.searchbox .card{width:min(560px,100%);background:var(--panel);border:2px solid var(--edge);border-radius:14px;padding:12px;display:grid;gap:8px;max-height:80vh;box-shadow:0 4px 0 var(--edge)}
+.searchbox input{font-size:16px;padding:10px 12px}
+.sres{list-style:none;margin:0;padding:0;overflow:auto;display:grid;gap:2px}
+.sres li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:7px 8px;border-radius:9px;cursor:pointer}
+.sres li:hover,.sres li.on{background:var(--panel2)}
+.sres .cat{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:nowrap}
+.sres .d{font-size:12px;color:var(--muted);display:block}
+.order{display:grid;gap:4px}
+.order .or{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.order .or input{width:20px;height:20px}
 
 /* 홈 */
 .hero{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center}
@@ -196,16 +250,16 @@ textarea{resize:vertical;min-height:80px}
 .empty{color:var(--muted);font-size:14px;padding:6px 0}
 
 /* 유리병 */
-.jars{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.jars{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
 .jar{display:grid;justify-items:center;gap:2px;text-align:center;background:transparent;border:2px solid transparent;border-radius:12px;padding:6px;cursor:pointer;color:var(--ink);font:inherit}
 .jar[aria-pressed="true"]{border-color:var(--edge);background:var(--panel2)}
-.jar svg{width:100%;max-width:130px;height:auto}
-.jar .nm{font-family:var(--display);font-size:18px}
+.jar svg{width:100%;max-width:78px;height:auto}
+.jar .nm{font-family:var(--display);font-size:16px}
 .jar .ct{font-size:12px;color:var(--muted)}
-.jarmini{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:6px}
+.jarmini{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px}
 .jarmini button{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:6px 4px;font:inherit;font-size:12.5px;cursor:pointer;display:grid;justify-items:center;gap:2px}
 .jarmini button[aria-pressed="true"]{border-width:2px;border-color:var(--ink)}
-.minijar svg{width:44px;height:auto;display:block}
+.minijar svg{width:34px;height:auto;display:block}
 .mtypes{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
 .mtype{display:flex;gap:6px;align-items:center;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer}
 .mtype[aria-pressed="true"]{border:2px solid var(--ink)}
@@ -355,48 +409,50 @@ details.acc .bd ul{margin:0;padding-left:18px;display:grid;gap:4px}
 
 <header class="hud" id="hud">
   <div class="hud-in">
-    <button class="hud-av" id="hudAv" aria-label="아바타 꾸미기"></button>
+    <div class="row" style="gap:4px;flex-wrap:nowrap"><button class="hbtn" id="backBtn" aria-label="뒤로" hidden></button><button class="hud-av" id="hudAv" aria-label="아바타 꾸미기"></button></div>
     <div class="hud-main">
-      <div class="hud-top"><span class="hud-name" id="hudName"></span><span class="hud-title" id="hudTitle"></span>
-        <span class="hud-pills"><span class="pill lv px" id="hudLv">LV 1</span><span class="pill g num" id="hudGold">0G</span><span class="pill c num" id="hudBrave">⚡0</span></span></div>
+      <div class="hud-top"><span class="hud-name" id="hudName"></span><span class="hud-title" id="hudTitle" data-info="title"></span>
+        <span class="hud-pills"><span class="pill lv px" id="hudLv" data-info="lv">LV 1</span><span class="pill g num" id="hudGold" data-info="gold">0G</span><span class="pill c num" id="hudBrave" data-info="brave">⚡0</span></span></div>
       <div class="hud-bars">
-        <div class="mbar"><span class="k">HP</span><div class="track"><div class="fill hp" id="hudHp"></div></div><span class="v" id="hudHpV"></span></div>
-        <div class="mbar"><span class="k">XP</span><div class="track"><div class="fill xp" id="hudXp"></div></div><span class="v" id="hudXpV"></span></div>
+        <div class="mbar" data-info="hp"><span class="k">HP</span><div class="track"><div class="fill hp" id="hudHp"></div></div><span class="v" id="hudHpV"></span></div>
+        <div class="mbar" data-info="xp"><span class="k">XP</span><div class="track"><div class="fill xp" id="hudXp"></div></div><span class="v" id="hudXpV"></span></div>
       </div>
     </div>
+    <div class="hud-tools"><button class="hbtn" id="searchBtn" aria-label="검색"></button><button class="hbtn" id="menuBtn" aria-label="전체 메뉴"></button></div>
   </div>
 </header>
 
+<div class="shell"><nav class="side" id="side" aria-label="전체 메뉴"></nav>
 <main class="wrap">
   <!-- 홈 -->
   <section class="view" data-view="home">
-    <div class="grid2">
-      <div class="stack">
-        <div class="panel">
+    <div class="homegrid" id="homeGrid">
+      <div class="hblock" data-hid="profile"><div class="panel">
           <div class="hero">
             <button class="stagebox" id="heroAv" aria-label="아바타 꾸미기"></button>
             <div style="min-width:0">
-              <div class="spread"><span class="mood" id="moodName"></span><span class="tiny muted num" id="dayLabel"></span></div>
+              <div class="spread"><span class="mood" id="moodName" data-info="hp"></span><span class="tiny muted num" id="dayLabel"></span></div>
               <div class="areas" id="areaBars"></div>
-              <div class="energy" id="energy" aria-label="아침 에너지"></div>
+              <div class="energy" id="energy" aria-label="아침 에너지" data-info="energy"></div>
             </div>
           </div>
           <div class="spread tiny muted" style="margin-top:8px"><span>아침 에너지를 고르면 오늘의 시작점이 돼요</span><span class="items" id="equipped"></span></div>
-        </div>
-        <button class="bravebtn" id="braveHome"><span class="big">⚡</span><span><b>용기 냈어요</b><span class="small">지원, 연락, 첫 시도, 사과… 결과와 상관없이</span></span><span class="chip br" id="braveHomeXp"></span></button>
-        <div class="panel"><div class="ptitle"><h2>지금 하면 좋은 것</h2><button class="qbtn" data-guide="flow" aria-label="설명">?</button></div><div class="sugg" id="sugg"></div></div>
-        <div class="panel">
-          <div class="ptitle"><h2>오늘의 일퀘</h2><span class="row"><span class="small muted num" id="questCount"></span><button class="qbtn" data-guide="quest" aria-label="설명">?</button></span></div>
+      </div></div>
+      <div class="hblock" data-hid="brave"><button class="bravebtn" id="braveHome" data-info="bravebtn"><span class="big">⚡</span><span><b>용기 냈어요</b><span class="quote" id="braveQuote" style="display:block"></span></span><span class="chip br" id="braveHomeXp"></span></button></div>
+      <div class="hblock" data-hid="sugg"><div class="panel"><div class="ptitle"><h2>지금 하면 좋은 것</h2><span class="row" style="gap:2px"><button class="qbtn" data-guide="flow" aria-label="설명">?</button><button class="colbtn" data-collapse="sugg" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div class="sugg" id="sugg"></div></div></div>
+      <div class="hblock" data-hid="quests"><div class="panel">
+          <div class="ptitle"><h2>오늘의 일퀘</h2><span class="row" style="gap:2px"><span class="small muted num" id="questCount"></span><button class="qbtn" data-guide="quest" aria-label="설명">?</button><button class="colbtn" data-collapse="quests" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div>
           <div class="row" style="margin-bottom:8px"><div class="track" style="flex:1;min-width:100px"><div class="fill gold" id="questFill"></div></div><span id="chestLbl"></span></div>
           <div class="quests" id="quests"></div>
-        </div>
-      </div>
-      <div class="stack">
-        <div class="panel"><div class="ptitle"><h2>이번 주</h2><span class="row"><span class="tiny muted" id="weekLbl"></span><button class="qbtn" data-guide="week" aria-label="설명">?</button></span></div><div class="week" id="weekBox"></div></div>
-        <div class="panel"><div class="ptitle"><h2>경보판</h2><button class="qbtn" data-guide="alert" aria-label="설명">?</button></div><ul class="alerts" id="alerts"></ul></div>
-        <div class="panel"><div class="ptitle"><h2>오늘 한 일</h2><a class="small" href="#log" style="color:var(--accent)">기록 탭에서 보기</a></div><ul class="log" id="homeLog"></ul></div>
-        <div class="panel"><div class="tip" id="tipBox"></div></div>
-      </div>
+      </div></div>
+      <div class="hblock" data-hid="week"><div class="panel"><div class="ptitle"><h2>이번 주</h2><span class="row" style="gap:2px"><span class="tiny muted" id="weekLbl"></span><button class="qbtn" data-guide="week" aria-label="설명">?</button><button class="colbtn" data-collapse="week" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div class="week" id="weekBox"></div></div></div>
+      <div class="hblock" data-hid="alerts"><div class="panel"><div class="ptitle"><h2>경보판</h2><span class="row" style="gap:2px"><button class="qbtn" data-guide="alert" aria-label="설명">?</button><button class="colbtn" data-collapse="alerts" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><ul class="alerts" id="alerts"></ul></div></div>
+      <div class="hblock" data-hid="todaylog"><div class="panel"><div class="ptitle"><h2>오늘 한 일</h2><span class="row" style="gap:2px"><a class="small" href="#log" style="color:var(--accent)">전체 보기</a><button class="colbtn" data-collapse="todaylog" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><ul class="log" id="homeLog"></ul></div></div>
+      <div class="hblock" data-hid="journey"><div class="panel"><div class="ptitle"><h2>여정</h2><span class="row" style="gap:2px"><a class="small" href="#journey" style="color:var(--accent)">전체 보기</a><button class="colbtn" data-collapse="journey" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div id="homeJourney"></div></div></div>
+      <div class="hblock" data-hid="jars"><div class="panel"><div class="ptitle"><h2>유리병</h2><span class="row" style="gap:2px"><a class="small" href="#jars" style="color:var(--accent)">열기</a><button class="colbtn" data-collapse="jars" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div class="minijars" id="homeJars"></div></div></div>
+      <div class="hblock" data-hid="stats"><div class="panel"><div class="ptitle"><h2>최근 7일</h2><span class="row" style="gap:2px"><a class="small" href="#stats" style="color:var(--accent)">통계</a><button class="colbtn" data-collapse="stats" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div class="tiles" id="homeStats"></div></div></div>
+      <div class="hblock" data-hid="body"><div class="panel"><div class="ptitle"><h2>몸무게</h2><span class="row" style="gap:2px"><a class="small" href="#body" style="color:var(--accent)">추세 보기</a><button class="colbtn" data-collapse="body" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div class="stats" id="homeBody" style="margin:0"></div></div></div>
+      <div class="hblock" data-hid="tip"><div class="panel"><div class="tip" id="tipBox"></div></div></div>
     </div>
   </section>
 
@@ -406,13 +462,13 @@ details.acc .bd ul{margin:0;padding-left:18px;display:grid;gap:4px}
     <div class="grid2">
       <div class="stack">
         <div class="panel brave" id="bravePanel">
-          <div class="ptitle"><h2><span class="ic">⚡</span>용기</h2><span class="row"><span class="small muted" id="braveWeek"></span><button class="qbtn" data-guide="brave" aria-label="설명">?</button></span></div>
-          <p class="help">두렵거나 귀찮거나 거절당할 수 있는데 해본 것. 결과가 나빠도 기록해요. 가장 큰 점수를 줘요.</p>
+          <div class="ptitle"><h2><span class="ic">⚡</span>용기</h2><span class="row"><span class="small muted" id="braveWeek"></span><a class="small" href="#edit" data-goedit="courage" style="color:var(--accent)">목록 편집</a><button class="qbtn" data-guide="brave" aria-label="설명">?</button></span></div>
+          <p class="quote" id="braveQuote2" style="margin:0 0 6px"></p><p class="help" style="margin-top:0">결과와 상관없이, 해봤으면 기록해요. 가장 큰 점수를 줘요. 항목을 꾹 누르거나 우클릭하면 설명과 편집이 떠요.</p>
           <div class="acts" id="braveActs"></div>
           <div style="margin-top:12px;display:grid;gap:8px">
             <div class="small" style="font-weight:700">목록에 없는 용기</div>
             <div class="sizes" id="braveSizes"></div>
-            <form class="row" id="braveForm" style="flex-wrap:nowrap"><input id="braveNote" maxlength="120" placeholder="어떤 용기였나요? (예: 운전 학원에 전화했다)"><button class="btn brave" type="submit">기록</button></form>
+            <form class="row" id="braveForm" style="flex-wrap:nowrap"><input id="braveNote" maxlength="120" placeholder="어떤 용기였나요? 한 줄로"><button class="btn brave" type="submit">기록</button></form>
           </div>
         </div>
         <div class="panel">
@@ -473,13 +529,8 @@ details.acc .bd ul{margin:0;padding-left:18px;display:grid;gap:4px}
 
   <!-- 더보기 -->
   <section class="view" data-view="more" hidden>
-    <div class="moregrid">
-      <a class="moretile" href="#journey"><span class="i">🗺️</span><b>여정</b><span>레벨 로드맵 · 업적 · 아이디어</span></a>
-      <a class="moretile" href="#shop"><span class="i">🛒</span><b>상점</b><span>골드로 현실 보상 사기 · 보상함</span></a>
-      <a class="moretile" href="#body"><span class="i">⚖️</span><b>몸 기록</b><span>몸무게 추세 · 컨디션 흐름</span></a>
-      <a class="moretile" href="#edit"><span class="i">🛠️</span><b>편집</b><span>행동 · 용기 · 병 · 일퀘 · 규칙</span></a>
-      <a class="moretile" href="#guide"><span class="i">📖</span><b>게임 방법</b><span>규칙 · 성장 팁 · 처음 안내</span></a>
-    </div>
+    <div class="moregrid" id="moreGrid"></div>
+    <div class="row"><button class="btn ghost sm" data-goedit="screen">아래 메뉴·홈 화면 바꾸기</button></div>
     <div class="panel"><div class="ptitle"><h2>계정 · 백업</h2></div><p class="help" id="acctHelp"></p><div class="row" id="acctBox"></div><input type="file" id="restoreFile" accept="application/json,.json" hidden></div>
   </section>
 
@@ -519,15 +570,12 @@ details.acc .bd ul{margin:0;padding-left:18px;display:grid;gap:4px}
   </section>
 
   <div class="spread status"><span id="syncState">불러오는 중…</span><span id="acctLbl">습관 퀘스트</span></div>
-</main>
+</main></div>
 
-<nav class="bnav" aria-label="화면"><div class="bnav-in" id="bnav">
-  <a href="#home"><span class="i">🏠</span>홈</a>
-  <a href="#jars"><span class="i">🫙</span>유리병</a>
-  <a href="#log" class="center"><span class="i">＋</span>기록</a>
-  <a href="#stats"><span class="i">📊</span>통계</a>
-  <a href="#more"><span class="i">☰</span>더보기</a>
-</div></nav>
+<nav class="bnav" aria-label="화면"><div class="bnav-in" id="bnav"></div></nav>
+<div class="scrim" id="scrim" hidden></div>
+<div class="pop" id="pop" hidden role="dialog" aria-label="설명"></div>
+<div class="searchbox" id="searchBox" hidden><div class="card"><div class="row" style="flex-wrap:nowrap"><input id="searchIn" type="search" placeholder="기능·설명·행동·병 검색 (예: 보스, 컨디션, 운동)" autocomplete="off"><button class="btn ghost sm" id="searchClose">닫기</button></div><ul class="sres" id="searchRes"></ul></div></div>
 
 <div class="gate" id="gate" hidden>
   <form id="login" autocomplete="on">
@@ -599,7 +647,6 @@ const DEFAULT_CONFIG={
     {id:'k2',name:'일을 했다·일 제안에 답했다',xp:70,gold:40,pts:2,area:'life',cond:6,marble:'try:courage'},
     {id:'k3',name:'운전을 시도했다',xp:70,gold:20,pts:2,area:'body',cond:4,marble:'try:courage'},
     {id:'k4',name:'면허 학원·새 배움에 등록했다',xp:90,gold:30,pts:3,area:'life',cond:6,marble:'try:courage'},
-    {id:'k5',name:'미안하다·어려운 말을 했다',xp:70,gold:20,pts:2,area:'mind',cond:6,marble:'try:courage'},
     {id:'k6',name:'미뤄 온 연락을 했다',xp:45,gold:15,pts:1,area:'life',cond:4,marble:'try:small'},
     {id:'k7',name:'거절당할 수 있는 부탁·제안',xp:60,gold:20,pts:2,area:'mind',cond:4,marble:'try:courage'},
     {id:'k8',name:'처음 가 보는 곳·처음 해 보는 일',xp:45,gold:15,pts:1,area:'mind',cond:4,marble:'try:small'}
@@ -657,12 +704,34 @@ const DEFAULT_CONFIG={
   recovery:{threshold:40,mult:1.5},
   avatar:{kind:'director',outfit:'#3f6fdc',name:'walkinglikeozu'},
   tourSeen:false,
+  braveQuotes:[{id:'bq1',text:'준비는 영원히 되지 않아. 끼어들어!'},{id:'bq2',text:'걱정하지 말고 시도하라. 더 빠르게 시도하고, 더 낫게 실패하라. 어차피 운이고 기세다.'}],
+  ui:{nav:['home','log','jars','stats'],home:[['profile',1],['brave',1],['sugg',1],['quests',1],['week',1],['alerts',1],['todaylog',1],['journey',0],['jars',0],['stats',0],['body',0],['tip',1]],collapsed:{}},
   ideas:''
 };
 const DEFAULT_PROGRESS={xp:0,gold:0,courage:0,marbles:{},badges:{}};
 const ENERGY_LBL=['바닥','지침','보통','좋음','쌩쌩'];
 const BRAVE_TITLES=[[0,'웅크린 사람'],[1,'첫 발을 뗀 사람'],[3,'한 걸음 더'],[6,'문을 두드리는 사람'],[10,'부딪혀 보는 사람'],[15,'두려움과 함께 걷는 사람'],[21,'용감한 사람'],[28,'겁을 다루는 사람'],[36,'앞장서는 사람'],[45,'용기의 감독'],[55,'전설의 감독']];
 const BOSSES=[['미루기 괴물','#7a4fd0'],['무한 스크롤 슬라임','#2e9a4a'],['완벽주의 골렘','#5a6b85'],['야식 고블린','#e07a10'],['불안 안개','#3aa0d8'],['회피 박쥐','#d14f92']];
+
+const ICONS={
+  home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+  log:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+  jars:'<path d="M9 3h6M10 3v3c-3 1-5 3-5 6v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7c0-3-2-5-5-6V3"/><circle cx="10" cy="16.5" r="1.4"/><circle cx="14" cy="17" r="1.4"/><circle cx="12" cy="14" r="1.4"/>',
+  stats:'<path d="M4 20V11M10 20V5M16 20v-6M3 20h18"/>',
+  journey:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>',
+  shop:'<path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2"/>',
+  body:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 10a4 4 0 0 1 8 0M12 10l2-2"/>',
+  edit:'<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+  guide:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7"/>',
+  more:'<circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  close:'<path d="M6 6l12 12M18 6L6 18"/>'
+};
+const ic=n=>`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]||''}</svg>`;
+const NAV_ITEMS=[['home','홈','오늘 한눈에'],['log','기록','용기·행동·식사·몸무게'],['jars','유리병','구슬 넣기·병 보기'],['stats','통계','횟수·달력·영역 평균'],['journey','여정','레벨 로드맵·업적·아이디어'],['shop','상점','골드로 현실 보상·보상함'],['body','몸 기록','몸무게 추세·컨디션 흐름'],['edit','편집','행동·용기·병·일퀘·규칙·화면'],['guide','게임 방법','규칙·성장 팁·처음 안내']];
+const HOME_BLOCKS={profile:'캐릭터·컨디션',brave:'⚡ 용기 버튼',sugg:'지금 하면 좋은 것',quests:'오늘의 일퀘',week:'이번 주 (보스·용기 목표)',alerts:'경보판',todaylog:'오늘 한 일',journey:'여정 (다음 보상)',jars:'유리병 미리보기',stats:'최근 7일 요약',body:'몸무게',tip:'오늘의 팁'};
 
 /* ================= 상태 ================= */
 function clone(o){return JSON.parse(JSON.stringify(o))}
@@ -698,7 +767,7 @@ function normConfig(raw){
   if(raw&&raw.diet&&!raw.food){const d=raw.diet;c.food=[{id:'veg',name:'채소 먹은 횟수',kind:'counter',points:+d.veg||5,max:+d.vegMax||3,area:d.area||'body'},{id:'bad',name:'나쁜 식사 횟수',kind:'counter',points:-Math.abs(+d.bad||15),max:9,area:d.area||'body'},{id:'protein',name:'단백질 챙겨 먹음',kind:'check',points:+d.protein||4,max:1,area:d.area||'body'}]}
   delete c.diet;delete c.goalWeight;
   ['avatar','recovery','dailyBonus','weekly'].forEach(k=>c[k]={...DEFAULT_CONFIG[k],...(c[k]||{})});
-  ['actions','areas','dailies','watches','shop','food','energyBase','courage','courageSizes','jars','roadmap'].forEach(k=>{if(!Array.isArray(c[k]))c[k]=clone(DEFAULT_CONFIG[k])});
+  ['actions','areas','dailies','watches','shop','food','energyBase','courage','courageSizes','jars','roadmap','braveQuotes'].forEach(k=>{if(!Array.isArray(c[k]))c[k]=clone(DEFAULT_CONFIG[k])});
   if(!c.jars.length)c.jars=clone(DEFAULT_CONFIG.jars);
   if(old&&raw){
     // v4로 올리기: 병마다 구슬 종류, 시나리오 병, 용기, 행동-구슬 연결
@@ -719,6 +788,9 @@ function normConfig(raw){
   }
   c.jars.forEach((j,i)=>{delete j.color;delete j.shape;if(!Array.isArray(j.types)||!j.types.length)j.types=[T('base',j.name,COLORS[i%12][0],SHAPES[i%8][0])];j.types.forEach(t=>{t.size=t.size||'m';t.color=t.color||'c1';t.shape=t.shape||'circle'});j.hint=j.hint||'';j.xp=j.xp??10});
   c.actions.forEach(a=>{if(a.type==='good'&&a.marble==null)a.marble=''});
+  const du=DEFAULT_CONFIG.ui,u=c.ui&&typeof c.ui==='object'?c.ui:{};
+  c.ui={nav:Array.isArray(u.nav)?u.nav.filter(x=>NAV_ITEMS.some(n=>n[0]===x)).slice(0,5):clone(du.nav),home:Array.isArray(u.home)?u.home.filter(h=>du.home.some(d=>d[0]===h[0])):clone(du.home),collapsed:u.collapsed&&typeof u.collapsed==='object'?u.collapsed:{}};
+  du.home.forEach(d=>{if(!c.ui.home.some(h=>h[0]===d[0]))c.ui.home.push(clone(d))});
   c.v=4;
   return c;
 }
@@ -875,7 +947,7 @@ const BADGES=[
   {id:'q30',ic:'🏅',name:'일퀘 30일 연속',desc:'일퀘 상자 30일 연속',gold:300,test:s=>s.qstreak>=30},
   {id:'c3',ic:'🫧',name:'깨끗한 3일',desc:'나쁜 행동 없는 날 3일 연속',gold:40,test:s=>s.clean>=3},
   {id:'c7',ic:'✨',name:'깨끗한 한 주',desc:'나쁜 행동 없는 날 7일 연속',gold:120,test:s=>s.clean>=7},
-  {id:'j1',ic:'🫙',name:'첫 병 가득',desc:'유리병 하나를 가득 채움',gold:100,test:s=>s.jarFull>=1},
+  {id:'j1',ic:'🔮',name:'첫 병 가득',desc:'유리병 하나를 가득 채움',gold:100,test:s=>s.jarFull>=1},
   {id:'b1',ic:'⚔️',name:'첫 보스 처치',desc:'주간 보스를 쓰러뜨림',gold:60,test:s=>s.boss>=1},
   {id:'b5',ic:'👑',name:'보스 5마리',desc:'주간 보스 5번 처치',gold:150,test:s=>s.boss>=5},
   {id:'w14',ic:'⚖️',name:'꾸준한 체중계',desc:'몸무게 14일 기록',gold:60,test:s=>s.weigh>=14},
@@ -1113,7 +1185,7 @@ function buildAlerts(){
   Object.entries(badCount).forEach(([n,c])=>{if(c>=3)out.push(['warn','⚠',`이번 주 '${n}' ${c}번. 컨디션을 가장 많이 깎는 행동이에요.`])});
   const cs=cleanStreak();if(cs.past>=2)out.push(['good','✨',`나쁜 행동 없는 날 ${cs.past}일째${cs.today?' (오늘도 지금까지 깨끗해요)':''}. ${cs.past+1>=7?'':'7일이면 업적이에요.'}`]);
   C.jars.forEach(j=>{let c=0;lastNDates(7).forEach(k=>((DAYS[k]&&DAYS[k].entries)||[]).forEach(e=>{if(e.jar===j.id)c+=SZW[typeOf(j,e.mt).size]||1}));
-    const L=jarLayout(j),left=L.cap-L.acc;if(c>=2&&left>0){const dd=Math.ceil(left/(c/7));if(dd<=7)out.push(['good','🫙',`이 속도면 ${dd<=1?'내일':dd+'일 뒤'} '${j.name}' 병이 가득 차요.`])}});
+    const L=jarLayout(j),left=L.cap-L.acc;if(c>=2&&left>0){const dd=Math.ceil(left/(c/7));if(dd<=7)out.push(['good','🔮',`이 속도면 ${dd<=1?'내일':dd+'일 뒤'} '${j.name}' 병이 가득 차요.`])}});
   let wk=0;lastNDates(7).forEach(k=>((DAYS[k]&&DAYS[k].entries)||[]).forEach(e=>wk+=e.xp||0));
   const nx=nextStage(levelOf(P.xp).lv);if(nx&&wk>0){const dd=Math.ceil(xpTo(nx.lv)/(wk/7));if(dd<=14)out.push(['good','✦',`이 속도면 ${dd<=1?'내일':dd+'일 뒤'} '${nx.name}' 단계, ${nx.item} ${nx.itemName}.`])}
   if(C.weight.on){const a=weightAvg7(t),b=weightAvg7(addDays(t,-14));if(a&&b){if(a-b>=1)out.push(['warn','⚠',`몸무게 7일 평균이 2주 전보다 ${(a-b).toFixed(1)}kg 올랐어요. 이번 주 식사를 돌아봐요.`]);else if(b-a>=.5)out.push(['good','✦',`몸무게 7일 평균이 2주 전보다 ${(b-a).toFixed(1)}kg 내려갔어요.`])}}
@@ -1131,11 +1203,13 @@ function tipsList(){
     ['🕓','어제 기록을 깜빡했다면 ＋기록 탭 위에서 "어제"를 골라 적을 수 있어요.'],
     ['🌱',`컨디션이 ${C.recovery.threshold} 아래였던 다음 날은 복귀 보너스 XP ×${C.recovery.mult}. 무너진 다음 날이 성장하기 가장 좋은 날이에요.`],
     ['⚔️',`좋은 행동의 XP는 그대로 이번 주 보스에게 데미지가 돼요. 나쁜 행동은 보스를 회복시켜요.`],
-    ['🫙','병 편집에서 한 병에 여러 구슬(색·모양·크기)을 만들 수 있어요. 행동과 구슬을 연결하면 누를 때 자동으로 들어가요.'],
+    ['🔮','병 편집에서 한 병에 여러 구슬(색·모양·크기)을 만들 수 있어요. 행동과 구슬을 연결하면 누를 때 자동으로 들어가요.'],
     ['💡','게임 규칙을 바꾸고 싶어지면 여정 → 아이디어 보관함에 적어두고, 지금은 그냥 해요.'],
     ['⚖️','몸무게는 하루 숫자 말고 7일 평균선을 봐요. 재기만 해도 XP예요.'],
     ['🌙','자기 전에 오늘 한 일을 훑어보고 빠진 걸 채워요. 1분이면 돼요.'],
-    ['🎯','용기는 결과와 상관없어요. 떨어져도, 거절당해도, 시도했으면 기록해요.'],
+    ['🎯','용기는 결과와 상관없어요. 시도했으면 기록해요.'],
+    ['👆','숫자나 버튼을 꾹 누르거나 우클릭하면 그게 뭔지, 어떻게 바꾸는지 떠요.'],
+    ['🔍','위쪽 돋보기로 기능·설명·행동을 검색할 수 있어요.'],
     ['📊','통계 탭 아래쪽에 "안 한 행동"이 보여요. 너무 오래 안 한 건 지우거나 쉽게 바꿔요.'],
     ['🎁',`일퀘를 다 하면 상자(+${C.dailyBonus.gold}G). 일퀘가 너무 많으면 3개로 줄여도 돼요.`]
   ];
@@ -1152,20 +1226,32 @@ function render(){
   $('hudHp').style.width=ov+'%';$('hudHp').className='fill hp'+(ov<35?' low':'');$('hudHpV').textContent=ov+'/100';
   $('hudXp').style.width=(L.rem/L.need*100)+'%';$('hudXpV').textContent=L.rem+'/'+L.need;
 
+  renderNav();applyHome();
   renderHome(day,av,ov,L,items,mood,base);
   renderLog();renderJars();renderStats();renderRoad(L);renderBody();renderShop();renderEdit();renderGuide();renderMore();
   document.querySelectorAll('.act,.quest,.stepper button,#jarForm button,#wForm button,#braveForm button,[data-energy],[data-foodcheck],.sug,#braveHome').forEach(b=>b.disabled=!ready);
+  refreshInfo();
 }
 function renderHome(day,av,ov,L,items,mood,base){
   $('heroAv').innerHTML=spriteSVG(C.avatar.kind,mood,C.avatar.outfit,{level:L.lv});
   $('moodName').textContent=MOOD_NAME[mood]+' · '+ov;
   $('dayLabel').textContent=day.date.replace(/-/g,'.')+' ('+wdOf(day.date)+')';
   const neg=neglectList(day.date);
-  $('areaBars').innerHTML=C.areas.map(a=>{const v=av[a.id],pen=neg.filter(n=>n.t.area===a.id).reduce((s,n)=>s+n.pen,0);return `<div class="area"><b>${esc(a.name)}</b><div class="track"><div class="fill ${v<35?'low':''}" style="width:${v}%"></div><div class="base" style="left:${base}%"></div></div><span class="num" title="${pen?'방치 페널티 −'+pen:''}">${v}${pen?'⚠':''}</span></div>`}).join('');
+  $('areaBars').innerHTML=C.areas.map(a=>{const v=av[a.id],pen=neg.filter(n=>n.t.area===a.id).reduce((s,n)=>s+n.pen,0);return `<div class="area" data-info="area:${a.id}"><b>${esc(a.name)}</b><div class="track"><div class="fill ${v<35?'low':''}" style="width:${v}%"></div><div class="base" style="left:${base}%"></div></div><span class="num" title="${pen?'방치 페널티 −'+pen:''}">${v}${pen?'⚠':''}</span></div>`}).join('');
   $('energy').innerHTML=ENERGY_LBL.map((l,i)=>`<button data-energy="${i+1}" aria-pressed="${day.energy===i+1}">${l}</button>`).join('');
   $('equipped').innerHTML=items.slice(-5).map(r=>`<span title="${esc(r.itemName)}">${esc(r.item)}</span>`).join('');
   const kmax=Math.max(0,...C.courage.map(k=>+k.xp||0),...C.courageSizes.map(k=>+k.xp||0));
   $('braveHomeXp').textContent='최대 XP +'+kmax;
+  const qs=C.braveQuotes.filter(q=>q.text&&q.text.trim()),qq=qs.length?qs[Math.floor(toUTC(day.date)/864e5)%qs.length].text:'결과와 상관없이.';
+  $('braveQuote').textContent=qq;$('braveQuote2').textContent=qs.length?'“'+qq+'”':'';
+  // 홈 선택 블록
+  const nx=nextStage(L.lv),up=C.roadmap.filter(r=>r.lv>L.lv).sort((a,b)=>a.lv-b.lv).slice(0,3);
+  $('homeJourney').innerHTML=`<div class="spread"><b>Lv.${L.lv} · ${esc(items.length?items[items.length-1].name+' 단계':'출발 전')}</b><span class="tiny muted num">${L.rem}/${L.need} XP</span></div><div class="track" style="margin:6px 0 10px"><div class="fill xp" style="width:${L.rem/L.need*100}%"></div></div>`+(up.length?up.map((r,i)=>`<div class="spread small" data-info="road:${r.id}" style="padding:4px 0;border-bottom:1px solid var(--line)"><span><span style="${i?'filter:grayscale(1);opacity:.5':''}">${esc(r.item)}</span> ${esc(r.name)} · ${esc(r.itemName)}${r.real?` <span style="color:var(--gold)">+ ${esc(r.real)}</span>`:''}</span><span class="num muted">Lv.${r.lv} · ${xpTo(r.lv)}XP</span></div>`).join(''):'<div class="empty">모든 단계를 지났어요.</div>');
+  $('homeJars').innerHTML=C.jars.map(j=>{const Lj=jarLayout(j);return `<a href="#jars" data-viewjarlink="${j.id}" data-info="jar:${j.id}">${jarSVG(j,false)}<span>${esc(j.name)}</span><span class="tiny muted num">${Math.round(Lj.acc/Lj.cap*100)}%</span></a>`}).join('');
+  {const ds=lastNDates(7).map(k=>DAYS[k]).filter(Boolean);let br=0,gd=0,bd=0,cl=0,mb=0;ds.forEach(d=>{(d.entries||[]).forEach(e=>{if(isBrave(e))br++;if(e.kind==='act'&&e.type==='good')gd++;if(e.kind==='act'&&e.type==='bad')bd++;if(e.jar)mb++});if(isClean(d))cl++});
+   $('homeStats').innerHTML=[['brave','⚡ 용기',br+'번'],['good','▲ 좋은',gd+'번'],['bad','▼ 나쁜',bd+'번'],['clean','✨ 깨끗한 날',cl+'일'],['marble','🔮 구슬',mb+'개']].map(([k,l,v])=>`<div class="tile" data-info="stat:${k}"><span>${l}</span><b class="num">${v}</b></div>`).join('')}
+  {const t=dateKey(),a=weightAvg7(t),b=weightAvg7(addDays(t,-7)),last=Object.values(DAYS).filter(d=>d.weight).sort((x,y)=>y.date.localeCompare(x.date))[0];
+   $('homeBody').innerHTML=[['최근',last?last.weight+' kg':'—'],['7일 평균',a?a.toFixed(1)+' kg':'—'],['지난주 대비',a&&b?((a-b>0?'+':'')+(a-b).toFixed(1)+' kg'):'—'],['목표',C.weight.goal?C.weight.goal+' kg':'—']].map(([k,v])=>`<div class="stat"><span class="small muted">${k}</span><b class="num">${v}</b></div>`).join('')}
   const sg=suggestions();
   $('sugg').innerHTML=sg.length?sg.map(s=>`<button class="sug" ${s.act?`data-sugact="${s.act}"`:`data-sugbrave="1"`}><span style="font-size:18px">${s.ic}</span><span><b>${esc(s.label)}</b><span class="why">${esc(s.why)}</span></span><span class="go">${s.act?'바로 하기':'열기'}</span></button>`).join(''):'<div class="empty">지금은 급한 게 없어요. 하고 싶은 걸 해요.</div>';
   // 일퀘
@@ -1175,13 +1261,13 @@ function renderHome(day,av,ov,L,items,mood,base){
   $('chestLbl').innerHTML=chestDone(day)?'<span class="chest">🎁 상자 열림</span>':`<span class="tiny muted">다 하면 🎁 +${C.dailyBonus.gold}G</span>`;
   $('quests').innerHTML=C.dailies.length?C.dailies.map(q=>{const d=questDone(day,q);let how='눌러서 체크';
     if(q.action==='@weigh')how='몸무게 기록하면 자동';else if(q.action&&q.action.startsWith('@food:')){const f=C.food.find(x=>x.id===q.action.slice(6));how=(f?f.name:'식사')+' 기록하면 자동'}else if(q.action){const t=watchTarget(q.action);how=t?`누르면 '${t.name}' 기록`:'눌러서 체크'}
-    return `<button class="quest ${d?'done':''}" data-quest="${q.id}"><span class="box">${d?'✓':''}</span><span><span class="qn">${esc(q.name)}</span><span class="tiny muted" style="display:block">${esc(how)}</span></span><span class="chip up">+${q.xp}</span></button>`}).join(''):'<div class="empty">편집 → 일퀘에서 만들어요.</div>';
+    return `<button class="quest ${d?'done':''}" data-quest="${q.id}" data-info="quest:${q.id}"><span class="box">${d?'✓':''}</span><span><span class="qn">${esc(q.name)}</span><span class="tiny muted" style="display:block">${esc(how)}</span></span><span class="chip up">+${q.xp}</span></button>`}).join(''):'<div class="empty">편집 → 일퀘에서 만들어요.</div>';
   // 이번 주
   const ws=weekState(day.date),bs=bossOf(day.date),wk=weekKeys(day.date);
   $('weekLbl').textContent=fmtD(wk[0])+' ~ '+fmtD(wk[6]);
   const hpPct=Math.round(ws.left/ws.hp*100);
-  $('weekBox').innerHTML=`<div class="boss ${ws.dead?'dead':''}">${bossSVG(bs.color,ws.dead)}<div style="min-width:0"><b>${esc(bs.name)}</b><div class="tiny muted">${ws.dead?'처치 완료! 보상 받음':`좋은 행동 XP가 데미지, 나쁜 행동은 회복`}</div><div class="track lg" style="margin-top:5px"><div class="fill" style="width:${hpPct}%;background:var(--bad)"></div></div><div class="tiny muted num" style="margin-top:2px">HP ${ws.left} / ${ws.hp}${ws.heal?` · 회복 +${ws.heal}`:''}</div></div></div>
-    <div class="goalbox"><b>⚡ 용기 목표</b><div class="gems">${Array.from({length:Math.max(ws.goal,ws.brave)},(_,i)=>`<span class="${i<ws.brave?'':'off'}">⚡</span>`).join('')||'<span class="tiny muted">편집 → 규칙에서 목표를 정해요</span>'}</div><div class="tiny muted">${ws.goal?(ws.brave>=ws.goal?'달성! 보상 받음':`${ws.brave}/${ws.goal} · 채우면 +${C.weekly.courageGold}G`):''}</div></div>`;
+  $('weekBox').innerHTML=`<div class="boss ${ws.dead?'dead':''}" data-info="boss">${bossSVG(bs.color,ws.dead)}<div style="min-width:0"><b>${esc(bs.name)}</b><div class="tiny muted">${ws.dead?'처치 완료! 보상 받음':`좋은 행동 XP가 데미지, 나쁜 행동은 회복`}</div><div class="track lg" style="margin-top:5px"><div class="fill" style="width:${hpPct}%;background:var(--bad)"></div></div><div class="tiny muted num" style="margin-top:2px">HP ${ws.left} / ${ws.hp}${ws.heal?` · 회복 +${ws.heal}`:''}</div></div></div>
+    <div class="goalbox" data-info="wgoal"><b>⚡ 용기 목표</b><div class="gems">${Array.from({length:Math.max(ws.goal,ws.brave)},(_,i)=>`<span class="${i<ws.brave?'':'off'}">⚡</span>`).join('')||'<span class="tiny muted">편집 → 규칙에서 목표를 정해요</span>'}</div><div class="tiny muted">${ws.goal?(ws.brave>=ws.goal?'달성! 보상 받음':`${ws.brave}/${ws.goal} · 채우면 +${C.weekly.courageGold}G`):''}</div></div>`;
   // 경보
   const al=buildAlerts();
   $('alerts').innerHTML=al.length?al.slice(0,4).map(([k,ic,t])=>`<li class="${k}"><span class="ic">${ic}</span><span>${esc(t)}</span></li>`).join('')+(al.length>4?`<li class="info"><span class="ic">…</span><span>${al.length-4}개 더 있어요. 통계 탭에서 흐름을 확인해요.</span></li>`:''):'<li class="info"><span class="ic">·</span><span>지금은 특별한 경보가 없어요.</span></li>';
@@ -1208,7 +1294,7 @@ function renderLog(){
   $('logTitle').textContent=ui.off?(ui.off===1?'어제 한 일':'그저께 한 일'):'오늘 한 일';
   const ws=weekState(day.date);$('braveWeek').textContent=`이번 주 ${ws.brave}/${ws.goal||'-'}`;
   $('braveActs').innerHTML=C.courage.map(k=>{const n=day.entries.filter(e=>e.cid===k.id).length,mt=marbleFromLink(k.marble),j=mt.jar?C.jars.find(x=>x.id===mt.jar):null;
-    return `<button class="act brave" data-brave="${k.id}"><span class="n">⚡ ${esc(k.name)}</span><span class="fx"><span class="chip br">XP +${k.xp}</span>${k.gold?`<span class="chip g">+${k.gold}G</span>`:''}${j?mGlyph(typeOf(j,mt.mt)):''}</span>${n?`<span class="cnt">이날 ${n}번</span>`:''}</button>`}).join('')||'<div class="empty">편집 → 용기에서 추가해요.</div>';
+    return `<button class="act brave" data-brave="${k.id}" data-info="kbrave:${k.id}"><span class="n">⚡ ${esc(k.name)}</span><span class="fx"><span class="chip br">XP +${k.xp}</span>${k.gold?`<span class="chip g">+${k.gold}G</span>`:''}${j?mGlyph(typeOf(j,mt.mt)):''}</span>${n?`<span class="cnt">이날 ${n}번</span>`:''}</button>`}).join('')||'<div class="empty">편집 → 용기에서 추가해요.</div>';
   $('braveSizes').innerHTML=C.courageSizes.map(s=>`<button class="chipbtn" data-bsize="${s.id}" aria-pressed="${ui.braveSize===s.id}">${esc(s.name)} · XP +${s.xp}</button>`).join('');
   $('showGood').setAttribute('aria-pressed',ui.good);$('showBad').setAttribute('aria-pressed',!ui.good);
   $('actHelp').textContent=ui.good?'좋은 행동은 조금씩 오르고, XP와 여정은 계속 쌓여요. 구슬이 연결된 행동은 누르면 병에도 들어가요.':'나쁜 행동은 그날 컨디션과 골드를 크게 깎고 주간 보스를 회복시켜요. XP는 깎이지 않아요.';
@@ -1218,7 +1304,7 @@ function renderLog(){
     return `<div class="group"><h3>${esc(a.name)}</h3><div class="acts">${list.map(x=>{
       const s=x.type==='good'?'+':'−',c=x.type==='good'?'up':'down',n=day.entries.filter(e=>e.kind==='act'&&e.aid===x.id).length,mt=x.type==='good'?marbleFromLink(x.marble):{},j=mt.jar?C.jars.find(y=>y.id===mt.jar):null;
       const chips=[x.cond&&`<span class="chip ${c}">${esc(a.name)} ${s}${Math.abs(x.cond)}</span>`,x.gold&&`<span class="chip ${x.type==='good'?'g':'down'}">${s}${Math.abs(x.gold)}G</span>`,x.type==='good'&&x.xp&&`<span class="chip up">XP +${x.xp}</span>`,j&&mGlyph(typeOf(j,mt.mt))].filter(Boolean).join('');
-      return `<button class="act ${x.type}" data-act="${x.id}"><span class="n">${x.type==='good'?'▲':'▼'} ${esc(x.name)}</span><span class="fx">${chips}</span>${n?`<span class="cnt">이날 ${n}번</span>`:''}</button>`}).join('')}</div></div>`}).join('')||'<div class="empty">편집 탭에서 행동을 추가해 보세요.</div>';
+      return `<button class="act ${x.type}" data-act="${x.id}" data-info="act:${x.id}"><span class="n">${x.type==='good'?'▲':'▼'} ${esc(x.name)}</span><span class="fx">${chips}</span>${n?`<span class="cnt">이날 ${n}번</span>`:''}</button>`}).join('')}</div></div>`}).join('')||'<div class="empty">편집 탭에서 행동을 추가해 보세요.</div>';
   $('foodList').innerHTML=C.food.map(f=>{const v=+((day.food||{})[f.id]||0),ar=C.areas.find(a=>a.id===f.area),neg=f.points<0;
     const eff=`<span class="tiny muted">${esc(ar?ar.name:'')} ${neg?'−':'+'}${Math.abs(f.points)}${f.kind==='counter'?' / 회':''}${!neg&&f.kind==='counter'&&f.max?` (최대 ${f.max}회)`:''}</span>`;
     if(f.kind==='check')return `<label class="togglebox"><input type="checkbox" id="fc-${f.id}" data-foodcheck="${f.id}" ${v?'checked':''}> <span><b>${esc(f.name)}</b><br>${eff}</span></label>`;
@@ -1234,9 +1320,9 @@ function renderJars(){
   if(!C.jars.find(j=>j.id===ui.jarView))ui.jarView=C.jars[0]&&C.jars[0].id;
   if(!C.jars.find(j=>j.id===ui.jar))ui.jar=C.jars[0]&&C.jars[0].id;
   const pj=C.jars.find(j=>j.id===ui.jar);if(pj&&!pj.types.find(t=>t.id===ui.mt))ui.mt=pj.types[0].id;
-  $('jarsBig').innerHTML=C.jars.map(j=>{const L=jarLayout(j);return `<button class="jar" data-viewjar="${j.id}" aria-pressed="${ui.jarView===j.id}">${jarSVG(j,true)}<span class="nm">${esc(j.name)}</span><span class="ct num">${L.total}개${L.full?' · 가득 '+L.full+'병':''} · ${Math.round(L.acc/L.cap*100)}%</span></button>`}).join('');
-  $('jarPick').innerHTML=C.jars.map(j=>`<button data-pickjar="${j.id}" aria-pressed="${ui.jar===j.id}"><span class="minijar">${jarSVG(j,false)}</span><span>${esc(j.name)}</span><span class="tiny muted">XP +${j.xp}</span></button>`).join('');
-  $('mtPick').innerHTML=pj?pj.types.map(t=>`<button class="mtype" data-mt="${t.id}" aria-pressed="${ui.mt===t.id}">${mGlyph(t)} ${esc(t.name)}</button>`).join(''):'';
+  $('jarsBig').innerHTML=C.jars.map(j=>{const L=jarLayout(j);return `<button class="jar" data-viewjar="${j.id}" data-info="jar:${j.id}" aria-pressed="${ui.jarView===j.id}">${jarSVG(j,true)}<span class="nm">${esc(j.name)}</span><span class="ct num">${L.total}개${L.full?' · 가득 '+L.full+'병':''} · ${Math.round(L.acc/L.cap*100)}%</span></button>`}).join('');
+  $('jarPick').innerHTML=C.jars.map(j=>`<button data-pickjar="${j.id}" data-info="jar:${j.id}" aria-pressed="${ui.jar===j.id}"><span class="minijar">${jarSVG(j,false)}</span><span>${esc(j.name)}</span><span class="tiny muted">XP +${j.xp}</span></button>`).join('');
+  $('mtPick').innerHTML=pj?pj.types.map(t=>`<button class="mtype" data-mt="${t.id}" data-info="mt:${pj.id}:${t.id}" aria-pressed="${ui.mt===t.id}">${mGlyph(t)} ${esc(t.name)}</button>`).join(''):'';
   $('jarHint').textContent=pj?pj.hint:'';
   const jv=C.jars.find(j=>j.id===ui.jarView);
   $('notesTitle').textContent=(jv?jv.name:'')+' 병 기록';
@@ -1252,14 +1338,14 @@ function renderStats(){
   let good=0,bad=0,brave=0,marb=0,chest=0,clean=0;const withData=days.filter(hasData);
   days.forEach(d=>{(d.entries||[]).forEach(e=>{if(e.kind==='act'&&e.type==='good')good++;if(e.kind==='act'&&e.type==='bad')bad++;if(isBrave(e))brave++;if(e.jar)marb++;if(e.kind==='chest')chest++});if(isClean(d))clean++});
   const avgC=withData.length?Math.round(avg(withData.map(overallOf))):'—';
-  $('statTiles').innerHTML=[['기록한 날',withData.length+'일'],['⚡ 용기',brave+'번'],['▲ 좋은 행동',good+'번'],['▼ 나쁜 행동',bad+'번'],['✨ 깨끗한 날',clean+'일'],['🫙 구슬',marb+'개'],['🎁 일퀘 상자',chest+'개'],['평균 컨디션',avgC]].map(([k,v])=>`<div class="tile"><span>${k}</span><b class="num">${v}</b></div>`).join('');
+  $('statTiles').innerHTML=[['기록한 날',withData.length+'일'],['⚡ 용기',brave+'번'],['▲ 좋은 행동',good+'번'],['▼ 나쁜 행동',bad+'번'],['✨ 깨끗한 날',clean+'일'],['🔮 구슬',marb+'개'],['🎁 일퀘 상자',chest+'개'],['평균 컨디션',avgC]].map(([k,v],i)=>`<div class="tile" data-info="stat:${['days','brave','good','bad','clean','marble','chest','avg'][i]}"><span>${k}</span><b class="num">${v}</b></div>`).join('');
   // 순위
   document.querySelectorAll('[data-rk]').forEach(b=>b.setAttribute('aria-pressed',ui.rk===b.dataset.rk));
   const cnt={},last={};days.forEach(d=>(d.entries||[]).forEach(e=>{let key=null;if(ui.rk==='brave'&&isBrave(e))key=e.cid==='free'?'자유: '+(e.note||e.name):(e.cid||e.name);else if(e.kind==='act'&&e.type===ui.rk)key=e.aid||e.name;if(!key)return;cnt[key]=(cnt[key]||0)+1;if(!last[key]||last[key]<d.date)last[key]=d.date}));
   const nameOf=key=>{const a=C.actions.find(x=>x.id===key)||C.courage.find(x=>x.id===key);return a?a.name:key};
   const list=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);const mx=Math.max(1,...list.map(x=>x[1]));
   const cls=ui.rk==='brave'?'brave':ui.rk;
-  $('rankList').innerHTML=list.length?list.map(([k,n])=>`<div class="rk"><span class="nm" title="${esc(nameOf(k))}">${esc(nameOf(k))}</span><span class="bar"><i class="${cls}" style="width:${n/mx*100}%"></i></span><b class="num">${n}</b><span class="last">${fmtD(last[k])}</span></div>`).join(''):'<div class="empty">이 기간에는 기록이 없어요.</div>';
+  $('rankList').innerHTML=list.length?list.map(([k,n])=>`<div class="rk" ${C.actions.some(a=>a.id===k)?`data-info="act:${k}"`:C.courage.some(a=>a.id===k)?`data-info="kbrave:${k}"`:''}><span class="nm" title="${esc(nameOf(k))}">${esc(nameOf(k))}</span><span class="bar"><i class="${cls}" style="width:${n/mx*100}%"></i></span><b class="num">${n}</b><span class="last">${fmtD(last[k])}</span></div>`).join(''):'<div class="empty">이 기간에는 기록이 없어요.</div>';
   const pool=ui.rk==='brave'?C.courage:C.actions.filter(a=>a.type===ui.rk);
   const zero=pool.filter(a=>!cnt[a.id]).map(a=>{const s=daysSince(a.id,dateKey());return a.name+(s?` (${s}일째)`:'')});
   $('rankZero').innerHTML=zero.length?`<b>${ui.rk==='bad'?'안 한 나쁜 행동 👍':'이 기간에 안 한 것'}</b> · ${esc(zero.join(', '))}`:'';
@@ -1273,7 +1359,7 @@ function renderStats(){
   const prevDs=R==='all'?[]:lastNDates(R*2).slice(0,R).map(k=>DAYS[k]).filter(d=>d&&hasData(d));
   $('areaCmpLbl').textContent=R==='all'?'':'오른쪽 숫자는 그 전 '+R+'일 대비';
   $('areaAvg').innerHTML=C.areas.map(a=>{const v=withData.length?Math.round(avg(withData.map(d=>areaValues(d)[a.id]))):null,p=prevDs.length?Math.round(avg(prevDs.map(d=>areaValues(d)[a.id]))):null;
-    return `<div class="rk"><span class="nm">${esc(a.name)}</span><span class="bar"><i class="good" style="width:${v||0}%"></i></span><b class="num">${v??'—'}</b><span class="last">${v!=null&&p!=null?(v>=p?'▲ +':'▼ ')+(v-p):''}</span></div>`}).join('');
+    return `<div class="rk" data-info="area:${a.id}"><span class="nm">${esc(a.name)}</span><span class="bar"><i class="good" style="width:${v||0}%"></i></span><b class="num">${v??'—'}</b><span class="last">${v!=null&&p!=null?(v>=p?'▲ +':'▼ ')+(v-p):''}</span></div>`}).join('');
   // 구슬
   const rows=[];C.jars.forEach(j=>{const c={};marblesOf(j.id).forEach(t=>c[t]=(c[t]||0)+1);j.types.forEach(t=>rows.push({j,t,n:c[t.id]||0}))});
   const mm=Math.max(1,...rows.map(r=>r.n));
@@ -1282,9 +1368,9 @@ function renderStats(){
 function renderRoad(L){
   const rm=[...C.roadmap].sort((a,b)=>a.lv-b.lv);let curSet=false;
   $('road').innerHTML=rm.map(r=>{const done=L.lv>=r.lv;let cur=false;if(!done&&!curSet){cur=true;curSet=true}
-    return `<li class="${done?'done':''} ${cur?'cur':''}"><div class="node"><span>${esc(r.item)}</span></div><div><div class="st">${esc(r.name)}</div><div class="small muted">${esc(r.itemName)}${cur?' · 다음 목표 · '+xpTo(r.lv)+' XP 남음':done?' · 획득':''}</div>${r.real?`<div class="real">현실 보상: ${esc(r.real)}</div>`:''}</div><div class="lvtag">Lv.${r.lv}</div></li>`}).join('');
+    return `<li class="${done?'done':''} ${cur?'cur':''}" data-info="road:${r.id}"><div class="node"><span>${esc(r.item)}</span></div><div><div class="st">${esc(r.name)}</div><div class="small muted">${esc(r.itemName)}${cur?' · 다음 목표 · '+xpTo(r.lv)+' XP 남음':done?' · 획득':''}</div>${r.real?`<div class="real">현실 보상: ${esc(r.real)}</div>`:''}</div><div class="lvtag">Lv.${r.lv}</div></li>`}).join('');
   const n=BADGES.filter(b=>P.badges[b.id]).length;$('badgeCount').textContent=n+' / '+BADGES.length;
-  $('badges').innerHTML=BADGES.map(b=>{const on=P.badges[b.id];return `<div class="badge ${on?'':'off'}"><span class="bi">${b.ic}</span><span class="bn">${esc(b.name)}</span><span class="tiny muted">${esc(b.desc)}</span><span class="tiny ${on?'':'muted'}">${on?fmtD(on)+' 달성':'+'+b.gold+'G'}</span></div>`}).join('');
+  $('badges').innerHTML=BADGES.map(b=>{const on=P.badges[b.id];return `<div class="badge ${on?'':'off'}" data-info="badge:${b.id}"><span class="bi">${b.ic}</span><span class="bn">${esc(b.name)}</span><span class="tiny muted">${esc(b.desc)}</span><span class="tiny ${on?'':'muted'}">${on?fmtD(on)+' 달성':'+'+b.gold+'G'}</span></div>`}).join('');
   if(document.activeElement!==$('ideas'))$('ideas').value=C.ideas||'';
 }
 function renderBody(){
@@ -1306,9 +1392,22 @@ function renderBody(){
 function renderShop(){
   $('gold2').textContent=P.gold.toLocaleString()+' G';
   const sale=C.shop.filter(s=>s.price>0),wish=C.shop.filter(s=>!(s.price>0));
-  $('shopList').innerHTML=sale.length?sale.map(it=>`<div class="item"><span>${esc(it.name)}</span><span class="price num">${it.price}G</span><button class="btn sm" data-buy="${it.id}" ${P.gold<it.price||!ready?'disabled':''}>${P.gold<it.price?(it.price-P.gold)+'G 부족':'사기'}</button></div>`).join(''):'<div class="empty">보상함에서 가격을 정하면 여기에 올라와요.</div>';
+  $('shopList').innerHTML=sale.length?sale.map(it=>`<div class="item" data-info="shop:${it.id}"><span>${esc(it.name)}</span><span class="price num">${it.price}G</span><button class="btn sm" data-buy="${it.id}" ${P.gold<it.price||!ready?'disabled':''}>${P.gold<it.price?(it.price-P.gold)+'G 부족':'사기'}</button></div>`).join(''):'<div class="empty">보상함에서 가격을 정하면 여기에 올라와요.</div>';
   if(!$('wishList').contains(document.activeElement))
     $('wishList').innerHTML=wish.length?wish.map(it=>`<div class="item"><span>${esc(it.name)}</span><input id="wp-${it.id}" type="number" min="1" placeholder="가격 G"><button class="btn sm ghost" data-wishup="${it.id}">상점에 올리기</button><button class="x" data-del="shop" data-id="${it.id}" aria-label="지우기">×</button></div>`).join(''):'<div class="empty">아직 적어둔 보상이 없어요.</div>';
+}
+function renderNav(){
+  const nav=C.ui.nav.filter(x=>NAV_ITEMS.some(n=>n[0]===x)),cur=curView();
+  const bn=nav.map(id=>{const n=NAV_ITEMS.find(x=>x[0]===id);return `<a href="#${id}" class="${id==='log'?'rec':''}" aria-current="${cur===id?'page':'false'}"><span class="i">${ic(id)}</span>${n[1]}</a>`}).join('')+`<a href="#more" aria-current="${!nav.includes(cur)?'page':'false'}"><span class="i">${ic('more')}</span>더보기</a>`;
+  if($('bnav').innerHTML!==bn)$('bnav').innerHTML=bn;
+  const sd=NAV_ITEMS.map(([id,l])=>`<a href="#${id}" aria-current="${cur===id?'page':'false'}">${ic(id)}${l}</a>`).join('')+`<div class="sep"></div><a href="#more" aria-current="${cur==='more'?'page':'false'}">${ic('more')}계정·백업</a><button class="sl" id="sideSearch">${ic('search')}검색</button><button class="sl" data-goedit="screen">${ic('edit')}메뉴·홈 화면 설정</button>`;
+  if($('side').innerHTML!==sd)$('side').innerHTML=sd;
+  const hidden=NAV_ITEMS.filter(n=>!nav.includes(n[0]));
+  $('moreGrid').innerHTML=(hidden.length?hidden:NAV_ITEMS).map(([id,l,d])=>`<a class="moretile" href="#${id}"><span class="i" style="color:var(--accent)">${ic(id)}</span><b>${l}</b><span>${d}</span></a>`).join('');
+}
+function applyHome(){
+  const g=$('homeGrid');
+  C.ui.home.forEach(([id,on])=>{const el=g.querySelector(`[data-hid="${id}"]`);if(!el)return;el.hidden=!on;el.classList.toggle('collapsed',!!C.ui.collapsed[id]);g.appendChild(el)});
 }
 function renderMore(){
   $('acctHelp').textContent=(ACCOUNT?ACCOUNT+'로 로그인돼 있어요. ':'')+'백업 파일은 이 기기에 JSON으로 저장돼요. 복원하면 지금 기록을 백업 내용으로 바꿔요.';
@@ -1316,7 +1415,7 @@ function renderMore(){
 }
 
 /* ================= 편집 ================= */
-const EDIT_TABS=[['actions','행동'],['courage','⚡ 용기'],['jars','유리병·구슬'],['dailies','일퀘'],['watches','방치 경보'],['areas','컨디션 영역'],['road','여정·레벨 보상'],['shop','상점'],['food','식사·몸무게'],['avatar','아바타'],['rules','규칙·주간']];
+const EDIT_TABS=[['screen','화면·메뉴'],['actions','행동'],['courage','⚡ 용기'],['jars','유리병·구슬'],['dailies','일퀘'],['watches','방치 경보'],['areas','컨디션 영역'],['road','여정·레벨 보상'],['shop','상점'],['food','식사·몸무게'],['avatar','아바타'],['rules','규칙·주간']];
 function selectHTML(id,data,opts,sel){return `<select id="${id}" ${data}>${opts.map(([v,l])=>`<option value="${esc(v)}" ${String(v)===String(sel??'')?'selected':''}>${esc(l)}</option>`).join('')}</select>`}
 function listOf(col){if(col.startsWith('jt:')){const j=C.jars.find(x=>x.id===col.slice(3));return j?j.types:null}return C[col]}
 function table(col,cols,list,{delOk=()=>true}={}){
@@ -1337,13 +1436,21 @@ function renderEdit(){
   const areaOpts=C.areas.map(a=>[a.id,a.name]);
   const goodActs=C.actions.filter(a=>a.type==='good').map(a=>[a.id,a.name]);
   let h='';const add=(col,label,extra='')=>`<div class="row" style="margin-top:10px"><button class="btn sm" data-addrow="${col}" ${extra}>＋ ${label}</button></div>`;
-  if(ui.edit==='actions'){
+  if(ui.edit==='screen'){
+    const nav=C.ui.nav;
+    h=`<h3>아래 메뉴</h3><p class="help">폰에서 아래에 보일 메뉴를 4개까지 골라요. 나머지는 '더보기'와 왼쪽 위 ☰ 메뉴에 있어요. 넓은 화면(PC·아이패드 가로)에서는 왼쪽에 전체 메뉴가 늘 보여요.</p>
+      <div class="order">${[...nav.map(id=>NAV_ITEMS.find(n=>n[0]===id)),...NAV_ITEMS.filter(n=>!nav.includes(n[0]))].map(([id,l,d])=>{const on=nav.includes(id),i=nav.indexOf(id);return `<div class="or"><input type="checkbox" id="nv-${id}" data-navtoggle="${id}" ${on?'checked':''} ${!on&&nav.length>=4?'disabled':''} aria-label="${l} 아래 메뉴에 보이기"><label for="nv-${id}"><b>${ic(id)} ${l}</b> <span class="tiny muted">${d}</span></label><button class="x" data-navmove="${id}" data-d="-1" ${!on||i===0?'disabled':''} aria-label="위로">↑</button><button class="x" data-navmove="${id}" data-d="1" ${!on||i===nav.length-1?'disabled':''} aria-label="아래로">↓</button></div>`}).join('')}</div>
+      <h3 style="margin-top:18px">홈 화면</h3><p class="help">홈에 보일 칸과 순서를 정해요. 각 칸 제목 옆 ⌄ 버튼으로 접었다 펼 수도 있어요.</p>
+      <div class="order">${C.ui.home.map(([id,on],i)=>`<div class="or"><input type="checkbox" id="hb-${id}" data-hometoggle="${id}" ${on?'checked':''}><label for="hb-${id}">${HOME_BLOCKS[id]||id}</label><button class="x" data-homemove="${id}" data-d="-1" ${i===0?'disabled':''} aria-label="위로">↑</button><button class="x" data-homemove="${id}" data-d="1" ${i===C.ui.home.length-1?'disabled':''} aria-label="아래로">↓</button></div>`).join('')}</div>
+      <div class="row" style="margin-top:10px"><button class="btn ghost sm" id="homeReset">홈 화면 기본값으로</button></div>`;
+  }else if(ui.edit==='actions'){
     h=`<p class="help">숫자는 크기만 적어요. 나쁜 행동은 자동으로 깎고 XP는 주지 않아요. '구슬'을 고르면 그 행동을 누를 때 병에 구슬이 같이 들어가요.</p>`+
       table('actions',[{f:'name',label:'이름',t:'text',w:1.7},{f:'type',label:'종류',t:'sel',w:.8,opts:[['good','▲ 좋음'],['bad','▼ 나쁨']]},{f:'area',label:'영역',t:'sel',w:.7,opts:areaOpts},{f:'cond',label:'컨디션',t:'abs',w:.5,attr:'min="0" max="100"'},{f:'gold',label:'골드',t:'abs',w:.5,attr:'min="0"'},{f:'xp',label:'XP',t:'num',w:.5,attr:'min="0"'},{f:'marble',label:'구슬',t:'sel',w:1.3,opts:marbleOpts()}],C.actions)+
       `<div class="row" style="margin-top:10px"><button class="btn sm" data-addrow="actions" data-type="good">＋ 좋은 행동</button><button class="btn sm ghost" data-addrow="actions" data-type="bad">＋ 나쁜 행동</button></div>`;
   }else if(ui.edit==='courage'){
     h=`<p class="help">용기는 가장 큰 보상을 줘요. '용기 점수'는 칭호를 올려요(1~3). 구슬을 고르면 기록할 때 병에 자동으로 들어가요.</p>`+
       table('courage',[{f:'name',label:'용기',t:'text',w:1.8},{f:'xp',label:'XP',t:'num',w:.5,attr:'min="0"'},{f:'gold',label:'골드',t:'num',w:.5,attr:'min="0"'},{f:'pts',label:'용기 점수',t:'num',w:.5,attr:'min="1" max="5"'},{f:'area',label:'영역',t:'sel',w:.7,opts:areaOpts},{f:'cond',label:'컨디션',t:'num',w:.5,attr:'min="0" max="50"'},{f:'marble',label:'구슬',t:'sel',w:1.3,opts:marbleOpts()}],C.courage)+add('courage','용기 추가')+
+      `<h3 style="margin-top:18px">용기 버튼 문구</h3><p class="help">홈의 '용기 냈어요' 아래에 날마다 하나씩 돌아가며 보여요. 다 지우면 '결과와 상관없이.'만 보여요.</p>`+table('braveQuotes',[{f:'text',label:'문구',t:'text',w:1}],C.braveQuotes)+add('braveQuotes','문구 추가')+
       `<h3 style="margin-top:18px">목록에 없는 용기 (크기별)</h3>`+table('courageSizes',[{f:'name',label:'이름',t:'text',w:1.2},{f:'xp',label:'XP',t:'num',w:.5,attr:'min="0"'},{f:'gold',label:'골드',t:'num',w:.5,attr:'min="0"'},{f:'pts',label:'용기 점수',t:'num',w:.5,attr:'min="1" max="5"'},{f:'marble',label:'구슬',t:'sel',w:1.3,opts:marbleOpts()}],C.courageSizes,{delOk:()=>false});
   }else if(ui.edit==='jars'){
     h=`<p class="help">병마다 구슬 종류(이름·색·모양·크기)를 여러 개 둘 수 있어요. 크게 구슬은 자리를 1.7칸, 작게는 0.6칸 차지해요. 병 두 개를 합치거나, 구슬 종류 몇 개를 골라 새 병으로 나눌 수 있어요. 기록과 구슬은 따라서 옮겨져요.</p>
@@ -1430,7 +1537,7 @@ function renderGuide(){
       <div class="res"><div class="t"><i>⭐</i>XP · 레벨</div><span class="tiny muted">영원히 쌓임 · 절대 안 줄어요</span><div class="gain">좋은 행동 평균 ${gx}, 용기 평균 ${kx}, 일퀘, 구슬</div><div class="lose">없어요. 나쁜 날에도 여정은 그대로</div></div>
       <div class="res"><div class="t"><i>🪙</i>골드</div><span class="tiny muted">현실 보상을 사는 돈</span><div class="gain">행동, 용기, 상자, 보스, 업적</div><div class="lose">과음·충동구매 같은 돈 관련 행동, 상점</div></div>
       <div class="res" style="border-color:var(--brave)"><div class="t"><i>⚡</i>용기</div><span class="tiny muted">칭호를 올리는 특별 점수</span><div class="gain">두렵거나 거절당할 수 있는데 해본 것. 결과 무관</div><div class="lose">없어요</div></div>
-      <div class="res"><div class="t"><i>🫙</i>구슬</div><span class="tiny muted">해낸 증거 · 병에 차오름</span><div class="gain">직접 넣기, 구슬이 연결된 행동·용기</div><div class="lose">없어요 (잘못 넣은 것만 빼기)</div></div>
+      <div class="res"><div class="t"><i>🔮</i>구슬</div><span class="tiny muted">해낸 증거 · 병에 차오름</span><div class="gain">직접 넣기, 구슬이 연결된 행동·용기</div><div class="lose">없어요 (잘못 넣은 것만 빼기)</div></div>
     </div></div>
   <div class="grid2">
     <div class="panel"><h2>하루 이렇게 놀아요</h2>
@@ -1451,9 +1558,9 @@ function renderGuide(){
         <li><b>규칙은 2주마다만 바꿔요.</b> 바꾸고 싶으면 아이디어 보관함에 적어 두기.</li>
       </ul></div>
   </div>
-  <div class="panel"><h2>자세한 규칙</h2><p class="help">눌러서 펼쳐요. 화면 곳곳의 <b>?</b> 버튼을 누르면 해당 항목이 열려요.</p>
+  <div class="panel"><h2>자세한 규칙</h2><p class="help">눌러서 펼쳐요. 화면 곳곳의 <b>?</b> 버튼을 누르면 해당 항목이 열려요. 숫자·버튼·병을 <b>꾹 누르거나 우클릭</b>하면 그 자리에서 설명과 편집이 떠요.</p>
     ${acc('flow','컨디션 (HP)','오늘의 몸·마음 상태',`<ul><li>아침 에너지(지금 ${C.energyBase.join(' / ')})가 모든 영역의 시작점이에요.</li><li>영역(${C.areas.map(a=>esc(a.name)).join('·')})끼리는 서로 메꿔지지 않아요. 운동을 많이 해도 과음의 몸 페널티는 그대로예요.</li><li>네 영역 평균이 HP이고, 아바타 표정이 돼요: 75↑ 활기, 55↑ 괜찮음, 35↑ 지침, 그 아래 바닥.</li><li>"지금 하면 좋은 것"은 방치 경보, 이번 주 용기, 남은 일퀘, 가장 낮은 영역을 보고 골라줘요.</li></ul>`)}
-    ${acc('brave','⚡ 용기','가장 큰 보상',`<ul><li>두렵거나, 귀찮거나, 거절당할 수 있는데 해본 것. 결과가 나빠도 기록해요.</li><li>XP·골드를 가장 많이 주고, '용기 점수'(1~3)가 쌓여 칭호가 올라가요: ${BRAVE_TITLES.map(t=>t[0]+'점 '+t[1]).slice(1,6).join(', ')}…</li><li>구슬이 연결돼 있으면 '시도했다' 병에 자동으로 들어가요.</li><li>목록에 없으면 크기(작은·보통·큰)를 고르고 직접 적어요.</li><li>이번 주 목표(${C.weekly.courage}번)를 채우면 +${C.weekly.courageGold}G. 7일 넘게 용기가 없으면 방치 경보가 떠요.</li></ul>`)}
+    ${acc('brave','⚡ 용기','가장 큰 보상',`<ul><li>두렵거나 망설여졌는데 해본 것. 결과와 상관없이 기록해요.</li><li>XP·골드를 가장 많이 주고, '용기 점수'(1~3)가 쌓여 칭호가 올라가요: ${BRAVE_TITLES.map(t=>t[0]+'점 '+t[1]).slice(1,6).join(', ')}…</li><li>구슬이 연결돼 있으면 '시도했다' 병에 자동으로 들어가요.</li><li>목록에 없으면 크기(작은·보통·큰)를 고르고 직접 적어요.</li><li>이번 주 목표(${C.weekly.courage}번)를 채우면 +${C.weekly.courageGold}G. 7일 넘게 용기가 없으면 방치 경보가 떠요.</li></ul>`)}
     ${acc('quest','일퀘와 상자','매일 숙제',`<ul><li>매일 새로 시작해요. 행동·식사·몸무게와 연결된 건 자동으로 체크돼요.</li><li>전부 끝내면 상자 +${C.dailyBonus.gold}G·XP +${C.dailyBonus.xp}. 연속 3·7·30일은 업적.</li><li>못 끝낸 날 벌점은 없어요. 연속 기록만 끊겨요.</li></ul>`)}
     ${acc('week','주간 보스와 용기 목표','월요일마다 새로',`<ul><li>매주 보스가 나와요 (HP ${C.weekly.bossHp}). 그 주에 얻은 XP가 그대로 데미지예요.</li><li>나쁜 행동은 보스를 회복시켜요 (깎인 컨디션만큼).</li><li>쓰러뜨리면 +${C.weekly.bossGold}G·XP +${C.weekly.bossXp}.</li></ul>`)}
     ${acc('jar','유리병과 구슬','해낸 증거 모으기',`<ul><li>한 병에 여러 구슬(색·모양·크기)을 둘 수 있어요. 큰 구슬은 자리를 더 차지해요.</li><li>행동이나 용기에 구슬을 연결하면 누를 때 자동으로 들어가요.</li><li>병이 가득 차면 선반으로 옮기고 새 병이 시작돼요. 첫 병 가득은 업적.</li><li>편집 → 유리병에서 병 합치기·나누기가 돼요.</li><li>'이겨냈다'는 실제 충동이 있었을 때만 넣어요.</li></ul>`)}
@@ -1466,15 +1573,115 @@ function renderGuide(){
 const TOUR=[
   ['🎬','습관 퀘스트에 온 걸 환영해요','좋은 행동은 쌓이고, 나쁜 행동은 오늘을 깎는 생활 RPG예요. 목표는 점수가 아니라 <b>용기·실천·회복</b>이에요.'],
   ['❤️','HP는 오늘, XP는 영원히','HP(컨디션)는 매일 새로 시작하고 나쁜 행동에 크게 흔들려요. XP·레벨·구슬은 해낸 것만 쌓이고 <b>절대 줄지 않아요</b>.'],
-  ['⚡','용기가 가장 커요','지원, 연락, 첫 시도, 사과… 두려운데 해본 건 무엇이든 <b>⚡ 용기</b>로 기록해요. 결과가 나빠도요. 가장 큰 XP와 칭호를 줘요.'],
-  ['🫙','구슬로 증거를 모아요','의미 있는 순간은 유리병에 구슬로. 한 병에 여러 색·모양·크기를 두고, 행동과 연결하면 자동으로 들어가요.'],
-  ['⚔️','매일 일퀘, 매주 보스','일퀘를 다 하면 상자, 일주일 XP로 보스를 쓰러뜨리면 큰 보상. 홈의 <b>"지금 하면 좋은 것"</b>을 따라가면 돼요.']
+  ['⚡','용기가 가장 커요','두렵거나 망설여졌는데 해본 건 무엇이든 <b>⚡ 용기</b>로 기록해요. 결과와 상관없이요. 가장 큰 XP와 칭호를 줘요.'],
+  ['🔮','구슬로 증거를 모아요','의미 있는 순간은 유리병에 구슬로. 한 병에 여러 색·모양·크기를 두고, 행동과 연결하면 자동으로 들어가요.'],
+  ['⚔️','매일 일퀘, 매주 보스','일퀘를 다 하면 상자, 일주일 XP로 보스를 쓰러뜨리면 큰 보상. 홈의 <b>"지금 하면 좋은 것"</b>을 따라가면 돼요.'],
+  ['👆','모르면 꾹 누르기','숫자·버튼·병·보스 무엇이든 <b>꾹 누르거나 우클릭</b>하면 설명과 편집이 떠요. 위쪽 🔍로 기능을 검색할 수 있어요.']
 ];
 function openTour(){ui.tour=0;drawTour();$('tour').hidden=false}
 function drawTour(){const t=TOUR[ui.tour];$('tourBody').innerHTML=`<div style="font-size:46px">${t[0]}</div><h2>${t[1]}</h2><p style="margin:6px 0 0">${t[2]}</p>`;$('tourDots').innerHTML=TOUR.map((_,i)=>`<i class="${i===ui.tour?'on':''}"></i>`).join('');$('tourNext').textContent=ui.tour===TOUR.length-1?'시작하기':'다음'}
 function closeTour(){$('tour').hidden=true;if(!C.tourSeen){C.tourSeen=true;if(ready)save('config')}}
 $('tourNext').onclick=()=>{if(ui.tour<TOUR.length-1){ui.tour++;drawTour()}else closeTour()};
 $('tourSkip').onclick=closeTour;
+
+
+/* ================= 꾹 누르기·우클릭 설명 ================= */
+function countAct(pred,n){const ks=n?lastNDates(n):Object.keys(DAYS);let c=0,last=null;ks.forEach(k=>{const d=DAYS[k];if(!d)return;(d.entries||[]).forEach(e=>{if(pred(e)){c++;if(!last||k>last)last=k}})});return{c,last}}
+const qe=(col,it,fields)=>`<div class="kv">${fields.map(([f,l,t,extra])=>{const id=`pe-${col}-${it.id}-${f}`,data=`data-col="${col}" data-id="${it.id}" data-f="${f}" data-t="${t}"`;let v=it[f];if(t==='abs')v=Math.abs(+v||0);
+  if(t==='sel')return `<label>${l}${selectHTML(id,data,extra,v)}</label>`;return `<label>${l}<input id="${id}" ${data} type="${t==='text'?'text':'number'}" value="${esc(v??'')}" ${extra||''}></label>`}).join('')}</div>`;
+function infoFor(key){
+  const [k,a,b]=key.split(':');const day=today(),L=levelOf(P.xp),bt=braveTitle();
+  const btns=(...x)=>`<div class="row">${x.filter(Boolean).join('')}</div>`;
+  const goE=(tab,l='편집에서 바꾸기')=>`<button class="btn ghost sm" data-goedit="${tab}">${l}</button>`;
+  const gd=(id,l='게임 방법에서 자세히')=>`<button class="btn ghost sm" data-guide="${id}">${l}</button>`;
+  switch(k){
+  case 'hp':{const av=areaValues(day);return{kind:'오늘의 상태',t:'❤️ HP · 컨디션',b:`<p>오늘 몸·마음 상태를 0~100으로 나타낸 거예요. 영역(${C.areas.map(x=>esc(x.name)).join('·')})의 평균이에요. 매일 ${C.dayStart}시에 아침 에너지 값으로 새로 시작해요.</p><div class="brk">${C.areas.map(x=>`<span>${esc(x.name)}</span><span>${av[x.id]}</span>`).join('')}</div><p class="tiny muted">영역을 꾹 누르면 오늘 무엇 때문에 오르고 내렸는지 보여요.</p>`+btns(gd('flow'))}}
+  case 'xp':return{kind:'영원히 쌓이는 것',t:'⭐ XP',b:`<p>좋은 행동·용기·일퀘·구슬·몸무게 기록으로 얻어요. <b>절대 줄지 않아요.</b> 나쁜 날에도 여정은 그대로예요.</p><div class="brk"><span>지금 레벨</span><span>Lv.${L.lv}</span><span>다음 레벨까지</span><span>${L.need-L.rem} XP</span><span>누적 XP</span><span>${P.xp}</span></div>`+btns(gd('xp'),goE('rules','레벨 곡선 바꾸기'))};
+  case 'lv':{const nx=nextStage(L.lv);return{kind:'레벨',t:'🎬 Lv.'+L.lv,b:`<p>XP가 차면 오르고, 영화 제작 여정의 단계가 열려요. 5레벨마다 아바타 발밑 단상이 높아져요.</p><div class="brk"><span>다음 레벨까지</span><span>${L.need-L.rem} XP</span>${nx?`<span>다음 보상 (Lv.${nx.lv})</span><span>${esc(nx.item)} ${xpTo(nx.lv)} XP</span>`:''}</div>`+btns(`<a class="btn ghost sm" href="#journey">여정 보기</a>`,goE('road','보상 바꾸기'))}}
+  case 'gold':{const sale=C.shop.filter(x=>x.price>0).sort((x,y)=>x.price-y.price),nx=sale.find(x=>x.price>P.gold);return{kind:'돈',t:'🪙 골드 '+P.gold+'G',b:`<p>현실 보상을 사는 돈이에요. 좋은 행동·용기·상자·보스·업적으로 벌고, 과음·충동구매처럼 돈과 관련된 나쁜 행동과 상점에서 써요. 0 아래로는 안 내려가요.</p>${nx?`<p class="small">다음으로 살 수 있는 것: <b>${esc(nx.name)}</b> (${nx.price-P.gold}G 더 필요)</p>`:''}`+btns(`<a class="btn ghost sm" href="#shop">상점</a>`,gd('gold'))}}
+  case 'brave':case 'title':return{kind:'용기 점수·칭호',t:'⚡ '+bt.name,b:`<p>용기를 기록할 때마다 점수가 쌓여 칭호가 올라가요. 점수는 줄지 않아요.</p><div class="brk"><span>지금 점수</span><span>${P.courage}</span>${bt.next?`<span>다음 칭호 '${esc(bt.next[1])}'</span><span>${bt.next[0]-P.courage}점 남음</span>`:''}</div><ul>${BRAVE_TITLES.map(x=>`<li${x[1]===bt.name?' style="font-weight:700;color:var(--brave)"':''}>${x[0]}점 · ${x[1]}</li>`).join('')}</ul>`+btns(gd('brave'),goE('courage','용기 목록 편집'))};
+  case 'bravebtn':return{kind:'용기',t:'⚡ 용기 냈어요',b:`<p>두렵거나 망설여졌는데 해본 걸 기록하는 곳이에요. 결과와 상관없어요. 누르면 기록 탭의 용기 칸으로 가요.</p><p class="small muted">아래 문구는 날마다 바뀌어요. 편집 → 용기에서 문구를 바꾸거나 더할 수 있어요.</p>`+btns(goE('courage','문구·목록 편집'))};
+  case 'energy':return{kind:'오늘의 시작점',t:'🌅 아침 에너지',b:`<p>아침에 몸이 어떤지 골라요. 모든 영역이 이 값에서 시작해요.</p><div class="brk">${ENERGY_LBL.map((l,i)=>`<span>${l}</span><span>${C.energyBase[i]}</span>`).join('')}</div>`+btns(goE('rules','시작점 바꾸기'))};
+  case 'area':{const ar=C.areas.find(x=>x.id===a);if(!ar)return null;const base=C.energyBase[(day.energy||3)-1]??60;let acts=0;(day.entries||[]).forEach(e=>{if(e.area===a&&e.cond)acts+=e.cond});const fd=foodDelta(day)[a]||0,ng=neglectList(day.date).filter(n=>n.t.area===a);
+    const up=C.actions.filter(x=>x.type==='good'&&x.area===a).map(x=>x.name),dn=C.actions.filter(x=>x.type==='bad'&&x.area===a).map(x=>x.name);
+    return{kind:'컨디션 영역',t:esc(ar.name)+' 영역',b:`<p>오늘 ${esc(ar.name)} 상태예요. 다른 영역과 서로 메꿔지지 않아요.</p><div class="brk"><span>아침 시작점</span><span>${base}</span><span>행동·용기</span><span>${acts>=0?'+':''}${acts}</span><span>식사</span><span>${fd>=0?'+':''}${fd}</span>${ng.map(n=>`<span>방치: ${esc(n.t.name)} ${n.since}일</span><span>−${n.pen}</span>`).join('')}<span><b>오늘</b></span><span><b>${areaValues(day)[a]}</b></span></div>${up.length?`<p class="small"><b style="color:var(--good)">올리는 것</b> ${esc(up.join(', '))}</p>`:''}${dn.length?`<p class="small"><b style="color:var(--bad)">내리는 것</b> ${esc(dn.join(', '))}</p>`:''}`+btns(goE('areas','영역 편집'),goE('actions','행동 편집'))}}
+  case 'act':{const x=C.actions.find(y=>y.id===a);if(!x)return null;const w=countAct(e=>e.aid===a,7),m=countAct(e=>e.aid===a,30),all=countAct(e=>e.aid===a);const ar=C.areas.find(y=>y.id===x.area);
+    return{kind:x.type==='good'?'▲ 좋은 행동':'▼ 나쁜 행동',t:esc(x.name),b:`<div class="brk"><span>영역</span><span>${esc(ar?ar.name:'')}</span><span>7일 / 30일 / 전체</span><span>${w.c} / ${m.c} / ${all.c}번</span><span>마지막</span><span>${all.last?fmtD(all.last):'—'}</span></div><p class="tiny muted">${x.type==='good'?'바꾸면 바로 저장돼요. 구슬을 고르면 누를 때 병에도 들어가요.':'나쁜 행동은 컨디션·골드를 깎고 주간 보스를 회복시켜요.'}</p>`+qe('actions',x,[['name','이름','text'],['cond','컨디션','abs','min="0" max="100"'],['gold','골드','abs','min="0"'],...(x.type==='good'?[['xp','XP','num','min="0"'],['marble','구슬','sel',marbleOpts()]]:[])])+btns(`<button class="btn sm" data-act="${x.id}">지금 기록</button>`,goE('actions','전체 편집'))}}
+  case 'quest':{const q=C.dailies.find(y=>y.id===a);if(!q)return null;return{kind:'일퀘',t:esc(q.name),b:`<p>매일 새로 시작해요. 다 끝내면 상자(+${C.dailyBonus.gold}G)를 열어요.</p>`+qe('dailies',q,[['name','이름','text'],['xp','XP','num','min="0"'],['gold','골드','num','min="0"']])+btns(goE('dailies','일퀘 전체 편집'))}}
+  case 'boss':{const ws=weekState(day.date),bs=bossOf(day.date);return{kind:'이번 주 보스',t:'⚔️ '+esc(bs.name),b:`<p>매주 월요일에 새 보스가 나와요. 이번 주에 얻은 XP가 그대로 데미지가 되고, 나쁜 행동은 깎인 컨디션만큼 보스를 회복시켜요.</p><div class="brk"><span>최대 HP</span><span>${ws.hp}</span><span>준 데미지 (이번 주 XP)</span><span>${ws.dmg}</span><span>회복 (나쁜 행동)</span><span>${ws.heal}</span><span><b>남은 HP</b></span><span><b>${ws.left}</b></span><span>처치 보상</span><span>+${C.weekly.bossGold}G · XP +${C.weekly.bossXp}</span></div>`+btns(gd('week'),goE('rules','보스 HP·보상 바꾸기'))}}
+  case 'wgoal':{const ws=weekState(day.date);return{kind:'이번 주',t:'⚡ 주간 용기 목표',b:`<p>이번 주 용기를 ${ws.goal}번 기록하면 +${C.weekly.courageGold}G · XP +${C.weekly.courageXp}. 지금 ${ws.brave}번.</p>`+btns(`<button class="btn sm brave" data-sugbrave="1">용기 기록하러 가기</button>`,goE('rules','목표 바꾸기'))}}
+  case 'jar':{const j=C.jars.find(y=>y.id===a);if(!j)return null;const Lj=jarLayout(j),cnt={};marblesOf(j.id).forEach(t=>cnt[t]=(cnt[t]||0)+1);const links=[...C.actions,...C.courage].filter(x=>x.marble&&x.marble.split(':')[0]===j.id).map(x=>x.name);
+    return{kind:'유리병',t:'🔮 '+esc(j.name),b:`<p>${esc(j.hint||'')}</p><div class="brk"><span>지금 병</span><span>${Math.round(Lj.acc/Lj.cap*100)}% 참</span><span>가득 찬 병</span><span>${Lj.full}개</span><span>모은 구슬</span><span>${Lj.total}개</span><span>직접 넣을 때</span><span>XP +${j.xp}</span></div><ul>${j.types.map(t=>`<li>${mGlyph(t)} ${esc(t.name)} · ${cnt[t.id]||0}개</li>`).join('')}</ul>${links.length?`<p class="small"><b>자동으로 들어오는 행동</b> ${esc(links.join(', '))}</p>`:''}`+btns(`<a class="btn ghost sm" href="#jars" data-viewjarlink="${j.id}">병 열기</a>`,goE('jars','구슬·병 편집'))}}
+  case 'mt':{const j=C.jars.find(y=>y.id===a),t=j&&j.types.find(y=>y.id===b);if(!t)return null;return{kind:'구슬 종류 · '+esc(j.name),t:mGlyph(t)+' '+esc(t.name),b:qe('jt:'+j.id,t,[['name','이름','text'],['color','색','sel',COLORS],['shape','모양','sel',SHAPES],['size','크기','sel',SIZES]])+btns(goE('jars','병 편집'))}}
+  case 'stat':{const D={days:['기록한 날','행동·용기·식사·몸무게 중 하나라도 적은 날의 수예요.'],brave:['⚡ 용기','용기를 기록한 횟수예요. 목록에 없는 용기도 포함해요.'],good:['▲ 좋은 행동','좋은 행동 버튼을 누른 횟수예요. 용기·일퀘·구슬은 따로 세요.'],bad:['▼ 나쁜 행동','나쁜 행동 버튼을 누른 횟수예요. 적을수록 좋아요.'],clean:['✨ 깨끗한 날','기록이 있고, 나쁜 행동과 나쁜 식사가 하나도 없는 날이에요. 7일 연속이면 업적.'],marble:['🔮 구슬','병에 들어간 구슬 수예요. 행동·용기에 연결돼 자동으로 들어간 것도 포함해요.'],chest:['🎁 일퀘 상자','일퀘를 전부 끝내 상자를 연 날이에요.'],avg:['평균 컨디션','기록이 있는 날의 컨디션(HP, 영역 평균 0~100)을 평균 낸 값이에요. 60 근처가 보통, 70 이상이면 좋은 흐름이에요. 아침 에너지가 출발점이라 그날 기분도 들어가요.']}[a];if(!D)return null;return{kind:'통계',t:D[0],b:`<p>${D[1]}</p>`}}
+  case 'badge':{const x=BADGES.find(y=>y.id===a);if(!x)return null;return{kind:'업적',t:x.ic+' '+esc(x.name),b:`<p>${esc(x.desc)}. 처음 달성하면 +${x.gold}G.</p><p class="small">${P.badges[a]?fmtD(P.badges[a])+'에 달성했어요.':'아직이에요.'}</p>`}}
+  case 'road':{const r=C.roadmap.find(y=>y.id===a);if(!r)return null;return{kind:'여정 단계',t:esc(r.item)+' '+esc(r.name),b:`<div class="brk"><span>열리는 레벨</span><span>Lv.${r.lv}</span><span>게임 아이템</span><span>${esc(r.itemName)}</span><span>남은 XP</span><span>${L.lv>=r.lv?'달성':xpTo(r.lv)}</span></div>`+qe('roadmap',r,[['real','현실 보상','text'],['lv','레벨','num','min="2"']])+btns(goE('road','여정 전체 편집'))}}
+  case 'shop':{const x=C.shop.find(y=>y.id===a);if(!x)return null;return{kind:'상점',t:esc(x.name),b:qe('shop',x,[['name','이름','text'],['price','가격(G)','num','min="0"']])+`<p class="tiny muted">가격을 비우면 보상함으로 돌아가요.</p>`}}
+  }
+  if(k==='kbrave'){const x=C.courage.find(y=>y.id===a);if(!x)return null;const all=countAct(e=>e.cid===a),m=countAct(e=>e.cid===a,30);
+    return{kind:'⚡ 용기',t:esc(x.name),b:`<div class="brk"><span>30일 / 전체</span><span>${m.c} / ${all.c}번</span><span>마지막</span><span>${all.last?fmtD(all.last):'—'}</span></div>`+qe('courage',x,[['name','이름','text'],['xp','XP','num','min="0"'],['gold','골드','num','min="0"'],['pts','용기 점수','num','min="1" max="5"'],['marble','구슬','sel',marbleOpts()]])+btns(`<button class="btn sm brave" data-brave="${x.id}">지금 기록</button>`,`<button class="btn ghost sm" data-del="courage" data-id="${x.id}">목록에서 지우기</button>`,goE('courage','전체 편집'))}}
+  return null;
+}
+let infoKey=null,lastInfoAt=0;
+function openInfo(key){
+  const inf=infoFor(key);if(!inf)return;
+  infoKey=key;lastInfoAt=Date.now();
+  const p=$('pop');p.innerHTML=`<button class="x close" id="popClose" aria-label="닫기">×</button><span class="kind">${inf.kind}</span><h3>${inf.t}</h3>${inf.b}`;
+  p.hidden=false;$('scrim').hidden=false;$('scrim').dataset.for='pop';
+  const r=p.getBoundingClientRect(),W=innerWidth,H=innerHeight;
+  let x=lastPt.x-r.width/2,y=lastPt.y+14;if(W<600){x=(W-r.width)/2;y=H-r.height-16-(innerWidth<960?70:0)}
+  if(y+r.height>H-12)y=Math.max(12,lastPt.y-r.height-14);
+  p.style.left=clamp(x,12,W-r.width-12)+'px';p.style.top=clamp(y,12,H-r.height-12)+'px';
+}
+function closeInfo(){$('pop').hidden=true;infoKey=null;if($('scrim').dataset.for==='pop')$('scrim').hidden=true}
+function refreshInfo(){if(infoKey&&!$('pop').hidden&&!$('pop').contains(document.activeElement)){const k=infoKey,pt=lastPt;const inf=infoFor(k);if(!inf){closeInfo();return}const r=$('pop').getBoundingClientRect();$('pop').innerHTML=`<button class="x close" id="popClose" aria-label="닫기">×</button><span class="kind">${inf.kind}</span><h3>${inf.t}</h3>${inf.b}`}}
+let lpTimer=null,lpFired=false,lpStart=null;
+document.addEventListener('pointerdown',e=>{const el=e.target.closest('[data-info]');lpFired=false;clearTimeout(lpTimer);if(!el||e.button>0)return;lpStart={x:e.clientX,y:e.clientY};
+  lpTimer=setTimeout(()=>{lpFired=true;lastPt={x:lpStart.x,y:lpStart.y};if(Date.now()-lastInfoAt>700)openInfo(el.dataset.info);buzz(12)},520)},true);
+document.addEventListener('pointermove',e=>{if(lpStart&&Math.hypot(e.clientX-lpStart.x,e.clientY-lpStart.y)>10)clearTimeout(lpTimer)},true);
+['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,()=>clearTimeout(lpTimer),true));
+document.addEventListener('click',e=>{if(lpFired){lpFired=false;e.preventDefault();e.stopPropagation()}},true);
+document.addEventListener('contextmenu',e=>{const el=e.target.closest('[data-info]');if(!el)return;e.preventDefault();clearTimeout(lpTimer);lastPt={x:e.clientX,y:e.clientY};if(Date.now()-lastInfoAt>700)openInfo(el.dataset.info)});
+
+/* ================= 검색 ================= */
+function searchIndex(){
+  const R=[],add=(cat,t,d,go,kw='')=>R.push({cat,t,d,go,kw:(t+' '+d+' '+kw).toLowerCase()});
+  NAV_ITEMS.forEach(([id,l,d])=>add('화면',l,d,()=>location.hash=id));
+  add('화면','계정·백업','백업 받기·복원·로그아웃',()=>location.hash='more','backup logout');
+  EDIT_TABS.forEach(([id,l])=>add('편집',l+' 편집','편집 → '+l,()=>goEdit(id)));
+  [['flow','컨디션 (HP)','오늘의 몸·마음 상태, 영역, 아침 에너지'],['brave','용기','가장 큰 보상, 칭호, 용기 점수'],['quest','일퀘와 상자','매일 숙제, 연속'],['week','주간 보스와 용기 목표','보스 HP, 데미지, 회복'],['jar','유리병과 구슬','구슬 종류, 합치기, 나누기'],['alert','경보와 방치','방치 페널티, 경보판'],['gold','골드와 상점','현실 보상'],['xp','XP·레벨·업적','레벨 곡선, 업적'],['fix','되돌리기와 지난 기록','어제 기록, 취소']].forEach(([id,t,d])=>add('설명',t,d,()=>openGuide(id)));
+  [['hp','HP · 컨디션','오늘 상태 0~100'],['xp','XP','영원히 쌓이는 경험치'],['lv','레벨','다음 보상'],['gold','골드','돈'],['brave','용기 점수·칭호','칭호 단계'],['energy','아침 에너지','시작점'],['boss','이번 주 보스','HP, 데미지'],['wgoal','주간 용기 목표','이번 주 용기']].forEach(([k,t,d])=>add('설명',t,d,()=>openInfo(k)));
+  [['avg','평균 컨디션'],['clean','깨끗한 날'],['days','기록한 날'],['marble','구슬 수'],['chest','일퀘 상자']].forEach(([k,t])=>add('통계',t,'통계 용어 설명',()=>openInfo('stat:'+k)));
+  C.areas.forEach(a=>add('영역',a.name+' 영역','오늘 무엇 때문에 오르고 내렸는지',()=>openInfo('area:'+a.id)));
+  C.actions.forEach(a=>add(a.type==='good'?'좋은 행동':'나쁜 행동',a.name,'꾹 누르면 설명, 눌러서 바로 기록',()=>openInfo('act:'+a.id)));
+  C.courage.forEach(a=>add('용기',a.name,'XP +'+a.xp,()=>openInfo('kbrave:'+a.id)));
+  C.jars.forEach(j=>{add('유리병',j.name,j.hint||'',()=>openInfo('jar:'+j.id));j.types.forEach(t=>add('구슬',t.name,j.name+' 병',()=>openInfo('mt:'+j.id+':'+t.id)))});
+  C.dailies.forEach(q=>add('일퀘',q.name,'오늘의 일퀘',()=>openInfo('quest:'+q.id)));
+  BADGES.forEach(b=>add('업적',b.name,b.desc,()=>openInfo('badge:'+b.id)));
+  C.roadmap.forEach(r=>add('여정',r.name,'Lv.'+r.lv+' · '+r.itemName+(r.real?' · '+r.real:''),()=>openInfo('road:'+r.id)));
+  C.shop.forEach(x=>add(x.price>0?'상점':'보상함',x.name,x.price>0?x.price+'G':'가격 미정',()=>location.hash='shop'));
+  [['weekly','주간 목표·보스 설정','rules'],['dayStart','새 하루 시작 시각','rules'],['xpStep','레벨 곡선','rules'],['recovery','복귀 보너스','rules'],['reset','진행 기록 초기화','rules'],['avatar','아바타·캐릭터 바꾸기','avatar'],['weight','목표 몸무게','food'],['nav','아래 메뉴·홈 화면 바꾸기','screen'],['quote','용기 문구','courage']].forEach(([k,t,tab])=>add('설정',t,'편집에서 바꾸기',()=>goEdit(tab),k));
+  return R;
+}
+let sIdx=[],sSel=0,sRes=[];
+function openSearch(){sIdx=searchIndex();$('searchBox').hidden=false;$('searchIn').value='';drawSearch();setTimeout(()=>$('searchIn').focus(),30)}
+function closeSearch(){$('searchBox').hidden=true}
+function drawSearch(){
+  const q=$('searchIn').value.trim().toLowerCase();
+  sRes=q?sIdx.filter(r=>q.split(/\s+/).every(w=>r.kw.includes(w))).slice(0,40):sIdx.filter(r=>r.cat==='화면'||r.cat==='설명').slice(0,16);sSel=0;
+  $('searchRes').innerHTML=sRes.length?sRes.map((r,i)=>`<li data-sres="${i}" class="${i===sSel?'on':''}"><span class="cat">${esc(r.cat)}</span><span><b>${esc(r.t)}</b><span class="d">${esc(r.d)}</span></span><span class="tiny muted">↵</span></li>`).join(''):'<li class="empty">찾는 게 없어요. 다른 말로 찾아보세요.</li>';
+}
+$('searchIn').addEventListener('input',drawSearch);
+$('searchIn').addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();sSel=clamp(sSel+(e.key==='ArrowDown'?1:-1),0,sRes.length-1);[...$('searchRes').children].forEach((li,i)=>li.classList.toggle('on',i===sSel))}if(e.key==='Enter'&&sRes[sSel]){const r=sRes[sSel];closeSearch();lastPt={x:innerWidth/2,y:innerHeight/3};r.go()}if(e.key==='Escape')closeSearch()});
+$('searchClose').onclick=closeSearch;
+$('searchBox').addEventListener('click',e=>{if(e.target.id==='searchBox')closeSearch();const li=e.target.closest('[data-sres]');if(li){const r=sRes[+li.dataset.sres];closeSearch();lastPt={x:innerWidth/2,y:innerHeight/3};r.go()}});
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openSearch()}if(e.key==='Escape'){closeInfo();closeDrawer()}});
+
+/* ================= 메뉴 서랍·뒤로가기 ================= */
+function openDrawer(){$('side').classList.add('open');$('scrim').hidden=false;$('scrim').dataset.for='side'}
+function closeDrawer(){$('side').classList.remove('open');if($('scrim').dataset.for==='side')$('scrim').hidden=true}
+$('scrim').onclick=()=>{closeInfo();closeDrawer()};
+const navStack=[];
 
 /* ================= 백업·계정 ================= */
 let ACCOUNT='',pendingRestore=null;
@@ -1504,8 +1711,23 @@ function goEdit(k){if(document.activeElement&&document.activeElement.blur)docume
 function goBrave(){location.hash='log';setTimeout(()=>{const p=$('bravePanel');p.scrollIntoView({behavior:'smooth',block:'start'});p.animate([{boxShadow:'0 0 0 6px var(--brave)'},{boxShadow:'0 3px 0 var(--brave)'}],{duration:900})},60)}
 function openGuide(id){ui.guideOpen=id;location.hash='guide';renderGuide();setTimeout(()=>{const d=$('g-'+id);if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'})}},60)}
 document.addEventListener('click',e=>{
-  const a=e.target.closest('a[data-goedit]');if(a){e.preventDefault();goEdit(a.dataset.goedit);return}
-  const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+  const a=e.target.closest('a[data-goedit]');if(a){e.preventDefault();closeInfo();goEdit(a.dataset.goedit);return}
+  const vj=e.target.closest('[data-viewjarlink]');if(vj){ui.jarView=vj.dataset.viewjarlink;closeInfo()}
+  if(e.target.closest('#side a')){closeDrawer()}
+  if(e.target.closest('#pop a')){closeInfo()}
+  const t=e.target.closest('button');
+  if(!t){const inf=e.target.closest('[data-info]');if(inf&&!inf.closest('a')){lastPt={x:e.clientX,y:e.clientY};openInfo(inf.dataset.info)}return}
+  const d=t.dataset;
+  if(t.id==='popClose'){closeInfo();return}
+  if(t.closest('#pop')&&(d.goedit||d.guide||d.sugbrave||d.del))closeInfo();
+  if(t.id==='searchBtn'||t.id==='sideSearch'){closeDrawer();openSearch();return}
+  if(t.id==='menuBtn'){openDrawer();return}
+  if(t.id==='backBtn'){if(navStack.length>1){navStack.pop();history.back()}else location.hash='home';return}
+  if(d.collapse){C.ui.collapsed[d.collapse]=!C.ui.collapsed[d.collapse];save('config');applyHome();return}
+  if(d.navtoggle!=null){return}
+  if(d.navmove){const n=C.ui.nav,i=n.indexOf(d.navmove),j=i+(+d.d);if(i<0||j<0||j>=n.length)return;[n[i],n[j]]=[n[j],n[i]];save('config');render();return}
+  if(d.homemove){const h=C.ui.home,i=h.findIndex(x=>x[0]===d.homemove),j=i+(+d.d);if(j<0||j>=h.length)return;[h[i],h[j]]=[h[j],h[i]];save('config');render();return}
+  if(t.id==='homeReset'){C.ui.home=clone(DEFAULT_CONFIG.ui.home);C.ui.collapsed={};save('config');render();toast('홈 화면을 기본값으로 돌렸어요');return}
   if(d.energy){if(!guard())return;today().energy=+d.energy;save(today().date);render();return}
   if(d.act){const x=C.actions.find(y=>y.id===d.act);if(x)doAction(x);return}
   if(d.brave){const k=C.courage.find(y=>y.id===d.brave);if(k)doBrave(k);return}
@@ -1555,9 +1777,10 @@ document.addEventListener('click',e=>{
     if(col==='jars'){const i=C.jars.length;C.jars.push({id,name:'새 병',hint:'',xp:10,types:[{id:'base',name:'기본',color:COLORS[i%12][0],shape:SHAPES[i%8][0],size:'m'}]})}
     if(col==='roadmap'){const mx=Math.max(1,...C.roadmap.map(r=>r.lv));C.roadmap.push({id,name:'새 단계',lv:mx+3,item:'⭐',itemName:'새 아이템',real:''})}
     if(col==='shop')C.shop.push({id,name:'새 보상',price:100});
+    if(col==='braveQuotes')C.braveQuotes.push({id,text:'새 문구'});
     if(col==='food')C.food.push({id,name:'새 식사 항목',kind:'counter',points:3,max:3,area:C.areas[0].id});
     save('config');render();
-    const f=document.getElementById(`e-${col}-${id}-name`)||document.getElementById(`e-${col}-${id}-action`);if(f){f.focus();if(f.select)f.select()}
+    const f=document.getElementById(`e-${col}-${id}-name`)||document.getElementById(`e-${col}-${id}-action`)||document.getElementById(`e-${col}-${id}-text`);if(f){f.focus();if(f.select)f.select()}
     return}
   if(t.id==='hudAv'||t.id==='heroAv'){goEdit('avatar');return}
   if(t.id==='braveHome'){goBrave();return}
@@ -1579,6 +1802,8 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('change',async e=>{
   const t=e.target,d=t.dataset;
+  if(d.navtoggle){const n=C.ui.nav,id=d.navtoggle;if(t.checked){if(n.length>=4){t.checked=false;toast('아래 메뉴는 4개까지예요');return}n.push(id)}else C.ui.nav=n.filter(x=>x!==id);t.blur();save('config');render();return}
+  if(d.hometoggle){const h=C.ui.home.find(x=>x[0]===d.hometoggle);if(h)h[1]=t.checked?1:0;t.blur();save('config');render();return}
   if(t.id==='restoreFile'){const f=t.files&&t.files[0];if(!f)return;
     try{const data=JSON.parse(await f.text());if(!data||!data.game)throw 0;pendingRestore=data;pendingRestore.fname=f.name;pendingRestore.n=Object.keys(data.days||{}).length;ui.confirm='restore';renderMore()}
     catch(err){toast('습관 퀘스트 백업 파일이 아니에요')}
@@ -1634,11 +1859,13 @@ $('wishForm').addEventListener('submit',e=>{e.preventDefault();const n=$('wishNa
 
 /* ================= 탭 ================= */
 const VIEWS=['home','log','jars','stats','more','journey','shop','body','edit','guide'];
-const NAVOF={journey:'more',shop:'more',body:'more',edit:'more',guide:'more'};
+function curView(){let v=location.hash.slice(1);if(v==='today')v='home';return VIEWS.includes(v)?v:'home'}
 function route(){
-  let v=location.hash.slice(1);if(v==='today')v='home';if(!VIEWS.includes(v))v='home';
+  const v=curView();
+  if(navStack[navStack.length-2]===v)navStack.pop();else if(navStack[navStack.length-1]!==v)navStack.push(v);
+  $('backBtn').hidden=v==='home';closeInfo();closeDrawer();
   document.querySelectorAll('.view').forEach(s=>s.hidden=s.dataset.view!==v);
-  const nv=NAVOF[v]||v;document.querySelectorAll('#bnav a').forEach(a=>a.setAttribute('aria-current',a.getAttribute('href')==='#'+nv?'page':'false'));
+  renderNav();
   if(v!=='log'&&ui.off){ui.off=0;render()}
   scrollTo(0,0);
 }
@@ -1646,6 +1873,7 @@ window.addEventListener('hashchange',route);
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),1900)}
 let curDK=dateKey();setInterval(()=>{if(dateKey()!==curDK){curDK=dateKey();render()}},60000);
 
+$('backBtn').innerHTML=ic('back');$('searchBtn').innerHTML=ic('search');$('menuBtn').innerHTML=ic('menu');
 route();boot();
 </script>
 <script type="module" src="backend.js"></script>
