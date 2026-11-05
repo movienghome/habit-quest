@@ -1,0 +1,16 @@
+exec(open('t12.py').read().split("with sync_playwright() as pw:")[0])
+J=lambda pg,x:pg.evaluate(x)
+with sync_playwright() as pw:
+    b,pg=run(pw,1600,950,'pc');closepops(pg);imp(pg);closepops(pg)
+    pg.evaluate("location.hash='tasks'");pg.wait_for_timeout(400)
+    rows=pg.locator('#tList .trow[data-task]');ids=[rows.nth(i).get_attribute('data-task') for i in (0,1)]
+    rows.nth(0).locator('.tt').click(modifiers=['Control']);rows.nth(1).locator('.tt').click(modifiers=['Control']);pg.wait_for_timeout(200)
+    tgt=pg.locator('#tSide [data-drop="tolist:Latelier"]');drag(pg,ctr(rows.nth(0).bounding_box(),.4),ctr(tgt.bounding_box()))
+    print('multi drag',[J(pg,f"TASKS['{i}'].list") for i in ids])
+    rows=pg.locator('#tList .trow[data-task]');rows.nth(0).locator('.tt').click(modifiers=['Control']);pg.click('[data-mb="wont"]');pg.wait_for_timeout(300)
+    print('wont',pg.locator('.twont').count());pg.click('[data-twont]');pg.wait_for_timeout(200);print(pg.locator('.twont .trow').all_inner_texts()[:2])
+    pg.click('.twont [data-treopen]');pg.wait_for_timeout(300);print('after reopen',pg.locator('.twont').count())
+    pg.click('#tSide [data-tsel="l:Llimen"]');pg.wait_for_timeout(300);print('limen routines',pg.locator('.lroutines button').all_inner_texts())
+    pg.evaluate("location.hash='guide'");pg.wait_for_timeout(300);print('guide',pg.locator('text=오늘 하나로').count())
+    b.close()
+print('\n'.join([e for e in errs if 'ERR_FAILED' not in e and 'gstatic' not in e][:20]))

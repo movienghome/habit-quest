@@ -1,0 +1,49 @@
+  <!-- 할 일 -->
+  <section class="view" data-view="tasks" hidden>
+    <div class="tlayout">
+      <nav class="tside" id="tSide" aria-label="할 일 목록"></nav>
+      <div class="stack">
+        <div class="panel">
+          <div class="ptitle"><h2 id="tTitle">오늘</h2><span class="row" style="gap:4px"><span class="small muted num" id="tCount"></span><select id="tGroup" aria-label="묶기" style="width:auto;padding:4px 8px;font-size:12.5px;border-radius:999px"></select><select id="tSort" aria-label="정렬" style="width:auto;padding:4px 8px;font-size:12.5px;border-radius:999px"></select><button class="btn ghost sm" id="tSelBtn" title="여러 개 고르기 (Ctrl·Shift+클릭도 돼요)" aria-label="여러 개 고르기">☑</button><button class="btn ghost sm" id="tMenu" aria-label="목록 관리">⋯</button></span></div>
+          <div class="tchips mob" id="tChips"></div>
+          <form class="tadd" data-taddform="tasks" style="margin-top:8px"><div class="in"><input id="tAdd" maxlength="160" placeholder="할 일 추가 · 내일 3시 30분 #퀵 !! ^Errands 매주" enterkeyhint="done" aria-label="할 일 추가" autocomplete="off"><button class="btn sm" type="submit">추가</button></div><div class="parse" id="tParse"></div></form>
+          <div id="tList"></div>
+        </div>
+      </div>
+      <div class="tsplit" id="tSplit" title="끌어서 너비 바꾸기" aria-hidden="true"></div>
+      <div class="tdetail" id="tDetail"></div>
+      <div class="tcal" id="tCalSlot"></div>
+    </div>
+  </section>
+
+  <!-- 캘린더 -->
+  <section class="view" data-view="cal" hidden>
+    <div id="calPane" class="stack">
+    <div class="calbar2"><button class="ib" data-calnav="-1" aria-label="이전" title="이전">‹</button><button class="ib wide" data-calnav="0" title="오늘로 (T)">오늘</button><button class="ib" data-calnav="1" aria-label="다음" title="다음">›</button><h2 id="calTitle"></h2><span style="flex:1"></span>
+      <span class="seg3 sm" id="calModes"></span><button class="ib" id="calFilterBtn" title="필터" aria-label="필터"><svg class="ico" viewBox="0 0 24 24"><path d="M4 5h16l-6 8v6l-4-2v-4z"/></svg></button><button class="ib" id="calTrayBtn" data-trayt="1" title="끌어다 놓기 서랍 (할 일·습관·루틴)" aria-label="서랍"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button><label class="ib" title="실제 기록 보이기 (한 일을 시간표에 겹쳐 보기)"><input type="checkbox" id="calActual" style="width:auto;margin:0"> <span class="tiny">기록</span></label><button class="ib" data-calhelp="1" title="도움말" aria-label="도움말">?</button></div>
+      <p class="help" id="calHelp" hidden style="margin:0"></p>
+    <div class="callay">
+      <div class="stack" style="min-width:0"><div id="calMain"></div><div id="calDay"></div></div>
+      <aside class="panel tray" id="calTray" data-drop="tray"></aside>
+    </div>
+    </div>
+  </section>
+
+  <!-- 뽑기 -->
+  <section class="view" data-view="gacha" hidden>
+    <div id="gQuest"></div>
+    <div class="grid2">
+      <div class="panel gmachine"><div class="ptitle"><h2>🎲 뽑기</h2><button class="qbtn" data-guide="gacha" aria-label="설명">?</button></div>
+        <p class="help" style="margin:0">필터를 걸고 뽑아요. <b>나온 것 중 하나는 반드시</b> 해요. 쉬운 게 나오면 야호, 싫은 게 나와도 하나는 해치워요. 가챠로 고른 건 XP ×<span id="gMult"></span>.</p>
+        <div class="row" id="gPresets"></div>
+        <div class="gfilters" id="gFilters"></div>
+        <div class="gbig"><button class="gdraw" id="gDraw">뽑기</button><div><div class="cap" id="gPool"></div><div class="small muted" id="gHint"></div></div></div>
+      </div>
+      <div class="panel"><div class="ptitle"><h2 id="gResTitle">결과</h2><span class="row" style="gap:4px" id="gResTools"></span></div><div class="cards" id="gCards"></div><p class="small muted" id="gResHelp" style="margin:8px 0 0"></p></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><div class="ptitle"><h2>⏱ 루틴 사냥</h2><a class="small" href="#edit" data-goedit="routines" style="color:var(--accent)">루틴 편집</a></div><p class="help">단계마다 목표 시간이 있어요. 빨리 끝낼수록 보상이 커요.</p><div class="stack" id="gRoutines" style="gap:8px"></div></div>
+      <div class="panel"><div class="ptitle"><h2>최근 뽑기</h2></div><ul class="log" id="gHist"></ul></div>
+    </div>
+    <div class="panel" id="dopaPanel"><div class="ptitle"><h2>🍬 도파민 메뉴</h2><span class="row" style="gap:4px"><button class="btn sm" data-gquickdopa="1">🍬 3장 뽑기</button><a class="small" href="#edit" data-goedit="actions" style="color:var(--accent)">편집</a></span></div><p class="help" style="margin:0 0 8px">시작부터 기분 좋아지는 것들이에요. 코스마다 골라 ⏱ 사냥하거나 바로 기록해요. 행동 편집에서 '도파민 코스'를 정하면 여기에 나와요.</p><div id="gDopa"></div></div>
+  </section>
