@@ -66,10 +66,12 @@ rep("const EDIT_TABS=[['screen','테마·화면'],['actions','행동'],","const 
 rep("const VIEWS=['home','log','jars','stats','more','journey','shop','body','edit','guide'];","const VIEWS=['home','tasks','cal','gacha','log','jars','stats','more','journey','shop','body','edit','guide'];")
 # 용사 아바타
 rep("  ghost:{name:'유령',","  warrior:{name:'용사',eyes:[6,10],rows:['......KKKK......','....KKMMMMKK....','...KMMMMMMMMK...','..KMMMMMMMMMMK..','..KKKKKMMKKKKK..','..KHSSSMMSSSHK.M','..KHSSSSSSSSHKKM','..KHWSSSSSSWHKKM','.KKHWWWWWWWWHKKM','KRRKKWWWWWWKKSSK','KRYRKCWWWWCCKSSK','KYYYKCCWWCCCCKK.','KRYRKCCCCCCCK...','.KRRKCYYYYCCK...','..KKKCCCCCCK....','.....KDDKDDK....','.....KDDKDDK....','....KKKK.KKKK...'],pal:{H:'#c0622b',W:'#e9ecf2',R:'#8a5a2b'}},\n  ghost:{name:'유령',")
-open('/tmp/claude-0/-home-claude/57fdb68d-e178-5526-84b7-bc52896b8430/scratchpad/stage1.html','w',encoding='utf-8').write(s)
+import os,tempfile
+open(os.path.join(tempfile.gettempdir(),'hq-stage1.html'),'w',encoding='utf-8').write(s)
 exec(open(V+'patch2.py',encoding='utf-8').read())
 exec(open(V+'patch3.py',encoding='utf-8').read())
 exec(open(V+'patch4.py',encoding='utf-8').read())
 exec(open(V+'patch5.py',encoding='utf-8').read())
+exec(open(V+'patch6.py',encoding='utf-8').read())
 open(DST,'w',encoding='utf-8').write(s)
 print('ok',len(s))
