@@ -1,11 +1,11 @@
-# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v5.9 기준, 2026-11-05)
+# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v6.0 기준, 2026-11-05)
 
 > **새 채팅에서 할 일 (Claude에게)**: 먼저 `add_repo`로 `movienghome/habit-quest`를 붙이고 `git clone --depth 1`. 이 파일은 저장소의 `dev/HANDOFF.md`에도 있음 — 저장소 쪽이 최신이면 그걸 따름. 릴리스할 때마다 이 파일도 같이 고쳐서 커밋.
 
 ## 저장소·주소
 - 저장소: github.com/movienghome/habit-quest (GitHub Pages + Firebase)
 - 본 앱: https://movienghome.github.io/habit-quest/ → **v4.4 그대로**
-- 베타: https://movienghome.github.io/habit-quest/beta/ → **v5.9** (데이터: habit-beta, 실제 기록과 분리)
+- 베타: https://movienghome.github.io/habit-quest/beta/ → **v6.0** (데이터: habit-beta, 실제 기록과 분리)
 - 작업 방식: 고친 건 베타에 먼저 → 사용자가 "반영해" 하면 본 앱에 옮김
 
 ## 사용자 요청 (항상)
@@ -19,17 +19,19 @@
 - `beta/index.html`은 **생성 파일**. 직접 고치지 말고 `dev/v5/`의 모듈을 고친 뒤 빌드.
 - 빌드: `ln -sfn <저장소>/dev/v5 /home/claude/v5` 후 `cd dev/v5 && python3 patch.py`
   (patch.py의 SRC/DST/V는 /home/claude/habit-quest, /home/claude/v5 기준. 중간 파일은 임시 폴더에 씀)
-  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → **patch11(v5.9)**
-  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + **v5p(v5.9)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
+  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → **patch12(v6.0)**
+  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + **v5q(v6.0)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
   - 주의: 맨 끝 모듈의 const/let은 첫 render 때 아직 초기화 전 → 최상위 값은 function이나 var로.
   - 클래스 이름 `.mc`는 월 캘린더 칸이 씀 → 칩은 `.mx`.
-- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-05-v59`). 베타 띠에 버전 표시(`β 베타 v5.9`) — 같이 올리기.
+- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-05-v60`). 베타 띠에 버전 표시(`β 베타 v6.0`) — 같이 올리기.
 - **patch10은 빌드 결과 전체에서 글자 치환을 함**: `💰`→`₩`, `🪙`→`💰`, `🔁`→`↻`, `리듬`→`반복`. 그러니 **v5o 이후 모듈에서 🪙·🔁·'리듬'을 비교 문자열로 쓰면 바뀌어 버림** → `\u{1F501}`처럼 이스케이프로 쓰기.
 - `normConfig`는 `C.ui`의 정해진 키만 남김(새 키는 사라짐) → 새 ui 설정은 기존 키 안(예: `C.ui.cal._t`)이나 `C` 최상위에.
 - `route()`는 journey 같은 화면 전환 때 render를 안 부름 → 새 화면 내용은 hashchange에서 따로 그림(renderBlog).
 - 함수 덮어쓰기: v5n은 맨 끝이라 `{const _f=f;f=function(){...}}` 식으로 감쌈(render·taskRow·applyEntry·parseQuick·acCompute·renderCal·dndEnd·doAction 등). function 선언(applyHomeEdit·homeEditOn·tsChipsHTML·isHabit·rhythmOf)은 뒤에 있는 게 이김.
 - **저장 안전장치(v5.9)**: `beta/backend.js`(생성 파일 아님, 직접 고침) onSnapshot 셋째 인자 `{meta:1}` → includeMetadataChanges. 설정·진행·날짜 스냅샷이 `fromCache:false`(서버 확인)일 때만 ready. `SRV59.c` 전에는 config를 서버에 안 씀(flush 미룸), 서버가 처음 오면 그 전 로컬 config 변경은 버리고 서버 것을 씀. 원인: 기기 캐시(persistentLocalCache)의 옛 config로 그린 뒤 자동 저장이 서버를 덮어써서 지운 카드가 되살아났음. **본 앱(루트 backend.js·index.html)에도 같은 문제가 있음 → 승격 때 같이 반영.**
 - 함수 선언 덮어쓰기(v5p): actBoardHTML·dopaEditHTML·blogHTML은 v5p의 function 선언이 이김. render·renderNav·taskBase·drawTaskSheet·parseQuick·dndMove·dndEnd·actionsEditHTML은 감쌈.
+- 함수 선언 덮어쓰기(v5q): spriteSVG·calc59·blogHTML·dopaEditHTML·routinesEditHTML·habRows59·did59·sched59는 v5q 선언이 이김. syncDailies·watchTarget·toggleQuest·finishRoutine·applyEntry·effortOf·drawTaskSheet·aeTopHTML·infoFor·reviewHTML59·applyHomeEdit·weekState·render는 감쌈.
+- 테스트 하네스(v6.0): backend.js를 `window.__hqResolve(window.__mockApi)`로, config.js·sw.js는 빈 응답으로 가로채고 init script에 mockdb.js. `window.claude`는 index.html이 만드니 건드리지 말 것. 시드: `window.__seed({'game/config':cfg})`.
 - 테스트: Playwright + `dev/v5/mockdb.js`. 저장소 루트에서 `python3 -m http.server 8765`. 옛 t*.py는 경로 수정 필요. v5.4 테스트는 v7 설정(일퀘·용기·샤워/술 옵션)을 넣고 마이그레이션·완료 흐름 확인하는 식.
 
 ## 핵심 설계 (v5.4에서 정함)
@@ -98,11 +100,27 @@
 - **캘린더 폰**: 빈 시간 칸 0.35초 꾹 → 끌어서 범위(v5n 수정). 그냥 움직이면 스크롤.
 - **자연어**: 요일 묶음 '화목'·'월수금'·'화·목'(반복 말·시간·3개 이상일 때만, '금일' 제외), '월요일마다', 제목에 남던 '매주' 제거, 범위 시간 1~7시는 오후(한 시각 규칙과 같게). '수영'의 '수'를 수요일로 읽던 버그 없어짐.
 
+## v6.0에서 한 것 (v5q.js · patch12.py) — 하나로 잇기 · 3단계 ①
+- **일퀘 = '매일 반복 할 일'의 ☑ 표시**(카드 습관만이 아니라 루틴·그냥 할 일도). syncDailies 감싸 `t.quest&&isDailyRep&&!(t.hab&&t.aid)` 할 일을 `action:'@t:'+tid`로 추가. watchTarget이 '@t:'를 알아서 questCondMet·syncQuests가 저절로 채움(할 일 완료 엔트리 e.tid, 또는 루틴 완주 엔트리 e.rid·e.full). toggleQuest: 루틴이면 startRun, 아니면 completeTask, 했으면 엔트리 지우기.
+- 루틴 기록에 `e.rid`·`e.full`(finishRoutine 감싸 FR60 → applyEntry에서 붙임). rollQ60: 놓친 일퀘·루틴 반복 할 일은 ☠ 없이 오늘로.
+- **루틴 편집**(routinesEditHTML 새로): '📅 언제' 요일 칩·매일·안 정함 → 루틴 반복 할 일(`t.rid`, 목록=r.list) 만들기/고치기/지우기(setRt60), ☑ 일퀘(매일일 때). 단계 밑에 '↳ 끝내면 카드 ⭐ 기록 · ↻/☑도 체크 · ✎ 카드'.
+- **연결 지도 칩**(connCard60/connRt60): 카드 편집 창·행동 정보 창·할 일 상세·루틴 일퀘 정보 창에 같은 칩(↻/☑ 반복 할 일 열기 · ⏱ 루틴 n단계 · 🍬 코스 · ⚔ · 📋 연결된 할 일 · '＋ 반복 정하기'). data-x60task / data-x60rt / data-x60rep.
+- **할 일 상세 🃏 칸** = '카드 · 루틴 연결': `#x60Rid`(루틴 고르면 aid 지움, 카드 있으면 루틴 못 고름), ☑ 일퀘(매일 반복이면 무엇이든; 카드 습관은 기존 habInfoHTML), 이어진 곳 칩, 루틴이면 ⏱ 지금 시작·✎ 루틴 편집.
+- 카드에 `a.why`(📝 이 행동은 한 줄) — 편집 창 맨 위. 정보 창: 같은 안내 문구 대신 a.why + 이어진 곳 + 💡 tip60(연속·처음·오래 안 함·자주 하는데 반복 없음 등).
+- 📜 전투 기록 calc59 새로: **원점수 → 더한 것 → 받음**(XP·골드·컨디션 글자로). 점수 0인 '일퀘:' 줄은 숨기고 그 일퀘를 채운 행동/할 일 줄에 '☑ 일퀘 칸 채움'(Q60). 루틴 줄은 완주 보너스 원점수 + 속도.
+- '⚡ 퀵' → '🍃 짧게', '무거움' → '길게'(EFFORTS 라벨, #짧게·#길게 태그도 인식, 뽑기 프리셋 이름 C.eff60). ⚡는 용기에만.
+- Errands → Personal(입력칸 예시·LIST_DEF 기본 이름만. 사용자 목록 이름은 사용자가 이미 바꿈).
+- 도파민 편집: 스마트 거르기(DF60: 모두·👍 잘 맞았던·처음 해볼 것·⏱10분 안·↻ 습관·⚔ 용기·💤 30일 안 함) · 영역 · 보이는 칸 · n/전체 보임 · 거르기 풀기. 거르는 중엔 칸 안 순서 끌기 끔.
+- 돌아보기 '↻ 반복 지킨 날': 행 = 지금 열린 ↻ 습관(카드+반복)·⏱ 루틴 반복·☑ 일퀘(위로). **만든 날(t.created) 전은 빈칸.** 반복을 끄면 행이 빠짐(기록은 남음).
+- **빠른 추가 창** `?quick=1`: html.qa60이면 앱 화면 숨기고 입력칸만(로그인 화면은 보임). Enter=추가하고 닫기(저장 대기 후 window.close), Shift+Enter=추가하고 계속, Esc=닫기. 불러오기 전 입력은 줄 세웠다가(QAQ60) ready·tasksReady 뒤 render에서 넣음. 앱 안에서도 Ctrl+Shift+A = 빠른 추가 시트. 바탕화면 단축키는 `tools/quickadd-setup.ps1`(시작 메뉴 바로 가기 + Hotkey CTRL+SHIFT+A, chrome/edge --app).
+- 홈: '배치 끝' 때 `C.homeMine60={at,h}` 저장, 배치 화면에 '↺ 내 배치' 버튼. (업데이트가 홈을 되돌리는 코드는 없음 — 시험함. 원인은 v5.9에서 고친 옛 기기 사본 덮어쓰기로 봄.)
+- **3단계 ①**: BOSSES 이름 바꿈(무한 스크롤 슬라임→망설임의 안개, 야식 고블린→무기력 늪지기, 불안 안개 색만). weekState 감싸 ⚔ 용기 XP = 치명타(한 번 더 데미지, s.crit). **장비 상점**(상점 맨 위 #gear60): GEAR60(투구·갑옷·무기·방패·피부·배경, at=[x,y] 아바타 픽셀 좌표), `C.gear60={own,eq,got}`, 사기 = buy 엔트리. spriteSVG 새로(배경 → 그림자 → 방패·몸·갑옷·투구·무기, 피부는 사람형 S만). 보스 전리품: 처치 기록 있는 주마다 BOSS 이름의 drop 장비(옛 이름은 BOSS_OLD60로).
+
 ## 아직 안 한 요청 (사용자 요청 기준, 매 릴리스마다 갱신해서 답변에 붙이기)
-- 2단계: v5.9로 끝. 사용자 확인 받기(돌아보기 새 메뉴를 계속 쓸지 · 화면 배치).
-- 상점 → 3단계 아바타 상점으로 골드 소모처(아직).
-- 목적 점검에서 나온 것(제안): '오늘의 용기 한 가지'를 오늘 목록 맨 위에 / ⚔ 용기 카드가 아직 0개 → 사용자와 같이 정하기 (주간 돌아보기는 v5.9에서 만듦)
-- 3단계: 아바타 꾸미기 상점 · 보스 확장(습관형 보스 이름 바꾸기) · 도파민 디저트 골드 스위치(기록 2주 뒤 판단)
+- 2단계: 끝. 사용자 확인 받기(돌아보기 새 메뉴를 계속 쓸지 · 화면 배치).
+- 3단계 ② (다음): **직접 그린 장비**(16칸 픽셀 그리기 → GEAR 형식으로 C.gear60.custom에 저장) · 보스 확장(보스마다 약점·대사, 처치 연출) · 도파민 디저트 골드 스위치(기록 2주 뒤 판단, 기본 꺼짐) · 장비 효과는 넣을지 사용자와 상의(지금은 꾸미기만).
+- 목적 점검에서 나온 것(제안): '오늘의 용기 한 가지'를 오늘 목록 맨 위에 / ⚔ 용기 카드가 아직 0개 → 사용자와 같이 정하기
+- 하나로 잇기 후속(제안): 오늘 화면에서 루틴 일퀘 누르면 사냥 바로 시작되는지 사용자 확인 · '일퀘 (매일)' 편집 탭이 카드 습관만 보여줌 → 루틴·할 일 일퀘도 한 목록에.
 - 본 앱 승격("반영해" 때) — v4.4 → v5.x는 마이그레이션이 많으니 승격 전 백업 필수
 
 ## 1단계 마무리 (v5.7에서 끝남 — 기록용)
