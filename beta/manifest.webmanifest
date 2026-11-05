@@ -1,7 +1,7 @@
 {
-  "name": "습관 퀘스트 β",
-  "short_name": "습관퀘스트β",
-  "description": "좋은 행동은 쌓이고 나쁜 행동은 오늘을 깎는 생활 RPG",
+  "name": "해비티카틱 β",
+  "short_name": "해비티카틱β",
+  "description": "할 일을 하면 게임이 진행되는 생활 RPG",
   "lang": "ko",
   "start_url": "./",
   "scope": "./",

@@ -1,4 +1,4 @@
-// Firebase backend for 습관 퀘스트 (포켓 노트·어항 일지와 같은 Firebase 프로젝트, 기록은 자기 폴더에): 로그인, Firestore 저장(오프라인에서도 동작).
+// Firebase backend for 해비티카틱 (포켓 노트·어항 일지와 같은 Firebase 프로젝트, 기록은 자기 폴더에): 로그인, Firestore 저장(오프라인에서도 동작).
 const V = '10.12.2';
 const base = `https://www.gstatic.com/firebasejs/${V}/`;
 const $ = s => document.querySelector(s);
@@ -93,7 +93,7 @@ async function start() {
     return out;
   }
   async function importAll(data) {
-    if (!data || typeof data !== 'object' || !data.game) throw new Error('습관 퀘스트 백업 파일이 아니에요');
+    if (!data || typeof data !== 'object' || !data.game) throw new Error('해비티카틱 백업 파일이 아니에요');
     const old = await F.getDocs(F.collection(fs, `${root()}/days`));
     let batch = F.writeBatch(fs), n = 0;
     const flush = async () => { if (n) { await batch.commit(); batch = F.writeBatch(fs); n = 0; } };
