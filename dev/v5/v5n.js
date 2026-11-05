@@ -484,3 +484,5 @@ function homePresetsBar(){
 document.addEventListener('click',e=>{const b=e.target.closest('[data-x57hpre]');if(!b)return;e.preventDefault();e.stopPropagation();homePreset(b.dataset.x57hpre)},true);
 document.addEventListener('change',e=>{if(e.target.id!=='x57HMini')return;e.stopPropagation();document.body.classList.toggle('hmini',e.target.checked)},true);
 {const _ah=applyHomeEdit;applyHomeEdit=function(){homePresetsBar();_ah();if(!ui.homeEdit){document.body.classList.remove('hmini');const c=$('x57HMini');if(c)c.checked=false}}}
+// 나쁜 행동을 기록하면: 다음엔 그 순간에 꺼낼 대신할 것 (벌만 주고 끝내지 않기)
+{const _da=doAction;doAction=function(a,ctx={}){_da(a,ctx);try{if(a&&a.type==='bad'&&!a.link)setTimeout(()=>toastAct(`기록했어요. 다음에 당길 땐 대신할 것부터 볼까요?`,'🍬 지금 어때?',()=>openDopaNow('urge'),6000),900)}catch(e){console.error(e)}}}
