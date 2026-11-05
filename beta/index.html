@@ -4,7 +4,7 @@
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
   if(location.pathname.includes('/beta/')){document.title='습관 퀘스트 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
-  if('serviceWorker' in navigator&&location.protocol==='https:')window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));})();
+  if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
 <title>습관 퀘스트</title>
@@ -706,6 +706,67 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none!importa
 @media (max-width:600px){.mc .cchip b{display:none}}
 .log li .note{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .trow{-webkit-touch-callout:none}
+
+/* v5.1 */
+body.booting .wrap>*:not(.status),body.booting .hud-main,body.booting .bnav-in{visibility:hidden}
+body.booting::after{content:"불러오는 중…";position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);color:var(--muted);font-size:14px}
+.trow .tx .g{color:var(--gold);font-weight:600}
+.areac{font-size:11px;padding:0 5px;border-radius:5px;border:1px dashed var(--line)}
+.tsplit,.tcal{display:none}
+body.split .wrap{max-width:none}
+body.split .shell{grid-template-columns:62px minmax(0,1fr)}
+body.split .side{padding-left:6px;padding-right:6px}
+body.split .side a,body.split .side button.sl{font-size:0;justify-content:center;padding:10px 0}
+body.split .side a .ico,body.split .side button.sl .ico{width:22px;height:22px}
+body.split .side .sep{margin:8px 2px}
+body.split .tlayout{grid-template-columns:210px var(--listw,minmax(360px,1fr)) 10px minmax(440px,1.4fr);gap:10px}
+body.split .tsplit{display:block;cursor:col-resize;border-radius:5px;align-self:stretch;min-height:200px;background:linear-gradient(to right,transparent 4px,var(--line) 4px,var(--line) 6px,transparent 6px)}
+body.split .tsplit:hover{background:linear-gradient(to right,transparent 3px,var(--accent) 3px,var(--accent) 7px,transparent 7px)}
+body.split .tcal{display:block;position:sticky;top:72px;align-self:start;max-height:calc(100vh - 84px);overflow:auto;min-width:0}
+body.split .callay{grid-template-columns:minmax(0,1fr)}
+body.split #calHelp{display:none}
+.tgcol{background:none}
+.tgcol .hl{position:absolute;left:0;right:0;height:1px;background:var(--line);pointer-events:none}
+.tgcol .hl.thick{height:2px;background:color-mix(in srgb,var(--ink) 45%,transparent)}
+.foldband{position:absolute;left:0;right:0;top:0;border:0;border-bottom:2px dashed var(--line);background:repeating-linear-gradient(135deg,var(--panel2) 0 6px,var(--track) 6px 12px);color:var(--muted);font-size:11px;cursor:pointer;z-index:1;padding:0}
+.tghours span{white-space:nowrap}
+#calFilterBtn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:700}
+.order .or.hrow{grid-template-columns:18px auto 1fr auto auto}
+.order .or.nrow{grid-template-columns:auto 1fr auto auto auto}
+.order .hand{cursor:grab;touch-action:none;color:var(--muted);user-select:none;text-align:center}
+.arena2{display:grid;grid-template-columns:1fr auto 1.3fr;gap:8px;align-items:center}
+.hero2,.boss2{display:grid;justify-items:center;gap:2px;text-align:center}
+.hero2 svg{width:78px;height:84px}
+.boss2 svg{width:84px;height:84px}
+.boss2 .track{width:100%;max-width:150px}
+.boss2.dead svg{filter:grayscale(1);opacity:.6}
+.vs{font-family:var(--pixel);color:var(--bad);font-size:16px}
+.minions{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.mini{width:30px;height:28px;border:0;background:none;padding:0;cursor:pointer}
+.mini svg{width:100%;height:100%}
+.mini.dead{opacity:.45}
+.bfx{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:66;pointer-events:none}
+@media (min-width:960px){.bfx{bottom:90px}}
+.bfx-in{display:flex;align-items:center;gap:6px;background:color-mix(in srgb,var(--panel) 92%,transparent);border:2px solid var(--accent);border-radius:16px;padding:6px 12px;box-shadow:0 8px 24px color-mix(in srgb,var(--ink) 25%,transparent);position:relative}
+.bfx-in.bad{border-color:var(--bad)}
+.bfx-in svg{width:46px;height:48px;display:block}
+.bfx-in .slash{font-size:22px}
+.bfx-in .dmg{font-family:var(--display);font-size:22px;color:var(--bad);white-space:nowrap}
+.bfx-in.bad .dmg{color:var(--brave)}
+.bfx-in .gl{font-family:var(--mono);font-weight:700;color:var(--gold)}
+.bfx-in.go{animation:bfxin .25s ease-out}
+.bfx-in.go .bh{animation:lunge .5s .1s}
+.bfx-in.go .bt2{animation:hit .3s .35s}
+.bfx-in.go .slash{animation:slashA .5s .15s both}
+@keyframes bfxin{from{transform:translateY(20px) scale(.9);opacity:0}to{transform:none;opacity:1}}
+@keyframes lunge{40%{transform:translateX(16px)}}
+@keyframes slashA{0%{transform:scale(.3) rotate(-40deg);opacity:0}50%{transform:scale(1.4) rotate(10deg);opacity:1}100%{transform:scale(1);opacity:1}}
+.dopa{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.course{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:4px;align-content:start;background:var(--panel2)}
+.dlist{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.ditem{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer;display:flex;gap:5px;color:var(--ink)}
+.ditem:hover{border-color:var(--accent)}
+@media (prefers-reduced-motion:reduce){.bfx-in.go,.bfx-in.go *{animation:none!important}}
 </style>
 
 <header class="hud" id="hud">
@@ -742,9 +803,10 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none!importa
       <div class="hblock" data-hid="brave"><button class="bravebtn" id="braveHome" data-info="bravebtn"><span class="big">⚡</span><span><b>용기 냈어요</b><span class="quote" id="braveQuote" style="display:block"></span></span><span class="chip br" id="braveHomeXp"></span></button></div>
       <div class="hblock" data-hid="quick"><div class="panel"><div class="ptitle"><h2>빠른 기록</h2><span class="row" style="gap:2px"><button class="qbtn" data-guide="once" aria-label="설명">?</button><button class="colbtn" data-collapse="quick" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div>
         <form class="quick" id="quickForm"><input id="qName" maxlength="60" placeholder="방금 한 일 (예: 어항 청소, 친구 이사 도와줌)" enterkeyhint="done" aria-label="빠른 기록" list="qNames" autocomplete="off"><datalist id="qNames"></datalist>
-          <div class="row"><select id="qType" aria-label="종류"><option value="good">▲ 좋은</option><option value="brave">⚡ 용기</option><option value="bad">▼ 나쁜</option></select><select id="qArea" aria-label="영역"></select><select id="qSize" aria-label="크기"><option value="s">작은 일 +5</option><option value="m" selected>보통 일 +10</option><option value="l">큰 일 +20</option></select>
+          <div class="row"><select id="qType" aria-label="종류"><option value="good">▲ 좋은</option><option value="brave">⚡ 용기</option><option value="bad">▼ 나쁜</option><option value="happy">✨ 행복</option></select><select id="qArea" aria-label="영역"></select><select id="qSize" aria-label="크기"><option value="s">작은 일 +5</option><option value="m" selected>보통 일 +10</option><option value="l">큰 일 +20</option></select>
           <span style="flex:1"></span><button type="submit" class="btn sm" name="how" value="done">✓ 했어요</button><button type="submit" class="btn sm ghost" name="how" value="todo">할 일로</button></div></form>
         <p class="tiny muted" style="margin:6px 0 0" id="qHelp">습관 이름이면 그 습관으로, 아니면 '그냥 한 일'로 기록돼요(습관 목록에 안 쌓여요).</p></div></div>
+      <div class="hblock" data-hid="battle"><div class="panel"><div class="ptitle"><h2>⚔ 전투</h2><span class="row" style="gap:2px"><span class="tiny muted" id="btLbl"></span><button class="colbtn" data-collapse="battle" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div id="battleBox"></div></div></div>
       <div class="hblock" data-hid="today"><div class="panel htoday"><div class="ptitle"><h2>오늘 할 일</h2><span class="row" style="gap:2px"><span class="small muted num" id="htCount"></span><a class="small" href="#cal" style="color:var(--accent)">캘린더</a><button class="colbtn" data-collapse="today" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div>
         <div id="hQuest"></div>
         <form class="tadd" data-taddform="home"><div class="in"><input id="htAdd" maxlength="120" placeholder="할 일 추가 (예: 내일 3시 씨네스트 30분 #퀵 !!)" enterkeyhint="done" aria-label="오늘 할 일 추가" autocomplete="off"><button class="btn sm" type="submit">추가</button></div><div class="parse" id="htParse"></div></form>
@@ -891,17 +953,21 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none!importa
           <div id="tList"></div>
         </div>
       </div>
+      <div class="tsplit" id="tSplit" title="끌어서 너비 바꾸기" aria-hidden="true"></div>
+      <div class="tcal" id="tCalSlot"></div>
     </div>
   </section>
 
   <!-- 캘린더 -->
   <section class="view" data-view="cal" hidden>
+    <div id="calPane" class="stack">
     <div class="panel"><div class="calbar"><div class="row"><button class="btn ghost sm" data-calnav="-1" aria-label="이전">◀</button><h2 id="calTitle"></h2><button class="btn ghost sm" data-calnav="1" aria-label="다음">▶</button><button class="btn ghost sm" data-calnav="0">오늘</button></div>
-      <div class="row"><span class="seg3" id="calModes"></span><label class="row tiny muted" style="gap:4px"><input type="checkbox" id="calActual" style="width:auto"> 실제 기록</label></div></div>
+      <div class="row"><span class="seg3" id="calModes"></span><button class="btn ghost sm" id="calFilterBtn">필터</button><label class="row tiny muted" style="gap:4px"><input type="checkbox" id="calActual" style="width:auto"> 실제 기록</label></div></div>
       <p class="help" id="calHelp" style="margin:6px 0 0"></p></div>
     <div class="callay">
       <div class="stack" style="min-width:0"><div id="calMain"></div><div id="calDay"></div></div>
       <aside class="panel tray" id="calTray" data-drop="tray"></aside>
+    </div>
     </div>
   </section>
 
@@ -921,6 +987,7 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none!importa
       <div class="panel"><div class="ptitle"><h2>⏱ 루틴 사냥</h2><a class="small" href="#edit" data-goedit="routines" style="color:var(--accent)">루틴 편집</a></div><p class="help">단계마다 목표 시간이 있어요. 빨리 끝낼수록 보상이 커요.</p><div class="stack" id="gRoutines" style="gap:8px"></div></div>
       <div class="panel"><div class="ptitle"><h2>최근 뽑기</h2></div><ul class="log" id="gHist"></ul></div>
     </div>
+    <div class="panel" id="dopaPanel"><div class="ptitle"><h2>🍬 도파민 메뉴</h2><span class="row" style="gap:4px"><button class="btn sm" data-gquickdopa="1">🍬 3장 뽑기</button><a class="small" href="#edit" data-goedit="actions" style="color:var(--accent)">편집</a></span></div><p class="help" style="margin:0 0 8px">시작부터 기분 좋아지는 것들이에요. 코스마다 골라 ⏱ 사냥하거나 바로 기록해요. 행동 편집에서 '도파민 코스'를 정하면 여기에 나와요.</p><div id="gDopa"></div></div>
   </section>
 
   <section class="view" data-view="edit" hidden>
@@ -959,6 +1026,7 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none!importa
 <div class="snack" id="snack" hidden></div>
 <div class="hunt" id="hunt" hidden></div>
 <button class="huntpill" id="huntPill" hidden></button>
+<div class="bfx" id="bfx" hidden aria-hidden="true"></div>
 
 <div class="modal" id="levelup" hidden><div class="card" role="dialog" aria-label="알림"><div class="muted" id="luKind">레벨 업</div><div class="big" id="luLv"></div><div class="ic" id="luIc"></div><div id="luTxt"></div><button class="btn" id="luOk">좋아요</button></div></div>
 <div class="modal tour" id="tour" hidden><div class="card" role="dialog" aria-label="처음 안내"><div id="tourBody"></div><div class="dots" id="tourDots"></div><div class="spread"><button class="btn ghost sm" id="tourSkip">건너뛰기</button><button class="btn" id="tourNext">다음</button></div></div></div>
@@ -1080,12 +1148,13 @@ const DEFAULT_CONFIG={
   avatar:{kind:'director',outfit:'#2e9a4a',name:'walkinglikeozu'},
   tourSeen:false,
   braveQuotes:[{id:'bq1',text:'준비는 영원히 되지 않아. 끼어들어!'},{id:'bq2',text:'걱정하지 말고 시도하라. 더 빠르게 시도하고, 더 낫게 실패하라. 어차피 운이고 기세다.'}],
-  ui:{skin:'forest',mode:'system',sheet:'smart',cal:{mode:'month',actual:true},tasks:{sel:'today',group:'auto',sort:'due'},list:{filter:'good',group:'area',sort:'manual'},nav:['home','tasks','cal','log'],home:[['profile',1],['brave',1],['today',1],['gacha',1],['quick',1],['sugg',1],['quests',1],['week',1],['alerts',1],['todaylog',1],['journey',0],['jars',0],['stats',0],['body',0],['tip',1]],collapsed:{}},
+  ui:{skin:'forest',mode:'system',sheet:'smart',start:'tasks',hide:[],split:true,fx:true,listW:0,cal:{mode:'3day',actual:true,fold:6,foldOn:true,filter:{lists:[],areas:[],tags:[]}},tasks:{sel:'today',group:'auto',sort:'due'},list:{filter:'good',group:'area',sort:'manual'},nav:['home','tasks','cal','log'],home:[['profile',1],['battle',1],['brave',1],['today',1],['gacha',1],['quick',1],['sugg',1],['quests',1],['week',1],['alerts',1],['todaylog',1],['journey',0],['jars',0],['stats',0],['body',0],['tip',1]],collapsed:{}},
   ideas:'',
   lists:[{id:'inbox',name:'📥 받은함',area:'life',folder:''}],
   routines:[MORNING],
   taskXP:{quick:5,mid:12,heavy:25,onTime:3,prio:{0:0,1:2,3:5,5:10}},
   penalty:{same:.5,chain:.25,max:3},
+  happy:{xp:8,gold:3,cond:5},
   chain:{xp:15,gold:10},
   gacha:{mult:1.5,rerollBase:20,giveup:30,f:{src:['task','habit'],effort:[],areas:[],lists:[],due:'today',n:3},presets:[{id:'p1',name:'⚡ 퀵 3장',f:{src:['task','habit'],effort:['quick'],areas:[],lists:[],due:'today',n:3}},{id:'p2',name:'🎲 아무거나 5장',f:{src:['task','habit','routine'],effort:[],areas:[],lists:[],due:'today',n:5}},{id:'p3',name:'🧱 큰 거 3장',f:{src:['task'],effort:['heavy'],areas:[],lists:[],due:'all',n:3}},{id:'p4',name:'💰 경제',f:{src:['task','habit'],effort:[],areas:['money'],lists:[],due:'today',n:3}}],pending:null,quest:null,hist:[]}
 };
@@ -1121,7 +1190,7 @@ const NAV_ITEMS=[['home','홈','오늘 한눈에'],['tasks','할 일','틱틱처
 const SKINS=[['forest','숲','#2f7a4a','#e1f1e6'],['mint','민트','#127f74','#dcf2ef'],['sand','모래','#94642a','#ecf0d8'],['sunset','노을','#c4513d','#ddf0ea'],['rose','장미','#b23e6c','#e1f1e6'],['lavender','라벤더','#6a4bc4','#e6e6fa'],['ink','먹','#2b2f38','#e4e5e8'],['blue','파랑','#3550b8','#e2e9fb']];
 function applyTheme(){const r=document.documentElement;r.dataset.skin=C.ui.skin;if(C.ui.mode==='system')delete r.dataset.theme;else r.dataset.theme=C.ui.mode;
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(r).getPropertyValue('--panel').trim()||'#ffffff'}
-const HOME_BLOCKS={profile:'캐릭터·컨디션',brave:'⚡ 용기 버튼',today:'오늘 할 일',gacha:'🎲 뽑기 · ⏱ 사냥',quick:'빠른 기록',sugg:'지금 하면 좋은 것',quests:'오늘의 일퀘',week:'이번 주 (보스·용기 목표)',alerts:'경보판',todaylog:'오늘 한 일',journey:'여정 (다음 보상)',jars:'유리병 미리보기',stats:'최근 7일 요약',body:'몸무게',tip:'오늘의 팁'};
+const HOME_BLOCKS={profile:'캐릭터·컨디션',battle:'⚔ 전투 (보스·쫄따구)',brave:'⚡ 용기 버튼',today:'오늘 할 일',gacha:'🎲 뽑기 · ⏱ 사냥',quick:'빠른 기록',sugg:'지금 하면 좋은 것',quests:'오늘의 일퀘',week:'이번 주 (보스·용기 목표)',alerts:'경보판',todaylog:'오늘 한 일',journey:'여정 (다음 보상)',jars:'유리병 미리보기',stats:'최근 7일 요약',body:'몸무게',tip:'오늘의 팁'};
 
 /* ================= 상태 ================= */
 function clone(o){return JSON.parse(JSON.stringify(o))}
@@ -1156,7 +1225,7 @@ function normConfig(raw){
   if(raw&&raw.goalWeight!=null&&c.weight.goal==null)c.weight.goal=raw.goalWeight;
   if(raw&&raw.diet&&!raw.food){const d=raw.diet;c.food=[{id:'veg',name:'채소 먹은 횟수',kind:'counter',points:+d.veg||5,max:+d.vegMax||3,area:d.area||'body'},{id:'bad',name:'나쁜 식사 횟수',kind:'counter',points:-Math.abs(+d.bad||15),max:9,area:d.area||'body'},{id:'protein',name:'단백질 챙겨 먹음',kind:'check',points:+d.protein||4,max:1,area:d.area||'body'}]}
   delete c.diet;delete c.goalWeight;
-  ['avatar','recovery','dailyBonus','weekly','taskXP','penalty','chain','gacha'].forEach(k=>c[k]={...DEFAULT_CONFIG[k],...(c[k]||{})});
+  ['avatar','recovery','dailyBonus','weekly','taskXP','penalty','chain','gacha','happy'].forEach(k=>c[k]={...DEFAULT_CONFIG[k],...(c[k]||{})});
   c.taskXP.prio={...DEFAULT_CONFIG.taskXP.prio,...(c.taskXP.prio||{})};
   ['actions','areas','dailies','watches','shop','food','energyBase','courage','courageSizes','jars','roadmap','braveQuotes','lists','routines'].forEach(k=>{if(!Array.isArray(c[k]))c[k]=clone(DEFAULT_CONFIG[k])});
   if(!c.jars.length)c.jars=clone(DEFAULT_CONFIG.jars);
@@ -1198,12 +1267,18 @@ function normConfig(raw){
   c.jars.forEach((j,i)=>{delete j.color;delete j.shape;if(!Array.isArray(j.types)||!j.types.length)j.types=[T('base',j.name,COLORS[i%12][0],SHAPES[i%8][0])];j.types.forEach(t=>{t.size=t.size||'m';t.color=t.color||'c1';t.shape=t.shape||'circle'});j.hint=j.hint||'';j.xp=j.xp??10});
   c.actions.forEach(a=>{if(a.type==='good'&&a.marble==null)a.marble=''});
   const du=DEFAULT_CONFIG.ui,u=c.ui&&typeof c.ui==='object'?c.ui:{};
-  c.ui={skin:SKINS.some(x=>x[0]===u.skin)?u.skin:du.skin,mode:['system','light','dark'].includes(u.mode)?u.mode:'system',list:{...du.list,...(u.list||{})},nav:Array.isArray(u.nav)?u.nav.filter(x=>NAV_ITEMS.some(n=>n[0]===x)).slice(0,5):clone(du.nav),home:Array.isArray(u.home)?u.home.filter(h=>du.home.some(d=>d[0]===h[0])):clone(du.home),collapsed:u.collapsed&&typeof u.collapsed==='object'?u.collapsed:{},sheet:['smart','always'].includes(u.sheet)?u.sheet:'smart',cal:{...du.cal,...(u.cal||{})},tasks:{...du.tasks,...(u.tasks||{})}};
+  c.ui={skin:SKINS.some(x=>x[0]===u.skin)?u.skin:du.skin,mode:['system','light','dark'].includes(u.mode)?u.mode:'system',list:{...du.list,...(u.list||{})},nav:Array.isArray(u.nav)?u.nav.filter(x=>NAV_ITEMS.some(n=>n[0]===x)).slice(0,5):clone(du.nav),home:Array.isArray(u.home)?u.home.filter(h=>du.home.some(d=>d[0]===h[0])):clone(du.home),collapsed:u.collapsed&&typeof u.collapsed==='object'?u.collapsed:{},sheet:['smart','always'].includes(u.sheet)?u.sheet:'smart',start:VIEWS.includes(u.start)?u.start:du.start,hide:Array.isArray(u.hide)?u.hide:[],split:u.split!==false,fx:u.fx!==false,listW:+u.listW||0,cal:{...du.cal,...(u.cal||{})},tasks:{...du.tasks,...(u.tasks||{})}};
   if(!c.ui.home.some(h=>h[0]==='quick')){const i=c.ui.home.findIndex(h=>h[0]==='brave');c.ui.home.splice(i>=0?i+1:1,0,['quick',1])}
   if(c._navV5){delete c._navV5;const n=c.ui.nav.filter(x=>!['home','tasks','cal'].includes(x));c.ui.nav=['home','tasks','cal',...n].slice(0,4);
     ['today','gacha'].forEach(id=>{const k=c.ui.home.findIndex(h=>h[0]===id);if(k>=0)c.ui.home.splice(k,1)});const hi=c.ui.home.findIndex(h=>h[0]==='brave');c.ui.home.splice(hi>=0?hi+1:1,0,['today',1],['gacha',1])}
+  if(!(raw&&raw.v>=6)){
+    seedDopa(c);
+    c.ui.start='tasks';c.ui.cal.mode='3day';c.ui.cal.fold=6;c.ui.cal.foldOn=true;
+    if(!c.ui.home.some(h=>h[0]==='battle')){const i=c.ui.home.findIndex(h=>h[0]==='profile');c.ui.home.splice(i>=0?i+1:0,0,['battle',1])}
+    if(raw)c.v51news=1;
+  }
   du.home.forEach(d=>{if(!c.ui.home.some(h=>h[0]===d[0]))c.ui.home.push(clone(d))});
-  c.v=5;
+  c.v=6;
   return c;
 }
 function fallbackType(jid,c=C){const j=c.jars.find(x=>x.id===jid);if(!j)return 'base';return (j.types.find(t=>t.id==='etc')||j.types[0]||{id:'base'}).id}
@@ -1242,16 +1317,18 @@ async function flush(n){
 function setSync(t){$('syncState').textContent=t}
 let rawCfgV=null,rawProgHasMarbles=null;
 async function boot(){
+  if(!snapLoad())document.body.classList.add('booting');
   render();
   let d=null;
   try{d=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){d=null}
   const afterLoad=()=>{
-    if(rawCfgV!==null&&rawCfgV<5){save('config');}
+    if(rawCfgV!==null&&rawCfgV<6){save('config');}
     if(C._pendingTasks){const ps=C._pendingTasks;delete C._pendingTasks;ps.forEach(p=>saveTask(newTask({...p,due:dateKey()})));save('config');if(ps.length)later(()=>popup('할 일로 옮겼어요','✅',`한 번짜리 행동·용기 ${ps.length}개를 '할 일'로 옮겼어요.<br><span class="muted">습관 목록에는 이제 반복하는 것만 남아요.</span>`,'v5'))}
+    if(C.v51news){delete C.v51news;save('config');if(!C.v5news)later(()=>popup('v5.1','🛡️','<b>틱틱처럼 3단 화면</b>(넓은 화면), 캘린더 시간 접기·필터, 🍬 도파민 메뉴, ⚔ 사냥 고르기, 보스·쫄따구 전투, ✨ 행복 기록이 생겼어요.','v5.1'))}
     if(C.v5news){delete C.v5news;save('config');later(()=>popup('새 버전','🛡️','<b>할 일 · 캘린더 · 🎲 뽑기 · ⏱ 사냥</b>이 생겼어요.<br><span class="muted">틱틱 기록은 더보기 → 틱틱에서 가져오기. 처음 안내에서 한눈에 볼 수 있어요.</span>','v5'))}
     runLater();
     if(rawProgHasMarbles===false){save('progress');}
-    rawCfgV=5;rawProgHasMarbles=true;
+    rawCfgV=6;rawProgHasMarbles=true;
   };
   if(d){
     db=d;mode='db';
@@ -1395,7 +1472,7 @@ function effApply(e){
   if(isBrave(e))P.courage+=e.pts||1;
 }
 function effRemove(e){
-  P.gold=Math.max(0,P.gold-(e.gold||0));P.xp=Math.max(0,P.xp-(e.xp||0));
+  P.gold-=e.gold||0;P.xp=Math.max(0,P.xp-(e.xp||0));
   if(e.jar&&P.marbles[e.jar]){const arr=P.marbles[e.jar];for(let k=0;k<(e.mn||1)&&arr.length;k++){const i=arr.lastIndexOf(e.mt||fallbackType(e.jar));arr.splice(i>=0?i:arr.length-1,1)}}
   if(isBrave(e))P.courage=Math.max(0,P.courage-(e.pts||1));
 }
@@ -1430,7 +1507,10 @@ function syncWeek(day,touched){
 let laterQ=[];function later(f){laterQ.push(f)}
 function commit(fn,extraDays){
   const before=levelOf(P.xp).lv,bt=braveTitle().name;
+  const _d0=curDay(),_ids=new Set(_d0.entries.map(x=>x.id));
   fn();
+  {const ne=curDay().entries.filter(x=>!_ids.has(x.id)&&!['chest','boss','wbrave','badge','buy','quest'].includes(x.kind));const xp=ne.reduce((s,x)=>s+(x.xp||0),0),gd=ne.reduce((s,x)=>s+Math.max(0,x.gold||0),0),bad=ne.find(x=>x.type==='bad');
+   if(bad)setTimeout(()=>battleFx(Math.abs(bad.cond||0),{bad:true}),60);else if(xp>0)setTimeout(()=>battleFx(xp,{kill:ne.some(x=>x.tid),gold:gd}),60)}
   const day=curDay(),touched=new Set([day.date,...(extraDays||[])]);
   syncChain(day);syncQuests(day);syncWeek(day,touched);
   const got=checkBadges(day);
@@ -1646,9 +1726,10 @@ function render(){
   $('hudHp').style.width=ov+'%';$('hudHp').className='fill hp'+(ov<35?' low':'');$('hudHpV').textContent=ov+'/100';
   $('hudXp').style.width=(L.rem/L.need*100)+'%';$('hudXpV').textContent=L.rem+'/'+L.need;
 
-  applyTheme();renderNav();applyHome();
+  placeCal();applyTheme();renderNav();applyHome();
+  if(ready){document.body.classList.remove('booting');snapSave()}
   renderHome(day,av,ov,L,items,mood,base);
-  renderHomeV5();renderTasks();renderCal();renderGacha();
+  renderHomeV5();renderBattle();renderTasks();renderCal();renderGacha();renderDopa();
   if(ready&&ui.chainDay!==dateKey()){ui.chainDay=dateKey();const y=addDays(dateKey(),-1);if(DAYS[y]&&isClean(DAYS[y])&&badDay(addDays(y,-1))&&!today().entries.some(e=>e.kind==='chain'))setTimeout(()=>{const k=ui.off;ui.off=0;commit(()=>{});ui.off=k},0)}
   renderLog();renderJars();renderStats();renderRoad(L);renderBody();renderShop();renderEdit();renderGuide();renderMore();
   document.querySelectorAll('.chk,.quest .box,.stepper button,#jarForm button,#wForm button,#braveForm button,[data-energy],[data-foodcheck],button.sug,#braveHome').forEach(b=>b.disabled=!ready);
@@ -1667,7 +1748,7 @@ function renderHome(day,av,ov,L,items,mood,base){
   const qs=C.braveQuotes.filter(q=>q.text&&q.text.trim()),qq=qs.length?qs[Math.floor(toUTC(day.date)/864e5)%qs.length].text:'결과와 상관없이.';
   $('braveQuote').textContent=qq;$('braveQuote2').textContent=qs.length?'“'+qq+'”':'';
   {const qa=$('qArea');if(document.activeElement!==qa){const v=qa.value;qa.innerHTML=C.areas.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');if(v)qa.value=v}
-   const ty=$('qType').value;qa.hidden=ty==='brave';$('qSize').hidden=ty!=='good';
+   const ty=$('qType').value;qa.hidden=ty==='brave';$('qSize').hidden=ty!=='good';$('qHelp').textContent=ty==='happy'?`행복했던 순간을 적어요. 생산성이 아니어도 좋아요 · XP +${C.happy.xp}, 🪙${C.happy.gold}, '좋았다' 병에 구슬`:`습관 이름이면 그 습관으로, 아니면 '그냥 한 일'로 기록돼요(습관 목록에 안 쌓여요).`;
    const dl=(ty==='brave'?C.courage:C.actions.filter(a=>a.type===(ty==='bad'?'bad':'good'))).map(a=>`<option value="${esc(a.name)}">`).join('');if($('qNames').innerHTML!==dl)$('qNames').innerHTML=dl}
   // 홈 선택 블록
   const nx=nextStage(L.lv),up=C.roadmap.filter(r=>r.lv>L.lv).sort((a,b)=>a.lv-b.lv).slice(0,3);
@@ -1704,7 +1785,7 @@ function renderHome(day,av,ov,L,items,mood,base){
 function logRow(date,e){
   const j=e.jar?C.jars.find(x=>x.id===e.jar):null,t=j?typeOf(j,e.mt):null;
   const cls=e.kind==='buy'?'buy':isBrave(e)?'brave':(e.type==='bad'?'bad':'good');
-  const mk=isBrave(e)?'⚡':e.kind==='jar'?mGlyph(t):e.kind==='buy'?'◇':e.kind==='quest'?'☑':e.kind==='chest'?'🎁':e.kind==='boss'?'⚔️':e.kind==='wbrave'?'🔥':e.kind==='badge'?'🏅':e.kind==='weigh'?'⚖':e.kind==='task'?'✓':e.kind==='free'?'•':e.kind==='routine'?'⏱':e.kind==='chain'?'⛓':e.type==='bad'?'▼':'▲';
+  const mk=isBrave(e)?'⚡':e.kind==='jar'?mGlyph(t):e.kind==='buy'?'◇':e.kind==='quest'?'☑':e.kind==='chest'?'🎁':e.kind==='boss'?'⚔️':e.kind==='wbrave'?'🔥':e.kind==='badge'?'🏅':e.kind==='weigh'?'⚖':e.kind==='task'?'✓':e.kind==='free'?'•':e.kind==='routine'?'⏱':e.kind==='chain'?'⛓':e.kind==='happy'?'✨':e.type==='bad'?'▼':'▲';
   const ar=C.areas.find(a=>a.id===e.area);
   const fx=[e.cond?(ar?ar.name:'')+' '+(e.cond>0?'+':'−')+Math.abs(e.cond):'',e.gold?gtx(e.gold):'',e.xp?'XP +'+e.xp:''].filter(Boolean).join(' ');
   const q=e.kind==='quest'?C.dailies.find(x=>x.id===e.qid):null;
@@ -1728,9 +1809,9 @@ function renderLog(){
   $('braveActs').innerHTML=ccList.map(k=>{const n=day.entries.filter(e=>e.cid===k.id).length,mt=marbleFromLink(k.marble),j=mt.jar?C.jars.find(x=>x.id===mt.jar):null;
     return `<div class="act brave" data-info="kbrave:${k.id}" tabindex="0" role="button" aria-label="${esc(k.name)} 설명·편집"><button class="chk ${n?'on':''}" data-brave="${k.id}" aria-label="${esc(k.name)} 했어요 기록">${n?(n>1?n:'✓'):''}</button><span class="ab"><span class="n">${esc(k.name)}${k.once?' <span class="oncetag">한 번</span>':''}</span></span><span class="meta">${rowMeta(k.id,`${j?mGlyph(typeOf(j,mt.mt)):''}<span class="xp">+${k.xp}</span>`)}</span></div>`}).join('')||'<div class="empty">아래 ＋로 용기 항목을 추가해요.</div>';
   $('braveSizes').innerHTML=C.courageSizes.map(s=>`<button class="chipbtn" data-bsize="${s.id}" aria-pressed="${ui.braveSize===s.id}">${esc(s.name)} · XP +${s.xp}</button>`).join('');
-  $('actTools').innerHTML=`<span class="seg3">${[['good','▲ 좋은'],['bad','▼ 나쁜'],['all','모두']].map(([v,l])=>`<button data-lfilter="${v}" aria-pressed="${LS.filter===v}">${l}</button>`).join('')}</span><span class="lbl">묶기</span><select id="lgroup" aria-label="묶기">${[['area','영역'],['jar','구슬 병'],['type','좋은·나쁜'],['none','안 묶음']].map(([v,l])=>`<option value="${v}" ${LS.group===v?'selected':''}>${l}</option>`).join('')}</select><span class="lbl">정렬</span>${sortSelect('lsort')}`;
+  $('actTools').innerHTML=`<span class="seg3">${[['good','▲ 좋은'],['bad','▼ 나쁜'],['dopa','🍬 도파민'],['all','모두']].map(([v,l])=>`<button data-lfilter="${v}" aria-pressed="${LS.filter===v}">${l}</button>`).join('')}</span><span class="lbl">묶기</span><select id="lgroup" aria-label="묶기">${[['area','영역'],['jar','구슬 병'],['type','좋은·나쁜'],['none','안 묶음']].map(([v,l])=>`<option value="${v}" ${LS.group===v?'selected':''}>${l}</option>`).join('')}</select><span class="lbl">정렬</span>${sortSelect('lsort')}`;
   $('actHelp').textContent=LS.filter==='bad'?'왼쪽 네모를 누르면 기록돼요. 나쁜 행동은 컨디션·골드를 크게 깎고 보스를 회복시켜요.':'왼쪽 네모 = 했어요 기록, 이름 = 설명·편집. 여러 번 하면 여러 번 눌러요.';
-  const pool=sortList(C.actions.filter(x=>!x.doneAt&&(LS.filter==='all'||x.type===LS.filter)),stat,LS.sort);
+  const pool=sortList(C.actions.filter(x=>!x.doneAt&&(LS.filter==='all'?!x.dopaOnly:LS.filter==='dopa'?!!x.dopa:(x.type===LS.filter&&!x.dopaOnly))),stat,LS.sort);
   let groups;
   if(LS.group==='area')groups=C.areas.map(a=>({key:'a:'+a.id,name:a.name,list:pool.filter(x=>x.area===a.id)}));
   else if(LS.group==='jar')groups=[...C.jars.map(jj=>({key:'j:'+jj.id,name:jj.name+' 병',list:pool.filter(x=>x.marble&&x.marble.split(':')[0]===jj.id)})),{key:'j:',name:'구슬 없음',list:pool.filter(x=>!x.marble||!C.jars.some(jj=>jj.id===x.marble.split(':')[0]))}];
@@ -1782,10 +1863,10 @@ function renderJars(){
 function renderStats(){
   const R=ui.range,ds=R==='all'?Object.keys(DAYS).sort():lastNDates(R),days=ds.map(k=>DAYS[k]).filter(Boolean);
   $('rangeChips').innerHTML=[[7,'7일'],[30,'30일'],[90,'90일'],['all','전체']].map(([v,l])=>`<button class="chipbtn" data-range="${v}" aria-pressed="${String(ui.range)===String(v)}">${l}</button>`).join('');
-  let good=0,bad=0,brave=0,marb=0,chest=0,clean=0,tdone=0,saved=0,spent=0;const withData=days.filter(hasData);
-  days.forEach(d=>{(d.entries||[]).forEach(e=>{if(e.tid)tdone++;if(e.amt){if(e.type==='bad')spent+=+e.amt;else saved+=+e.amt}if(e.kind==='act'&&e.type==='good')good++;if(e.kind==='act'&&e.type==='bad')bad++;if(isBrave(e))brave++;if(e.jar)marb++;if(e.kind==='chest')chest++});if(isClean(d))clean++});
+  let good=0,bad=0,brave=0,marb=0,chest=0,clean=0,tdone=0,saved=0,spent=0,happy=0;const withData=days.filter(hasData);
+  days.forEach(d=>{(d.entries||[]).forEach(e=>{if(e.kind==='happy')happy++;if(e.tid)tdone++;if(e.amt){if(e.type==='bad')spent+=+e.amt;else saved+=+e.amt}if(e.kind==='act'&&e.type==='good')good++;if(e.kind==='act'&&e.type==='bad')bad++;if(isBrave(e))brave++;if(e.jar)marb++;if(e.kind==='chest')chest++});if(isClean(d))clean++});
   const avgC=withData.length?Math.round(avg(withData.map(overallOf))):'—';
-  $('statTiles').innerHTML=[['기록한 날',withData.length+'일'],['⚡ 용기',brave+'번'],['▲ 좋은 행동',good+'번'],['▼ 나쁜 행동',bad+'번'],['✨ 깨끗한 날',clean+'일'],['🔮 구슬',marb+'개'],['🎁 일퀘 상자',chest+'개'],['평균 컨디션',avgC],['✓ 끝낸 할 일',tdone+'개'],['💰 아낀 돈 / 쓴 돈','₩'+saved.toLocaleString()+' / '+spent.toLocaleString()]].map(([k,v],i)=>`<div class="tile" data-info="stat:${['days','brave','good','bad','clean','marble','chest','avg','task','money'][i]}"><span>${k}</span><b class="num">${v}</b></div>`).join('');
+  $('statTiles').innerHTML=[['기록한 날',withData.length+'일'],['⚡ 용기',brave+'번'],['▲ 좋은 행동',good+'번'],['▼ 나쁜 행동',bad+'번'],['✨ 깨끗한 날',clean+'일'],['🔮 구슬',marb+'개'],['🎁 일퀘 상자',chest+'개'],['평균 컨디션',avgC],['✓ 끝낸 할 일',tdone+'개'],['✨ 행복 기록',happy+'번'],['💰 아낀 돈 / 쓴 돈','₩'+saved.toLocaleString()+' / '+spent.toLocaleString()]].map(([k,v],i)=>`<div class="tile" data-info="stat:${['days','brave','good','bad','clean','marble','chest','avg','task','happy','money'][i]}"><span>${k}</span><b class="num">${v}</b></div>`).join('');
   // 순위
   document.querySelectorAll('[data-rk]').forEach(b=>b.setAttribute('aria-pressed',ui.rk===b.dataset.rk));
   const cnt={},last={};days.forEach(d=>(d.entries||[]).forEach(e=>{let key=null;if(ui.rk==='brave'&&isBrave(e))key=e.cid==='free'?'자유: '+(e.note||e.name):(e.cid||e.name);else if(e.kind==='act'&&e.type===ui.rk)key=e.aid||e.name;if(!key)return;cnt[key]=(cnt[key]||0)+1;if(!last[key]||last[key]<d.date)last[key]=d.date}));
@@ -1847,9 +1928,9 @@ function renderNav(){
   const nav=C.ui.nav.filter(x=>NAV_ITEMS.some(n=>n[0]===x)),cur=curView();
   const bn=nav.map(id=>{const n=NAV_ITEMS.find(x=>x[0]===id);return `<a href="#${id}" class="${id==='log'?'rec':''}" aria-current="${cur===id?'page':'false'}"><span class="i">${ic(id)}</span>${n[1]}</a>`}).join('')+`<a href="#more" aria-current="${!nav.includes(cur)?'page':'false'}"><span class="i">${ic('more')}</span>더보기</a>`;
   if($('bnav').innerHTML!==bn)$('bnav').innerHTML=bn;
-  const sd=NAV_ITEMS.map(([id,l])=>`<a href="#${id}" aria-current="${cur===id?'page':'false'}">${ic(id)}${l}</a>`).join('')+`<div class="sep"></div><a href="#more" aria-current="${cur==='more'?'page':'false'}">${ic('more')}계정·백업</a><button class="sl" id="sideSearch">${ic('search')}검색</button><button class="sl" data-goedit="screen">${ic('edit')}테마·메뉴 설정</button>`;
+  const sd=NAV_ITEMS.filter(([id])=>!(C.ui.hide||[]).includes(id)||id===cur).map(([id,l])=>`<a href="#${id}" aria-current="${cur===id?'page':'false'}">${ic(id)}${l}</a>`).join('')+`<div class="sep"></div><a href="#more" aria-current="${cur==='more'?'page':'false'}">${ic('more')}계정·백업</a><button class="sl" id="sideSearch">${ic('search')}검색</button><button class="sl" data-goedit="screen">${ic('edit')}테마·메뉴 설정</button>`;
   if($('side').innerHTML!==sd)$('side').innerHTML=sd;
-  const hidden=NAV_ITEMS.filter(n=>!nav.includes(n[0]));
+  const hidden=NAV_ITEMS.filter(n=>!nav.includes(n[0])&&!(C.ui.hide||[]).includes(n[0]));
   $('moreGrid').innerHTML=(hidden.length?hidden:NAV_ITEMS).map(([id,l,d])=>`<a class="moretile" href="#${id}"><span class="i" style="color:var(--accent)">${ic(id)}</span><b>${l}</b><span>${d}</span></a>`).join('');
 }
 function applyHome(){
@@ -1890,9 +1971,11 @@ function renderEdit(){
       <div class="skins">${SKINS.map(([id,l,c1,c2])=>`<button class="skin" data-skin="${id}" aria-pressed="${C.ui.skin===id}"><span class="sw3"><i style="background:${c1}"></i><i style="background:${c2}"></i></span>${l}</button>`).join('')}</div>
       <div class="row" style="margin-top:10px"><span class="small muted">밝기</span><span class="seg3">${[['system','기기 설정 따라'],['light','밝게'],['dark','어둡게']].map(([v,l])=>`<button data-mode="${v}" aria-pressed="${C.ui.mode===v}">${l}</button>`).join('')}</span></div>
       <h3 style="margin-top:18px">아래 메뉴</h3><p class="help">폰에서 아래에 보일 메뉴를 4개까지 골라요. 나머지는 '더보기'와 왼쪽 위 ☰ 메뉴에 있어요. 넓은 화면(PC·아이패드 가로)에서는 왼쪽에 전체 메뉴가 늘 보여요.</p>
-      <div class="order">${[...nav.map(id=>NAV_ITEMS.find(n=>n[0]===id)),...NAV_ITEMS.filter(n=>!nav.includes(n[0]))].map(([id,l,d])=>{const on=nav.includes(id),i=nav.indexOf(id);return `<div class="or"><input type="checkbox" id="nv-${id}" data-navtoggle="${id}" ${on?'checked':''} ${!on&&nav.length>=4?'disabled':''} aria-label="${l} 아래 메뉴에 보이기"><label for="nv-${id}"><b>${ic(id)} ${l}</b> <span class="tiny muted">${d}</span></label><button class="x" data-navmove="${id}" data-d="-1" ${!on||i===0?'disabled':''} aria-label="위로">↑</button><button class="x" data-navmove="${id}" data-d="1" ${!on||i===nav.length-1?'disabled':''} aria-label="아래로">↓</button></div>`}).join('')}</div>
-      <h3 style="margin-top:18px">홈 화면</h3><p class="help">홈에 보일 칸과 순서를 정해요. 각 칸 제목 옆 ⌄ 버튼으로 접었다 펼 수도 있어요.</p>
-      <div class="order">${C.ui.home.map(([id,on],i)=>`<div class="or"><input type="checkbox" id="hb-${id}" data-hometoggle="${id}" ${on?'checked':''}><label for="hb-${id}">${HOME_BLOCKS[id]||id}</label><button class="x" data-homemove="${id}" data-d="-1" ${i===0?'disabled':''} aria-label="위로">↑</button><button class="x" data-homemove="${id}" data-d="1" ${i===C.ui.home.length-1?'disabled':''} aria-label="아래로">↓</button></div>`).join('')}</div>
+      <div class="order">${[...nav.map(id=>NAV_ITEMS.find(n=>n[0]===id)),...NAV_ITEMS.filter(n=>!nav.includes(n[0]))].map(([id,l,d])=>{const on=nav.includes(id),i=nav.indexOf(id);return `<div class="or nrow"><input type="checkbox" id="nv-${id}" data-navtoggle="${id}" ${on?'checked':''} ${!on&&nav.length>=4?'disabled':''} aria-label="${l} 아래 메뉴에 보이기"><label for="nv-${id}"><b>${ic(id)} ${l}</b> <span class="tiny muted">${d}</span></label><label class="tiny muted row" style="gap:3px;flex-wrap:nowrap" title="PC 왼쪽 메뉴·더보기에 보이기"><input type="checkbox" data-sidehide="${id}" ${(C.ui.hide||[]).includes(id)?'':'checked'} ${id==='home'||id==='edit'?'disabled':''} style="width:auto">메뉴</label><button class="x" data-navmove="${id}" data-d="-1" ${!on||i===0?'disabled':''} aria-label="위로">↑</button><button class="x" data-navmove="${id}" data-d="1" ${!on||i===nav.length-1?'disabled':''} aria-label="아래로">↓</button></div>`}).join('')}</div>
+      <h3 style="margin-top:18px">시작 화면 · 레이아웃</h3><div class="kv" style="margin-top:6px"><label>앱을 열면<select data-uiset="start">${NAV_ITEMS.map(([id,l])=>`<option value="${id}" ${C.ui.start===id?'selected':''}>${l}</option>`).join('')}</select></label><label>넓은 화면(1200px↑) 할 일 탭<select data-uiset="split"><option value="1" ${C.ui.split!==false?'selected':''}>목록 + 캘린더 3단</option><option value="" ${C.ui.split===false?'selected':''}>목록만</option></select></label><label>캘린더 시간 접기<select data-uiset="fold">${[0,5,6,7,8].map(h=>`<option value="${h}" ${(+C.ui.cal.fold||0)===h?'selected':''}>${h?'0~'+h+'시 접기':'안 접기'}</option>`).join('')}</select></label><label>전투 연출<select data-uiset="fx"><option value="1" ${C.ui.fx!==false?'selected':''}>보이기</option><option value="" ${C.ui.fx===false?'selected':''}>끄기</option></select></label></div>
+      <p class="help">아래 메뉴 칸의 '메뉴' 체크를 끄면 PC 왼쪽 메뉴와 더보기에서 숨겨져요(예: 사냥·뽑기를 안 쓸 때).</p>
+      <h3 style="margin-top:18px">홈 화면</h3><p class="help">홈에 보일 칸과 순서를 정해요. 왼쪽 ⋮⋮를 끌어서 순서를 바꿔요. 각 칸 제목 옆 ⌄ 버튼으로 접었다 펼 수도 있어요.</p>
+      <div class="order" data-drop="reorder:home">${C.ui.home.map(([id,on],i)=>`<div class="or hrow" data-rowid="${id}"><span class="hand" data-drag="row:${id}" data-dragmode="now" aria-label="끌어서 순서 바꾸기">⋮⋮</span><input type="checkbox" id="hb-${id}" data-hometoggle="${id}" ${on?'checked':''}><label for="hb-${id}">${HOME_BLOCKS[id]||id}</label><button class="x" data-homemove="${id}" data-d="-1" ${i===0?'disabled':''} aria-label="위로">↑</button><button class="x" data-homemove="${id}" data-d="1" ${i===C.ui.home.length-1?'disabled':''} aria-label="아래로">↓</button></div>`).join('')}</div>
       <div class="row" style="margin-top:10px"><button class="btn ghost sm" id="homeReset">홈 화면 기본값으로</button></div>`;
   }else if(ui.edit==='actions'){h=actionsEditHTML();
   }else if(ui.edit==='routines'){h=routinesEditHTML();
@@ -2020,6 +2103,7 @@ function renderGuide(){
     ${acc('tasks','✅ 할 일 · 캘린더','틱틱 대신',`<ul><li><b>할 일</b> 탭은 틱틱처럼 써요: 목록·폴더·태그·중요도(!·!!·!!!)·반복·하위 할 일·메모.</li><li>빠른 추가에 그냥 말하듯 적어요: <b>내일 3시 씨네스트 30분 #퀵 !! ^Errands 매주 화</b> → 날짜·시각·걸리는 시간·태그·중요도·목록·반복이 알아서 들어가요. <b>⚡</b>를 앞에 붙이면 용기 할 일.</li><li>끝내면 크기(⚡퀵 +${C.taskXP.quick} · 🕓보통 +${C.taskXP.mid} · 🧱무거움 +${C.taskXP.heavy})와 중요도만큼 XP. 제때 끝내면 +${C.taskXP.onTime}. 습관과 연결된 할 일은 그 습관 점수로.</li><li><b>반복</b>: 매일·평일·매주 요일·격주·매월 날짜/몇째 주 요일·매년·<b>주 N회</b>(요일 상관없이 한 주에 N번)·완료한 날부터 N일마다.</li><li><b>☠ 삼진아웃</b>: 오늘이거나 지난 할 일을 더 뒤로 미루면 해골이 하나씩. 3개면 쪼개거나, 버리거나, 가챠로 해치워요.</li><li><b>캘린더</b>: 월·주·3일·일정 보기. 할 일·습관·루틴을 날짜나 시간에 끌어다 놓아요(폰은 꾹 누른 채로). 블록 아래를 끌면 길이가 바뀌어요. 주 보기 오른쪽 얇은 줄은 <b>실제로 한 시간</b>이라 계획과 비교돼요.</li><li>틱틱 기록은 더보기 → 틱틱에서 가져오기.</li></ul>`)}
     ${acc('gacha','🎲 뽑기 · ⏱ 사냥','뭘 할지 모를 때',`<ul><li>필터(할 일/습관/루틴, 크기, 영역, 목록)를 걸고 1·3·5·7장을 뽑아요. 오래 안 한 것·지난 것·중요한 게 더 잘 나와요.</li><li><b>나온 것 중 하나는 반드시</b> 골라요. 고른 건 가챠 퀘스트가 되고 끝내면 XP ×${C.gacha.mult||1.5}. 정 싫으면 골드를 내고 다시 뽑아요(오늘 할 때마다 비싸져요).</li><li><b>⏱ 사냥</b>: 할 일·습관을 타이머로 해요. 목표 시간의 절반 안에 끝내면 번개 처치, 80% 안이면 빠른 처치, 시간 안이면 제시간 처치 보너스. 늦어도 기본 보상은 그대로.</li><li><b>루틴</b>: 단계마다 목표 시간이 있는 연속 사냥(아침 루틴 등). 단계에 습관을 연결하면 같이 기록돼요.</li><li><b>⏳ 딱 5분만</b>: 시작이 제일 어려우니까. 5분 하고 끝내도 +5 XP.</li></ul>`)}
     ${acc('penalty','세부 옵션 · 누적 페널티 · 경제','같은 일도 어떻게 했는지에 따라',`<ul><li>행동마다 <b>세부 옵션</b>을 둘 수 있어요. 예: 샤워(기상 직후 +14 … 자기 직전 +3), 술(사교용 한 잔 … 과음). 시간대를 정해두면 그 시간에 자동으로 골라져요. 늦었어도 최소한의 점수는 챙겨요.</li><li><b>몇 번</b>: 어항 세 개를 다 청소했으면 ×3. 구슬도 세 개.</li><li><b>누적 페널티</b>: 같은 나쁜 행동이 7일 안에 또 나오면 +${C.penalty.same}배, 나쁜 날이 이어진 하루마다 +${C.penalty.chain}배(최대 ×${C.penalty.max}).</li><li><b>흐름 끊기</b>: 나쁜 날이 이어지다 하루를 깨끗하게 보내면 다음 날 연쇄 길이만큼 보상.</li><li><b>경제 영역</b>: 가계부 확인, 충동구매 참음, 절약, 무지출 데이, 납부 처리. 금액을 적으면 통계에 아낀 돈·쓴 돈이 쌓여요.</li><li><b>💭 다르게 보기</b>: 하기 싫을 때 읽을 문구를 행동·할 일마다 적어두세요. 💭를 누르면 크게 보이고 바로 5분 타이머로 이어져요.</li></ul>`)}
+    ${acc('happy','✨ 행복 기록 · 🍬 도파민 · ⚔ 전투','생산성만이 가치는 아니니까',`<ul><li><b>✨ 행복</b>: 자전거 타다 너무 시원했을 때, 햇빛이 예뻤을 때, 친구와 좋은 대화를 했을 때. 홈 빠른 기록에서 종류를 ✨ 행복으로 골라 적어요. 정해진 작은 보상(XP +${C.happy.xp})과 '좋았다' 병 구슬. 크게 주지 않는 건, 점수를 위해 행복을 짜내지 않게 하려는 거예요.</li><li><b>🍬 도파민 메뉴</b>: 시작부터 기분 좋아지는 것들을 애피타이저·사이드·메인·디저트·스페셜로 나눠요. 뽑기 탭에서 고르거나 🍬 3장 뽑기.</li><li><b>⚔ 전투</b>: 오늘 할 일이 쫄따구, 주간 보스는 그 주 XP로 쓰러뜨려요. 끝낼 때마다 아바타가 공격해요(편집 → 테마·화면에서 끌 수 있어요).</li><li><b>⚔ 사냥 고르기</b>: 오늘 시간표·할 일·습관(영역별)·도파민·루틴에서 골라 바로 타이머 시작.</li></ul>`)}
     ${acc('once','습관 · 할 일 · 그냥 한 일','어디에 적을까',`<ul><li><b>습관(행동)</b>: 운동·일기·샤워처럼 계속하는 것. 기록 탭에 늘 있어요.</li><li><b>할 일</b>: 날짜가 있거나 끝나면 사라지는 일. 할 일 탭·캘린더에 있어요.</li><li><b>그냥 한 일</b>: 어쩌다 한 좋은 일. 홈 '빠른 기록'에 적고 Enter → 크기(작은·보통·큰)만큼 XP, 목록엔 안 쌓여요.</li><li>잘못 기록했으면 '오늘 한 일'에서 줄을 눌러 고쳐요. 끝낸 직후 아래에 뜨는 ×2·구슬 버튼으로 바로 바꿔도 돼요.</li></ul>`)}
     ${acc('fix','되돌리기와 지난 기록','실수해도 괜찮아요',`<ul><li>잘못 누른 기록은 '오늘 한 일'의 ×로 지우면 효과까지 원래대로 돌아가요.</li><li>＋기록 탭 위에서 어제·그저께를 고르면 그날로 기록할 수 있어요.</li><li>구슬은 유리병 탭에서 지난 날짜 것도 뺄 수 있어요.</li></ul>`)}
   </div>`;
@@ -2068,7 +2152,7 @@ function infoFor(key){
   case 'jar':{const j=C.jars.find(y=>y.id===a);if(!j)return null;const Lj=jarLayout(j),cnt={};marblesOf(j.id).forEach(t=>cnt[t]=(cnt[t]||0)+1);const links=[...C.actions,...C.courage].filter(x=>x.marble&&x.marble.split(':')[0]===j.id).map(x=>x.name);
     return{kind:'유리병',t:'🔮 '+esc(j.name),b:`<p>${esc(j.hint||'')}</p><div class="brk"><span>지금 병</span><span>${Math.round(Lj.acc/Lj.cap*100)}% 참</span><span>가득 찬 병</span><span>${Lj.full}개</span><span>모은 구슬</span><span>${Lj.total}개</span><span>직접 넣을 때</span><span>XP +${j.xp}</span></div><ul>${j.types.map(t=>`<li>${mGlyph(t)} ${esc(t.name)} · ${cnt[t.id]||0}개</li>`).join('')}</ul>${links.length?`<p class="small"><b>자동으로 들어오는 행동</b> ${esc(links.join(', '))}</p>`:''}`+btns(`<a class="btn ghost sm" href="#jars" data-viewjarlink="${j.id}">병 열기</a>`,goE('jars','구슬·병 편집'))}}
   case 'mt':{const j=C.jars.find(y=>y.id===a),t=j&&j.types.find(y=>y.id===b);if(!t)return null;return{kind:'구슬 종류 · '+esc(j.name),t:mGlyph(t)+' '+esc(t.name),b:qe('jt:'+j.id,t,[['name','이름','text'],['color','색','sel',COLORS],['shape','모양','sel',SHAPES],['size','크기','sel',SIZES]])+btns(goE('jars','병 편집'))}}
-  case 'stat':{const D={days:['기록한 날','행동·용기·식사·몸무게 중 하나라도 적은 날의 수예요.'],brave:['⚡ 용기','용기를 기록한 횟수예요. 목록에 없는 용기도 포함해요.'],good:['▲ 좋은 행동','좋은 행동 버튼을 누른 횟수예요. 용기·일퀘·구슬은 따로 세요.'],bad:['▼ 나쁜 행동','나쁜 행동 버튼을 누른 횟수예요. 적을수록 좋아요.'],clean:['✨ 깨끗한 날','기록이 있고, 나쁜 행동과 나쁜 식사가 하나도 없는 날이에요. 7일 연속이면 업적.'],marble:['🔮 구슬','병에 들어간 구슬 수예요. 행동·용기에 연결돼 자동으로 들어간 것도 포함해요.'],chest:['🎁 일퀘 상자','일퀘를 전부 끝내 상자를 연 날이에요.'],task:['✓ 끝낸 할 일','할 일을 끝낸 횟수예요. 반복 할 일은 끝낼 때마다 하나씩 세요.'],money:['💰 아낀 돈 / 쓴 돈','경제 행동에 금액을 적은 것만 모여요. 충동구매 참았다·절약했다는 아낀 돈, 충동구매는 쓴 돈이에요.'],avg:['평균 컨디션','기록이 있는 날의 컨디션(HP, 영역 평균 0~100)을 평균 낸 값이에요. 60 근처가 보통, 70 이상이면 좋은 흐름이에요. 아침 에너지가 출발점이라 그날 기분도 들어가요.']}[a];if(!D)return null;return{kind:'통계',t:D[0],b:`<p>${D[1]}</p>`}}
+  case 'stat':{const D={days:['기록한 날','행동·용기·식사·몸무게 중 하나라도 적은 날의 수예요.'],brave:['⚡ 용기','용기를 기록한 횟수예요. 목록에 없는 용기도 포함해요.'],good:['▲ 좋은 행동','좋은 행동 버튼을 누른 횟수예요. 용기·일퀘·구슬은 따로 세요.'],bad:['▼ 나쁜 행동','나쁜 행동 버튼을 누른 횟수예요. 적을수록 좋아요.'],clean:['✨ 깨끗한 날','기록이 있고, 나쁜 행동과 나쁜 식사가 하나도 없는 날이에요. 7일 연속이면 업적.'],marble:['🔮 구슬','병에 들어간 구슬 수예요. 행동·용기에 연결돼 자동으로 들어간 것도 포함해요.'],chest:['🎁 일퀘 상자','일퀘를 전부 끝내 상자를 연 날이에요.'],happy:['✨ 행복 기록','특별한 행동이 아니어도 좋았던 순간(시원한 바람, 예쁜 햇빛, 좋은 대화)을 적은 횟수예요.'],task:['✓ 끝낸 할 일','할 일을 끝낸 횟수예요. 반복 할 일은 끝낼 때마다 하나씩 세요.'],money:['💰 아낀 돈 / 쓴 돈','경제 행동에 금액을 적은 것만 모여요. 충동구매 참았다·절약했다는 아낀 돈, 충동구매는 쓴 돈이에요.'],avg:['평균 컨디션','기록이 있는 날의 컨디션(HP, 영역 평균 0~100)을 평균 낸 값이에요. 60 근처가 보통, 70 이상이면 좋은 흐름이에요. 아침 에너지가 출발점이라 그날 기분도 들어가요.']}[a];if(!D)return null;return{kind:'통계',t:D[0],b:`<p>${D[1]}</p>`}}
   case 'badge':{const x=BADGES.find(y=>y.id===a);if(!x)return null;return{kind:'업적',t:x.ic+' '+esc(x.name),b:`<p>${esc(x.desc)}. 처음 달성하면 +🪙${x.gold}.</p><p class="small">${P.badges[a]?fmtD(P.badges[a])+'에 달성했어요.':'아직이에요.'}</p>`}}
   case 'road':{const r=C.roadmap.find(y=>y.id===a);if(!r)return null;return{kind:'여정 단계',t:esc(r.item)+' '+esc(r.name),b:`<div class="brk"><span>열리는 레벨</span><span>Lv.${r.lv}</span><span>게임 아이템</span><span>${esc(r.itemName)}</span><span>남은 XP</span><span>${L.lv>=r.lv?'달성':xpTo(r.lv)}</span></div>`+qe('roadmap',r,[['real','현실 보상','text'],['lv','레벨','num','min="2"']])+btns(goE('road','여정 전체 편집'))}}
   case 'shop':{const x=C.shop.find(y=>y.id===a);if(!x)return null;return{kind:'상점',t:esc(x.name),b:qe('shop',x,[['name','이름','text'],['price','가격(G)','num','min="0"']])+`<p class="tiny muted">가격을 비우면 보상함으로 돌아가요.</p>`}}
@@ -2115,8 +2199,10 @@ function searchIndex(){
   BADGES.forEach(b=>add('업적',b.name,b.desc,()=>openInfo('badge:'+b.id)));
   C.roadmap.forEach(r=>add('여정',r.name,'Lv.'+r.lv+' · '+r.itemName+(r.real?' · '+r.real:''),()=>openInfo('road:'+r.id)));
   openTasks().forEach(t=>add('할 일',t.title,(t.due?dueLabel(t.due)+(t.time?' '+t.time:''):'날짜 없음')+' · '+listName(t.list),()=>openTaskSheet(t.id),(t.tags||[]).join(' ')));
+  add('기능','⚔ 사냥 고르기','시간표·할 일·습관·도파민에서 골라 타이머 시작',()=>openHuntPicker(),'hunt timer 타이머');
+  add('기능','✨ 행복 기록','홈 빠른 기록에서 종류를 ✨ 행복으로',()=>{location.hash='home';setTimeout(()=>{$('qType').value='happy';render();$('qName').focus()},80)},'happy');
   (C.routines||[]).forEach(r=>add('루틴',r.name,r.steps.length+'단계 · 누르면 시작',()=>startRun({routine:r})));
-  [['gacha','뽑기(가챠)','필터 걸고 3·5장 뽑기'],['cal','캘린더','끌어다 놓기'],['tasks','할 일','틱틱처럼']].forEach(([id,t,d])=>add('화면',t,d,()=>location.hash=id,'가챠 todo ticktick'));
+  [['gacha','뽑기(가챠)','필터 걸고 3·5장 뽑기'],['gacha','도파민 메뉴','애피타이저·사이드·메인·디저트·스페셜'],['cal','캘린더','끌어다 놓기'],['tasks','할 일','틱틱처럼']].forEach(([id,t,d])=>add('화면',t,d,()=>location.hash=id,'가챠 todo ticktick'));
   C.shop.forEach(x=>add(x.price>0?'상점':'보상함',x.name,x.price>0?'🪙'+x.price:'가격 미정',()=>location.hash='shop'));
   [['weekly','주간 목표·보스 설정','rules'],['dayStart','새 하루 시작 시각','rules'],['xpStep','레벨 곡선','rules'],['recovery','복귀 보너스','rules'],['reset','진행 기록 초기화','rules'],['avatar','아바타·캐릭터 바꾸기','avatar'],['weight','목표 몸무게','food'],['nav','아래 메뉴·홈 화면 바꾸기','screen'],['theme','테마·스킨·색·다크 모드','screen'],['tour','처음 안내','guide'],['quote','용기 문구','courage']].forEach(([k,t,tab])=>add('설정',t,'편집에서 바꾸기',()=>goEdit(tab),k));
   return R;
@@ -2143,7 +2229,7 @@ const navStack=[];
 
 /* ================= 백업·계정 ================= */
 let ACCOUNT='',pendingRestore=null;
-const HQ={logout:async()=>(await window.HQ_READY).logout()};
+const HQ={logout:async()=>{try{localStorage.removeItem('hq-snap'+(location.pathname.includes('/beta/')?'-b':''))}catch(e){}(await window.HQ_READY).logout()}};
 if(window.HQ_READY)window.HQ_READY.then(api=>{ACCOUNT=api&&api.account?api.account.email:'';const l=$('acctLbl');if(l)l.textContent=(location.pathname.includes('/beta/')?'습관 퀘스트 β · ':'습관 퀘스트 · ')+ACCOUNT;renderMore()});
 window.__hqStatus=t=>setSync(t);
 function acctBoxHTML(){
@@ -2268,6 +2354,8 @@ document.addEventListener('change',async e=>{
   if(t.id==='lgroup'){C.ui.list.group=t.value;t.blur();save('config');renderLog();return}
   if(d.lsort){C.ui.list.sort=t.value;t.blur();save('config');renderLog();return}
   if(d.navtoggle){const n=C.ui.nav,id=d.navtoggle;if(t.checked){if(n.length>=4){t.checked=false;toast('아래 메뉴는 4개까지예요');return}n.push(id)}else C.ui.nav=n.filter(x=>x!==id);t.blur();save('config');render();return}
+  if(d.sidehide){const h=C.ui.hide=C.ui.hide||[];C.ui.hide=t.checked?h.filter(x=>x!==d.sidehide):[...h,d.sidehide];t.blur();save('config');render();return}
+  if(d.uiset){const k=d.uiset,v=t.value;if(k==='start')C.ui.start=v;else if(k==='split')C.ui.split=!!v;else if(k==='fx')C.ui.fx=!!v;else if(k==='fold'){C.ui.cal.fold=+v;C.ui.cal.foldOn=!!+v}t.blur();save('config');render();toast('바꿨어요');return}
   if(d.hometoggle){const h=C.ui.home.find(x=>x[0]===d.hometoggle);if(h)h[1]=t.checked?1:0;t.blur();save('config');render();return}
   if(t.id==='restoreFile'){const f=t.files&&t.files[0];if(!f)return;
     try{const data=JSON.parse(await f.text());if(!data||!data.game)throw 0;pendingRestore=data;pendingRestore.fname=f.name;pendingRestore.n=Object.keys(data.days||{}).length;ui.confirm='restore';renderMore()}
@@ -2333,7 +2421,8 @@ $('quickForm').addEventListener('submit',e=>{e.preventDefault();if(!guard())retu
   const name=$('qName').value.trim();if(!name){$('qName').focus();toast('무엇을 했는지 적어주세요');return}
   const how=(e.submitter&&e.submitter.value)||'done',type=$('qType').value,area=$('qArea').value||C.areas[0].id;
   ui.off=0;
-  if(how==='todo'){addTaskFrom((type==='brave'?'⚡':'')+name,{due:dateKey()})}
+  if(type==='happy'&&how!=='todo'){doHappy(name,area)}
+  else if(how==='todo'){addTaskFrom((type==='brave'?'⚡':'')+name,{due:dateKey()})}
   else if(type==='brave'){const k=C.courage.find(x=>x.name===name);if(k)doBrave(k);else{const s=C.courageSizes.find(x=>x.id==='m')||C.courageSizes[0];doBrave({id:'free',name:s.name,xp:s.xp,gold:s.gold,pts:s.pts,area:'mind',cond:4,marble:s.marble},name)}}
   else{const a=C.actions.find(x=>x.type===type&&x.name===name);if(a)doAction(a);
     else if(type==='bad'){const na=newAction(uid(),name,'bad',area,'');C.actions.push(na);save('config');doAction(na);toast('나쁜 행동 목록에 추가했어요. 점수는 편집에서 바꿔요')}
@@ -2771,6 +2860,7 @@ function taskRow(t,{showList=true,compact=false}={}){
   if(t.rep)meta.push(`<span title="${esc(repLabel(t.rep))}">🔁${t.rep.f==='x'?` ${(t.wc&&t.wc.w===weekStart(td)?t.wc.n:0)}/${t.rep.n||3}`:''}</span>`);
   if(sd)meta.push(`<span><span class="subbar"><i style="width:${sdn/sd*100}%"></i></span> ${sdn}/${sd}</span>`);
   if(showList&&t.list&&t.list!=='inbox')meta.push(`<span>${esc(listName(t.list))}</span>`);
+  {const ar=C.areas.find(x=>x.id===areaOfTask(t));if(ar&&!compact)meta.push(`<span class="areac">${esc(ar.name)}</span>`)}
   (t.tags||[]).slice(0,3).forEach(x=>meta.push(`<span class="tagc">#${esc(x)}</span>`));
   if(t.skull)meta.push(`<span class="skull" title="미룬 횟수">${'☠'.repeat(Math.min(3,t.skull))}</span>`);
   if(t.reframe)meta.push(`<button class="rfbtn" data-treframe="${t.id}" title="다르게 보기">💭</button>`);
@@ -2780,7 +2870,7 @@ function taskRow(t,{showList=true,compact=false}={}){
   return `<div class="trow p${t.prio||0} ${t.status===2?'done':''} ${t.brave?'brave':''}" data-task="${t.id}" data-drag="task:${t.id}" data-dragmode="hold">
     <button class="tchk" data-tdone="${t.id}" aria-label="${esc(t.title)} 완료">${t.status===2?'✓':''}</button>
     <span class="tb"><span class="tt">${pmark(t.prio)} ${t.brave?'⚡ ':''}${esc(t.title)}</span>${meta.length?`<span class="tm">${meta.join('')}</span>`:''}</span>
-    <span class="tx">${t.status===2?'':(t.brave?'⚡':'')+'+'+b.xp}</span>
+    <span class="tx">${t.status===2?'':(t.brave?'⚡':'')+'+'+b.xp+(b.gold?` <span class="g">🪙${b.gold}</span>`:'')}</span>
     ${t.status===0?`<button class="trun" data-trun="${t.id}" aria-label="${esc(t.title)} 타이머로 하기" title="타이머로 하기">⏱</button>`:'<span></span>'}
   </div>`;
 }
@@ -2831,6 +2921,7 @@ function drawTaskSheet(){
   const presets=[['','안 함'],['d','매일'],['wd','평일'],['w','매주'],['w2','격주'],['m','매월'],['y','매년'],['x','주 N회'],['after','완료 후 N일']];
   const curP=!t.rep?'':r.f==='d'&&r.after?'after':r.f==='w'&&(r.i||1)===2?'w2':r.f==='w'&&(r.wd||[]).join(',')==='1,2,3,4,5'?'wd':r.f;
   let h=`<div class="sh"><h3>${t.status===2?'✓ ':''}할 일</h3><span class="row" style="gap:4px"><span class="chip up">+${b.xp} XP</span><button class="x" data-sheet="close" aria-label="닫기">×</button></span></div>
+  <p class="tiny muted" style="margin:-4px 0 0">${rewardExplain(t)}</p>
   <input id="tsTitle" value="${esc(t.title)}" maxlength="160" style="font-size:17px;font-weight:700" aria-label="제목">
   <textarea id="tsNote" rows="${Math.min(8,Math.max(2,(t.note||'').split('\n').length))}" placeholder="메모" aria-label="메모">${esc(t.note||'')}</textarea>
   ${t.reframe||true?`<details ${t.reframe?'open':''}><summary class="small" style="cursor:pointer;color:var(--brave);font-weight:700">💭 하기 싫을 때 읽을 문구</summary><textarea id="tsReframe" rows="3" placeholder="예: 생각보다 금방 끝나. 끝나면 개운해." style="margin-top:6px">${esc(t.reframe||'')}</textarea></details>`:''}
@@ -2905,20 +2996,31 @@ const PXM=0.8; // 1분 = 0.8px (1시간 48px)
 function calState(){const c=C.ui.cal||(C.ui.cal={mode:'month',actual:true});if(!ui.calAnchor)ui.calAnchor=dateKey();if(!ui.calSel)ui.calSel=dateKey();return c}
 function monthKey(k){return k.slice(0,7)+'-01'}
 function addMonths(k,n){const[y,m]=k.split('-').map(Number);const mm0=m-1+n;const yy=y+Math.floor(mm0/12),mm=((mm0%12)+12)%12+1;return ymd(yy,mm,1)}
-function tasksOn(k){return openTasks().filter(t=>t.due===k)}
+function calPass(t){const f=(C.ui.cal||{}).filter||{};if(f.lists&&f.lists.length&&!f.lists.includes(t.list||'inbox'))return false;if(f.areas&&f.areas.length&&!f.areas.includes(areaOfTask(t)))return false;if(f.tags&&f.tags.length&&!(t.tags||[]).some(x=>f.tags.includes(x)))return false;return true}
+function calFilterN(){const f=(C.ui.cal||{}).filter||{};return (f.lists||[]).length+(f.areas||[]).length+(f.tags||[]).length}
+function tasksOn(k){return openTasks().filter(t=>t.due===k&&calPass(t))}
+// 시간 접기: 0~F시는 얇은 띠로
+const FOLDB=26;
+function foldH(){const c=C.ui.cal||{};return c.foldOn===false?0:(+c.fold||0)}
+function yOf(m){const F=foldH()*60;if(!F)return m*PXM;return m<F?m/F*FOLDB:FOLDB+(m-F)*PXM}
+function mOf(y){const F=foldH()*60;if(!F)return y/PXM;return y<FOLDB?y/FOLDB*F:F+(y-FOLDB)/PXM}
+function gridH(){const F=foldH()*60;return F?FOLDB+(1440-F)*PXM:1440*PXM}
+function calShown(){return curView()==='cal'||splitOn()}
 function doneOn(k){const d=DAYS[k];return d?(d.entries||[]).filter(e=>e.tid):[]}
 function cchip(t,k){const late=t.due<dateKey();return `<div class="cchip p${t.prio||0} ${late?'late':''} ${t.brave?'brave':''}" data-drag="task:${t.id}" data-dragmode="hold" data-ctask="${t.id}" title="${esc(t.title)}">${t.time?`<b>${t.time}</b> `:''}${esc(t.title)}</div>`}
 function renderCal(){
-  if(curView()!=='cal')return;
+  if(!calShown())return;
   const cs=calState(),mode=cs.mode,A=ui.calAnchor,td=dateKey();
-  $('calModes').innerHTML=[['month','월'],['week','주'],['3day','3일'],['agenda','일정']].map(([v,l])=>`<button data-calmode="${v}" aria-pressed="${mode===v}">${l}</button>`).join('');
-  $('calActual').checked=cs.actual!==false;$('calActual').parentElement.hidden=!(mode==='week'||mode==='3day');
+  $('calModes').innerHTML=[['1day','1일'],['3day','3일'],['week','주'],['month','월'],['agenda','일정']].map(([v,l])=>`<button data-calmode="${v}" aria-pressed="${mode===v}">${l}</button>`).join('');
+  $('calActual').checked=cs.actual!==false;$('calActual').parentElement.hidden=!(mode==='week'||mode==='3day'||mode==='1day');
+  {const fn=calFilterN();$('calFilterBtn').textContent=fn?`필터 ${fn}`:'필터';$('calFilterBtn').setAttribute('aria-pressed',!!fn)}
+  $('calTray').hidden=splitOn();
   $('calHelp').textContent=matchMedia('(pointer:coarse)').matches?'할 일·습관을 꾹 누른 채로 끌어서 날짜나 시간에 놓아요. 시간 블록 아래 손잡이를 끌면 길이가 바뀌어요.':'할 일·습관을 끌어서 날짜나 시간에 놓아요. 블록 아래쪽을 끌면 길이가 바뀌어요. 오른쪽 서랍으로 끌면 날짜가 빠져요.';
   let main='';
   if(mode==='month'){
     const m0=monthKey(A),[y,mo]=m0.split('-').map(Number);$('calTitle').textContent=`${y}년 ${mo}월`;
     const start=weekStart(m0);let cells=['월','화','수','목','금','토','일'].map(w=>`<div class="wh">${w}</div>`).join('');
-    const open=openTasks();const byDay={};open.forEach(t=>{if(t.due)(byDay[t.due]=byDay[t.due]||[]).push(t)});
+    const open=openTasks().filter(calPass);const byDay={};open.forEach(t=>{if(t.due)(byDay[t.due]=byDay[t.due]||[]).push(t)});
     for(let i=0;i<42;i++){const k=addDays(start,i);if(i>=35&&k.slice(0,7)!==m0.slice(0,7))break;
       const dd=DAYS[k],has=dd&&hasData(dd),v=has?overallOf(dd):0,brv=has&&dd.entries.some(isBrave);
       const ts=(byDay[k]||[]).sort(taskSorter('due'));const dn=doneOn(k);
@@ -2926,28 +3028,30 @@ function renderCal(){
       const more=ts.length+dn.length-3;
       cells+=`<div class="mc ${k.slice(0,7)!==m0.slice(0,7)?'other':''} ${k===td?'today':''} ${k===ui.calSel?'sel':''}" data-drop="day:${k}" data-calday="${k}"><div class="mch"><span class="dn">${+k.slice(8)}</span>${has&&k<=td?`<span class="hp ${brv?'brv':''}" style="opacity:${(.2+v/100*.8).toFixed(2)}" title="컨디션 ${v}${brv?' · 용기':''}"></span>`:''}</div>${chips}${more>0?`<span class="more">+${more}</span>`:''}</div>`}
     main=`<div class="mgrid">${cells}</div>`;
-  }else if(mode==='week'||mode==='3day'){
-    const n=mode==='week'?7:3,s0=mode==='week'?weekStart(A):A;const ks=[...Array(n)].map((_,i)=>addDays(s0,i));
+  }else if(mode==='week'||mode==='3day'||mode==='1day'){
+    const n=mode==='week'?7:mode==='3day'?3:1,s0=mode==='week'?weekStart(A):A;const ks=[...Array(n)].map((_,i)=>addDays(s0,i));
     $('calTitle').textContent=`${fmtD(ks[0])} ~ ${fmtD(ks[n-1])}`;
     const head=`<div></div>`+ks.map(k=>`<div class="dh ${k===td?'today':''}" data-drop="day:${k}" data-calday="${k}">${wdOf(k)}<b>${+k.slice(8)}</b></div>`).join('');
     const allday=`<div>종일</div>`+ks.map(k=>`<div data-drop="day:${k}">${tasksOn(k).filter(t=>!t.time).map(t=>cchip(t,k)).join('')}</div>`).join('');
-    const hours=[...Array(24)].map((_,h)=>h?`<span style="top:${h*60*PXM}px">${pad(h)}</span>`:'').join('');
+    const FH=foldH(),GH=gridH();
+    const hours=[...Array(24)].map((_,h)=>h&&!(FH&&h<FH)?`<span style="top:${yOf(h*60)}px">${pad(h)}</span>`:'').join('')+(FH?`<span style="top:${FOLDB/2}px">0~${FH}</span>`:'');
+    const hlines=[...Array(24)].map((_,h)=>FH&&h<FH?'':`<div class="hl ${h%6===0&&h?'thick':''}" style="top:${yOf(h*60)}px"></div>`).join('')+(FH?`<button class="foldband" data-calfold="1" style="height:${FOLDB}px" title="0~${FH}시 펼치기">▾</button>`:'');
     const cols=ks.map(k=>{
       const ts=tasksOn(k).filter(t=>t.time).map(t=>({t,s:toMin(t.time),e:toMin(t.time)+(t.dur||30)})).sort((a,b)=>a.s-b.s);
       // 겹치는 블록 나란히
       let lanes=[],cl=[],clEnd=-1;const out=[];const flush=()=>{const L=lanes.length||1;cl.forEach(x=>{x.L=L});cl=[];lanes=[]};
       ts.forEach(x=>{if(x.s>=clEnd&&cl.length)flush();let li=lanes.findIndex(end=>end<=x.s);if(li<0){li=lanes.length;lanes.push(x.e)}else lanes[li]=x.e;x.li=li;cl.push(x);out.push(x);clEnd=Math.max(clEnd,x.e)});flush();
       const doneT=doneOn(k).filter(e=>{const t=TASKS[e.tid];return t&&t.time&&t.status===2&&t.doneAt===k});
-      const blocks=out.map(x=>{const w=(cs.actual!==false?82:100)/x.L;return `<div class="blk p${x.t.prio||0} ${x.t.brave?'brave':''}" style="top:${x.s*PXM}px;height:${Math.max(16,(x.e-x.s)*PXM-2)}px;left:calc(${x.li*w}% + 1px);width:calc(${w}% - 3px)" data-drag="block:${x.t.id}" data-dragmode="hold" data-ctask="${x.t.id}"><span class="bt">${esc(x.t.title)}</span><span class="bm">${x.t.time}${x.t.dur?' · '+durTxt(x.t.dur):''}</span><span class="rz" data-drag="resize:${x.t.id}" data-dragmode="now" aria-label="길이 바꾸기"></span></div>`}).join('')
-        +doneT.map(e=>{const t=TASKS[e.tid];const s=toMin(t.time);return `<div class="blk done" style="top:${s*PXM}px;height:${Math.max(16,(t.dur||30)*PXM-2)}px;left:1px;width:calc(${cs.actual!==false?82:100}% - 3px)"><span class="bt">${esc(t.title)}</span></div>`}).join('');
+      const blocks=out.map(x=>{const w=(cs.actual!==false?82:100)/x.L;return `<div class="blk p${x.t.prio||0} ${x.t.brave?'brave':''}" style="top:${yOf(x.s)}px;height:${Math.max(14,yOf(x.e)-yOf(x.s)-2)}px;left:calc(${x.li*w}% + 1px);width:calc(${w}% - 3px)" data-drag="block:${x.t.id}" data-dragmode="hold" data-ctask="${x.t.id}"><span class="bt">${esc(x.t.title)}</span><span class="bm">${x.t.time}${x.t.dur?' · '+durTxt(x.t.dur):''}</span><span class="rz" data-drag="resize:${x.t.id}" data-dragmode="now" aria-label="길이 바꾸기"></span></div>`}).join('')
+        +doneT.map(e=>{const t=TASKS[e.tid];const s=toMin(t.time);return `<div class="blk done" style="top:${yOf(s)}px;height:${Math.max(14,yOf(s+(t.dur||30))-yOf(s)-2)}px;left:1px;width:calc(${cs.actual!==false?82:100}% - 3px)"><span class="bt">${esc(t.title)}</span></div>`}).join('');
       let lane='';
-      if(cs.actual!==false){const d=DAYS[k];lane=`<div class="act-lane" title="실제로 한 시간">${((d&&d.entries)||[]).filter(e=>e.t&&!['chest','boss','wbrave','badge','quest','chain'].includes(e.kind)).map(e=>{let em=toMin(e.t);if(em<(C.dayStart||0)*60)em+=0;const sm=e.st?toMin(e.st):null;const top=(sm!=null&&e.dur?sm:em-2)*PXM,hh=e.dur?Math.max(5,e.dur*PXM):5;return `<div class="amark ${e.type==='bad'?'bad':''} ${isBrave(e)?'brv':''} ${e.dur?'':'dot'}" style="top:${top}px;height:${hh}px" title="${esc(e.t+' '+e.name)}${e.dur?' · '+e.dur+'분':''}"></div>`}).join('')}</div>`}
-      const nowl=k===td?`<div class="nowl" style="top:${nowMinutes()*PXM}px"></div>`:'';
-      return `<div class="tgcol ${k===td?'today':''}" data-drop="col:${k}" style="height:${1440*PXM}px">${blocks}${lane}${nowl}</div>`}).join('');
-    main=`<div class="tgwrap" style="--cols:${n}"><div class="tghead">${head}</div><div class="tgall">${allday}</div><div class="tgscroll" id="tgScroll"><div class="tgbody"><div class="tghours" style="height:${1440*PXM}px">${hours}</div>${cols}</div></div></div>`;
+      if(cs.actual!==false){const d=DAYS[k];lane=`<div class="act-lane" title="실제로 한 시간">${((d&&d.entries)||[]).filter(e=>e.t&&!['chest','boss','wbrave','badge','quest','chain'].includes(e.kind)).map(e=>{let em=toMin(e.t);if(em<(C.dayStart||0)*60)em+=0;const sm=e.st?toMin(e.st):null;const s0=sm!=null&&e.dur?sm:em-2,top=yOf(Math.max(0,s0)),hh=e.dur?Math.max(5,yOf(s0+e.dur)-top):5;return `<div class="amark ${e.type==='bad'?'bad':''} ${isBrave(e)?'brv':''} ${e.dur?'':'dot'}" style="top:${top}px;height:${hh}px" title="${esc(e.t+' '+e.name)}${e.dur?' · '+e.dur+'분':''}"></div>`}).join('')}</div>`}
+      const nowl=k===td?`<div class="nowl" style="top:${yOf(nowMinutes())}px"></div>`:'';
+      return `<div class="tgcol ${k===td?'today':''}" data-drop="col:${k}" style="height:${GH}px">${hlines}${blocks}${lane}${nowl}</div>`}).join('');
+    main=`<div class="tgwrap" style="--cols:${n}"><div class="tghead">${head}</div><div class="tgall">${allday}</div><div class="tgscroll" id="tgScroll"><div class="tgbody"><div class="tghours" style="height:${GH}px">${hours}</div>${cols}</div></div></div>`;
   }else{
     $('calTitle').textContent='다가오는 일정';
-    const open=openTasks().filter(t=>t.due).sort(taskSorter('due'));const late=open.filter(t=>t.due<td);
+    const open=openTasks().filter(t=>t.due&&calPass(t)).sort(taskSorter('due'));const late=open.filter(t=>t.due<td);
     let h='';if(late.length)h+=`<div class="ad" style="color:var(--bad)">지난 할 일 ${late.length}</div>`+late.map(t=>taskRow(t,{compact:true})).join('');
     for(let i=0;i<21;i++){const k=addDays(td,i);const ts=open.filter(t=>t.due===k);const dn=doneOn(k);if(!ts.length&&!(i===0&&dn.length))continue;
       h+=`<div class="ad ${i===0?'today':''}" data-drop="day:${k}">${dueLabel(k)} · ${fmtD(k)} (${wdOf(k)})</div><div data-drop="day:${k}">${ts.map(t=>taskRow(t,{compact:true})).join('')}${i===0?dn.map(e=>`<div class="trow done"><span class="tchk">✓</span><span class="tb"><span class="tt">${esc(e.name)}</span></span><span class="tx">+${e.xp||0}</span><span></span></div>`).join(''):''}</div>`}
@@ -2955,7 +3059,7 @@ function renderCal(){
   }
   const keepY=$('tgScroll')?$('tgScroll').scrollTop:null;
   $('calMain').innerHTML=main;
-  if($('tgScroll')){$('tgScroll').scrollTop=keepY!=null&&ui.calKeepScroll?keepY:Math.max(0,(Math.min(nowMinutes(),20*60)-90)*PXM);ui.calKeepScroll=true}
+  if($('tgScroll')){$('tgScroll').scrollTop=keepY!=null&&ui.calKeepScroll?keepY:Math.max(0,yOf(Math.max(0,Math.min(nowMinutes(),20*60)-90))-(foldH()?FOLDB:0));ui.calKeepScroll=true}
   // 고른 날
   if(mode==='month'){const k=ui.calSel;const ts=tasksOn(k).sort(taskSorter('due'));const dn=doneOn(k);
     $('calDay').innerHTML=`<div class="panel dayp"><div class="ptitle"><h2>${fmtD(k)} (${wdOf(k)}) · ${esc(dueLabel(k))}</h2><span class="small muted">${ts.length}개 남음${dn.length?' · '+dn.length+'개 끝':''}</span></div>
@@ -3006,7 +3110,7 @@ document.addEventListener('pointercancel',()=>{if(DND.on)dndAbort();dndCancel();
 document.addEventListener('contextmenu',e=>{if(DND.on||e.target.closest('[data-dragmode="hold"]'))e.preventDefault()},true);
 function dndStart(e){
   DND.pending=false;DND.on=true;lpFired=true;clearTimeout(lpTimer);
-  const [kind,id]=DND.src.split(':');DND.kind=kind;DND.id=id;if(kind==='row')DND.el=DND.el.closest('.erow2')||DND.el;
+  const [kind,id]=DND.src.split(':');DND.kind=kind;DND.id=id;if(kind==='row')DND.el=DND.el.closest('[data-rowid]')||DND.el;
   if(kind==='resize'){const t=TASKS[id];DND.startDur=t&&t.dur||30;DND.sy=e.clientY;document.body.classList.add('dragging');buzz(8);return}
   const g=document.createElement('div');g.className='dndghost';
   g.textContent=kind==='task'||kind==='block'?(TASKS[id]||{}).title:kind==='act'?'🔗 '+(C.actions.find(a=>a.id===id)||{}).name:kind==='routine'?'⏱ '+((C.routines||[]).find(r=>r.id===id)||{}).name:kind==='row'?(DND.el.querySelector('b')||DND.el).textContent:'';
@@ -3023,21 +3127,21 @@ function dndAutoScroll(){
 function clearHi(){document.querySelectorAll('.drop-hi').forEach(x=>x.classList.remove('drop-hi'));if(DND.ind){DND.ind.remove();DND.ind=null}}
 function dndMove(x,y,fromScroll){
   DND.lastX=x;DND.lastY=y;
-  if(DND.kind==='resize'){const t=TASKS[DND.id];if(!t)return;const nd=Math.max(15,Math.round((DND.startDur+(y-DND.sy)/PXM)/15)*15);DND.newDur=nd;const b=document.querySelector(`.blk[data-ctask="${DND.id}"]`);if(b){b.style.height=(nd*PXM-2)+'px';const m=b.querySelector('.bm');if(m)m.textContent=t.time+' · '+durTxt(nd)}return}
+  if(DND.kind==='resize'){const t=TASKS[DND.id];if(!t)return;const nd=Math.max(15,Math.round((DND.startDur+(y-DND.sy)/PXM)/15)*15);DND.newDur=nd;const b=document.querySelector(`.blk[data-ctask="${DND.id}"]`);if(b){b.style.height=(yOf(toMin(t.time)+nd)-yOf(toMin(t.time))-2)+'px';const m=b.querySelector('.bm');if(m)m.textContent=t.time+' · '+durTxt(nd)}return}
   if(DND.ghost){DND.ghost.style.left=x+'px';DND.ghost.style.top=y+'px'}
   DND.ghost&&(DND.ghost.style.display='none');const under=document.elementFromPoint(x,y);DND.ghost&&(DND.ghost.style.display='');
   const tgt=under&&under.closest('[data-drop]');clearHi();DND.drop=null;if(!tgt)return;
   const dv=tgt.dataset.drop;
   if(dv.startsWith('reorder:')){
-    if((DND.kind==='row'&&dv==='reorder:actions')||(DND.kind==='task'&&dv==='reorder:tasks')){
-      const sel=DND.kind==='row'?'.erow2':'.trow';const kids=[...tgt.children].filter(c=>c!==DND.el&&c.matches(sel));
+    if((DND.kind==='row'&&dv!=='reorder:tasks'&&DND.el.parentElement===tgt)||(DND.kind==='task'&&dv==='reorder:tasks')){
+      const sel=DND.kind==='row'?'[data-rowid]':'.trow';const kids=[...tgt.children].filter(c=>c!==DND.el&&c.matches(sel));
       let before=null;for(const c of kids){const r=c.getBoundingClientRect();if(y<r.top+r.height/2){before=c;break}}
       const ind=document.createElement('div');ind.className='insline';if(before)tgt.insertBefore(ind,before);else tgt.appendChild(ind);DND.ind=ind;
       DND.drop={type:'reorder',col:dv.slice(8),before:before?(before.dataset.rowid||before.dataset.task):null,grp:tgt.dataset.grp}}
     return}
   if(DND.kind==='row')return;
-  if(dv.startsWith('col:')){const r=tgt.getBoundingClientRect();let m=(y-r.top-(DND.kind==='block'?DND.grabOff:6))/PXM;m=clamp(Math.round(m/15)*15,0,1440-15);
-    const ind=document.createElement('div');ind.className='dropline';ind.style.top=(m*PXM)+'px';ind.innerHTML=`<span>${hm(m)}</span>`;tgt.appendChild(ind);DND.ind=ind;DND.drop={type:'time',date:dv.slice(4),min:m};return}
+  if(dv.startsWith('col:')){const r=tgt.getBoundingClientRect();let m=mOf(y-r.top-(DND.kind==='block'?DND.grabOff:6));m=clamp(Math.round(m/15)*15,0,1440-15);
+    const ind=document.createElement('div');ind.className='dropline';ind.style.top=yOf(m)+'px';ind.innerHTML=`<span>${hm(m)}</span>`;tgt.appendChild(ind);DND.ind=ind;DND.drop={type:'time',date:dv.slice(4),min:m};return}
   tgt.classList.add('drop-hi');
   if(dv.startsWith('day:'))DND.drop={type:'day',date:dv.slice(4)};
   else if(dv==='tray')DND.drop={type:'tray'};
@@ -3048,6 +3152,7 @@ function dndEnd(x,y){
   if(kind==='resize'){document.body.classList.remove('dragging');DND.on=false;const t=TASKS[id];if(t&&DND.newDur){t.dur=DND.newDur;saveTask(t);ui.calKeepScroll=true;render();toast(`${t.title} · ${durTxt(t.dur)}`)}DND.newDur=null;setTimeout(()=>{lpFired=false},50);return}
   dndAbort();if(!drop)return;
   if(drop.type==='reorder'){
+    if(drop.col==='home'||drop.col==='nav'){const arr=drop.col==='home'?C.ui.home:C.ui.navAll;const it=arr.find(h=>(h[0]||h)===id);if(!it)return;const rest=arr.filter(h=>h!==it);let i=drop.before?rest.findIndex(h=>(h[0]||h)===drop.before):rest.length;if(i<0)i=rest.length;rest.splice(i,0,it);if(drop.col==='home')C.ui.home=rest;else{C.ui.navAll=rest}save('config');render();return}
     if(drop.col==='actions'){const it=C.actions.find(a=>a.id===id);if(!it)return;C.actions=C.actions.filter(a=>a!==it);let i=drop.before?C.actions.findIndex(a=>a.id===drop.before):C.actions.length;if(i<0)i=C.actions.length;C.actions.splice(i,0,it);save('config');render();toast('순서를 바꿨어요');return}
     if(drop.col==='tasks'){const t=TASKS[id];if(!t)return;const sib=[...document.querySelectorAll(`[data-drop="reorder:tasks"] .trow`)].map(r=>TASKS[r.dataset.task]).filter(x=>x&&x!==t);
       const bi=drop.before?sib.findIndex(x=>x.id===drop.before):sib.length;const prev=sib[bi-1],next=sib[bi];
@@ -3085,7 +3190,8 @@ function gachaPool(f=G().f){
     if(f.tags&&f.tags.length&&!(t.tags||[]).some(x=>f.tags.includes(x)))return;
     const b=taskBase(t);const stale=t.due&&t.due<td?Math.min(14,diffDays(td,t.due)):Math.min(14,diffDays(td,t.created||td)/3);
     out.push({src:'task',id:t.id,name:t.title,xp:b.xp,eff:effortOf(t),brave:!!t.brave,w:1+stale/4+(t.prio||0)/4+(t.skull||0)*.6,meta:(t.due?dueLabel(t.due)+' · ':'')+listName(t.list),reframe:t.reframe})});
-  if(src.includes('habit')&&!(f.lists&&f.lists.length))C.actions.filter(a=>a.type==='good').forEach(a=>{
+  if(src.includes('dopa'))C.actions.filter(a=>a.dopa).forEach(a=>{if(!okArea(a.area))return;const ef=a.effort||(a.dur?(a.dur<=10?'quick':a.dur<=45?'mid':'heavy'):'mid');if(!okEff(ef))return;const ld=lastDoneOf('habit',a.id);if(ld===td)return;out.push({src:'habit',id:a.id,name:a.name,xp:+a.xp||0,eff:ef,w:1.3,meta:'🍬 '+((DOPA.find(d=>d[0]===a.dopa)||['',''])[1])+(a.dur?' · '+a.dur+'분':''),reframe:a.reframe})});
+  if(src.includes('habit')&&!(f.lists&&f.lists.length))C.actions.filter(a=>a.type==='good'&&!a.dopaOnly).forEach(a=>{
     if(!okArea(a.area))return;const ef=a.effort||(a.dur?(a.dur<=10?'quick':a.dur<=45?'mid':'heavy'):'mid');if(!okEff(ef))return;
     if(f.tags&&f.tags.length)return;
     const ld=lastDoneOf('habit',a.id),gap=ld?diffDays(td,ld):10;if(ld===td)return;
@@ -3130,7 +3236,7 @@ function renderGacha(){
   $('gPresets').innerHTML=presets.map(p=>`<button class="chipbtn" data-gpre="${p.id}">${esc(p.name)}</button>`).join('')+`<button class="chipbtn" data-gpresave="1" title="지금 필터를 저장">＋ 지금 필터 저장</button>`;
   const ch=(k,v,l,arr)=>`<button class="chipbtn" data-gf="${k}" data-v="${esc(v)}" aria-pressed="${(arr||[]).includes(v)}">${l}</button>`;
   const lists=C.lists.filter(l=>openTasks().some(t=>(t.list||'inbox')===l.id));
-  $('gFilters').innerHTML=`<div class="fr"><span class="lbl">뭘</span>${ch('src','task','할 일',f.src)}${ch('src','habit','습관',f.src)}${ch('src','routine','루틴',f.src)}</div>
+  $('gFilters').innerHTML=`<div class="fr"><span class="lbl">뭘</span>${ch('src','task','할 일',f.src)}${ch('src','habit','습관',f.src)}${ch('src','routine','루틴',f.src)}${ch('src','dopa','🍬 도파민',f.src)}</div>
     <div class="fr"><span class="lbl">크기</span>${EFFORTS.map(([k,l])=>ch('effort',k,l,f.effort)).join('')}</div>
     <div class="fr"><span class="lbl">영역</span>${C.areas.map(a=>ch('areas',a.id,esc(a.name),f.areas)).join('')}</div>
     <div class="fr"><span class="lbl">날짜</span><span class="seg3">${[['today','오늘까지+날짜 없음'],['dated','오늘까지만'],['all','전부']].map(([v,l])=>`<button data-gdue="${v}" aria-pressed="${(f.due||'today')===v}">${l}</button>`).join('')}</span></div>
@@ -3250,7 +3356,7 @@ function renderHomeV5(){
   const g=C.gacha||{};const rs=(C.routines||[]).slice(0,2);
   $('hGacha').innerHTML=(g.quest?'':g.pending?`<a class="btn" href="#gacha">🎲 뽑은 카드 고르기</a>`:`<button class="btn" data-gquick="3">🎲 3장 뽑기</button><button class="btn ghost" data-gquick="5">🎲 5장</button>`)
     +rs.map(r=>`<button class="btn ghost" data-rrun="${r.id}">⏱ ${esc(r.name)}</button>`).join('')
-    +`<button class="btn ghost" data-quick5="1" title="딱 5분만 해보기">⏳ 딱 5분만</button>`;
+    +`<button class="btn ghost" data-huntpick="1">⚔ 사냥 고르기</button><button class="btn ghost" data-gquickdopa="1">🍬 도파민</button><button class="btn ghost" data-quick5="1" title="딱 5분만 해보기">⏳ 딱 5분만</button>`;
 }
 /* ================= v5: 편집 탭 (행동 · 루틴 · 목록) ================= */
 function actionsEditHTML(){
@@ -3544,10 +3650,137 @@ document.addEventListener('submit',e=>{
   if(f.id==='q5Form'){e.preventDefault();const n=$('q5Name').value.trim();if(!n)return;closeSheet();startFive({name:n});return}
 });
 addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('sheet').hidden){closeSheet();e.stopPropagation()}}},true);
+/* ================= v5.1: 3단 화면 · 전투 · 행복 · 도파민 · 사냥 고르기 ================= */
+const DOPA=[['app','🥗 애피타이저','짧고 쉬운 것 · 1~15분'],['side','🍟 사이드','집중을 이어가는 짧은 휴식'],['main','🍝 메인','30분 넘게 들이는 것'],['dessert','🍰 디저트','하루 한 스푼의 행복'],['special','🎉 스페셜','특별한 날엔 특별한 행복']];
+const DOPA_SEED=[
+  ['기지개 켜기','app',1,'body',2],['환기 시키기','app',1,'life',2],['이부자리 정리','app',1,'life',3],['방바닥 청소','app',5,'life',5],['책상 정리','app',5,'life',5],['폼롤러·스트레칭','app',10,'body',5],
+  ['알람 맞추고 쉬기','side',3,'mind',2],['노래 틀고 발목운동','side',5,'body',3],['캠스터디','side',30,'make',8],['공간 바꾸기 (거실·도서관·카페)','side',10,'make',5],
+  ['독서','main',30,'mind',10],['책상에 앉아 공부','main',30,'make',12],['필사','main',30,'make',10],['홈트','main',30,'body',12],['괄사','main',30,'body',6],['피부 관리','main',15,'body',5],['런데이','main',60,'body',15],['요리하기','main',60,'life',12],
+  ['웹툰','dessert',20,'mind',2],['닌텐도','dessert',20,'mind',2],['유튜브 보고 싶은 거','dessert',30,'mind',2],['영화·드라마 한 편','dessert',120,'mind',3],
+  ['마사지·세신','special',90,'body',5],['공연·전시·극장','special',120,'mind',6],['드라마 몰아보기','special',180,'mind',3]];
+const DOPA_LINK=[[/샤워/,'app'],[/^명상/,'app'],[/스트레칭/,'app'],[/음악·독서로 쉬기/,'dessert']];
+function seedDopa(c){
+  const has=n=>c.actions.some(a=>a.name===n);
+  c.actions.forEach(a=>{if(a.type!=='good'||a.dopa)return;const m=DOPA_LINK.find(([re])=>re.test(a.name));if(m)a.dopa=m[1]});
+  const at=c.actions.findIndex(a=>a.type==='bad');let i=at<0?c.actions.length:at;
+  DOPA_SEED.forEach(([n,co,min,area,xp],k)=>{if(has(n))return;const ar=c.areas.some(x=>x.id===area)?area:(c.areas[0]||{}).id;
+    c.actions.splice(i++,0,{id:'dp'+k+uid().slice(0,3),name:n,type:'good',area:ar,cond:Math.max(2,Math.round(xp/3)),gold:co==='dessert'||co==='special'?0:Math.max(1,Math.round(xp/4)),xp,marble:'',dur:min,dopa:co,dopaOnly:1,effort:min<=10?'quick':min<=45?'mid':'heavy'})});
+}
+/* ---- 로딩 때 옛 화면 막기: 마지막 화면 사본 ---- */
+const SNAPK='hq-snap'+(location.pathname.includes('/beta/')?'-b':'');
+function snapLoad(){try{const s=JSON.parse(localStorage.getItem(SNAPK));if(s&&s.C){C=normConfig(s.C);P=normProgress(s.P);Object.entries(s.D||{}).forEach(([k,v])=>{DAYS[k]=normDay(k,v)});TASKS=s.T||{};return true}}catch(e){}return false}
+let snapT=null;
+function snapSave(){if(!ready||mode!=='db')return;clearTimeout(snapT);snapT=setTimeout(()=>{try{const D={};lastNDates(14).forEach(k=>{if(DAYS[k])D[k]=DAYS[k]});const T={};openTasks().forEach(t=>{T[t.id]=t});localStorage.setItem(SNAPK,JSON.stringify({C,P,D,T,at:Date.now()}))}catch(e){}},1500)}
+/* ---- 3단 화면 ---- */
+function splitOn(){return curView()==='tasks'&&innerWidth>=1200&&C.ui.split!==false}
+function placeCal(){
+  const pane=$('calPane');if(!pane)return;const on=splitOn();
+  const want=on?$('tCalSlot'):document.querySelector('[data-view="cal"]');
+  if(pane.parentElement!==want){want.appendChild(pane);ui.calKeepScroll=false}
+  document.body.classList.toggle('split',on);
+  if(C.ui.listW)document.documentElement.style.setProperty('--listw',C.ui.listW+'px');
+}
+addEventListener('resize',()=>{clearTimeout(ui.rsT);ui.rsT=setTimeout(()=>{const was=document.body.classList.contains('split');if(was!==splitOn())render()},200)});
+(()=>{let sx=0,sw=0,on=false;const el=$('tSplit');if(!el)return;
+  el.addEventListener('pointerdown',e=>{on=true;sx=e.clientX;const li=document.querySelector('[data-view="tasks"] .tlayout>.stack');sw=li?li.getBoundingClientRect().width:420;el.setPointerCapture(e.pointerId);document.body.classList.add('dragging')});
+  el.addEventListener('pointermove',e=>{if(!on)return;const w=clamp(Math.round(sw+e.clientX-sx),320,900);document.documentElement.style.setProperty('--listw',w+'px');C.ui.listW=w});
+  el.addEventListener('pointerup',()=>{if(!on)return;on=false;document.body.classList.remove('dragging');save('config');ui.calKeepScroll=true;renderCal()});})();
+/* ---- 전투: 아바타 vs 보스·쫄따구 ---- */
+const MINI_COL=['#2e9a4a','#e07a10','#7a4fd0','#d14f92','#12938f','#c4513d'];
+function minionSVG(color,dead){return `<svg viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><g class="${dead?'':'boss-sp'}"><path d="M3 13h10v-1h1V8h-1V6h-1V5h-1V4H5v1H4v1H3v2H2v4h1z" fill="${color}"/><rect x="5" y="7" width="2" height="2" fill="#fff"/><rect x="9" y="7" width="2" height="2" fill="#fff"/><rect x="6" y="8" width="1" height="1" fill="#1d2130"/><rect x="10" y="8" width="1" height="1" fill="#1d2130"/></g>${dead?'<path d="M2 2L14 13M14 2L2 13" stroke="#d23c3c" stroke-width="1.5"/>':''}</svg>`}
+function renderBattle(){
+  const box=$('battleBox');if(!box)return;const td=dateKey(),day=today();
+  const ws=weekState(td),bs=bossOf(td),L=levelOf(P.xp),mood=moodKey(overallOf(day));
+  const open=openTasks().filter(t=>t.due&&t.due<=td),done=doneOn(td);
+  const mins=[...open.map(t=>({id:t.id,n:t.title,dead:false})),...done.map(e=>({id:e.tid,n:e.name,dead:true}))].slice(0,12);
+  $('btLbl').textContent=`쫄따구 ${open.length}마리 남음`;
+  box.innerHTML=`<div class="arena2"><div class="hero2">${spriteSVG(C.avatar.kind,mood,C.avatar.outfit,{level:L.lv})}<span class="tiny">Lv.${L.lv}</span></div><div class="vs">VS</div>
+    <div class="boss2 ${ws.dead?'dead':''}" data-info="boss">${bossSVG(bs.color,ws.dead)}<b class="small">${esc(bs.name)}</b><div class="track"><div class="fill" style="width:${Math.round(ws.left/ws.hp*100)}%;background:var(--bad)"></div></div><span class="tiny muted num">${ws.left}/${ws.hp}</span></div></div>
+    <div class="minions">${mins.map((m,i)=>`<button class="mini ${m.dead?'dead':''}" ${m.id&&TASKS[m.id]?`data-ctask="${m.id}"`:''} title="${esc(m.n)}">${minionSVG(MINI_COL[i%MINI_COL.length],m.dead)}</button>`).join('')||'<span class="tiny muted">오늘 할 일이 쫄따구가 돼요. 하나씩 해치워요.</span>'}</div>
+    <p class="tiny muted" style="margin:6px 0 0">할 일을 끝내면 쫄따구 처치, 얻은 XP는 그대로 보스 데미지. 나쁜 행동은 보스를 회복시켜요.</p>`;
+}
+let bfxT=null;
+function battleFx(xp,{bad,kill,gold}={}){
+  if(C.ui.fx===false)return;const el=$('bfx');if(!el)return;
+  const mood=moodKey(overallOf(today()));
+  el.innerHTML=`<div class="bfx-in ${bad?'bad':''}"><span class="bh">${spriteSVG(C.avatar.kind,mood,C.avatar.outfit,{fx:false})}</span><span class="slash">${bad?'💢':'⚔️'}</span><span class="bt2">${bad?minionSVG('#7a4fd0',false):kill?minionSVG(MINI_COL[Math.floor(Math.random()*6)],true):bossSVG(bossOf(dateKey()).color,false)}</span><span class="dmg">${bad?'보스 회복 +'+xp:(kill?'처치! ':'')+'−'+xp}</span>${gold>0?`<span class="gl">🪙+${gold}</span>`:''}</div>`;
+  el.hidden=false;el.firstChild.classList.add('go');clearTimeout(bfxT);bfxT=setTimeout(()=>{el.hidden=true},1500);
+}
+/* ---- 행복 기록 ---- */
+function doHappy(name,area){
+  if(!guard())return;const H=C.happy||{xp:8,gold:3,cond:5};let xp=+H.xp||0;if(recoveryActive())xp=Math.round(xp*C.recovery.mult);
+  const gj=C.jars.find(j=>j.id==='good');
+  const e={kind:'happy',type:'good',name:'✨ '+name,area:area||'mind',cond:+H.cond||0,gold:+H.gold||0,xp,...(gj?{jar:'good',mt:gj.types[0].id}:{})};
+  if(e.jar)ui.newMarble=e.jar;
+  commit(()=>applyEntry(curDay(),e));fxPop(`✨ +${xp} XP`,'var(--gold)');buzz();snack(e,curDay().date);
+}
+/* ---- 사냥 고르기 ---- */
+function openHuntPicker(){ui.hp=ui.hp||{tab:'sched',area:''};sheetCtx={hp:1};drawHuntPicker()}
+function drawHuntPicker(){
+  const H=ui.hp,td=dateKey();let items=[];
+  if(H.tab==='sched')items=openTasks().filter(t=>t.due===td&&t.time).sort((a,b)=>a.time.localeCompare(b.time)).map(t=>({k:'task:'+t.id,n:t.title,m:`${t.time}${t.dur?' · '+durTxt(t.dur):''}`,xp:taskBase(t).xp}));
+  if(H.tab==='todo')items=openTasks().filter(t=>t.due&&t.due<=td).sort(taskSorter('prio')).map(t=>({k:'task:'+t.id,n:t.title,m:dueLabel(t.due),xp:taskBase(t).xp}));
+  if(H.tab==='habit')items=C.actions.filter(a=>a.type==='good'&&!a.dopaOnly&&(!H.area||a.area===H.area)).map(a=>({k:'act:'+a.id,n:a.name,m:(C.areas.find(x=>x.id===a.area)||{}).name+(a.dur?' · 목표 '+a.dur+'분':''),xp:+a.xp||0}));
+  if(H.tab==='dopa')items=C.actions.filter(a=>a.dopa&&(!H.area||a.area===H.area)).map(a=>({k:'act:'+a.id,n:a.name,m:(DOPA.find(d=>d[0]===a.dopa)||['',''])[1]+(a.dur?' · '+a.dur+'분':''),xp:+a.xp||0}));
+  if(H.tab==='routine')items=(C.routines||[]).map(r=>({k:'routine:'+r.id,n:r.name,m:r.steps.length+'단계',xp:+r.xp||0}));
+  const tabs=[['sched','⏰ 오늘 시간표'],['todo','✅ 할 일'],['habit','▲ 습관'],['dopa','🍬 도파민'],['routine','⏱ 루틴']];
+  openSheet(`<div class="sh"><h3>⚔ 무엇을 사냥할까요?</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <div class="seg">${tabs.map(([k,l])=>`<button data-hptab="${k}" aria-pressed="${H.tab===k}">${l}</button>`).join('')}</div>
+    ${H.tab==='habit'||H.tab==='dopa'?`<div class="row" style="gap:4px"><button class="chipbtn" data-hparea="" aria-pressed="${!H.area}">모든 영역</button>${C.areas.map(a=>`<button class="chipbtn" data-hparea="${a.id}" aria-pressed="${H.area===a.id}">${esc(a.name)}</button>`).join('')}</div>`:''}
+    <div class="stack" style="gap:6px">${items.map(x=>`<button class="sug" data-hpick="${x.k}" style="grid-template-columns:1fr auto"><span><b>${esc(x.n)}</b><span class="why">${esc(x.m||'')}</span></span><span class="go">+${x.xp} ▶</span></button>`).join('')||'<div class="empty">비어 있어요. 다른 탭을 골라요.</div>'}</div>
+    <div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-hprand="1">🎲 이 중에서 아무거나</button><button class="btn ghost sm" data-quick5="1">⏳ 딱 5분만</button></div>`);
+}
+function huntPick(k){const[kind,id]=k.split(':');closeSheet();
+  if(kind==='task'&&TASKS[id])startRun({task:TASKS[id]});else if(kind==='act'){const a=C.actions.find(x=>x.id===id);if(a)startRun({act:a})}else if(kind==='routine'){const r=(C.routines||[]).find(x=>x.id===id);if(r)startRun({routine:r})}}
+/* ---- 도파민 메뉴 ---- */
+function renderDopa(){
+  const box=$('gDopa');if(!box)return;
+  box.innerHTML=`<div class="dopa">${DOPA.map(([co,nm,ds])=>{const its=C.actions.filter(a=>a.dopa===co);return `<div class="course"><b>${nm}</b><span class="tiny muted">${ds}</span><div class="dlist">${its.map(a=>`<button class="ditem" data-dopa="${a.id}"><span>${esc(a.name)}</span><span class="tiny muted">${a.dur?a.dur+'분':''}</span></button>`).join('')||'<span class="tiny muted">비어 있어요</span>'}</div></div>`}).join('')}</div>`;
+}
+function dopaSheet(id){const a=C.actions.find(x=>x.id===id);if(!a)return;sheetCtx={dopa:id};
+  openSheet(`<div class="sh"><h3>🍬 ${esc(a.name)}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>${a.reframe?`<div class="reframe"><b>💭 다르게 보기</b>${esc(a.reframe)}</div>`:''}<p class="small muted" style="margin:0">${a.dur?'목표 '+a.dur+'분 · ':''}XP +${a.xp}</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" data-aedit="${a.id}">편집</button><button class="btn ghost" data-dopago="hunt">⏱ 사냥</button><button class="btn" data-dopago="done">✓ 했어요</button></div>`)}
+/* ---- 이벤트 ---- */
+document.addEventListener('click',e=>{
+  if(lpFired)return;const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.hptab){ui.hp.tab=d.hptab;drawHuntPicker();return}
+  if(d.hparea!=null){ui.hp.area=d.hparea;drawHuntPicker();return}
+  if(d.hpick){huntPick(d.hpick);return}
+  if(d.hprand){const bs=[...document.querySelectorAll('#sheetC [data-hpick]')];if(!bs.length)return;huntPick(bs[Math.floor(Math.random()*bs.length)].dataset.hpick);return}
+  if(d.huntpick){openHuntPicker();return}
+  if(d.dopa){dopaSheet(d.dopa);return}
+  if(d.dopago){const a=C.actions.find(x=>x.id===sheetCtx.dopa);closeSheet();if(!a)return;if(d.dopago==='hunt')startRun({act:a});else{ui.off=0;doAction(a)}return}
+  if(d.gquickdopa){const g=G();if(g.pending||g.quest){location.hash='gacha';toast(g.quest?'진행 중인 가챠 퀘스트부터 끝내요':'먼저 뽑은 카드를 골라요');return}g.f={src:['dopa'],effort:[],areas:[],lists:[],due:'all',n:3};gachaDraw();return}
+  if(b.id==='calFilterBtn'){calFilterSheet();return}
+  if(d.cff){const f=C.ui.cal.filter=C.ui.cal.filter||{lists:[],areas:[],tags:[]};const arr=f[d.cff]=f[d.cff]||[];f[d.cff]=arr.includes(d.v)?arr.filter(x=>x!==d.v):[...arr,d.v];save('config');calFilterSheet();ui.calKeepScroll=true;renderCal();return}
+  if(d.cffclear){C.ui.cal.filter={lists:[],areas:[],tags:[]};save('config');calFilterSheet();renderCal();return}
+  if(d.calfold){C.ui.cal.foldOn=C.ui.cal.foldOn===false;save('config');ui.calKeepScroll=false;renderCal();return}
+});
+function calFilterSheet(){
+  const f=C.ui.cal.filter||{};const tags={};openTasks().forEach(t=>(t.tags||[]).forEach(x=>tags[x]=(tags[x]||0)+1));
+  const ch=(k,v,l)=>`<button class="chipbtn" data-cff="${k}" data-v="${esc(v)}" aria-pressed="${(f[k]||[]).includes(v)}">${l}</button>`;
+  sheetCtx={cff:1};
+  openSheet(`<div class="sh"><h3>캘린더에 보일 것</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div><p class="help" style="margin:0">아무것도 안 고르면 전부 보여요. 고른 것만 캘린더에 나와요.</p>
+    <div><div class="small muted">영역</div><div class="row" style="gap:4px">${C.areas.map(a=>ch('areas',a.id,esc(a.name))).join('')}</div></div>
+    <div><div class="small muted">목록</div><div class="row" style="gap:4px">${[{id:'inbox',name:'📥 받은함'},...C.lists.filter(l=>l.id!=='inbox')].map(l=>ch('lists',l.id,esc(l.name))).join('')}</div></div>
+    ${Object.keys(tags).length?`<div><div class="small muted">태그</div><div class="row" style="gap:4px">${Object.keys(tags).sort().map(t=>ch('tags',t,'#'+esc(t))).join('')}</div></div>`:''}
+    <div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-cffclear="1">모두 풀기</button><button class="btn" data-sheet="close">닫기</button></div>`);
+}
+function rewardExplain(t){
+  const b=taskBase(t),X=C.taskXP||{},ef=effortOf(t);const ar=C.areas.find(x=>x.id===areaOfTask(t));
+  const parts=[];
+  if(t.aid){const a=C.actions.find(x=>x.id===t.aid);parts.push(`습관 '${a?a.name:''}' 점수 +${b.xp}`)}
+  else if(t.rid)parts.push(`루틴 완주 +${b.xp}`);
+  else if(t.brave)parts.push(`⚡ 용기 (${({quick:'작은',mid:'보통',heavy:'큰'})[ef]} 용기) +${b.xp}`);
+  else{parts.push(`${(EFFORTS.find(x=>x[0]===ef)||[])[1]} +${+X[ef]||0}`);const pb=+((X.prio||{})[t.prio||0])||0;if(pb)parts.push(`중요도 +${pb}`)}
+  if(t.due&&X.onTime&&!t.aid&&!t.brave)parts.push(`제때 끝내면 +${X.onTime}`);
+  if(recoveryActive())parts.push(`복귀 보너스 ×${C.recovery.mult}`);
+  if(gachaMatch('task',t.id))parts.push(`🎲 가챠 ×${C.gacha.mult||1.5}`);
+  return `XP ${parts.join(' · ')} — ${gtx(b.gold)} · ${esc(ar?ar.name:'')} 컨디션 +${b.cond}. 타이머로 빨리 끝내면 스피드 보너스.`;
+}
 
 /* ================= 탭 ================= */
 const VIEWS=['home','tasks','cal','gacha','log','jars','stats','more','journey','shop','body','edit','guide'];
-function curView(){let v=location.hash.slice(1);if(v==='today')v='home';return VIEWS.includes(v)?v:'home'}
+function curView(){let v=location.hash.slice(1);if(v==='today')v='home';return VIEWS.includes(v)?v:((C.ui&&VIEWS.includes(C.ui.start))?C.ui.start:'home')}
 function route(){
   const v=curView();
   if(navStack[navStack.length-2]===v)navStack.pop();else if(navStack[navStack.length-1]!==v)navStack.push(v);
