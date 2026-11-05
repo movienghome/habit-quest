@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v5.5</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -883,6 +883,32 @@ body.wideview .hud-in,body.split .hud-in{max-width:none}
 .dchip>span:first-child{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dchip>.row{flex:none;white-space:nowrap}
 .dchip .x{opacity:.45}.dchip:hover .x{opacity:1}
+.erow3{display:grid;grid-template-columns:22px auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 2px;border-bottom:1px solid var(--line);background:var(--panel)}
+.erow3.on{background:color-mix(in srgb,var(--accent) 12%,var(--panel))}
+.erow3 .hand{cursor:grab;touch-action:none;color:var(--muted);text-align:center;user-select:none}
+.erow3 .nm{min-width:0;display:grid;gap:3px;border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0}
+.erow3 .nm b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.erow3.dragsrc{opacity:.35}
+.erow3 .qa{display:flex;gap:4px;align-items:center}
+.mcs{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.mx{font-size:11px;line-height:1.55;padding:0 7px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;color:inherit}
+.mx.ar{border-style:dashed;color:var(--muted)}
+.mx.xp{background:color-mix(in srgb,#d9a21b 18%,transparent);border-color:color-mix(in srgb,#d9a21b 45%,transparent)}
+.mx.gd{background:color-mix(in srgb,#b8862b 12%,transparent)}
+.mx.cd{background:color-mix(in srgb,var(--good) 14%,transparent)}
+.mx.cd.neg{background:color-mix(in srgb,var(--bad) 14%,transparent);border-style:dotted}
+.mx.rh{font-weight:700;border-color:var(--good)}
+.mx.bv{background:color-mix(in srgb,var(--brave) 18%,transparent);border-color:var(--brave);font-weight:700}
+.mx.n,.mx.op,.mx.du{color:var(--muted)}
+.ib{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:none;cursor:pointer;font-size:14px;color:inherit;opacity:.55}
+.ib:hover{opacity:1}
+.ib[aria-pressed="true"]{opacity:1;background:color-mix(in srgb,var(--good) 20%,transparent);border-color:var(--good);font-weight:800}
+.bulk55{position:sticky;top:0;z-index:3;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;border:2px solid var(--accent);border-radius:10px;background:var(--panel);margin:6px 0}
+.bulk55 select{width:auto}
+.aeshow{position:relative}.aeshow>summary{list-style:none;cursor:pointer}.aeshow>summary::-webkit-details-marker{display:none}
+.aeshow .pop55{position:absolute;right:0;top:110%;z-index:6;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:grid;gap:4px;min-width:160px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.tbtn55{margin-left:8px;background:var(--panel);color:var(--ink);border:0;border-radius:8px;padding:3px 10px;font-weight:700;cursor:pointer}
+@media (max-width:600px){.erow3 .hidem{display:none}.erow3 .ib{width:34px;height:34px}}
 </style>
 
 <header class="hud" id="hud">
@@ -1445,7 +1471,7 @@ async function boot(){
   const afterLoad=()=>{
     if(rawCfgV!==null&&rawCfgV<8){save('config');}
     if(C._pendingTasks){const ps=C._pendingTasks;delete C._pendingTasks;ps.forEach(p=>saveTask(newTask({...p,due:dateKey()})));save('config');if(ps.length)void 0&&later(()=>popup('할 일로 옮겼어요','✅',`한 번짜리 행동·용기 ${ps.length}개를 '할 일'로 옮겼어요.<br><span class="muted">습관 목록에는 이제 반복하는 것만 남아요.</span>`,'v5'))}
-    if(C.v54news){delete C.v54news;save('config');later(()=>toast('v5.4 · 일퀘는 \'매일\' 습관 카드로 · 점수 새로 맞춤 · ⚔ 용기 표시',5200))}
+    if(C.v54news){delete C.v54news;save('config');later(()=>toast('v5.4 · 일퀘는 \'매일\' 행동 카드로 · 점수 새로 맞춤 · ⚔ 용기 표시',5200))}
     if(C.v53news){delete C.v53news;save('config');later(()=>toast('v5.3 · 오늘 하나로 · 습관 모음 · 여러 개 고르기 · 영역 6개(작품·성장 나눔)',5200))}
     if(C.v51news){delete C.v51news;save('config');if(!C.v5news)void 0&&later(()=>popup('v5.1','🛡️','<b>틱틱처럼 3단 화면</b>(넓은 화면), 캘린더 시간 접기·필터, 🍬 도파민 메뉴, ⚔ 사냥 고르기, 보스·쫄따구 전투, ✨ 행복 기록이 생겼어요.','v5.1'))}
     if(C.v5news){delete C.v5news;save('config');void 0&&later(()=>popup('새 버전','🛡️','<b>할 일 · 캘린더 · 🎲 뽑기 · ⏱ 사냥</b>이 생겼어요.<br><span class="muted">틱틱 기록은 더보기 → 틱틱에서 가져오기. 처음 안내에서 한눈에 볼 수 있어요.</span>','v5'))}
@@ -2076,7 +2102,7 @@ function renderMore(){
 }
 
 /* ================= 편집 ================= */
-const EDIT_TABS=[['screen','테마·화면'],['actions','습관(행동)'],['lists','할 일 목록·보상'],['routines','⏱ 루틴'],['dopa','🍬 도파민 메뉴'],['courage','⚡ 용기'],['jars','유리병·구슬'],['dailies','☑ 일퀘 (매일)'],['watches','방치 경보'],['areas','컨디션 영역'],['road','여정·레벨 보상'],['shop','상점'],['food','식사·몸무게'],['avatar','아바타'],['rules','규칙·주간']];
+const EDIT_TABS=[['screen','테마·화면'],['actions','행동/습관'],['lists','할 일 목록·보상'],['routines','⏱ 루틴'],['dopa','🍬 도파민 메뉴'],['courage','⚡ 용기'],['jars','유리병·구슬'],['dailies','☑ 일퀘 (매일)'],['watches','방치 경보'],['areas','컨디션 영역'],['road','여정·레벨 보상'],['shop','상점'],['food','식사·몸무게'],['avatar','아바타'],['rules','규칙·주간']];
 function selectHTML(id,data,opts,sel){return `<select id="${id}" ${data}>${opts.map(([v,l])=>`<option value="${esc(v)}" ${String(v)===String(sel??'')?'selected':''}>${esc(l)}</option>`).join('')}</select>`}
 function listOf(col){if(col.startsWith('jt:')){const j=C.jars.find(x=>x.id===col.slice(3));return j?j.types:null}return C[col]}
 function table(col,cols,list,{delOk=()=>true}={}){
@@ -2221,6 +2247,8 @@ function renderGuide(){
       </ul></div>
   </div>
   <div class="panel"><h2>자세한 규칙</h2><p class="help">눌러서 펼쳐요. 화면 곳곳의 <b>?</b> 버튼을 누르면 해당 항목이 열려요. 숫자·버튼·병을 <b>꾹 누르거나 우클릭</b>하면 그 자리에서 설명과 편집이 떠요.</p>
+    ${acc('card55','🆕 v5.5 · 행동/습관 편집이 쉬워졌어요','지금 버전',`<ul><li>이름이 <b>행동 카드</b>로 바뀌었어요. 점수는 카드에만 있고, 그중 <b>리듬</b>(☑ 매일·요일·📌)이 있는 카드를 <b>🔁 습관</b>이라고 불러요.</li><li>편집 → 행동/습관: 줄마다 <b>☑</b>(매일 켜고 끄기)·<b>🗑</b>(지우기, 되돌리기 가능). <b>☐ 여러 개 고르기</b>로 한꺼번에 지우기·영역 바꾸기·매일 켜기.</li><li><b>👁 보이는 칸</b>에서 영역·XP·골드·컨디션·리듬·용기·30일 횟수를 켜고 꺼요. 점수는 아이콘이 붙은 칩으로 보여요.</li><li>행동 카드 편집은 <b>완료</b>를 눌러야 저장돼요. ×나 바깥을 누르면 취소 (알림의 '되살리기'로 살릴 수 있어요).</li><li>할 일 상세는 반대로 <b>자동 저장</b>. 바깥을 누르면 저장하고 닫혀요 (PC 오른쪽 상세도).</li><li>루틴: 단계마다 연결된 카드 점수가 들어가고, 루틴 자체는 <b>완주 보너스</b>만 줘요.</li><li>할 일 스마트 목록: ⏰ 지난 것 · ⏳ 마감 3일 안 · ⚡ 용기 · ☠ 미룬 것 · 🔁 습관 연결. 할 일 화면 왼쪽 목록을 끌어서 순서를 바꿔요.</li></ul>`)}
+    ${acc('card54','🃏 행동 카드 하나로 · 점수 뜻 · ⚔ 용기','v5.4',`<ul><li>점수는 <b>행동 카드</b>에만 있어요. 일퀘·도파민 메뉴·할 일 연결·루틴은 그 카드를 보여주는 방법일 뿐이에요.</li><li><b>일퀘</b> = '☑ 매일'로 둔 행동 카드. 따로 점수가 없고, 다 하면 상자를 열어요. 몸무게·채소처럼 다른 기록과 이어진 카드(🔗)도 있어요.</li><li><b>XP</b> = 성장(레벨) · <b>골드</b> = 현실의 돈·자원 · <b>컨디션</b> = 지금의 몸과 마음. 상관없는 칸은 0이에요.</li><li>새 습관은 <b>프리셋</b>(가벼움·보통·힘듦·작품·일…)을 눌러 바로 채워요. 프리셋 숫자는 습관 탭 맨 아래에서 바꿔요.</li><li>행동 카드에 <b>⚔ 용기 표시</b>를 붙이면 할 때마다 용기 점수·용기 구슬이 함께 쌓여요.</li><li>HP(컨디션)는 영역 평균이 아니라 <b>모두 더한 값</b>이에요. 점수 낼 일이 적은 영역(경제 등)이 깎아먹지 않아요.</li></ul>`)}
     ${acc('flow','컨디션 (HP)','오늘의 몸·마음 상태',`<ul><li>아침 에너지(지금 ${C.energyBase.join(' / ')})가 모든 영역의 시작점이에요.</li><li>영역(${C.areas.map(a=>esc(a.name)).join('·')})끼리는 서로 메꿔지지 않아요. 운동을 많이 해도 과음의 몸 페널티는 그대로예요.</li><li>네 영역 평균이 HP이고, 아바타 표정이 돼요: 75↑ 활기, 55↑ 괜찮음, 35↑ 지침, 그 아래 바닥.</li><li>"지금 하면 좋은 것"은 방치 경보, 이번 주 용기, 남은 일퀘, 가장 낮은 영역을 보고 골라줘요.</li></ul>`)}
     ${acc('brave','⚡ 용기','가장 큰 보상',`<ul><li>두렵거나 망설여졌는데 해본 것. 결과와 상관없이 기록해요.</li><li>XP·골드를 가장 많이 주고, '용기 점수'(1~3)가 쌓여 칭호가 올라가요: ${BRAVE_TITLES.map(t=>t[0]+'점 '+t[1]).slice(1,6).join(', ')}…</li><li>구슬이 연결돼 있으면 '시도했다' 병에 자동으로 들어가요.</li><li>목록에 없으면 크기(작은·보통·큰)를 고르고 직접 적어요.</li><li>이번 주 목표(${C.weekly.courage}번)를 채우면 +🪙${C.weekly.courageGold}. 7일 넘게 용기가 없으면 방치 경보가 떠요.</li></ul>`)}
     ${acc('quest','일퀘와 상자','매일 숙제',`<ul><li>매일 새로 시작해요. 행동·식사·몸무게와 연결된 건 자동으로 체크돼요.</li><li>전부 끝내면 상자 +🪙${C.dailyBonus.gold}·XP +${C.dailyBonus.xp}. 연속 3·7·30일은 업적.</li><li>못 끝낸 날 벌점은 없어요. 연속 기록만 끊겨요.</li></ul>`)}
@@ -2232,11 +2260,10 @@ function renderGuide(){
     ${acc('tasks','✅ 할 일 · 캘린더','틱틱 대신',`<ul><li><b>할 일</b> 탭은 틱틱처럼 써요: 목록·폴더·태그·중요도(!·!!·!!!)·반복·하위 할 일·메모.</li><li>빠른 추가에 그냥 말하듯 적어요: <b>내일 3시 씨네스트 30분 #퀵 !! ^Errands 매주 화</b> → 날짜·시각·걸리는 시간·태그·중요도·목록·반복이 알아서 들어가요. <b>⚡</b>를 앞에 붙이면 용기 할 일.</li><li>끝내면 크기(⚡퀵 +${C.taskXP.quick} · 🕓보통 +${C.taskXP.mid} · 🧱무거움 +${C.taskXP.heavy})와 중요도만큼 XP. 제때 끝내면 +${C.taskXP.onTime}. 습관과 연결된 할 일은 그 습관 점수로.</li><li><b>반복</b>: 매일·평일·매주 요일·격주·매월 날짜/몇째 주 요일·매년·<b>주 N회</b>(요일 상관없이 한 주에 N번)·완료한 날부터 N일마다.</li><li><b>☠ 삼진아웃</b>: 오늘이거나 지난 할 일을 더 뒤로 미루면 해골이 하나씩. 3개면 쪼개거나, 버리거나, 가챠로 해치워요.</li><li><b>캘린더</b>: 월·주·3일·일정 보기. 할 일·습관·루틴을 날짜나 시간에 끌어다 놓아요(폰은 꾹 누른 채로). 블록 아래를 끌면 길이가 바뀌어요. 주 보기 오른쪽 얇은 줄은 <b>실제로 한 시간</b>이라 계획과 비교돼요.</li><li>틱틱 기록은 더보기 → 틱틱에서 가져오기.</li></ul>`)}
     ${acc('gacha','🎲 뽑기 · ⏱ 사냥','뭘 할지 모를 때',`<ul><li>필터(할 일/습관/루틴, 크기, 영역, 목록)를 걸고 1·3·5·7장을 뽑아요. 오래 안 한 것·지난 것·중요한 게 더 잘 나와요.</li><li><b>나온 것 중 하나는 반드시</b> 골라요. 고른 건 가챠 퀘스트가 되고 끝내면 XP ×${C.gacha.mult||1.5}. 정 싫으면 골드를 내고 다시 뽑아요(오늘 할 때마다 비싸져요).</li><li><b>⏱ 사냥</b>: 할 일·습관을 타이머로 해요. 목표 시간의 절반 안에 끝내면 번개 처치, 80% 안이면 빠른 처치, 시간 안이면 제시간 처치 보너스. 늦어도 기본 보상은 그대로.</li><li><b>루틴</b>: 단계마다 목표 시간이 있는 연속 사냥(아침 루틴 등). 단계에 습관을 연결하면 같이 기록돼요.</li><li><b>⏳ 딱 5분만</b>: 시작이 제일 어려우니까. 5분 하고 끝내도 +5 XP.</li></ul>`)}
     ${acc('penalty','세부 옵션 · 누적 페널티 · 경제','같은 일도 어떻게 했는지에 따라',`<ul><li>행동마다 <b>세부 옵션</b>을 둘 수 있어요. 예: 샤워(기상 직후 +14 … 자기 직전 +3), 술(사교용 한 잔 … 과음). 시간대를 정해두면 그 시간에 자동으로 골라져요. 늦었어도 최소한의 점수는 챙겨요.</li><li><b>몇 번</b>: 어항 세 개를 다 청소했으면 ×3. 구슬도 세 개.</li><li><b>누적 페널티</b>: 같은 나쁜 행동이 7일 안에 또 나오면 +${C.penalty.same}배, 나쁜 날이 이어진 하루마다 +${C.penalty.chain}배(최대 ×${C.penalty.max}).</li><li><b>흐름 끊기</b>: 나쁜 날이 이어지다 하루를 깨끗하게 보내면 다음 날 연쇄 길이만큼 보상.</li><li><b>경제 영역</b>: 가계부 확인, 충동구매 참음, 절약, 무지출 데이, 납부 처리. 금액을 적으면 통계에 아낀 돈·쓴 돈이 쌓여요.</li><li><b>💭 다르게 보기</b>: 하기 싫을 때 읽을 문구를 행동·할 일마다 적어두세요. 💭를 누르면 크게 보이고 바로 5분 타이머로 이어져요.</li></ul>`)}
-    ${acc('card54','🃏 행동 카드 하나로 · 점수 뜻 · ⚔ 용기','v5.4',`<ul><li>점수는 <b>습관 카드</b>에만 있어요. 일퀘·도파민 메뉴·할 일 연결·루틴은 그 카드를 보여주는 방법일 뿐이에요.</li><li><b>일퀘</b> = '☑ 매일'로 둔 습관 카드. 따로 점수가 없고, 다 하면 상자를 열어요. 몸무게·채소처럼 다른 기록과 이어진 카드(🔗)도 있어요.</li><li><b>XP</b> = 성장(레벨) · <b>골드</b> = 현실의 돈·자원 · <b>컨디션</b> = 지금의 몸과 마음. 상관없는 칸은 0이에요.</li><li>새 습관은 <b>프리셋</b>(가벼움·보통·힘듦·작품·일…)을 눌러 바로 채워요. 프리셋 숫자는 습관 탭 맨 아래에서 바꿔요.</li><li>습관 카드에 <b>⚔ 용기 표시</b>를 붙이면 할 때마다 용기 점수·용기 구슬이 함께 쌓여요.</li><li>HP(컨디션)는 영역 평균이 아니라 <b>모두 더한 값</b>이에요. 점수 낼 일이 적은 영역(경제 등)이 깎아먹지 않아요.</li></ul>`)}
     ${acc('today53','📅 오늘 하나로 · 습관 모음','v5.3',`<ul><li><b>오늘</b> 목록 하나에 할 일·시간 일정·오늘 할 만한 습관이 다 모여요. 습관은 <b>일퀘</b>, <b>방치 경보</b>(기한 다 됨), <b>요일</b>을 정한 것, <b>📌 고정</b>한 것만 저절로 떠요.</li><li><b>습관 모음</b>(옛 '기록' 탭)은 습관을 꺼내 쓰고 고치는 곳이에요. 📌를 누르면 매일 '오늘'에 떠요. 습관 편집 창에서 띄울 요일도 골라요.</li><li><b>여러 개 고르기</b>: ☑ 버튼, 또는 Ctrl·⌘·Shift+클릭. 아래 막대로 날짜·목록·중요도를 한꺼번에 바꾸거나, 고른 것을 왼쪽 목록 위로 끌어 놓아요.</li><li><b>하지 않음</b>: 안 하기로 한 일은 지우지 않고 줄 그어 모아 둬요. ✕를 누르면 다시 열려요.</li><li><b>언제 했나요?</b> 나중에 체크해도 '아침에'·'1시간 전'·직접 시각을 고르면 그 시각으로 기록되고, 시간대 옵션(예: 기상 직후 샤워)도 그 시각에 맞춰 골라져요. 타이머로 한 건 시작한 시각을 써요.</li><li><b>영역 6개</b>: 몸·마음·작품(내 다음 작품)·성장(공부·언어·일 찾기)·생활·경제. 영역은 목록이 아니라 할 일 자체·태그·연결한 습관에서 와요.</li></ul>`)}
     ${acc('keys','⌨ 단축키','틱틱처럼',`<ul><li>할 일 입력칸에서 <b>~</b> 또는 <b>^</b> = 목록 고르기, <b>#</b> = 태그, <b>!</b> = 중요도. 위아래 화살표로 고르고 Tab/Enter.</li><li>그냥 적기 시작하면 <b>자주 쓴 이름</b>이 떠요(빠른 기록도).</li><li><b>Ctrl+Shift+R</b> (브라우저가 막으면 <b>Alt+R</b>) = 마우스를 올린 할 일, 또는 열린 할 일을 내일로 미루기.</li><li><b>Ctrl+Z</b> = 방금 기록 되돌리기 · <b>Ctrl+Enter</b> = 할 일 편집 끝 · <b>Ctrl+K</b> = 검색</li><li><b>N</b> = 할 일 추가칸으로 · <b>Q</b> = 빠른 기록으로 · 캘린더에서 <b>T</b> = 오늘</li></ul>`)}
     ${acc('happy','✨ 행복 기록 · 🍬 도파민 · ⚔ 전투','생산성만이 가치는 아니니까',`<ul><li><b>✨ 행복</b>: 자전거 타다 너무 시원했을 때, 햇빛이 예뻤을 때, 친구와 좋은 대화를 했을 때. 홈 빠른 기록에서 종류를 ✨ 행복으로 골라 적어요. 정해진 작은 보상(XP +${C.happy.xp})과 '좋았다' 병 구슬. 크게 주지 않는 건, 점수를 위해 행복을 짜내지 않게 하려는 거예요.</li><li><b>🍬 도파민 메뉴</b>: 시작부터 기분 좋아지는 것들을 애피타이저·사이드·메인·디저트·스페셜로 나눠요. 뽑기 탭에서 고르거나 🍬 3장 뽑기.</li><li><b>⚔ 전투</b>: 오늘 할 일이 쫄따구, 주간 보스는 그 주 XP로 쓰러뜨려요. 끝낼 때마다 아바타가 공격해요(편집 → 테마·화면에서 끌 수 있어요).</li><li><b>⚔ 사냥 고르기</b>: 오늘 시간표·할 일·습관(영역별)·도파민·루틴에서 골라 바로 타이머 시작.</li></ul>`)}
-    ${acc('once','습관 · 할 일 · 그냥 한 일','어디에 적을까',`<ul><li><b>습관(행동)</b>: 운동·일기·샤워처럼 계속하는 것. 기록 탭에 늘 있어요.</li><li><b>할 일</b>: 날짜가 있거나 끝나면 사라지는 일. 할 일 탭·캘린더에 있어요.</li><li><b>그냥 한 일</b>: 어쩌다 한 좋은 일. 홈 '빠른 기록'에 적고 Enter → 크기(작은·보통·큰)만큼 XP, 목록엔 안 쌓여요.</li><li>잘못 기록했으면 '오늘 한 일'에서 줄을 눌러 고쳐요. 끝낸 직후 아래에 뜨는 ×2·구슬 버튼으로 바로 바꿔도 돼요.</li></ul>`)}
+    ${acc('once','습관 · 할 일 · 그냥 한 일','어디에 적을까',`<ul><li><b>행동/습관</b>: 운동·일기·샤워처럼 계속하는 것. 기록 탭에 늘 있어요.</li><li><b>할 일</b>: 날짜가 있거나 끝나면 사라지는 일. 할 일 탭·캘린더에 있어요.</li><li><b>그냥 한 일</b>: 어쩌다 한 좋은 일. 홈 '빠른 기록'에 적고 Enter → 크기(작은·보통·큰)만큼 XP, 목록엔 안 쌓여요.</li><li>잘못 기록했으면 '오늘 한 일'에서 줄을 눌러 고쳐요. 끝낸 직후 아래에 뜨는 ×2·구슬 버튼으로 바로 바꿔도 돼요.</li></ul>`)}
     ${acc('fix','되돌리기와 지난 기록','실수해도 괜찮아요',`<ul><li>잘못 누른 기록은 '오늘 한 일'의 ×로 지우면 효과까지 원래대로 돌아가요.</li><li>＋기록 탭 위에서 어제·그저께를 고르면 그날로 기록할 수 있어요.</li><li>구슬은 유리병 탭에서 지난 날짜 것도 뺄 수 있어요.</li></ul>`)}
   </div>`;
 }
@@ -2277,8 +2304,8 @@ function infoFor(key){
     const up=C.actions.filter(x=>x.type==='good'&&x.area===a).map(x=>x.name),dn=C.actions.filter(x=>x.type==='bad'&&x.area===a).map(x=>x.name);
     return{kind:'컨디션 영역',t:esc(ar.name)+' 영역',b:`<p>오늘 ${esc(ar.name)} 상태예요. 다른 영역과 서로 메꿔지지 않아요.</p><div class="brk"><span>아침 시작점</span><span>${base}</span><span>행동·용기</span><span>${acts>=0?'+':''}${acts}</span><span>식사</span><span>${fd>=0?'+':''}${fd}</span>${ng.map(n=>`<span>방치: ${esc(n.t.name)} ${n.since}일</span><span>−${n.pen}</span>`).join('')}<span><b>오늘</b></span><span><b>${areaValues(day)[a]}</b></span></div>${up.length?`<p class="small"><b style="color:var(--good)">올리는 것</b> ${esc(up.join(', '))}</p>`:''}${dn.length?`<p class="small"><b style="color:var(--bad)">내리는 것</b> ${esc(dn.join(', '))}</p>`:''}`+btns(goE('areas','영역 편집'),goE('actions','행동 편집'))}}
   case 'act':{const x=C.actions.find(y=>y.id===a);if(!x)return null;const w=countAct(e=>e.aid===a,7),m=countAct(e=>e.aid===a,30),all=countAct(e=>e.aid===a);const ar=C.areas.find(y=>y.id===x.area);
-    return{kind:x.type==='good'?'▲ 좋은 행동':'▼ 나쁜 행동',t:esc(x.name),b:`<div class="brk"><span>영역</span><span>${esc(ar?ar.name:'')}</span><span>7일 / 30일 / 전체</span><span>${w.c} / ${m.c} / ${all.c}번</span><span>마지막</span><span>${all.last?fmtD(all.last):'—'}</span></div><p class="tiny muted">${x.type==='good'?'바꾸면 바로 저장돼요. 구슬을 고르면 누를 때 병에도 들어가요.':'나쁜 행동은 컨디션·골드를 깎고 주간 보스를 회복시켜요.'}</p>`+qe('actions',x,[['name','이름','text'],['cond','컨디션','abs','min="0" max="100"'],['gold','골드','abs','min="0"'],...(x.type==='good'?[['xp','XP','num','min="0"'],['marble','구슬','sel',marbleOpts()]]:[]),])+(x.reframe?`<div class="reframe" style="font-size:13.5px"><b>💭 다르게 보기</b>${esc(x.reframe)}</div>`:'')+(x.opts&&x.opts.length?`<p class="tiny muted">세부 옵션: ${esc(x.opts.map(o=>o.name).join(' / '))}</p>`:'')+btns(x.doneAt?'':`<button class="btn sm" data-act="${x.id}">지금 기록</button>`,`<button class="btn ghost sm" data-aedit="${x.id}">옵션·문구·전체 편집</button>`,`<button class="btn ghost sm" data-del="actions" data-id="${x.id}">지우기</button>`,goE('actions','전체 편집'))}}
-  case 'quest':{const q=C.dailies.find(y=>y.id===a);if(!q)return null;return{kind:'일퀘',t:esc(q.name),b:`<p>매일 새로 시작해요. 다 끝내면 상자(+🪙${C.dailyBonus.gold})를 열어요.</p>`+`<p class="small muted">점수는 습관 카드에서 정해요.</p>`+btns(((c0)=>c0?`<button class="btn ghost sm" data-aedit="${c0.id}">카드 편집</button>`:'')(C.actions.find(x=>x.daily&&(x.qid||'q'+x.id)===q.id)),`<button class="btn sm" data-quest="${q.id}">${questDone(day,q)?'체크 해제':'체크'}</button>`,goE('dailies','일퀘 전체 편집'))}}
+    return{kind:x.type==='good'?'▲ 좋은 행동':'▼ 나쁜 행동',t:esc(x.name),b:`<div class="brk"><span>영역</span><span>${esc(ar?ar.name:'')}</span><span>7일 / 30일 / 전체</span><span>${w.c} / ${m.c} / ${all.c}번</span><span>마지막</span><span>${all.last?fmtD(all.last):'—'}</span></div><p class="tiny muted">${x.type==='good'?'점수·리듬(매일)·⚔ 용기·옵션은 ✎ 편집에서 한 번에 바꿔요.':'나쁜 행동은 컨디션·골드를 깎고 주간 보스를 회복시켜요.'}</p>`+`<div class="mcs" style="margin:8px 0">${metaChips(x,null,aeShowAll().map(z=>z[0]))}</div>`+(x.reframe?`<div class="reframe" style="font-size:13.5px"><b>💭 다르게 보기</b>${esc(x.reframe)}</div>`:'')+(x.opts&&x.opts.length?`<p class="tiny muted">세부 옵션: ${esc(x.opts.map(o=>o.name).join(' / '))}</p>`:'')+btns(x.doneAt?'':`<button class="btn sm" data-act="${x.id}">지금 기록</button>`,`<button class="btn sm" data-aedit="${x.id}">✎ 편집</button>`,`<button class="btn ghost sm" data-del="actions" data-id="${x.id}">지우기</button>`,goE('actions','목록에서 보기'))}}
+  case 'quest':{const q=C.dailies.find(y=>y.id===a);if(!q)return null;return{kind:'일퀘',t:esc(q.name),b:`<p>매일 새로 시작해요. 다 끝내면 상자(+🪙${C.dailyBonus.gold})를 열어요.</p>`+`<p class="small muted">점수는 행동 카드에서 정해요.</p>`+btns(((c0)=>c0?`<button class="btn ghost sm" data-aedit="${c0.id}">카드 편집</button>`:'')(C.actions.find(x=>x.daily&&(x.qid||'q'+x.id)===q.id)),`<button class="btn sm" data-quest="${q.id}">${questDone(day,q)?'체크 해제':'체크'}</button>`,goE('dailies','일퀘 전체 편집'))}}
   case 'boss':{const ws=weekState(day.date),bs=bossOf(day.date);return{kind:'이번 주 보스',t:'⚔️ '+esc(bs.name),b:`<p>매주 월요일에 새 보스가 나와요. 이번 주에 얻은 XP가 그대로 데미지가 되고, 나쁜 행동은 깎인 컨디션만큼 보스를 회복시켜요.</p><div class="brk"><span>최대 HP</span><span>${ws.hp}</span><span>준 데미지 (이번 주 XP)</span><span>${ws.dmg}</span><span>회복 (나쁜 행동)</span><span>${ws.heal}</span><span><b>남은 HP</b></span><span><b>${ws.left}</b></span><span>처치 보상</span><span>+🪙${C.weekly.bossGold} · XP +${C.weekly.bossXp}</span></div>`+btns(gd('week'),goE('rules','보스 HP·보상 바꾸기'))}}
   case 'wgoal':{const ws=weekState(day.date);return{kind:'이번 주',t:'⚡ 주간 용기 목표',b:`<p>이번 주 용기를 ${ws.goal}번 기록하면 +🪙${C.weekly.courageGold} · XP +${C.weekly.courageXp}. 지금 ${ws.brave}번.</p>`+btns(`<button class="btn sm brave" data-sugbrave="1">용기 기록하러 가기</button>`,goE('rules','목표 바꾸기'))}}
   case 'jar':{const j=C.jars.find(y=>y.id===a);if(!j)return null;const Lj=jarLayout(j),cnt={};marblesOf(j.id).forEach(t=>cnt[t]=(cnt[t]||0)+1);const links=[...C.actions,...C.courage].filter(x=>x.marble&&x.marble.split(':')[0]===j.id).map(x=>x.name);
@@ -2324,13 +2351,14 @@ function searchIndex(){
   [['hp','HP · 컨디션','오늘 상태 0~100'],['xp','XP','영원히 쌓이는 경험치'],['lv','레벨','다음 보상'],['gold','골드','돈'],['brave','용기 점수·칭호','칭호 단계'],['energy','아침 에너지','시작점'],['boss','이번 주 보스','HP, 데미지'],['wgoal','주간 용기 목표','이번 주 용기']].forEach(([k,t,d])=>add('설명',t,d,()=>openInfo(k)));
   [['avg','평균 컨디션'],['clean','깨끗한 날'],['days','기록한 날'],['marble','구슬 수'],['chest','일퀘 상자']].forEach(([k,t])=>add('통계',t,'통계 용어 설명',()=>openInfo('stat:'+k)));
   C.areas.forEach(a=>add('영역',a.name+' 영역','오늘 무엇 때문에 오르고 내렸는지',()=>openInfo('area:'+a.id)));
-  C.actions.forEach(a=>add(a.type==='good'?'좋은 행동':'나쁜 행동',a.name,'꾹 누르면 설명, 눌러서 바로 기록',()=>openInfo('act:'+a.id)));
+  C.actions.forEach(a=>add(a.brave?'⚔ 용기 카드':isHabit(a)?'🔁 습관':a.type==='good'?'좋은 행동':'나쁜 행동',a.name,(rhythmOf(a)?rhythmOf(a)+' · ':'')+'눌러서 설명·편집',()=>openInfo('act:'+a.id),(a.brave?'용기 brave ⚔ ':'')+(isHabit(a)?'습관 리듬 매일 일퀘':'')));
+  add('할 일','⚡ 용기 할 일 목록','용기 표시가 붙은 할 일만',()=>{C.ui.tasks.sel='brave';location.hash='tasks';renderTasks()},'용기 brave');
   C.courage.forEach(a=>add('용기',a.name,'XP +'+a.xp,()=>openInfo('kbrave:'+a.id)));
   C.jars.forEach(j=>{add('유리병',j.name,j.hint||'',()=>openInfo('jar:'+j.id));j.types.forEach(t=>add('구슬',t.name,j.name+' 병',()=>openInfo('mt:'+j.id+':'+t.id)))});
   C.dailies.forEach(q=>add('일퀘',q.name,'오늘의 일퀘',()=>openInfo('quest:'+q.id)));
   BADGES.forEach(b=>add('업적',b.name,b.desc,()=>openInfo('badge:'+b.id)));
   C.roadmap.forEach(r=>add('여정',r.name,'Lv.'+r.lv+' · '+r.itemName+(r.real?' · '+r.real:''),()=>openInfo('road:'+r.id)));
-  openTasks().forEach(t=>add('할 일',t.title,(t.due?dueLabel(t.due)+(t.time?' '+t.time:''):'날짜 없음')+' · '+listName(t.list),()=>openTaskSheet(t.id),(t.tags||[]).join(' ')));
+  openTasks().forEach(t=>add('할 일',t.title,(t.due?dueLabel(t.due)+(t.time?' '+t.time:''):'날짜 없음')+' · '+listName(t.list),()=>openTaskSheet(t.id),(t.tags||[]).join(' ')+(t.brave?' 용기 ⚡':'')));
   add('기능','⚔ 사냥 고르기','시간표·할 일·습관·도파민에서 골라 타이머 시작',()=>openHuntPicker(),'hunt timer 타이머');
   add('기능','✨ 행복 기록','홈 빠른 기록에서 종류를 ✨ 행복으로',()=>{location.hash='home';setTimeout(()=>{$('qType').value='happy';render();$('qName').focus()},80)},'happy');
   (C.routines||[]).forEach(r=>add('루틴',r.name,r.steps.length+'단계 · 누르면 시작',()=>startRun({routine:r})));
@@ -2395,7 +2423,7 @@ document.addEventListener('click',e=>{
   if(!t){const inf=e.target.closest('[data-info]');if(inf&&!inf.closest('a')){lastPt={x:e.clientX,y:e.clientY};openInfo(inf.dataset.info)}return}
   const d=t.dataset;
   if(t.id==='popClose'){closeInfo();return}
-  if(t.closest('#pop')&&(d.goedit||d.guide||d.sugbrave||d.del||d.act||d.brave||d.quest))closeInfo();
+  if(t.closest('#pop')&&(d.goedit||d.aedit||d.guide||d.sugbrave||d.del||d.act||d.brave||d.quest))closeInfo();
   if(t.id==='searchBtn'||t.id==='sideSearch'){closeDrawer();openSearch();return}
   if(t.id==='menuBtn'){openDrawer();return}
   if(t.id==='backBtn'){if(navStack.length>1){navStack.pop();history.back()}else location.hash='home';return}
@@ -2973,7 +3001,7 @@ function postpone(t,to){
   if(t.skull>=3)toast(`☠☠☠ 삼진아웃! '${t.title}' 쪼개거나, 가챠로 해치우거나, 버려요`);else toast(`${dueLabel(to)}로 미뤘어요${t.skull?' · ☠'.repeat(1)+t.skull:''}`);
 }
 /* ---- 스마트 목록 ---- */
-const SMART=[['today','📅 오늘'],['tomorrow','🌤 내일'],['week','🗓 다음 7일'],['inbox','📥 기본함'],['focus','🎯 집중'],['nodate','💭 날짜 없음'],['all','📋 전체'],['done','✅ 완료']];
+const SMART=[['today','📅 오늘'],['tomorrow','🌤 내일'],['week','🗓 다음 7일'],['inbox','📥 기본함'],['focus','🎯 집중'],['overdue','⏰ 지난 것'],['soon','⏳ 마감 3일 안'],['brave','⚡ 용기'],['skull','☠ 미룬 것'],['habit','🔁 습관 연결'],['nodate','💭 날짜 없음'],['all','📋 전체'],['done','✅ 완료']];
 function taskMatches(t,sel){
   const td=dateKey();
   if(sel==='today')return t.status===0&&((t.due&&t.due<=td)||(!t.due&&t.deadline&&t.deadline<=td)||(t.checks||[]).some(c=>c.d===td&&!c.ok));
@@ -2982,6 +3010,11 @@ function taskMatches(t,sel){
   if(sel==='inbox')return t.status===0&&(!t.list||t.list==='inbox');
   if(sel==='nodate')return t.status===0&&!t.due;
   if(sel==='focus')return t.status===0&&(t.tags||[]).includes('집중');
+  if(sel==='overdue')return t.status===0&&!!t.due&&t.due<td;
+  if(sel==='soon')return t.status===0&&!!t.deadline&&t.deadline<=addDays(td,3);
+  if(sel==='brave')return t.status===0&&(!!t.brave||!!(t.aid&&(C.actions.find(a=>a.id===t.aid)||{}).brave));
+  if(sel==='skull')return t.status===0&&(t.skull||0)>0;
+  if(sel==='habit')return t.status===0&&!!t.aid;
   if(sel==='all')return t.status===0;
   if(sel==='done')return t.status===2;
   if(sel.startsWith('l:'))return t.status===0&&t.list===sel.slice(2);
@@ -3112,9 +3145,9 @@ function drawTaskSheet(){
   </div>`:''}
   <div><div class="small muted" style="margin-bottom:4px">하위 할 일 ${(t.subs||[]).length?`${(t.subs||[]).filter(s=>s.done).length}/${t.subs.length}`:''}</div><div class="subs">${(t.subs||[]).map((s,i)=>`<div class="sr ${s.done?'on':''}"><input type="checkbox" data-tssub="${i}" ${s.done?'checked':''} style="width:auto" aria-label="${esc(s.t)} 완료"><input type="text" data-tssubt="${i}" value="${esc(s.t)}" aria-label="하위 할 일"><button class="x" data-tssubdel="${i}" aria-label="지우기">×</button></div>`).join('')}
     <form class="sr" data-tssubadd="1"><span class="muted" style="text-align:center">＋</span><input type="text" id="tsSubNew" placeholder="하위 할 일 추가" enterkeyhint="done"><span></span></form></div></div>
-  <details><summary class="small" style="cursor:pointer;font-weight:700">더 보기 · 습관 연결 · 태그 · 영역</summary><div class="f2" style="margin-top:8px">
+  <details><summary class="small" style="cursor:pointer;font-weight:700">더 보기 · 행동 카드 연결 · 태그 · 영역</summary><div class="f2" style="margin-top:8px">
     <label class="f">태그 (쉼표)<input id="tsTags" value="${esc((t.tags||[]).join(', '))}"></label>
-    <label class="f">습관과 연결 ${t.aid?'':'<button class="btn ghost sm" data-tohabit="1" style="padding:1px 6px;font-size:11px">이 할 일로 습관 만들기</button>'}<select id="tsAid"><option value="">없음 (할 일 점수)</option>${acts.map(a=>`<option value="${a.id}" ${t.aid===a.id?'selected':''}>${esc(a.name)} · +${a.xp}</option>`).join('')}</select></label>
+    <label class="f">습관과 연결 ${t.aid?'':'<button class="btn ghost sm" data-tohabit="1" style="padding:1px 6px;font-size:11px">이 할 일로 습관 만들기</button>'}<select id="tsAid"><option value="">없음 (할 일 점수)</option>${acts.map(a=>`<option value="${a.id}" ${t.aid===a.id?'selected':''}>${esc(a.name)} · +${a.xp}</option>`).join('')}</select></label>${taskCardNote(t)}
     <label class="f">컨디션 영역<select id="tsArea"><option value="">자동 (${esc((C.areas.find(x=>x.id===(tagArea(t)||((t.aid&&C.actions.find(x=>x.id===t.aid))||{}).area))||{}).name||'없음 · 컨디션 변화 없음')})</option>${C.areas.map(a=>`<option value="${a.id}" ${t.area===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select></label>
     <label class="f">끝내면 넣을 구슬<select id="tsMarble">${jarSelOpts().map(([v,l])=>`<option value="${esc(v)}" ${(t.marble||'')===v?'selected':''}>${esc(l)}</option>`).join('')}</select></label>
     ${t.sec?`<label class="f">칸(섹션)<input id="tsSec" value="${esc(t.sec)}"></label>`:''}
@@ -3516,14 +3549,14 @@ function finishSingle(){
 function finishRoutine(){
   const R=RUN,tot=runElapsed(),r=(C.routines||[]).find(x=>x.id===R.id);endRun(true);ui.off=0;
   const done=R.log.filter(x=>!x.skip).length,all=R.steps.length;const sp=speedOf(tot,R.target,+(r&&r.xp)||20);
-  let xp=Math.round((+(r&&r.xp)||20)*done/all);if(done===all)xp+=sp.bonus;if(recoveryActive())xp=Math.round(xp*C.recovery.mult);
-  const e={kind:'routine',type:'good',name:R.name+(done<all?` (${done}/${all})`:' 완주'),area:(r&&r.area)||'life',cond:done===all?6:3,xp,gold:done===all?+(r&&r.gold)||0:0,note:R.log.map(x=>`${x.skip?'✕':'✓'}${x.name} ${mmss(x.sec)}`).join(' · ')};
+  let xp=done===all?(+(r&&r.xp)||0)+sp.bonus:0;if(recoveryActive())xp=Math.round(xp*C.recovery.mult);
+  const e={kind:'routine',type:'good',name:R.name+(done<all?` (${done}/${all})`:' 완주'),area:(r&&r.area)||'life',cond:0,xp,gold:done===all?+(r&&r.gold)||0:0,note:R.log.map(x=>`${x.skip?'✕':'✓'}${x.name} ${mmss(x.sec)}`).join(' · ')};
   if(done===all)e.spd=sp.tier;e.dur=Math.max(1,Math.round(tot/60));const st=new Date(Date.now()-tot*1000);e.st=pad(st.getHours())+':'+pad(st.getMinutes());
   if(gachaMatch('routine',R.id)){e.xp=Math.round(e.xp*(C.gacha.mult||1.5));e.gq=1}
   const rt=Object.values(TASKS).find(t=>t.status===0&&t.rid===R.id&&t.due&&t.due<=dateKey());
   commit(()=>applyEntry(today(),e));afterGacha(e);
   if(rt){if(rt.rep){rt.due=nextDue(rt.rep,dateKey())||rt.due}else{rt.status=2;rt.doneAt=dateKey()}rt.cnt=(rt.cnt||0)+1;saveTask(rt)}
-  popup(done===all?'루틴 완주':'루틴 끝','🏁',`<b>${esc(R.name)}</b> ${done}/${all}단계 · ${mmss(tot)} (목표 ${R.target}분)<br><b>+${e.xp} XP</b>${done===all&&sp.bonus?` <span class="muted">(${esc(sp.tier)} +${sp.bonus})</span>`:''}`,done===all?sp.tier:'수고했어요');
+  popup(done===all?'루틴 완주':'루틴 끝','🏁',`<b>${esc(R.name)}</b> ${done}/${all}단계 · ${mmss(tot)} (목표 ${R.target}분)<br>${e.xp?`<b>완주 보너스 +${e.xp} XP</b>`:'<span class="muted">단계마다 카드 점수가 들어갔어요 · 완주 보너스는 다 끝냈을 때만</span>'}${done===all&&sp.bonus?` <span class="muted">(${esc(sp.tier)} +${sp.bonus})</span>`:''}`,done===all?sp.tier:'수고했어요');
 }
 function endRun(keep){RUN=null;runSave();clearInterval(runIv);$('hunt').hidden=true;$('huntPill').hidden=true;document.body.style.overflow='';document.title=docTitle();releaseWake();if(!keep)toast('그만뒀어요')}
 $('hunt').addEventListener('click',e=>{const b=e.target.closest('[data-hunt]');if(b)huntDo(b.dataset.hunt)});
@@ -3592,7 +3625,7 @@ function openActionEditor(id){
     ${(()=>{const rs=(C.routines||[]).filter(r=>r.steps.some(s=>s.aid===a.id));return good?`<div class="small row" style="gap:4px">⏱ 루틴 ${rs.map(r=>`<span class="tagc">${esc(r.name)}</span>`).join(' ')||'<span class="muted">없음</span>'} ${(C.routines||[]).length?`<select id="aeRtSel" style="width:auto">${C.routines.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join('')}</select><button class="btn ghost sm" data-aeroutine="1">에 넣기</button>`:''}</div>`:''})()}
     ${(()=>{const ws=C.watches.filter(w=>w.action===a.id),qs=C.dailies.filter(q=>q.action===a.id);return `<div class="small muted">${ws.length?`⚠ 방치 경보: ${ws[0].days}일 넘으면 −${ws[0].penalty}/일 · `:''}${qs.length?`☑ 일퀘: ${qs.map(q=>esc(q.name)).join(', ')}`:''}</div>`})()}
   </div>
-  <div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-del="actions" data-id="${a.id}">지우기</button><span class="row" style="gap:6px"><button class="btn ghost" data-aerun="${a.id}">⏱ 타이머</button><button class="btn" data-sheet="close">완료</button></span></div>`;
+  <div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-del="actions" data-id="${a.id}">지우기</button><span class="row" style="gap:6px"><button class="btn ghost" data-aerun="${a.id}">⏱ 타이머</button><span class="tiny muted" style="align-self:center">완료를 눌러야 저장돼요</span><button class="btn" data-aedone="1">완료</button></span></div>`;
   openSheet(h,()=>{render()});
 }
 function aeChange(t){
@@ -3612,7 +3645,7 @@ function aeChange(t){
 function routinesEditHTML(){
   const rs=C.routines||[];
   return `<p class="help">루틴은 단계마다 목표 시간이 있는 '자동사냥'이에요. 단계에 습관을 연결하면 그 단계를 끝낼 때 그 습관도 같이 기록돼요. 빨리 끝내면 스피드 보너스.</p><div class="stack">`+
-  rs.map(r=>`<div class="jarcard"><div class="kv"><label>루틴 이름<input data-rt="${r.id}" data-f="name" value="${esc(r.name)}"></label><label>완주 XP<input data-rt="${r.id}" data-f="xp" type="number" min="0" value="${r.xp||0}"></label><label>완주 골드<input data-rt="${r.id}" data-f="gold" type="number" min="0" value="${r.gold||0}"></label><label>영역<select data-rt="${r.id}" data-f="area">${C.areas.map(a=>`<option value="${a.id}" ${(r.area||'life')===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select></label></div>
+  rs.map(r=>`<div class="jarcard"><div class="kv"><label>루틴 이름<input data-rt="${r.id}" data-f="name" value="${esc(r.name)}"></label><label>완주 보너스 XP<input data-rt="${r.id}" data-f="xp" type="number" min="0" value="${r.xp||0}"></label><label>완주 골드<input data-rt="${r.id}" data-f="gold" type="number" min="0" value="${r.gold||0}"></label><label>영역<select data-rt="${r.id}" data-f="area">${C.areas.map(a=>`<option value="${a.id}" ${(r.area||'life')===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select></label></div>
     <div class="vtable" style="margin-top:8px"><div class="vrow head" style="grid-template-columns:minmax(0,1.6fr) .5fr 1.2fr 26px 26px 26px"><span>단계</span><span>분</span><span>연결할 습관</span><span></span><span></span><span></span></div>
     ${r.steps.map((s,i)=>`<div class="vrow" style="grid-template-columns:minmax(0,1.6fr) .5fr 1.2fr 26px 26px 26px"><input data-rs="${r.id}" data-i="${i}" data-f="name" value="${esc(s.name)}" aria-label="단계 이름"><input data-rs="${r.id}" data-i="${i}" data-f="min" type="number" min="0" max="240" value="${s.min||0}" aria-label="분"><select data-rs="${r.id}" data-i="${i}" data-f="aid" aria-label="연결할 습관"><option value="">없음</option><option value="@weigh" ${s.aid==='@weigh'?'selected':''}>⚖ 몸무게 기록</option>${C.actions.filter(a=>a.type==='good').map(a=>`<option value="${a.id}" ${s.aid===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select><button class="x" data-rsmove="${r.id}" data-i="${i}" data-d="-1" ${i?'':'disabled'} aria-label="위로">↑</button><button class="x" data-rsmove="${r.id}" data-i="${i}" data-d="1" ${i<r.steps.length-1?'':'disabled'} aria-label="아래로">↓</button><button class="x" data-rsdel="${r.id}" data-i="${i}" aria-label="단계 지우기">×</button></div>`).join('')}</div>
     <div class="row"><button class="btn sm ghost" data-rsadd="${r.id}">＋ 단계</button><span class="tiny muted">총 ${r.steps.reduce((s,x)=>s+(+x.min||0),0)}분</span><span style="flex:1"></span><button class="btn sm" data-rrun="${r.id}">⏱ 시작</button><button class="btn sm ghost" data-rtdel="${r.id}">루틴 지우기</button></div></div>`).join('')+
@@ -4178,7 +4211,7 @@ function applyScore(a,s){
 function mig54(c,raw){
   if(!c.presets||!Array.isArray(c.presets.good)||!Array.isArray(c.presets.bad))c.presets=clone(PRESET0);
   if(raw&&raw.v>=8)return;
-  // 1) 일퀘 → '매일' 습관 카드 (점수는 카드에만)
+  // 1) 일퀘 → '매일' 행동 카드 (점수는 카드에만)
   (Array.isArray(c.dailies)?c.dailies:[]).forEach(q=>{
     const a=q.action&&c.actions.find(x=>x.id===q.action);
     if(a){a.daily=1;if(!a.qid)a.qid=q.id;return}
@@ -4200,7 +4233,7 @@ function mig54(c,raw){
   bak.rules.food=clone(c.food);(c.food||[]).forEach(f=>{const v=RULES54.food[f.id];if(v!=null)f.points=v});
   if(raw){c.scoreBak=bak;c.v54news=1}
 }
-// 일퀘 = '매일' 표시가 붙은 습관 카드에서 저절로 만들어짐 (따로 점수 없음)
+// 일퀘 = '매일' 표시가 붙은 행동 카드에서 저절로 만들어짐 (따로 점수 없음)
 function syncDailies(c){
   c.dailies=(c.actions||[]).filter(a=>a.daily&&a.type==='good'&&!(a.once&&a.doneAt)).map(a=>({id:a.qid||('q'+a.id),name:a.name,action:a.link||a.id,xp:0,gold:0}));
 }
@@ -4226,15 +4259,15 @@ function dailiesEditHTML(){
   const ds=C.actions.filter(a=>a.daily&&a.type==='good');
   const hows=[['','눌러서 체크 (그냥 습관)'],['@weigh','⚖ 몸무게 기록하면 자동'],...C.food.filter(f=>f.points>0).map(f=>['@food:'+f.id,'🥗 '+f.name+' 기록하면 자동']),...C.courage.map(k=>[k.id,`⚡ '${k.name}' 하면 자동`])];
   const others=C.actions.filter(a=>!a.daily&&a.type==='good'&&!a.link);
-  return `<p class="help">일퀘는 따로 있는 게 아니라 <b>'매일'로 정한 습관 카드</b>예요. 점수도 그 카드 하나에서만 나와요. 다 끝낸 날엔 상자를 열어요. 3~5개가 적당해요.</p>
-  <div class="elist">${ds.map(a=>{const ar=C.areas.find(x=>x.id===a.area);return `<div class="erow2"><span class="hand"></span><span class="mk good">☑</span><button class="nm" data-aedit="${a.id}" style="border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0;min-width:0"><b>${esc(a.name)}</b><span>${a.link?esc(linkName(a.link)):`${esc(ar?ar.name:'')} · XP +${a.xp||0} · 🪙${a.gold||0} · 컨디션 +${Math.abs(a.cond||0)}`}${a.brave?' · ⚔':''}</span></button><button class="btn ghost sm" data-dlyoff="${a.id}">매일 해제</button><span></span></div>`}).join('')||'<div class="empty">아직 없어요. 아래에서 추가하거나 습관 카드에서 ☑ 매일을 눌러요.</div>'}</div>
+  return `<p class="help">일퀘는 따로 있는 게 아니라 <b>'매일'로 정한 행동 카드</b>예요. 점수도 그 카드 하나에서만 나와요. 다 끝낸 날엔 상자를 열어요. 3~5개가 적당해요.</p>
+  <div class="elist">${ds.map(a=>{const ar=C.areas.find(x=>x.id===a.area);return `<div class="erow2"><span class="hand"></span><span class="mk good">☑</span><button class="nm" data-aedit="${a.id}" style="border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0;min-width:0"><b>${esc(a.name)}</b><span>${a.link?esc(linkName(a.link)):`${esc(ar?ar.name:'')} · XP +${a.xp||0} · 🪙${a.gold||0} · 컨디션 +${Math.abs(a.cond||0)}`}${a.brave?' · ⚔':''}</span></button><button class="btn ghost sm" data-dlyoff="${a.id}">매일 해제</button><span></span></div>`}).join('')||'<div class="empty">아직 없어요. 아래에서 추가하거나 행동 카드에서 ☑ 매일을 눌러요.</div>'}</div>
   <div class="row" style="gap:6px;margin-top:10px;flex-wrap:wrap"><input id="dlyName" maxlength="40" placeholder="새 매일 습관 (예: 물 2L 마시기)" style="flex:1;min-width:160px"><select id="dlyHow" style="width:auto">${hows.map(([v,l])=>`<option value="${esc(v)}">${esc(l)}</option>`).join('')}</select><button class="btn sm" data-dlyadd="1">＋ 추가</button></div>
   ${others.length?`<div class="row" style="gap:6px;margin-top:8px"><span class="tiny muted">있는 습관을 매일로:</span><select id="dlyPick" style="width:auto">${others.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select><button class="btn sm ghost" data-dlyon="1">☑ 매일로</button></div>`:''}
   <div class="kv" style="margin-top:14px"><label>다 끝낸 날 상자: XP<input id="r-dbxp" data-rule="dailyBonus.xp" type="number" min="0" value="${C.dailyBonus.xp}"></label><label>다 끝낸 날 상자: 골드<input id="r-dbgold" data-rule="dailyBonus.gold" type="number" min="0" value="${C.dailyBonus.gold}"></label></div>`;
 }
 function braveCardsNote(){
   const bs=C.actions.filter(a=>a.brave);
-  return `<p class="help">⚡ 용기 버튼은 그때그때 하는 용기 행동이에요. 습관 카드에도 <b>⚔ 용기 표시</b>를 붙일 수 있어요 — 하면 용기 점수·용기 구슬이 함께 쌓여요. 할 일은 상세에서 '⚡ 용기'를 눌러요.</p>${bs.length?`<div class="row" style="gap:4px;flex-wrap:wrap;margin-bottom:8px"><span class="tiny muted">⚔ 표시된 습관:</span>${bs.map(a=>`<button class="chipbtn" data-aedit="${a.id}">${esc(a.name)}</button>`).join('')}</div>`:''}`;
+  return `<p class="help">⚡ 용기 버튼은 그때그때 하는 용기 행동이에요. 행동 카드에도 <b>⚔ 용기 표시</b>를 붙일 수 있어요 — 하면 용기 점수·용기 구슬이 함께 쌓여요. 할 일은 상세에서 '⚡ 용기'를 눌러요.</p>${bs.length?`<div class="row" style="gap:4px;flex-wrap:wrap;margin-bottom:8px"><span class="tiny muted">⚔ 표시된 습관:</span>${bs.map(a=>`<button class="chipbtn" data-aedit="${a.id}">${esc(a.name)}</button>`).join('')}</div>`:''}`;
 }
 /* ---- 편집: 프리셋 · 점수 되돌리기 ---- */
 function presetsEditHTML(){
@@ -4315,7 +4348,8 @@ function dopaMove(ids,co){{const ae=document.activeElement;if(ae&&ae.blur)ae.blu
 /* ---- 오늘: 습관 ---- */
 function todayHabits(){
   const k=dateKey(),day=DAYS[k]||{date:k,entries:[]},dow=dowOf(k),out=[];
-  const add=(a,why)=>{if(!a||a.type!=='good'||a.link||(a.once&&a.doneAt))return;const o=out.find(x=>x.a===a);if(o){if(!o.why.includes(why))o.why.push(why);return}out.push({a,why:[why]})};
+  const tAids=todayTaskAids();
+  const add=(a,why)=>{if(!a||a.type!=='good'||a.link||tAids.has(a.id)||(a.once&&a.doneAt))return;const o=out.find(x=>x.a===a);if(o){if(!o.why.includes(why))o.why.push(why);return}out.push({a,why:[why]})};
   C.dailies.forEach(q=>{if(q.action&&!q.action.startsWith('@'))add(C.actions.find(x=>x.id===q.action),'☑ 일퀘')});
   C.watches.forEach(w=>{const a=C.actions.find(x=>x.id===w.action);if(!a||!w.days)return;const s=daysSince(w.action,addDays(k,-1))+1;if(s>=w.days)add(a,s>w.days?`⚠ ${s}일째 안 함`:`⏳ ${s}일째 · 오늘이 기한`)});
   C.actions.forEach(a=>{if((a.wd||[]).includes(dow))add(a,WDK[dow]+'요일');if(a.pin)add(a,'📌')});
@@ -4474,6 +4508,141 @@ runLoad();if(RUN)setTimeout(()=>minimizeHunt(),400);
 setInterval(()=>{if(curView()==='cal'&&!DND.on&&$('sheet').hidden){ui.calKeepScroll=true;renderCal()}},120000);
 $('backBtn').innerHTML=ic('back');$('searchBtn').innerHTML=ic('search');$('menuBtn').innerHTML=ic('menu');
 route();boot();
+/* ================= v5.5: 1단계 마무리 — 행동/습관 편집 · 저장 방식 · 스마트 목록 ================= */
+var APP_V='v5.5';
+// 행동 카드 목록에 보일 칸 (켜고 끄기)
+function aeShowAll(){return [['area','영역'],['xp','⭐ XP'],['gold','🪙 골드'],['cond','❤ 컨디션'],['rhythm','🔁 리듬'],['brave','⚔ 용기'],['opts','옵션 수'],['dur','⏱ 목표 시간'],['n30','30일 횟수']]}
+function aeShow(){const s=C.ui&&C.ui.aeShow;return Array.isArray(s)?s:['area','xp','gold','cond','rhythm','brave','n30']}
+// 습관 = 리듬(매일·요일·고정)이 있는 행동
+function isHabit(a){return !!(a&&(a.daily||(a.wd||[]).length||a.pin))}
+function rhythmOf(a){if(a.daily)return '☑ 매일';if((a.wd||[]).length)return '📅 '+[1,2,3,4,5,6,0].filter(w=>a.wd.includes(w)).map(w=>WDK[w]).join('');if(a.pin)return '📌 고정';return ''}
+function metaChips(a,st,show){
+  show=show||aeShow();const ar=C.areas.find(x=>x.id===a.area),good=a.type==='good',out=[];
+  const c=(k,cls,txt,tip)=>{if(show.includes(k)&&txt)out.push(`<span class="mx ${cls}" title="${esc(tip||'')}">${txt}</span>`)};
+  c('area','ar',ar?esc(ar.name):'','영역');
+  if(a.link)out.push(`<span class="mx ln" title="연결 카드">🔗 ${esc(linkName(a.link))}</span>`);
+  else{c('xp','xp',good&&a.xp?'⭐ '+a.xp:'','XP (성장)');
+    c('gold','gd',a.gold?'🪙 '+(a.gold>0?'+':'−')+Math.abs(a.gold):'','골드 (돈·자원)');
+    c('cond',a.cond<0?'cd neg':'cd',a.cond?'❤ '+(a.cond>0?'+':'−')+Math.abs(a.cond):'','컨디션 (몸과 마음)')}
+  c('rhythm','rh',rhythmOf(a),'리듬');c('brave','bv',a.brave?'⚔ 용기':'','용기 표시');
+  c('opts','op',a.opts&&a.opts.length?'옵션 '+a.opts.length:'','세부 옵션');c('dur','du',a.dur?'⏱ '+a.dur+'분':'','목표 시간');
+  if(st)c('n30','n',`30일 ${st.n30||0}번`,'최근 30일에 한 횟수');
+  return out.join('');
+}
+
+/* ---- 편집 → 행동/습관 목록 ---- */
+function actionsEditHTML(){
+  const E=ui.ae||(ui.ae={q:'',type:'all',area:'',sort:'manual'});
+  const okType=a=>E.type==='all'?true:E.type==='good'||E.type==='bad'?a.type===E.type:E.type==='habit'?isHabit(a):E.type==='loose'?!isHabit(a):E.type==='brave'?!!a.brave:true;
+  let list=C.actions.filter(a=>okType(a)&&(!E.area||a.area===E.area)&&(!E.q||a.name.toLowerCase().includes(E.q.toLowerCase())));
+  const st=listStats();
+  if(E.sort!=='manual')list=sortList(list,st,E.sort);
+  const selOn=!!E.selOn,sel=new Set((E.sel||[]).filter(id=>C.actions.some(a=>a.id===id)));E.sel=[...sel];
+  const drag=E.sort==='manual'&&!E.q&&!selOn;const show=aeShow();
+  const nH=C.actions.filter(isHabit).length;
+  const bulk=selOn?`<div class="bulk55"><b>${sel.size}개 골랐어요</b>
+      <button class="btn ghost sm" data-x55="selall">${sel.size===list.length&&list.length?'모두 풀기':'보이는 것 모두'}</button>
+      <span style="flex:1"></span>
+      <select id="x55area" aria-label="영역 바꾸기" ${sel.size?'':'disabled'}><option value="">영역 바꾸기…</option>${C.areas.map(a=>`<option value="${a.id}">→ ${esc(a.name)}</option>`).join('')}</select>
+      <button class="btn ghost sm" data-x55="daily1" ${sel.size?'':'disabled'}>☑ 매일 켜기</button><button class="btn ghost sm" data-x55="daily0" ${sel.size?'':'disabled'}>매일 끄기</button>
+      <button class="btn ghost sm bad" data-x55="delsel" ${sel.size?'':'disabled'}>🗑 지우기</button>
+      <button class="btn sm" data-x55="selmode">다 했어요</button></div>`:'';
+  return `<p class="help" style="border-left:3px solid var(--accent);padding-left:8px">${SCORE_MEANING}</p>
+    <p class="help"><b>행동 카드</b> 목록이에요. 점수는 여기에만 있어요. 그중 리듬(☑ 매일 · 요일 · 📌)이 있는 카드가 <b>🔁 습관</b>이에요 (지금 ${nH}개). 이름을 누르면 전체 편집, 오른쪽 ☑·🗑로 바로 바꾸거나 지워요. ${drag?'왼쪽 ⋮⋮를 끌어서 순서를 바꿔요.':selOn?'':'순서를 바꾸려면 정렬을 "기본 순서", 검색을 비워요.'}</p>
+    <div class="toolbar"><input id="aeQ" type="search" placeholder="🔍 행동 찾기" value="${esc(E.q)}" style="max-width:200px;padding:5px 10px;border-radius:999px;font-size:13px" autocomplete="off">
+      <span class="seg3">${[['all','모두'],['good','▲ 좋은'],['bad','▼ 나쁜'],['habit','🔁 습관'],['brave','⚔ 용기']].map(([v,l])=>`<button data-aetype="${v}" aria-pressed="${E.type===v}">${l}</button>`).join('')}</span>
+      <select id="aeArea" aria-label="영역"><option value="">모든 영역</option>${C.areas.map(a=>`<option value="${a.id}" ${E.area===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>
+      <select id="aeSort" aria-label="정렬">${SORTS.map(([v,l])=>`<option value="${v}" ${E.sort===v?'selected':''}>${l}</option>`).join('')}</select>
+      <button class="chipbtn" data-x55="selmode" aria-pressed="${selOn}">☐ 여러 개 고르기</button>
+      <details class="aeshow"><summary class="chipbtn">👁 보이는 칸</summary><div class="pop55">${aeShowAll().map(([k,l])=>`<label class="row tiny" style="gap:6px;flex-wrap:nowrap"><input type="checkbox" data-x55show="${k}" ${show.includes(k)?'checked':''} style="width:auto">${l}</label>`).join('')}</div></details>
+      <span class="tiny muted">${list.length}개</span></div>
+    ${bulk}
+    <div class="elist" data-drop="reorder:actions">${list.map(a=>{const good=a.type==='good',on=sel.has(a.id);
+      return `<div class="erow3 ${on?'on':''}" data-rowid="${a.id}">${selOn?`<input type="checkbox" data-x55sel="${a.id}" ${on?'checked':''} style="width:auto;margin:0 auto" aria-label="${esc(a.name)} 고르기">`:`<span class="hand" ${drag?`data-drag="row:${a.id}" data-dragmode="now"`:''} aria-label="끌어서 순서 바꾸기">${drag?'⋮⋮':''}</span>`}<span class="mk ${a.type}">${good?'▲':'▼'}</span>
+        <button class="nm" ${selOn?`data-x55sel="${a.id}"`:`data-aedit="${a.id}"`}><b>${esc(a.name)}</b><span class="mcs">${metaChips(a,st[a.id]||{},show)}</span></button>
+        <span class="qa">${selOn?'':`${good&&!(a.once)?`<button class="ib" data-x55daily="${a.id}" aria-pressed="${!!a.daily}" title="${a.daily?'매일(일퀘) 끄기':'매일(일퀘)로 켜기'}" aria-label="${esc(a.name)} 매일 켜고 끄기">☑</button>`:''}<button class="ib" data-x55del="${a.id}" title="지우기" aria-label="${esc(a.name)} 지우기">🗑</button><button class="btn ghost sm hidem" data-aedit="${a.id}">편집</button>`}</span></div>`}).join('')||'<div class="empty">없어요.</div>'}</div>
+    <div class="row" style="margin-top:10px"><button class="btn sm" data-addrow="actions" data-type="good">＋ 좋은 행동</button><button class="btn sm ghost" data-addrow="actions" data-type="bad">＋ 나쁜 행동</button></div>
+    <h3 style="margin-top:18px">누적 페널티</h3><p class="help">나쁜 행동이 쌓이거나 이어지면 더 많이 깎여요. 그래서 흐름을 끊는 게 이득이에요.</p>
+    <div class="kv"><label>같은 행동 7일 안에 한 번마다 +<input id="r-pensame" data-rule="penalty.same" type="number" step="0.05" min="0" max="2" value="${C.penalty.same}"></label><label>나쁜 날이 이어진 하루마다 +<input id="r-penchain" data-rule="penalty.chain" type="number" step="0.05" min="0" max="2" value="${C.penalty.chain}"></label><label>최대 배수<input id="r-penmax" data-rule="penalty.max" type="number" step="0.5" min="1" max="6" value="${C.penalty.max}"></label><label>흐름 끊기 보상 XP (연쇄 하루당)<input id="r-chxp" data-rule="chain.xp" type="number" min="0" value="${C.chain.xp}"></label><label>흐름 끊기 보상 골드 (하루당)<input id="r-chg" data-rule="chain.gold" type="number" min="0" value="${C.chain.gold}"></label></div>`+presetsEditHTML()+scoreBakHTML();
+}
+// 지우기 (되돌리기 가능)
+function delActs(ids){
+  ids=new Set(ids);if(!ids.size)return;
+  const snap={actions:clone(C.actions),watches:clone(C.watches),dailies:clone(C.dailies)};
+  const names=C.actions.filter(a=>ids.has(a.id)).map(a=>a.name);
+  C.actions=C.actions.filter(a=>!ids.has(a.id));
+  const left=new Set([...C.actions.map(x=>x.id),...C.courage.map(x=>x.id)]);
+  C.watches=C.watches.filter(w=>w.action==='@courage'||left.has(w.action));
+  syncDailies(C);if(ui.ae&&ui.ae.sel)ui.ae.sel=ui.ae.sel.filter(id=>!ids.has(id));
+  save('config');render();
+  toastAct(names.length===1?`'${names[0]}' 지웠어요`:`${names.length}개 지웠어요`,'되돌리기',()=>{Object.assign(C,snap);syncDailies(C);save('config');render();toast('되돌렸어요')});
+}
+// 버튼이 달린 알림
+function toastAct(m,label,fn,ms=5200){
+  const t=$('toast');t.innerHTML='';const s=document.createElement('span');s.textContent=m+' ';t.appendChild(s);
+  const b=document.createElement('button');b.className='tbtn55';b.textContent=label;b.onclick=e=>{e.stopPropagation();t.classList.remove('on');t.style.pointerEvents='';fn()};t.appendChild(b);
+  t.style.pointerEvents='auto';t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>{t.classList.remove('on');t.style.pointerEvents=''},ms);
+}
+
+/* ---- 저장 방식: 할 일 상세 = 자동 저장, 행동 카드 편집 = '완료'를 눌러야 저장 ---- */
+var AE55=null; // {id, snap(편집 전 카드), commit}
+function tsFlush(){if(sheetCtx&&sheetCtx.task&&$('tsTitle')){const t=tsRead();if(t)saveTask(t)}}
+function aeSettle(){
+  if(!AE55)return;const A=AE55;AE55=null;if(A.commit)return;
+  const i=C.actions.findIndex(x=>x.id===A.id);if(i<0)return;
+  const cur=C.actions[i];if(JSON.stringify(cur)===JSON.stringify(A.snap))return;
+  const edited=clone(cur);C.actions[i]=clone(A.snap);syncDailies(C);save('config');
+  toastAct('바꾼 내용은 저장하지 않았어요 (완료를 눌러야 저장)','되살리기',()=>{const j=C.actions.findIndex(x=>x.id===A.id);if(j<0)return;C.actions[j]=edited;syncDailies(C);save('config');render();toast('되살렸어요')},6500);
+}
+{const _oae=openActionEditor;openActionEditor=function(id){
+  tsFlush();
+  if(!(AE55&&AE55.id===id)){if(AE55)AE55.commit=true;const a=C.actions.find(x=>x.id===id);AE55=a?{id,snap:clone(a),commit:false}:null}
+  _oae(id)}}
+{const _ots=openTaskSheet;openTaskSheet=function(id){tsFlush();if(AE55){AE55.commit=true;AE55=null}_ots(id)}}
+{const _cs=closeSheet;closeSheet=function(){
+  try{tsFlush()}catch(e){console.error(e)}
+  const wasAE=sheetCtx&&sheetCtx.aedit;
+  _cs();
+  if(wasAE)aeSettle();else if(AE55){AE55.commit=true;AE55=null}
+  if(curView()==='tasks'||curView()==='cal')render();
+}}
+// PC에서 오른쪽에 붙은 할 일 상세: 바깥을 누르면 저장하고 닫기
+document.addEventListener('pointerdown',e=>{
+  if(!document.body.classList.contains('docked')||e.button>0)return;
+  if(e.target.closest('#tDetail,.trow,[data-task],[data-ctask],#toast,#pop,#sheet,#acBox,#levelup,#hunt,#huntPill,#searchBox,#search,dialog,.betabar,.ctxmenu,.menu'))return;
+  closeSheet();
+});
+
+/* ---- 이벤트 ---- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-x55],[data-x55sel],[data-x55daily],[data-x55del],[data-aedone]');if(!b)return;const d=b.dataset;
+  if(d.aedone){if(AE55)AE55.commit=true;closeSheet();toast('저장했어요');return}
+  if(d.x55sel!=null&&b.tagName!=='INPUT'){e.preventDefault();const E=ui.ae;const s=new Set(E.sel||[]);s.has(d.x55sel)?s.delete(d.x55sel):s.add(d.x55sel);E.sel=[...s];reEdit();return}
+  if(d.x55daily){const a=C.actions.find(x=>x.id===d.x55daily);if(!a)return;if(a.daily)delete a.daily;else a.daily=1;syncDailies(C);save('config');reEdit();toast(a.daily?`'${a.name}' 매일(일퀘)로 켰어요`:`'${a.name}' 매일에서 뺐어요`);return}
+  if(d.x55del){delActs([d.x55del]);return}
+  const k=d.x55,E=ui.ae||(ui.ae={q:'',type:'all',area:'',sort:'manual'});
+  if(k==='selmode'){E.selOn=!E.selOn;if(!E.selOn)E.sel=[];reEdit();return}
+  if(k==='selall'){const vis=[...document.querySelectorAll('.erow3[data-rowid]')].map(r=>r.dataset.rowid);E.sel=(E.sel||[]).length===vis.length?[]:vis;reEdit();return}
+  if(k==='delsel'){const ids=E.sel||[];if(!ids.length)return;delActs(ids);E.sel=[];reEdit();return}
+  if(k==='daily1'||k==='daily0'){let n=0;C.actions.forEach(a=>{if(!(E.sel||[]).includes(a.id))return;if(k==='daily1'){if(a.type==='good'&&!a.once&&!a.daily){a.daily=1;n++}}else if(a.daily){delete a.daily;n++}});syncDailies(C);save('config');reEdit();toast(k==='daily1'?`${n}개를 매일로 켰어요`:`${n}개를 매일에서 뺐어요`);return}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.x55sel!=null&&t.tagName==='INPUT'){const E=ui.ae;const s=new Set(E.sel||[]);t.checked?s.add(t.dataset.x55sel):s.delete(t.dataset.x55sel);E.sel=[...s];reEdit();return}
+  if(t.dataset.x55show){const k=t.dataset.x55show;let s=[...aeShow()];s=t.checked?[...new Set([...s,k])]:s.filter(x=>x!==k);C.ui.aeShow=aeShowAll().map(z=>z[0]).filter(x=>s.includes(x));save('config');
+    const det=t.closest('details');reEdit();setTimeout(()=>{const d2=document.querySelector('.aeshow');if(d2&&det)d2.open=true},0);return}
+  if(t.id==='x55area'&&t.value){const ids=(ui.ae.sel||[]);C.actions.forEach(a=>{if(ids.includes(a.id))a.area=t.value});save('config');const nm=(C.areas.find(x=>x.id===t.value)||{}).name;reEdit();toast(`${ids.length}개를 '${nm}' 영역으로 옮겼어요`);return}
+});
+// 보이는 칸 창: 바깥 누르면 닫기
+document.addEventListener('pointerdown',e=>{const d=document.querySelector('.aeshow[open]');if(d&&!d.contains(e.target))d.open=false});
+
+/* ---- 할 일: 습관 연결 카드 표시 ---- */
+function taskCardNote(t){
+  const a=t.aid&&C.actions.find(x=>x.id===t.aid);if(!a)return '';
+  return `<div class="f" style="grid-column:1/-1"><span class="small muted">연결된 행동 카드 · 점수는 이 카드에서 나와요</span><div class="row" style="gap:6px;flex-wrap:wrap"><span class="mcs">${metaChips(a,null,aeShowAll().map(z=>z[0]))}</span><button class="btn ghost sm" data-aedit="${a.id}">✎ 카드 편집</button></div></div>`;
+}
+function todayTaskAids(){const td=dateKey();return new Set(openTasks().filter(t=>t.aid&&t.due&&t.due<=td).map(t=>t.aid))}
+
 </script>
 <script type="module" src="backend.js"></script>
 </body></html>
