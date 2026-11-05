@@ -62,7 +62,7 @@ async function start() {
       set: d => fastWrite(F.setDoc(r, d)),
       update: d => fastWrite(F.updateDoc(r, d)),
       delete: () => fastWrite(F.deleteDoc(r)),
-      onSnapshot: (next, error) => F.onSnapshot(r, s => next(wrap(s)), e => error && error(errOf(e)))
+      onSnapshot: (next, error, o) => (o && o.meta) ? F.onSnapshot(r, { includeMetadataChanges: true }, s => next(wrap(s)), e => error && error(errOf(e))) : F.onSnapshot(r, s => next(wrap(s)), e => error && error(errOf(e)))
     };
   }
   function colApi(path, cons = []) {
@@ -74,7 +74,7 @@ async function start() {
       where: (f, op, v) => colApi(path, [...cons, F.where(f, op, v)]),
       limit: n => colApi(path, [...cons, F.limit(n)]),
       get: async () => { const s = await F.getDocs(q()); return { docs: s.docs.map(wrap), size: s.size, empty: s.empty }; },
-      onSnapshot: (next, error) => F.onSnapshot(q(), s => next({ docs: s.docs.map(wrap), size: s.size, empty: s.empty, metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } }), e => error && error(errOf(e)))
+      onSnapshot: (next, error, o) => F.onSnapshot(q(), ...((o && o.meta) ? [{ includeMetadataChanges: true }] : []), s => next({ docs: s.docs.map(wrap), size: s.size, empty: s.empty, metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } }), e => error && error(errOf(e)))
     };
   }
 

@@ -364,7 +364,7 @@ document.addEventListener('click',e=>{
 function surfStart(){ui.surf=Date.now();toast('🌊 10분만 버텨봐요. 폰은 다른 방에. 끝나면 알려줄게요',5000);clearTimeout(ui.surfT);ui.surfT=setTimeout(()=>{if(!ui.surf)return;ui.surf=0;popup('파도 넘김','🌊','10분 버텼어요. 충동은 지나가요.<br>지금도 원하면 타이머 걸고 디저트, 아니면 하던 일로.','도파민')},600000)}
 
 /* ================= 2단계: 자연어 입력 강화 (시간 범위 · '매주 반복' · ~까지=마감) ================= */
-function nlHour(ap,h,m,half){h=+h;m=half?30:(+m||0);if(/오후|저녁|밤/.test(ap||'')&&h<12)h+=12;if(/오전|아침|새벽/.test(ap||'')&&h===12)h=0;return h*60+m}
+function nlHour(ap,h,m,half){h=+h;m=half?30:(+m||0);if(/오후|저녁|밤/.test(ap||'')&&h<12)h+=12;else if(!ap&&h>=1&&h<=7)h+=12;if(/오전|아침|새벽/.test(ap||'')&&h===12)h=0;return h*60+m}
 {const _pq=parseQuick;parseQuick=function(raw,opt){
   let s=String(raw||''),rng=null,dl=null;
   const AP='(오전|오후|아침|저녁|밤|새벽)?\\s*';
@@ -403,19 +403,25 @@ document.addEventListener('pointerdown',e=>{
   const col=e.target.closest('.tgcol[data-drop^="col:"]');if(!col||e.button>0||e.target.closest('.blk,.cchip,button,a,input'))return;
   if(DND.on)return;
   const r=col.getBoundingClientRect(),m0=clamp(Math.floor(mOf(e.clientY-r.top)/15)*15,0,1425);
-  CAL57={col,k:col.dataset.drop.slice(4),m0,m1:m0+30,y0:e.clientY,moved:false,ghost:null,id:e.pointerId};
+  const S=CAL57={col,k:col.dataset.drop.slice(4),m0,m1:m0+30,y0:e.clientY,moved:false,ghost:null,id:e.pointerId,touch:e.pointerType!=='mouse'};
+  // 폰: 꾹 누르면(0.35초) 범위 끌기 시작 · 그냥 움직이면 스크롤
+  if(S.touch)S.tm=setTimeout(()=>{if(CAL57!==S||S.moved)return;S.armed=true;S.moved=true;S.a=S.m0;S.b=S.m0+30;buzz(10);
+    S.ghost=document.createElement('div');S.ghost.className='cal57g';S.col.appendChild(S.ghost);S.ghost.style.top=yOf(S.a)+'px';S.ghost.style.height=(yOf(S.b)-yOf(S.a))+'px';S.ghost.textContent=`${hm(S.a)}–${hm(S.b)} · 끌어서 늘리기`},350);
 });
+document.addEventListener('touchmove',e=>{if(CAL57&&CAL57.armed)e.preventDefault()},{passive:false});
+document.addEventListener('pointercancel',()=>{const S=CAL57;if(S){clearTimeout(S.tm);if(S.ghost)S.ghost.remove();CAL57=null}});
 document.addEventListener('pointermove',e=>{
   const S=CAL57;if(!S||e.pointerId!==S.id)return;if(Math.abs(e.clientY-S.y0)<6&&!S.moved)return;
-  if(e.pointerType==='touch'&&!S.moved){CAL57=null;return} // 폰에서는 스크롤 우선 (누르기만 추가)
+  if(S.touch&&!S.armed){clearTimeout(S.tm);CAL57=null;return} // 폰: 꾹 누르기 전에 움직이면 스크롤
   S.moved=true;e.preventDefault();const r=S.col.getBoundingClientRect();const m=clamp(Math.round(mOf(e.clientY-r.top)/15)*15,0,1440);
   const a=Math.min(S.m0,m),b=Math.max(S.m0+15,m);S.a=a;S.b=b;
   if(!S.ghost){S.ghost=document.createElement('div');S.ghost.className='cal57g';S.col.appendChild(S.ghost)}
   S.ghost.style.top=yOf(a)+'px';S.ghost.style.height=Math.max(10,yOf(b)-yOf(a))+'px';S.ghost.textContent=`${hm(a)}–${hm(b)}`;
 },{passive:false});
 document.addEventListener('pointerup',e=>{
-  const S=CAL57;CAL57=null;if(!S||e.pointerId!==S.id)return;if(S.ghost)S.ghost.remove();
+  const S=CAL57;CAL57=null;if(!S||e.pointerId!==S.id)return;clearTimeout(S.tm);if(S.ghost)S.ghost.remove();
   if(!S.moved&&Math.abs(e.clientY-S.y0)>=6)return;
+  if(S.armed){lpFired=true;setTimeout(()=>{lpFired=false},60)}
   const a=S.moved?S.a:S.m0,b=S.moved?S.b:S.m0+(+((C.ui.cal||{}).slot)||30);
   calAddSheet(S.k,a,b-a);
 });

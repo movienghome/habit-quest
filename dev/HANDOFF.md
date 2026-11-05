@@ -1,11 +1,11 @@
-# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v5.8 기준, 2026-11-05)
+# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v5.9 기준, 2026-11-05)
 
 > **새 채팅에서 할 일 (Claude에게)**: 먼저 `add_repo`로 `movienghome/habit-quest`를 붙이고 `git clone --depth 1`. 이 파일은 저장소의 `dev/HANDOFF.md`에도 있음 — 저장소 쪽이 최신이면 그걸 따름. 릴리스할 때마다 이 파일도 같이 고쳐서 커밋.
 
 ## 저장소·주소
 - 저장소: github.com/movienghome/habit-quest (GitHub Pages + Firebase)
 - 본 앱: https://movienghome.github.io/habit-quest/ → **v4.4 그대로**
-- 베타: https://movienghome.github.io/habit-quest/beta/ → **v5.8** (데이터: habit-beta, 실제 기록과 분리)
+- 베타: https://movienghome.github.io/habit-quest/beta/ → **v5.9** (데이터: habit-beta, 실제 기록과 분리)
 - 작업 방식: 고친 건 베타에 먼저 → 사용자가 "반영해" 하면 본 앱에 옮김
 
 ## 사용자 요청 (항상)
@@ -19,15 +19,17 @@
 - `beta/index.html`은 **생성 파일**. 직접 고치지 말고 `dev/v5/`의 모듈을 고친 뒤 빌드.
 - 빌드: `ln -sfn <저장소>/dev/v5 /home/claude/v5` 후 `cd dev/v5 && python3 patch.py`
   (patch.py의 SRC/DST/V는 /home/claude/habit-quest, /home/claude/v5 기준. 중간 파일은 임시 폴더에 씀)
-  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → **patch10(v5.8)**
-  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + **v5o(v5.8)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
+  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → **patch11(v5.9)**
+  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + **v5p(v5.9)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
   - 주의: 맨 끝 모듈의 const/let은 첫 render 때 아직 초기화 전 → 최상위 값은 function이나 var로.
   - 클래스 이름 `.mc`는 월 캘린더 칸이 씀 → 칩은 `.mx`.
-- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-05-v58`). 베타 띠에 버전 표시(`β 베타 v5.8`) — 같이 올리기.
+- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-05-v59`). 베타 띠에 버전 표시(`β 베타 v5.9`) — 같이 올리기.
 - **patch10은 빌드 결과 전체에서 글자 치환을 함**: `💰`→`₩`, `🪙`→`💰`, `🔁`→`↻`, `리듬`→`반복`. 그러니 **v5o 이후 모듈에서 🪙·🔁·'리듬'을 비교 문자열로 쓰면 바뀌어 버림** → `\u{1F501}`처럼 이스케이프로 쓰기.
 - `normConfig`는 `C.ui`의 정해진 키만 남김(새 키는 사라짐) → 새 ui 설정은 기존 키 안(예: `C.ui.cal._t`)이나 `C` 최상위에.
 - `route()`는 journey 같은 화면 전환 때 render를 안 부름 → 새 화면 내용은 hashchange에서 따로 그림(renderBlog).
 - 함수 덮어쓰기: v5n은 맨 끝이라 `{const _f=f;f=function(){...}}` 식으로 감쌈(render·taskRow·applyEntry·parseQuick·acCompute·renderCal·dndEnd·doAction 등). function 선언(applyHomeEdit·homeEditOn·tsChipsHTML·isHabit·rhythmOf)은 뒤에 있는 게 이김.
+- **저장 안전장치(v5.9)**: `beta/backend.js`(생성 파일 아님, 직접 고침) onSnapshot 셋째 인자 `{meta:1}` → includeMetadataChanges. 설정·진행·날짜 스냅샷이 `fromCache:false`(서버 확인)일 때만 ready. `SRV59.c` 전에는 config를 서버에 안 씀(flush 미룸), 서버가 처음 오면 그 전 로컬 config 변경은 버리고 서버 것을 씀. 원인: 기기 캐시(persistentLocalCache)의 옛 config로 그린 뒤 자동 저장이 서버를 덮어써서 지운 카드가 되살아났음. **본 앱(루트 backend.js·index.html)에도 같은 문제가 있음 → 승격 때 같이 반영.**
+- 함수 선언 덮어쓰기(v5p): actBoardHTML·dopaEditHTML·blogHTML은 v5p의 function 선언이 이김. render·renderNav·taskBase·drawTaskSheet·parseQuick·dndMove·dndEnd·actionsEditHTML은 감쌈.
 - 테스트: Playwright + `dev/v5/mockdb.js`. 저장소 루트에서 `python3 -m http.server 8765`. 옛 t*.py는 경로 수정 필요. v5.4 테스트는 v7 설정(일퀘·용기·샤워/술 옵션)을 넣고 마이그레이션·완료 흐름 확인하는 식.
 
 ## 핵심 설계 (v5.4에서 정함)
@@ -86,10 +88,20 @@
 - 캘린더: **할 일 창 옆 캘린더와 캘린더 창 설정 따로** — `C.ui.cal`에 getter(splitOn()이면 `cal._t`), `C.ui.toJSON`으로 저장. 월 보기 날짜 한 번 = 할 일 추가 창(calAddDay), 두 번(280ms 안) = 하루 보기. '색: 목록' → '표시: 목록 이모지'(색 칠 안 하고 목록 앞 이모지, 없으면 앞 두 글자).
 - 편집 → 행동/습관 **보드에도 목록과 같은 도구줄**(검색·모두/좋은/나쁜/습관/용기·영역·정렬(점수 큰 순·자주 한 순 등, 칸 안에서)·여러 개 고르기·보이는 칸). actionsEditHTML을 board 꺼서 부른 뒤 elist 자리에 보드를 끼움.
 
+## v5.9에서 한 것 (v5p.js · patch11.py)
+- **지운 카드 되살아남 고침**(위 '저장 안전장치'). 편집 → 행동/습관 맨 위 '🧹 되살아난 카드 정리'(id dp*/dq* + dopaOnly 카드 체크해서 delActs, '닫기'=C.clean59).
+- **행동/습관 화면 배치**: `C.logLay59`=[[id,'L'|'R',fold,hide]] (brave·acts·food·log). ⚡ 용기 기본 접힘. 칸 제목/▾로 접기, '▦ 화면 배치'로 ↑↓·⇢⇠·👁. 식사·몸무게 칸에 '📈 몸 기록' 링크.
+- **전투 기록 계산**: 줄마다 calc59(카드 점수 × 횟수 × 누적배수 + 속도 보너스 × 뽑기 = 결과, 할 일은 크기+중요도+제때). '☑ 계산 보기' 토글. 지금 카드 기준으로 풀어 써서 다르면 표시('가진 골드까지만 빠짐' 포함).
+- **할 일 점수**: 카드 연결 없는 할 일은 원래부터 크기·중요도 점수(C.taskXP)가 있었음 → 크기 칸에 '✎ 직접 정하기'(`t.px={xp,gold,cond}`, taskBase 감쌈).
+- **돌아보기**(#review, NAV_ITEMS에 'review'): 이번 주(지난주 비교·↻ 습관 지킨 날 표·🍬 👍 순위·⚔ 용기·한 줄 메모 `C.wnote59[주시작]`). review/stats/journey/body 위에 탭 줄. `C.nav59`='new'(기본)면 왼쪽 메뉴에서 통계·여정·몸 기록·유리병을 빼고 홈 '유리병' 칸을 켬(`C.nav59j`로 되돌림). '예전처럼 따로' 버튼으로 원래 메뉴.
+- **보드 공용 칩**(kbChip59): 행동 보드와 도파민 편집이 같은 칩·metaChips. 도파민에 칸 안 정렬 select. **칸 안 순서 끌기**(정렬 '기본 순서'일 때; dndMove/dndEnd 감싸 C.actions 순서 바꿈, 이름 버튼에도 data-drag).
+- **캘린더 폰**: 빈 시간 칸 0.35초 꾹 → 끌어서 범위(v5n 수정). 그냥 움직이면 스크롤.
+- **자연어**: 요일 묶음 '화목'·'월수금'·'화·목'(반복 말·시간·3개 이상일 때만, '금일' 제외), '월요일마다', 제목에 남던 '매주' 제거, 범위 시간 1~7시는 오후(한 시각 규칙과 같게). '수영'의 '수'를 수요일로 읽던 버그 없어짐.
+
 ## 아직 안 한 요청 (사용자 요청 기준, 매 릴리스마다 갱신해서 답변에 붙이기)
-- 2단계 남은 것: 도파민 칸반을 행동 보드와 같은 부품으로 합치기(지금은 따로) · 보드 칸 안 순서 끌기 · 캘린더 시간 칸 끌기(폰) · 자연어: 시간 범위+반복 같이 쓴 문장 더 다듬기
-- 사용자 질문에 답만 한 것: 왼쪽 메뉴(유리병·통계·여정·상점·몸 기록)는 '결과 보는 곳'이라 매일 흐름에서 떨어져 있음 → 제안: 통계+여정 → '돌아보기'로 합치고 주간 돌아보기를 거기에, 상점은 3단계 아바타 상점으로 골드 소모처, 유리병은 홈 칸으로 작게, 몸 기록은 몸무게 연결 카드에서 바로 가기. **사용자 답 기다림.**
-- 목적 점검에서 나온 것(제안): '오늘의 용기 한 가지'를 오늘 목록 맨 위에 / ⚔ 용기 카드가 아직 0개 → 사용자와 같이 정하기 / 주간 돌아보기(도파민 👍 통계·리듬 지킨 날)
+- 2단계: v5.9로 끝. 사용자 확인 받기(돌아보기 새 메뉴를 계속 쓸지 · 화면 배치).
+- 상점 → 3단계 아바타 상점으로 골드 소모처(아직).
+- 목적 점검에서 나온 것(제안): '오늘의 용기 한 가지'를 오늘 목록 맨 위에 / ⚔ 용기 카드가 아직 0개 → 사용자와 같이 정하기 (주간 돌아보기는 v5.9에서 만듦)
 - 3단계: 아바타 꾸미기 상점 · 보스 확장(습관형 보스 이름 바꾸기) · 도파민 디저트 골드 스위치(기록 2주 뒤 판단)
 - 본 앱 승격("반영해" 때) — v4.4 → v5.x는 마이그레이션이 많으니 승격 전 백업 필수
 
