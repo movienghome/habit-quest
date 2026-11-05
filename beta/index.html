@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v5.7</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v5.8</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -975,6 +975,10 @@ body.homeedit.hmini .hcol{padding-bottom:10px}
 .wrap>.view{min-width:0}
 [data-view="body"] .chart svg{max-width:100%;height:auto}
 [data-view="body"] .ptitle{flex-wrap:wrap}
+.b58{display:block;grid-column:1/-1;font-size:11.5px;color:var(--muted);padding-left:28px}
+.bday58+.bday58{border-top:1px dashed var(--line);margin-top:6px}
+.ck58{display:inline-block;font-size:11px;line-height:1.2;margin-right:3px;vertical-align:0}
+.bchip.on58{border:2px solid var(--accent);background:var(--panel2)}
 </style>
 
 <header class="hud" id="hud">
@@ -982,7 +986,7 @@ body.homeedit.hmini .hcol{padding-bottom:10px}
     <div class="row" style="gap:4px;flex-wrap:nowrap"><button class="hbtn" id="backBtn" aria-label="뒤로" hidden></button><button class="hud-av" id="hudAv" aria-label="아바타 꾸미기"></button></div>
     <div class="hud-main">
       <div class="hud-top"><span class="hud-name" id="hudName"></span><span class="hud-title" id="hudTitle" data-info="title"></span>
-        <span class="hud-pills"><span class="pill lv px" id="hudLv" data-info="lv">LV 1</span><span class="pill g num" id="hudGold" data-info="gold">🪙0</span><span class="pill c num" id="hudBrave" data-info="brave">⚡0</span></span></div>
+        <span class="hud-pills"><span class="pill lv px" id="hudLv" data-info="lv">LV 1</span><span class="pill g num" id="hudGold" data-info="gold">💰0</span><span class="pill c num" id="hudBrave" data-info="brave">⚡0</span></span></div>
       <div class="hud-bars">
         <div class="mbar" data-info="hp"><span class="k">HP</span><div class="track"><div class="fill hp" id="hudHp"></div></div><span class="v" id="hudHpV"></span></div>
         <div class="mbar" data-info="xp"><span class="k">XP</span><div class="track"><div class="fill xp" id="hudXp"></div></div><span class="v" id="hudXpV"></span></div>
@@ -1059,7 +1063,7 @@ body.homeedit.hmini .hcol{padding-bottom:10px}
           </div>
         </div>
         <div class="panel">
-          <div class="ptitle"><h2>행동/습관</h2><a class="small" href="#edit" data-goedit="actions" style="color:var(--accent)">전체 편집</a></div><p class="help" style="margin:0">행동 카드를 모아 둔 곳이에요. 네모로 바로 기록하고, 🔁를 누르면 매일 '오늘'에 뜨는 습관이 돼요(🔁 습관 목록의 반복 할 일). 요일·일퀘는 이름 → 편집의 '리듬'에서.</p>
+          <div class="ptitle"><h2>행동/습관</h2><a class="small" href="#edit" data-goedit="actions" style="color:var(--accent)">전체 편집</a></div><p class="help" style="margin:0">행동 카드를 모아 둔 곳이에요. 네모로 바로 기록하고, ↻를 누르면 매일 '오늘'에 뜨는 습관이 돼요(↻ 습관 목록의 반복 할 일). 요일·일퀘는 이름 → 편집의 '반복'에서.</p>
           <div class="toolbar" id="actTools"></div>
           <p class="help" id="actHelp" style="margin:2px 0 4px"></p>
           <div id="actGroups"></div>
@@ -1125,6 +1129,7 @@ body.homeedit.hmini .hcol{padding-bottom:10px}
   </section>
 
   <section class="view" data-view="journey" hidden>
+    <div class="panel" style="margin-bottom:14px"><div class="ptitle"><h2>📜 전투 기록</h2><span class="tiny muted">언제 무엇을 해서 몇 점·어떤 보너스를 받았나</span></div><div id="blog58"></div></div>
     <div class="grid2">
       <div class="panel"><div class="ptitle"><h2>영화 한 편을 만드는 길</h2><a class="small" href="#edit" data-goedit="road" style="color:var(--accent)">편집</a></div><p class="help">레벨이 오르면 단계가 열리고 게임 아이템과 현실 보상을 받아요.</p><ul class="road" id="road"></ul></div>
       <div class="stack">
@@ -1144,7 +1149,7 @@ body.homeedit.hmini .hcol{padding-bottom:10px}
 
   <section class="view" data-view="shop" hidden>
     <div class="grid2">
-      <div class="panel shop"><div class="ptitle"><h2>보상 상점</h2><span class="row"><span class="pill g num" id="gold2">🪙0</span><a class="small" href="#edit" data-goedit="shop" style="color:var(--accent)">편집</a></span></div><p class="help">골드로 현실의 보상을 사요.</p><div id="shopList"></div></div>
+      <div class="panel shop"><div class="ptitle"><h2>보상 상점</h2><span class="row"><span class="pill g num" id="gold2">💰0</span><a class="small" href="#edit" data-goedit="shop" style="color:var(--accent)">편집</a></span></div><p class="help">골드로 현실의 보상을 사요.</p><div id="shopList"></div></div>
       <div class="panel shop wish"><h2>보상함</h2><p class="help">갖고 싶은 게 떠오르면 일단 적어두고, 가격을 정하면 상점에 올라가요.</p>
         <form class="row" id="wishForm" style="flex-wrap:nowrap;margin-bottom:8px"><input id="wishName" maxlength="40" placeholder="예: 새 이어폰"><button class="btn" type="submit">적기</button></form>
         <div id="wishList"></div></div>
@@ -1368,7 +1373,7 @@ const DEFAULT_CONFIG={
   happy:{xp:8,gold:3,cond:5},
   tagArea:{'재정관리':'money','헌팅(Job)':'grow','영상':'grow','파라모프':'grow','영어':'grow','일본어':'grow','집필':'make'},
   chain:{xp:15,gold:10},
-  gacha:{mult:1.5,rerollBase:20,giveup:30,f:{src:['task','habit'],effort:[],areas:[],lists:[],due:'today',n:3},presets:[{id:'p1',name:'⚡ 퀵 3장',f:{src:['task','habit'],effort:['quick'],areas:[],lists:[],due:'today',n:3}},{id:'p2',name:'🎲 아무거나 5장',f:{src:['task','habit','routine'],effort:[],areas:[],lists:[],due:'today',n:5}},{id:'p3',name:'🧱 큰 거 3장',f:{src:['task'],effort:['heavy'],areas:[],lists:[],due:'all',n:3}},{id:'p4',name:'💰 경제',f:{src:['task','habit'],effort:[],areas:['money'],lists:[],due:'today',n:3}}],pending:null,quest:null,hist:[]}
+  gacha:{mult:1.5,rerollBase:20,giveup:30,f:{src:['task','habit'],effort:[],areas:[],lists:[],due:'today',n:3},presets:[{id:'p1',name:'⚡ 퀵 3장',f:{src:['task','habit'],effort:['quick'],areas:[],lists:[],due:'today',n:3}},{id:'p2',name:'🎲 아무거나 5장',f:{src:['task','habit','routine'],effort:[],areas:[],lists:[],due:'today',n:5}},{id:'p3',name:'🧱 큰 거 3장',f:{src:['task'],effort:['heavy'],areas:[],lists:[],due:'all',n:3}},{id:'p4',name:'₩ 경제',f:{src:['task','habit'],effort:[],areas:['money'],lists:[],due:'today',n:3}}],pending:null,quest:null,hist:[]}
 };
 const DEFAULT_PROGRESS={xp:0,gold:0,courage:0,marbles:{},badges:{}};
 const ENERGY_LBL=['바닥','지침','보통','좋음','쌩쌩'];
@@ -1398,7 +1403,7 @@ const ICONS={
   chev:'<path d="M6 9l6 6 6-6"/>'
 };
 const ic=n=>`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]||''}</svg>`;
-const NAV_ITEMS=[['home','홈','오늘 한눈에'],['tasks','할 일','틱틱처럼 목록·반복·하위 할 일'],['cal','캘린더','월·주 보기, 끌어다 놓기'],['gacha','뽑기','가챠로 할 일 정하기·루틴 사냥'],['log','습관 모음','습관 꺼내 쓰기·편집 · 용기 · 식사·몸무게'],['jars','유리병','구슬 넣기·병 보기'],['stats','통계','횟수·달력·영역 평균'],['journey','여정','레벨 로드맵·업적·아이디어'],['shop','상점','골드로 현실 보상·보상함'],['body','몸 기록','몸무게 추세·컨디션 흐름'],['edit','편집','행동·용기·병·일퀘·규칙·화면'],['guide','게임 방법','규칙·성장 팁·처음 안내']];
+const NAV_ITEMS=[['home','홈','오늘 한눈에'],['tasks','할 일','틱틱처럼 목록·반복·하위 할 일'],['cal','캘린더','월·주 보기, 끌어다 놓기'],['gacha','뽑기','가챠로 할 일 정하기·루틴 사냥'],['log','습관 모음','습관 꺼내 쓰기·편집 · 용기 · 식사·몸무게'],['jars','유리병','구슬 넣기·병 보기'],['stats','통계','횟수·달력·영역 평균'],['journey','여정','📜 전투 기록·레벨 로드맵·업적'],['shop','상점','골드로 현실 보상·보상함'],['body','몸 기록','몸무게 추세·컨디션 흐름'],['edit','편집','행동·용기·병·일퀘·규칙·화면'],['guide','게임 방법','규칙·성장 팁·처음 안내']];
 const SKINS=[['forest','숲','#2f7a4a','#e1f1e6'],['mint','민트','#127f74','#dcf2ef'],['sand','모래','#94642a','#ecf0d8'],['sunset','노을','#c4513d','#ddf0ea'],['rose','장미','#b23e6c','#e1f1e6'],['lavender','라벤더','#6a4bc4','#e6e6fa'],['ink','먹','#2b2f38','#e4e5e8'],['blue','파랑','#3550b8','#e2e9fb']];
 function applyTheme(){const r=document.documentElement;r.dataset.skin=C.ui.skin;if(C.ui.mode==='system')delete r.dataset.theme;else r.dataset.theme=C.ui.mode;
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(r).getPropertyValue('--panel').trim()||'#ffffff'}
@@ -1715,15 +1720,15 @@ function syncQuests(day){
   });
   const all=C.dailies.length>0&&C.dailies.every(q=>questDone(day,q));
   const ch=day.entries.find(e=>e.kind==='chest');
-  if(all&&!ch){applyEntry(day,{kind:'chest',type:'good',name:'일퀘 상자 열기',xp:+C.dailyBonus.xp||0,gold:+C.dailyBonus.gold||0});later(()=>popup('일퀘 완료','🎁',`상자를 열었어요<br><b>+🪙${C.dailyBonus.gold} · XP +${C.dailyBonus.xp}</b>`,'오늘의 일퀘'))}
+  if(all&&!ch){applyEntry(day,{kind:'chest',type:'good',name:'일퀘 상자 열기',xp:+C.dailyBonus.xp||0,gold:+C.dailyBonus.gold||0});later(()=>popup('일퀘 완료','🎁',`상자를 열었어요<br><b>+💰${C.dailyBonus.gold} · XP +${C.dailyBonus.xp}</b>`,'오늘의 일퀘'))}
   if(!all&&ch)unapplyEntry(day,ch);
 }
 function syncWeek(day,touched){
   const s=weekState(day.date);
-  if(s.dead&&!s.bossE){applyEntry(day,{kind:'boss',type:'good',name:'주간 보스 처치: '+bossOf(day.date).name,xp:+C.weekly.bossXp||0,gold:+C.weekly.bossGold||0});later(()=>popup('보스 처치','⚔️',`<b>${esc(bossOf(day.date).name)}</b>을(를) 쓰러뜨렸어요<br>+🪙${C.weekly.bossGold} · XP +${C.weekly.bossXp}`,'이번 주'))}
+  if(s.dead&&!s.bossE){applyEntry(day,{kind:'boss',type:'good',name:'주간 보스 처치: '+bossOf(day.date).name,xp:+C.weekly.bossXp||0,gold:+C.weekly.bossGold||0});later(()=>popup('보스 처치','⚔️',`<b>${esc(bossOf(day.date).name)}</b>을(를) 쓰러뜨렸어요<br>+💰${C.weekly.bossGold} · XP +${C.weekly.bossXp}`,'이번 주'))}
   else if(!s.dead&&s.bossE){unapplyEntry(DAYS[s.bossE.day],s.bossE.e);touched.add(s.bossE.day)}
   const met=s.goal>0&&s.brave>=s.goal;
-  if(met&&!s.braveE){applyEntry(day,{kind:'wbrave',type:'good',name:'이번 주 용기 목표 달성',xp:+C.weekly.courageXp||0,gold:+C.weekly.courageGold||0});later(()=>popup('용기 목표','🔥',`이번 주 용기 ${s.goal}번 달성<br>+🪙${C.weekly.courageGold} · XP +${C.weekly.courageXp}`,'이번 주'))}
+  if(met&&!s.braveE){applyEntry(day,{kind:'wbrave',type:'good',name:'이번 주 용기 목표 달성',xp:+C.weekly.courageXp||0,gold:+C.weekly.courageGold||0});later(()=>popup('용기 목표','🔥',`이번 주 용기 ${s.goal}번 달성<br>+💰${C.weekly.courageGold} · XP +${C.weekly.courageXp}`,'이번 주'))}
   else if(!met&&s.braveE){unapplyEntry(DAYS[s.braveE.day],s.braveE.e);touched.add(s.braveE.day)}
 }
 let laterQ=[];function later(f){laterQ.push(f)}
@@ -1740,7 +1745,7 @@ function commit(fn,extraDays){
   const after=levelOf(P.xp).lv;
   if(after>before)later(()=>showLevelUp(after));
   const nt=braveTitle().name;if(nt!==bt&&P.courage>0)later(()=>popup('새 칭호','⚡',`이제 당신은<br><b style="color:var(--brave);font-size:20px">${esc(nt)}</b>`,'용기 칭호'));
-  got.forEach(b=>later(()=>popup('업적 달성','',`<div style="font-size:44px">${b.ic}</div><b>${esc(b.name)}</b><br><span class="muted">${esc(b.desc)}</span><br>+🪙${b.gold}`,'업적')));
+  got.forEach(b=>later(()=>popup('업적 달성','',`<div style="font-size:44px">${b.ic}</div><b>${esc(b.name)}</b><br><span class="muted">${esc(b.desc)}</span><br>+💰${b.gold}`,'업적')));
   runLater();
 }
 function runLater(){if($('levelup').hidden&&laterQ.length){const f=laterQ.shift();f()}}
@@ -1886,7 +1891,7 @@ function suggestions(){
   {const tdK=dateKey(),nm=nowMinutes();openTasks().filter(x=>x.due===tdK&&x.time&&toMin(x.time)>=nm-30&&toMin(x.time)<=nm+120).sort((a,b)=>a.time.localeCompare(b.time)).slice(0,1).forEach(x=>add({key:'t'+x.id,ic:'⏰',label:x.title,why:`${x.time} 예정 · +${taskBase(x).xp} XP`,task:x.id}));
    const gq=(C.gacha||{}).quest;if(gq&&gq.src==='task'&&TASKS[gq.id])add({key:'gq',ic:'🎲',label:gq.name,why:`가챠 퀘스트 · XP ×${C.gacha.mult||1.5}`,task:gq.id});}
   neglectList(dateKey()).forEach(n=>{if(n.w.action==='@courage')add({key:'brave',ic:'⚡',label:'용기 하나',why:`${n.since}일째 용기 기록이 없어요 · ${C.areas.find(a=>a.id===n.t.area)?.name||''} −${n.pen} 중`,go:'brave'});else add({key:n.w.action,ic:'⚠',label:n.t.name,why:`${n.since}일째 안 했어요 · 하면 −${n.pen} 페널티가 바로 사라져요`,act:n.w.action})});
-  const ws=weekState(dateKey());if(ws.goal&&ws.brave<ws.goal)add({key:'brave',ic:'⚡',label:'이번 주 용기',why:`${ws.brave}/${ws.goal} · 채우면 +🪙${C.weekly.courageGold}`,go:'brave'});
+  const ws=weekState(dateKey());if(ws.goal&&ws.brave<ws.goal)add({key:'brave',ic:'⚡',label:'이번 주 용기',why:`${ws.brave}/${ws.goal} · 채우면 +💰${C.weekly.courageGold}`,go:'brave'});
   C.dailies.forEach(q=>{if(!questDone(day,q)&&q.action&&!q.action.startsWith('@'))add({key:q.action,ic:'☐',label:q.name,why:`일퀘 · +${q.xp} XP`,act:q.action})});
   const av=areaValues(day);const low=[...C.areas].sort((a,b)=>av[a.id]-av[b.id])[0];
   if(low){const best=C.actions.filter(a=>a.type==='good'&&!a.once&&a.area===low.id&&!actionDoneOn(day,a.id)).sort((a,b)=>Math.abs(b.cond)-Math.abs(a.cond))[0];if(best)add({key:best.id,ic:'▲',label:best.name,why:`가장 낮은 ${low.name}(${av[low.id]})을 +${best.cond} 올려요`,act:best.id})}
@@ -1933,7 +1938,7 @@ function tipsList(){
     ['👆','숫자나 버튼을 꾹 누르거나 우클릭하면 그게 뭔지, 어떻게 바꾸는지 떠요.'],
     ['🔍','위쪽 돋보기로 기능·설명·행동을 검색할 수 있어요.'],
     ['📊','통계 탭 아래쪽에 "안 한 행동"이 보여요. 너무 오래 안 한 건 지우거나 쉽게 바꿔요.'],
-    ['🎁',`일퀘를 다 하면 상자(+🪙${C.dailyBonus.gold}). 일퀘가 너무 많으면 3개로 줄여도 돼요.`]
+    ['🎁',`일퀘를 다 하면 상자(+💰${C.dailyBonus.gold}). 일퀘가 너무 많으면 3개로 줄여도 돼요.`]
   ];
 }
 
@@ -1946,7 +1951,7 @@ function render(){
   // HUD
   $('hudAv').innerHTML=spriteSVG(C.avatar.kind,mood,C.avatar.outfit,{level:1,fx:false});
   $('hudName').textContent=C.avatar.name||'이름 없음';$('hudTitle').textContent='⚡ '+bt.name;
-  $('hudLv').textContent='LV '+L.lv;$('hudGold').textContent='🪙'+P.gold.toLocaleString();$('hudBrave').textContent='⚡'+P.courage;$('hudBrave').title='용기 점수 · '+bt.name;
+  $('hudLv').textContent='LV '+L.lv;$('hudGold').textContent='💰'+P.gold.toLocaleString();$('hudBrave').textContent='⚡'+P.courage;$('hudBrave').title='용기 점수 · '+bt.name;
   $('hudHp').style.width=ov+'%';$('hudHp').className='fill hp'+(ov<35?' low':'');$('hudHpV').textContent=ov+'/100';
   $('hudXp').style.width=(L.rem/L.need*100)+'%';$('hudXpV').textContent=L.rem+'/'+L.need;
 
@@ -1972,7 +1977,7 @@ function renderHome(day,av,ov,L,items,mood,base){
   const qs=C.braveQuotes.filter(q=>q.text&&q.text.trim()),qq=qs.length?qs[Math.floor(toUTC(day.date)/864e5)%qs.length].text:'결과와 상관없이.';
   $('braveQuote').textContent=qq;$('braveQuote2').textContent=qs.length?'“'+qq+'”':'';
   {const qa=$('qArea');if(document.activeElement!==qa){const v=qa.value;qa.innerHTML=C.areas.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');if(v)qa.value=v}
-   const ty=$('qType').value;qa.hidden=ty==='brave';$('qSize').hidden=ty!=='good';$('qHelp').textContent=ty==='happy'?`행복했던 순간을 적어요. 생산성이 아니어도 좋아요 · XP +${C.happy.xp}, 🪙${C.happy.gold}, '좋았다' 병에 구슬`:`습관 이름이면 그 습관으로, 아니면 '그냥 한 일'로 기록돼요(습관 목록에 안 쌓여요).`;
+   const ty=$('qType').value;qa.hidden=ty==='brave';$('qSize').hidden=ty!=='good';$('qHelp').textContent=ty==='happy'?`행복했던 순간을 적어요. 생산성이 아니어도 좋아요 · XP +${C.happy.xp}, 💰${C.happy.gold}, '좋았다' 병에 구슬`:`습관 이름이면 그 습관으로, 아니면 '그냥 한 일'로 기록돼요(습관 목록에 안 쌓여요).`;
    const dl=(ty==='brave'?C.courage:C.actions.filter(a=>a.type===(ty==='bad'?'bad':'good'))).map(a=>`<option value="${esc(a.name)}">`).join('');if($('qNames').innerHTML!==dl)$('qNames').innerHTML=dl}
   // 홈 선택 블록
   const nx=nextStage(L.lv),up=C.roadmap.filter(r=>r.lv>L.lv).sort((a,b)=>a.lv-b.lv).slice(0,3);
@@ -1989,7 +1994,7 @@ function renderHome(day,av,ov,L,items,mood,base){
   const doneN=C.dailies.filter(q=>questDone(day,q)).length;
   $('questCount').textContent=doneN+' / '+C.dailies.length;
   $('questFill').style.width=(C.dailies.length?doneN/C.dailies.length*100:0)+'%';
-  $('chestLbl').innerHTML=chestDone(day)?'<span class="chest">🎁 상자 열림</span>':`<span class="tiny muted">다 하면 🎁 +🪙${C.dailyBonus.gold}</span>`;
+  $('chestLbl').innerHTML=chestDone(day)?'<span class="chest">🎁 상자 열림</span>':`<span class="tiny muted">다 하면 🎁 +💰${C.dailyBonus.gold}</span>`;
   $('quests').innerHTML=C.dailies.length?C.dailies.map(q=>{const d=questDone(day,q);let how='눌러서 체크';
     if(q.action==='@weigh')how='몸무게 기록하면 자동';else if(q.action&&q.action.startsWith('@food:')){const f=C.food.find(x=>x.id===q.action.slice(6));how=(f?f.name:'식사')+' 기록하면 자동'}else if(q.action){const t=watchTarget(q.action);how=t?`누르면 '${t.name}' 기록`:'눌러서 체크'}
     return `<div class="quest ${d?'done':''}" data-info="quest:${q.id}" tabindex="0" role="button" aria-label="${esc(q.name)} 설명·편집"><button class="box" data-quest="${q.id}" aria-label="${esc(q.name)} ${d?'체크 해제':'체크'}">${d?'✓':''}</button><span><span class="qn">${esc(q.name)}</span><span class="tiny muted" style="display:block">${esc(how)}</span></span><span class="chip up">+${q.xp}</span></div>`}).join(''):'<div class="empty">편집 → 일퀘에서 만들어요.</div>';
@@ -1998,7 +2003,7 @@ function renderHome(day,av,ov,L,items,mood,base){
   $('weekLbl').textContent=fmtD(wk[0])+' ~ '+fmtD(wk[6]);
   const hpPct=Math.round(ws.left/ws.hp*100);
   $('weekBox').innerHTML=`<div class="boss ${ws.dead?'dead':''}" data-info="boss">${bossSVG(bs.color,ws.dead)}<div style="min-width:0"><b>${esc(bs.name)}</b><div class="tiny muted">${ws.dead?'처치 완료! 보상 받음':`좋은 행동 XP가 데미지, 나쁜 행동은 회복`}</div><div class="track lg" style="margin-top:5px"><div class="fill" style="width:${hpPct}%;background:var(--bad)"></div></div><div class="tiny muted num" style="margin-top:2px">HP ${ws.left} / ${ws.hp}${ws.heal?` · 회복 +${ws.heal}`:''}</div></div></div>
-    <div class="goalbox" data-info="wgoal"><b>⚡ 용기 목표</b><div class="gems">${Array.from({length:Math.max(ws.goal,ws.brave)},(_,i)=>`<span class="${i<ws.brave?'':'off'}">⚡</span>`).join('')||'<span class="tiny muted">편집 → 규칙에서 목표를 정해요</span>'}</div><div class="tiny muted">${ws.goal?(ws.brave>=ws.goal?'달성! 보상 받음':`${ws.brave}/${ws.goal} · 채우면 +🪙${C.weekly.courageGold}`):''}</div></div>`;
+    <div class="goalbox" data-info="wgoal"><b>⚡ 용기 목표</b><div class="gems">${Array.from({length:Math.max(ws.goal,ws.brave)},(_,i)=>`<span class="${i<ws.brave?'':'off'}">⚡</span>`).join('')||'<span class="tiny muted">편집 → 규칙에서 목표를 정해요</span>'}</div><div class="tiny muted">${ws.goal?(ws.brave>=ws.goal?'달성! 보상 받음':`${ws.brave}/${ws.goal} · 채우면 +💰${C.weekly.courageGold}`):''}</div></div>`;
   // 경보
   const al=buildAlerts();
   $('alerts').innerHTML=al.length?al.slice(0,4).map(([k,ic,t])=>`<li class="${k}"><span class="ic">${ic}</span><span>${esc(t)}</span></li>`).join('')+(al.length>4?`<li class="info"><span class="ic">…</span><span>${al.length-4}개 더 있어요. 통계 탭에서 흐름을 확인해요.</span></li>`:''):'<li class="info"><span class="ic">·</span><span>지금은 특별한 경보가 없어요.</span></li>';
@@ -2091,7 +2096,7 @@ function renderStats(){
   let good=0,bad=0,brave=0,marb=0,chest=0,clean=0,tdone=0,saved=0,spent=0,happy=0;const withData=days.filter(hasData);
   days.forEach(d=>{(d.entries||[]).forEach(e=>{if(e.kind==='happy')happy++;if(e.tid)tdone++;if(e.amt){if(e.type==='bad')spent+=+e.amt;else saved+=+e.amt}if(e.kind==='act'&&e.type==='good')good++;if(e.kind==='act'&&e.type==='bad')bad++;if(isBrave(e))brave++;if(e.jar)marb++;if(e.kind==='chest')chest++});if(isClean(d))clean++});
   const avgC=withData.length?Math.round(avg(withData.map(overallOf))):'—';
-  $('statTiles').innerHTML=[['기록한 날',withData.length+'일'],['⚡ 용기',brave+'번'],['▲ 좋은 행동',good+'번'],['▼ 나쁜 행동',bad+'번'],['✨ 깨끗한 날',clean+'일'],['🔮 구슬',marb+'개'],['🎁 일퀘 상자',chest+'개'],['평균 컨디션',avgC],['✓ 끝낸 할 일',tdone+'개'],['✨ 행복 기록',happy+'번'],['💰 아낀 돈 / 쓴 돈','₩'+saved.toLocaleString()+' / '+spent.toLocaleString()]].map(([k,v],i)=>`<div class="tile" data-info="stat:${['days','brave','good','bad','clean','marble','chest','avg','task','happy','money'][i]}"><span>${k}</span><b class="num">${v}</b></div>`).join('');
+  $('statTiles').innerHTML=[['기록한 날',withData.length+'일'],['⚡ 용기',brave+'번'],['▲ 좋은 행동',good+'번'],['▼ 나쁜 행동',bad+'번'],['✨ 깨끗한 날',clean+'일'],['🔮 구슬',marb+'개'],['🎁 일퀘 상자',chest+'개'],['평균 컨디션',avgC],['✓ 끝낸 할 일',tdone+'개'],['✨ 행복 기록',happy+'번'],['₩ 아낀 돈 / 쓴 돈','₩'+saved.toLocaleString()+' / '+spent.toLocaleString()]].map(([k,v],i)=>`<div class="tile" data-info="stat:${['days','brave','good','bad','clean','marble','chest','avg','task','happy','money'][i]}"><span>${k}</span><b class="num">${v}</b></div>`).join('');
   // 순위
   document.querySelectorAll('[data-rk]').forEach(b=>b.setAttribute('aria-pressed',ui.rk===b.dataset.rk));
   const cnt={},last={};days.forEach(d=>(d.entries||[]).forEach(e=>{let key=null;if(ui.rk==='brave'&&isBrave(e))key=e.cid==='free'?'자유: '+(e.note||e.name):(e.cid||e.name);else if(e.kind==='act'&&e.type===ui.rk)key=e.aid||e.name;if(!key)return;cnt[key]=(cnt[key]||0)+1;if(!last[key]||last[key]<d.date)last[key]=d.date}));
@@ -2123,7 +2128,7 @@ function renderRoad(L){
   $('road').innerHTML=rm.map(r=>{const done=L.lv>=r.lv;let cur=false;if(!done&&!curSet){cur=true;curSet=true}
     return `<li class="${done?'done':''} ${cur?'cur':''}" data-info="road:${r.id}"><div class="node"><span>${esc(r.item)}</span></div><div><div class="st">${esc(r.name)}</div><div class="small muted">${esc(r.itemName)}${cur?' · 다음 목표 · '+xpTo(r.lv)+' XP 남음':done?' · 획득':''}</div>${r.real?`<div class="real">현실 보상: ${esc(r.real)}</div>`:''}</div><div class="lvtag">Lv.${r.lv}</div></li>`}).join('');
   const n=BADGES.filter(b=>P.badges[b.id]).length;$('badgeCount').textContent=n+' / '+BADGES.length;
-  $('badges').innerHTML=BADGES.map(b=>{const on=P.badges[b.id];return `<div class="badge ${on?'':'off'}" data-info="badge:${b.id}"><span class="bi">${b.ic}</span><span class="bn">${esc(b.name)}</span><span class="tiny muted">${esc(b.desc)}</span><span class="tiny ${on?'':'muted'}">${on?fmtD(on)+' 달성':'+🪙'+b.gold}</span></div>`}).join('');
+  $('badges').innerHTML=BADGES.map(b=>{const on=P.badges[b.id];return `<div class="badge ${on?'':'off'}" data-info="badge:${b.id}"><span class="bi">${b.ic}</span><span class="bn">${esc(b.name)}</span><span class="tiny muted">${esc(b.desc)}</span><span class="tiny ${on?'':'muted'}">${on?fmtD(on)+' 달성':'+💰'+b.gold}</span></div>`}).join('');
   if(document.activeElement!==$('ideas'))$('ideas').value=C.ideas||'';
 }
 function renderBody(){
@@ -2145,7 +2150,7 @@ function renderBody(){
 function renderShop(){
   
   const sale=C.shop.filter(s=>s.price>0),wish=C.shop.filter(s=>!(s.price>0));
-  $('gold2').textContent='🪙'+P.gold.toLocaleString();$('shopList').innerHTML=sale.length?sale.map(it=>`<div class="item" data-info="shop:${it.id}"><span>${esc(it.name)}</span><span class="price num">🪙${it.price}</span><button class="btn sm" data-buy="${it.id}" ${P.gold<it.price||!ready?'disabled':''}>${P.gold<it.price?'🪙'+(it.price-P.gold)+' 부족':'사기'}</button></div>`).join(''):'<div class="empty">보상함에서 가격을 정하면 여기에 올라와요.</div>';
+  $('gold2').textContent='💰'+P.gold.toLocaleString();$('shopList').innerHTML=sale.length?sale.map(it=>`<div class="item" data-info="shop:${it.id}"><span>${esc(it.name)}</span><span class="price num">💰${it.price}</span><button class="btn sm" data-buy="${it.id}" ${P.gold<it.price||!ready?'disabled':''}>${P.gold<it.price?'💰'+(it.price-P.gold)+' 부족':'사기'}</button></div>`).join(''):'<div class="empty">보상함에서 가격을 정하면 여기에 올라와요.</div>';
   if(!$('wishList').contains(document.activeElement))
     $('wishList').innerHTML=wish.length?wish.map(it=>`<div class="item"><span>${esc(it.name)}</span><input id="wp-${it.id}" type="number" min="1" placeholder="가격 G"><button class="btn sm ghost" data-wishup="${it.id}">상점에 올리기</button><button class="x" data-del="shop" data-id="${it.id}" aria-label="지우기">×</button></div>`).join(''):'<div class="empty">아직 적어둔 보상이 없어요.</div>';
 }
@@ -2290,7 +2295,7 @@ function renderGuide(){
     <div class="flow">
       <div class="res"><div class="t"><i>❤️</i>HP · 컨디션</div><span class="tiny muted">오늘만 · 매일 ${C.dayStart}시 리셋</span><div class="gain">좋은 행동 평균 +${avgG}, 채소, 용기</div><div class="lose">나쁜 행동 평균 −${avgB}, 나쁜 식사, 방치</div></div>
       <div class="res"><div class="t"><i>⭐</i>XP · 레벨</div><span class="tiny muted">영원히 쌓임 · 절대 안 줄어요</span><div class="gain">좋은 행동 평균 ${gx}, 용기 평균 ${kx}, 일퀘, 구슬</div><div class="lose">없어요. 나쁜 날에도 여정은 그대로</div></div>
-      <div class="res"><div class="t"><i>🪙</i>골드</div><span class="tiny muted">현실 보상을 사는 돈</span><div class="gain">행동, 용기, 상자, 보스, 업적</div><div class="lose">과음·충동구매 같은 돈 관련 행동, 상점</div></div>
+      <div class="res"><div class="t"><i>💰</i>골드</div><span class="tiny muted">현실 보상을 사는 돈</span><div class="gain">행동, 용기, 상자, 보스, 업적</div><div class="lose">과음·충동구매 같은 돈 관련 행동, 상점</div></div>
       <div class="res" style="border-color:var(--brave)"><div class="t"><i>⚡</i>용기</div><span class="tiny muted">칭호를 올리는 특별 점수</span><div class="gain">두렵거나 거절당할 수 있는데 해본 것. 결과 무관</div><div class="lose">없어요</div></div>
       <div class="res"><div class="t"><i>🔮</i>구슬</div><span class="tiny muted">해낸 증거 · 병에 차오름</span><div class="gain">직접 넣기, 구슬이 연결된 행동·용기</div><div class="lose">없어요 (잘못 넣은 것만 빼기)</div></div>
     </div></div>
@@ -2307,21 +2312,22 @@ function renderGuide(){
       <ul class="tips" style="margin:10px 0 0;padding-left:18px">
         <li><b>용기가 최고 효율이에요.</b> 용기 한 번(평균 XP ${kx})은 좋은 행동 ${gx?Math.round(kx/gx):'?'}번과 같아요. 작은 용기도 기록하세요.</li>
         <li><b>나쁜 걸 안 하면 이겨요.</b> 나쁜 행동은 보스를 회복시키고 컨디션을 크게 깎아요. 깨끗한 날이 이어지면 업적.</li>
-        <li><b>일퀘 상자를 매일.</b> +🪙${C.dailyBonus.gold}·XP +${C.dailyBonus.xp}에 연속 업적까지. 일퀘는 쉬운 걸로 3~5개.</li>
+        <li><b>일퀘 상자를 매일.</b> +💰${C.dailyBonus.gold}·XP +${C.dailyBonus.xp}에 연속 업적까지. 일퀘는 쉬운 걸로 3~5개.</li>
         <li><b>무너진 다음 날이 기회.</b> 컨디션 ${C.recovery.threshold} 아래였던 다음 날은 XP ×${C.recovery.mult}.</li>
         <li><b>홈의 "지금 하면 좋은 것"</b>을 따라가면 경보와 보스를 같이 처리해요.</li>
         <li><b>규칙은 2주마다만 바꿔요.</b> 바꾸고 싶으면 아이디어 보관함에 적어 두기.</li>
       </ul></div>
   </div>
   <div class="panel"><h2>자세한 규칙</h2><p class="help">눌러서 펼쳐요. 화면 곳곳의 <b>?</b> 버튼을 누르면 해당 항목이 열려요. 숫자·버튼·병을 <b>꾹 누르거나 우클릭</b>하면 그 자리에서 설명과 편집이 떠요.</p>
-    ${acc('card57','🆕 v5.7 · 반복은 할 일에서만 · 도파민 메뉴 새로','지금 버전',`<ul><li><b>리듬 = 반복 할 일</b>: 카드의 🔁 리듬(매일·요일)은 이제 그 카드에 이어진 <b>반복 할 일</b> 하나예요('🔁 습관' 목록). 오늘 목록엔 할 일만 떠서 같은 행동이 두 번 뜨지 않아요. 카드를 그냥 기록해도 그날 리듬 할 일이 같이 끝나요.</li><li><b>일퀘</b> = 매일 반복 리듬 할 일 중 ☑ 일퀘 표시. 할 일 상세 🃏 칩이나 카드 편집에서 켜요.</li><li>놓친 날은 쌓이지 않고 다음 날로 넘어와요(☠ 안 붙음). 오래 안 한 건 '⚠ 오래 안 한 행동'에 떠요.</li><li><b>할 일 상세</b>: 펼친 칩 칸은 테두리·배경·머리글로 구분, 날짜·마감 한 줄, 💭 문구 칩, 🗑 삭제 · 안 하기 · 미루기(날짜 고르기).</li><li><b>홈 배치</b>: ↑↓로 한 칸씩, 숨김은 '배치 끝'에서 바로 적용.</li></ul>`)}
+    ${acc('card58','🆕 v5.8 · 행동 카드 · 할 일 · 습관 정리','지금 버전',`<ul><li><b>행동 카드</b> = 무엇을 하면 몇 점(⭐ XP · 💰 골드 · ❤ 컨디션). 점수는 여기에만 있어요.</li><li><b>할 일</b> = 언제 할지. 한 번짜리도, 반복도 있어요.</li><li><b>습관</b> = 행동 카드 + 반복 할 일. 카드 편집의 '반복'에서 정하면 '↻ 습관' 목록에 반복 할 일이 생겨요. 둘 중 어디서 체크해도 같이 끝나요.</li><li><b>일퀘</b> = 매일 반복하는 습관 중 ☑ 표시한 것. 다 끝내면 상자.</li><li>몸무게·식사처럼 <b>연결 카드</b>는 그 기록을 하면 일퀘·할 일·행동/습관에서 모두 '했음'이 돼요.</li><li><b>📜 전투 기록</b>: 여정 화면 맨 위. 언제 무엇으로 몇 점·어떤 보너스를 받았나.</li><li>캘린더: 월 보기 날짜를 한 번 누르면 할 일 추가, 두 번 누르면 하루 보기. 할 일 화면 옆 캘린더와 캘린더 화면은 보기 설정이 따로예요.</li></ul>`)}
+    ${acc('card57','🆕 v5.7 · 반복은 할 일에서만 · 도파민 메뉴 새로','지금 버전',`<ul><li><b>반복 = 반복 할 일</b>: 카드의 ↻ 반복(매일·요일)은 이제 그 카드에 이어진 <b>반복 할 일</b> 하나예요('↻ 습관' 목록). 오늘 목록엔 할 일만 떠서 같은 행동이 두 번 뜨지 않아요. 카드를 그냥 기록해도 그날 반복 할 일이 같이 끝나요.</li><li><b>일퀘</b> = 매일 반복 반복 할 일 중 ☑ 일퀘 표시. 할 일 상세 🃏 칩이나 카드 편집에서 켜요.</li><li>놓친 날은 쌓이지 않고 다음 날로 넘어와요(☠ 안 붙음). 오래 안 한 건 '⚠ 오래 안 한 행동'에 떠요.</li><li><b>할 일 상세</b>: 펼친 칩 칸은 테두리·배경·머리글로 구분, 날짜·마감 한 줄, 💭 문구 칩, 🗑 삭제 · 안 하기 · 미루기(날짜 고르기).</li><li><b>홈 배치</b>: ↑↓로 한 칸씩, 숨김은 '배치 끝'에서 바로 적용.</li></ul>`)}
     ${acc('card56','🆕 v5.6 · 홈 좌우 배치 · 할 일 묶음 · 타이머 방식','지금 버전',`<ul><li><b>홈 배치</b>: ✎ 홈 배치에서 칸을 왼쪽·오른쪽 단 어디든 끌어 놓거나 ⇢/⇠로 옮겨요. 한쪽이 길어도 다른 쪽으로 넘어가지 않아요. 폰은 한 줄이라 순서만.</li><li><b>📦 할 일 묶음</b>: 할 일 상세의 '묶인 할 일'에 추가하거나, 여러 개 고른 뒤 '📦 묶기'. 묶여도 각자 따로인 할 일이라 하나만 끝내도 그 점수를 받아요. 목록에서 ▾로 접고 펴요.</li><li>체크리스트(점수 없는 작은 단계)는 그대로 있고, ↗로 묶인 할 일로 바꿀 수 있어요.</li><li><b>할 일 상세</b>: 위에 칩 한 줄(📅 날짜 · 🃏 카드 · # 태그 · 🧭 영역 · 📂 목록 · ⚑ · 크기 · ⏱). 눌러야 그 칸이 펼쳐져요.</li><li><b>타이머 방식</b>: ⏱ 시간 안에 = 목표 안에 끝내면 보너스(샤워처럼 서두를 필요 없는 것). ⚡ 빠를수록 = 빨리 끝낼수록 보너스가 커요(설거지·청소·답장 몰아 하기처럼 해치우고 싶은 것). 카드·할 일에 정해두고, 시작하고 2분 안에는 목표 분과 방식을 그때그때 바꿔요.</li></ul>`)}
-    ${acc('card55','🆕 v5.5 · 행동/습관 편집이 쉬워졌어요','지금 버전',`<ul><li>이름이 <b>행동 카드</b>로 바뀌었어요. 점수는 카드에만 있고, 그중 <b>리듬</b>(☑ 매일·요일·📌)이 있는 카드를 <b>🔁 습관</b>이라고 불러요.</li><li>편집 → 행동/습관: 줄마다 <b>☑</b>(매일 켜고 끄기)·<b>🗑</b>(지우기, 되돌리기 가능). <b>☐ 여러 개 고르기</b>로 한꺼번에 지우기·영역 바꾸기·매일 켜기.</li><li><b>👁 보이는 칸</b>에서 영역·XP·골드·컨디션·리듬·용기·30일 횟수를 켜고 꺼요. 점수는 아이콘이 붙은 칩으로 보여요.</li><li>행동 카드 편집은 <b>완료</b>를 눌러야 저장돼요. ×나 바깥을 누르면 취소 (알림의 '되살리기'로 살릴 수 있어요).</li><li>할 일 상세는 반대로 <b>자동 저장</b>. 바깥을 누르면 저장하고 닫혀요 (PC 오른쪽 상세도).</li><li>루틴: 단계마다 연결된 카드 점수가 들어가고, 루틴 자체는 <b>완주 보너스</b>만 줘요.</li><li>할 일 스마트 목록: ⏰ 지난 것 · ⏳ 마감 3일 안 · ⚡ 용기 · ☠ 미룬 것 · 🔁 습관 연결. 할 일 화면 왼쪽 목록을 끌어서 순서를 바꿔요.</li></ul>`)}
+    ${acc('card55','🆕 v5.5 · 행동/습관 편집이 쉬워졌어요','지금 버전',`<ul><li>이름이 <b>행동 카드</b>로 바뀌었어요. 점수는 카드에만 있고, 그중 <b>반복</b>(☑ 매일·요일·📌)이 있는 카드를 <b>↻ 습관</b>이라고 불러요.</li><li>편집 → 행동/습관: 줄마다 <b>☑</b>(매일 켜고 끄기)·<b>🗑</b>(지우기, 되돌리기 가능). <b>☐ 여러 개 고르기</b>로 한꺼번에 지우기·영역 바꾸기·매일 켜기.</li><li><b>👁 보이는 칸</b>에서 영역·XP·골드·컨디션·반복·용기·30일 횟수를 켜고 꺼요. 점수는 아이콘이 붙은 칩으로 보여요.</li><li>행동 카드 편집은 <b>완료</b>를 눌러야 저장돼요. ×나 바깥을 누르면 취소 (알림의 '되살리기'로 살릴 수 있어요).</li><li>할 일 상세는 반대로 <b>자동 저장</b>. 바깥을 누르면 저장하고 닫혀요 (PC 오른쪽 상세도).</li><li>루틴: 단계마다 연결된 카드 점수가 들어가고, 루틴 자체는 <b>완주 보너스</b>만 줘요.</li><li>할 일 스마트 목록: ⏰ 지난 것 · ⏳ 마감 3일 안 · ⚡ 용기 · ☠ 미룬 것 · ↻ 습관 연결. 할 일 화면 왼쪽 목록을 끌어서 순서를 바꿔요.</li></ul>`)}
     ${acc('card54','🃏 행동 카드 하나로 · 점수 뜻 · ⚔ 용기','v5.4',`<ul><li>점수는 <b>행동 카드</b>에만 있어요. 일퀘·도파민 메뉴·할 일 연결·루틴은 그 카드를 보여주는 방법일 뿐이에요.</li><li><b>일퀘</b> = '☑ 매일'로 둔 행동 카드. 따로 점수가 없고, 다 하면 상자를 열어요. 몸무게·채소처럼 다른 기록과 이어진 카드(🔗)도 있어요.</li><li><b>XP</b> = 성장(레벨) · <b>골드</b> = 현실의 돈·자원 · <b>컨디션</b> = 지금의 몸과 마음. 상관없는 칸은 0이에요.</li><li>새 습관은 <b>프리셋</b>(가벼움·보통·힘듦·작품·일…)을 눌러 바로 채워요. 프리셋 숫자는 습관 탭 맨 아래에서 바꿔요.</li><li>행동 카드에 <b>⚔ 용기 표시</b>를 붙이면 할 때마다 용기 점수·용기 구슬이 함께 쌓여요.</li><li>HP(컨디션)는 영역 평균이 아니라 <b>모두 더한 값</b>이에요. 점수 낼 일이 적은 영역(경제 등)이 깎아먹지 않아요.</li></ul>`)}
     ${acc('flow','컨디션 (HP)','오늘의 몸·마음 상태',`<ul><li>아침 에너지(지금 ${C.energyBase.join(' / ')})가 모든 영역의 시작점이에요.</li><li>영역(${C.areas.map(a=>esc(a.name)).join('·')})끼리는 서로 메꿔지지 않아요. 운동을 많이 해도 과음의 몸 페널티는 그대로예요.</li><li>네 영역 평균이 HP이고, 아바타 표정이 돼요: 75↑ 활기, 55↑ 괜찮음, 35↑ 지침, 그 아래 바닥.</li><li>"지금 하면 좋은 것"은 방치 경보, 이번 주 용기, 남은 일퀘, 가장 낮은 영역을 보고 골라줘요.</li></ul>`)}
-    ${acc('brave','⚡ 용기','가장 큰 보상',`<ul><li>두렵거나 망설여졌는데 해본 것. 결과와 상관없이 기록해요.</li><li>XP·골드를 가장 많이 주고, '용기 점수'(1~3)가 쌓여 칭호가 올라가요: ${BRAVE_TITLES.map(t=>t[0]+'점 '+t[1]).slice(1,6).join(', ')}…</li><li>구슬이 연결돼 있으면 '시도했다' 병에 자동으로 들어가요.</li><li>목록에 없으면 크기(작은·보통·큰)를 고르고 직접 적어요.</li><li>이번 주 목표(${C.weekly.courage}번)를 채우면 +🪙${C.weekly.courageGold}. 7일 넘게 용기가 없으면 방치 경보가 떠요.</li></ul>`)}
-    ${acc('quest','일퀘와 상자','매일 숙제',`<ul><li>매일 새로 시작해요. 행동·식사·몸무게와 연결된 건 자동으로 체크돼요.</li><li>전부 끝내면 상자 +🪙${C.dailyBonus.gold}·XP +${C.dailyBonus.xp}. 연속 3·7·30일은 업적.</li><li>못 끝낸 날 벌점은 없어요. 연속 기록만 끊겨요.</li></ul>`)}
-    ${acc('week','주간 보스와 용기 목표','월요일마다 새로',`<ul><li>매주 보스가 나와요 (HP ${C.weekly.bossHp}). 그 주에 얻은 XP가 그대로 데미지예요.</li><li>나쁜 행동은 보스를 회복시켜요 (깎인 컨디션만큼).</li><li>쓰러뜨리면 +🪙${C.weekly.bossGold}·XP +${C.weekly.bossXp}.</li></ul>`)}
+    ${acc('brave','⚡ 용기','가장 큰 보상',`<ul><li>두렵거나 망설여졌는데 해본 것. 결과와 상관없이 기록해요.</li><li>XP·골드를 가장 많이 주고, '용기 점수'(1~3)가 쌓여 칭호가 올라가요: ${BRAVE_TITLES.map(t=>t[0]+'점 '+t[1]).slice(1,6).join(', ')}…</li><li>구슬이 연결돼 있으면 '시도했다' 병에 자동으로 들어가요.</li><li>목록에 없으면 크기(작은·보통·큰)를 고르고 직접 적어요.</li><li>이번 주 목표(${C.weekly.courage}번)를 채우면 +💰${C.weekly.courageGold}. 7일 넘게 용기가 없으면 방치 경보가 떠요.</li></ul>`)}
+    ${acc('quest','일퀘와 상자','매일 숙제',`<ul><li>매일 새로 시작해요. 행동·식사·몸무게와 연결된 건 자동으로 체크돼요.</li><li>전부 끝내면 상자 +💰${C.dailyBonus.gold}·XP +${C.dailyBonus.xp}. 연속 3·7·30일은 업적.</li><li>못 끝낸 날 벌점은 없어요. 연속 기록만 끊겨요.</li></ul>`)}
+    ${acc('week','주간 보스와 용기 목표','월요일마다 새로',`<ul><li>매주 보스가 나와요 (HP ${C.weekly.bossHp}). 그 주에 얻은 XP가 그대로 데미지예요.</li><li>나쁜 행동은 보스를 회복시켜요 (깎인 컨디션만큼).</li><li>쓰러뜨리면 +💰${C.weekly.bossGold}·XP +${C.weekly.bossXp}.</li></ul>`)}
     ${acc('jar','유리병과 구슬','해낸 증거 모으기',`<ul><li>한 병에 여러 구슬(색·모양·크기)을 둘 수 있어요. 큰 구슬은 자리를 더 차지해요.</li><li>행동이나 용기에 구슬을 연결하면 누를 때 자동으로 들어가요.</li><li>병이 가득 차면 선반으로 옮기고 새 병이 시작돼요. 첫 병 가득은 업적.</li><li>편집 → 유리병에서 병 합치기·나누기가 돼요.</li><li>'이겨냈다'는 실제 충동이 있었을 때만 넣어요.</li></ul>`)}
     ${acc('alert','경보와 방치','잊지 않게',`<ul><li>정해둔 행동을 며칠 넘게 안 하면 그 영역 컨디션이 하루마다 더 깎여요(최대 4배). 한 번 하면 바로 사라져요.</li><li>지난주보다 떨어진 영역, 자주 반복된 나쁜 행동, 곧 가득 찰 병, 곧 받을 보상도 알려줘요.</li></ul>`)}
     ${acc('gold','골드와 상점','현실 보상',`<ul><li>상점에서 현실 보상을 사요. 갖고 싶은 게 떠오르면 보상함에 적어두고 나중에 가격을 정해요.</li><li>레벨 단계마다 '현실 보상'을 정해둘 수도 있어요 (여정 편집).</li></ul>`)}
@@ -2365,7 +2371,7 @@ function infoFor(key){
   case 'hp':{const av=areaValues(day);return{kind:'오늘의 상태',t:'❤️ HP · 컨디션',b:`<p>오늘 몸·마음 상태를 0~100으로 나타낸 거예요. 좋은·나쁜 행동의 컨디션 점수를 모두 더해요. 영역(${C.areas.map(x=>esc(x.name)).join('·')})은 평균 내지 않고 균형만 보여줘요 — 점수 낼 일이 적은 영역이 깎아먹지 않아요. 매일 ${C.dayStart}시에 아침 에너지 값으로 새로 시작해요.</p><div class="brk">${C.areas.map(x=>`<span>${esc(x.name)}</span><span>${av[x.id]}</span>`).join('')}</div><p class="tiny muted">영역을 꾹 누르면 오늘 무엇 때문에 오르고 내렸는지 보여요.</p>`+btns(gd('flow'))}}
   case 'xp':return{kind:'영원히 쌓이는 것',t:'⭐ XP',b:`<p>좋은 행동·용기·일퀘·구슬·몸무게 기록으로 얻어요. <b>절대 줄지 않아요.</b> 나쁜 날에도 여정은 그대로예요.</p><div class="brk"><span>지금 레벨</span><span>Lv.${L.lv}</span><span>다음 레벨까지</span><span>${L.need-L.rem} XP</span><span>누적 XP</span><span>${P.xp}</span></div>`+btns(gd('xp'),goE('rules','레벨 곡선 바꾸기'))};
   case 'lv':{const nx=nextStage(L.lv);return{kind:'레벨',t:'🎬 Lv.'+L.lv,b:`<p>XP가 차면 오르고, 영화 제작 여정의 단계가 열려요. 5레벨마다 아바타 발밑 단상이 높아져요.</p><div class="brk"><span>다음 레벨까지</span><span>${L.need-L.rem} XP</span>${nx?`<span>다음 보상 (Lv.${nx.lv})</span><span>${esc(nx.item)} ${xpTo(nx.lv)} XP</span>`:''}</div>`+btns(`<a class="btn ghost sm" href="#journey">여정 보기</a>`,goE('road','보상 바꾸기'))}}
-  case 'gold':{const sale=C.shop.filter(x=>x.price>0).sort((x,y)=>x.price-y.price),nx=sale.find(x=>x.price>P.gold);return{kind:'돈',t:'🪙 골드 '+P.gold,b:`<p>현실 보상을 사는 돈이에요. 좋은 행동·용기·상자·보스·업적으로 벌고, 과음·충동구매처럼 돈과 관련된 나쁜 행동과 상점에서 써요. 0 아래로는 안 내려가요.</p>${nx?`<p class="small">다음으로 살 수 있는 것: <b>${esc(nx.name)}</b> (🪙${nx.price-P.gold} 더 필요)</p>`:''}`+btns(`<a class="btn ghost sm" href="#shop">상점</a>`,gd('gold'))}}
+  case 'gold':{const sale=C.shop.filter(x=>x.price>0).sort((x,y)=>x.price-y.price),nx=sale.find(x=>x.price>P.gold);return{kind:'돈',t:'💰 골드 '+P.gold,b:`<p>현실 보상을 사는 돈이에요. 좋은 행동·용기·상자·보스·업적으로 벌고, 과음·충동구매처럼 돈과 관련된 나쁜 행동과 상점에서 써요. 0 아래로는 안 내려가요.</p>${nx?`<p class="small">다음으로 살 수 있는 것: <b>${esc(nx.name)}</b> (💰${nx.price-P.gold} 더 필요)</p>`:''}`+btns(`<a class="btn ghost sm" href="#shop">상점</a>`,gd('gold'))}}
   case 'brave':case 'title':return{kind:'용기 점수·칭호',t:'⚡ '+bt.name,b:`<p>용기를 기록할 때마다 점수가 쌓여 칭호가 올라가요. 점수는 줄지 않아요.</p><div class="brk"><span>지금 점수</span><span>${P.courage}</span>${bt.next?`<span>다음 칭호 '${esc(bt.next[1])}'</span><span>${bt.next[0]-P.courage}점 남음</span>`:''}</div><ul>${BRAVE_TITLES.map(x=>`<li${x[1]===bt.name?' style="font-weight:700;color:var(--brave)"':''}>${x[0]}점 · ${x[1]}</li>`).join('')}</ul>`+btns(gd('brave'),goE('courage','용기 목록 편집'))};
   case 'bravebtn':return{kind:'용기',t:'⚡ 용기 냈어요',b:`<p>두렵거나 망설여졌는데 해본 걸 기록하는 곳이에요. 결과와 상관없어요. 누르면 기록 탭의 용기 칸으로 가요.</p><p class="small muted">아래 문구는 날마다 바뀌어요. 편집 → 용기에서 문구를 바꾸거나 더할 수 있어요.</p>`+btns(goE('courage','문구·목록 편집'))};
   case 'energy':return{kind:'오늘의 시작점',t:'🌅 아침 에너지',b:`<p>아침에 몸이 어떤지 골라요. 모든 영역이 이 값에서 시작해요.</p><div class="brk">${ENERGY_LBL.map((l,i)=>`<span>${l}</span><span>${C.energyBase[i]}</span>`).join('')}</div>`+btns(goE('rules','시작점 바꾸기'))};
@@ -2373,15 +2379,15 @@ function infoFor(key){
     const up=C.actions.filter(x=>x.type==='good'&&x.area===a).map(x=>x.name),dn=C.actions.filter(x=>x.type==='bad'&&x.area===a).map(x=>x.name);
     return{kind:'컨디션 영역',t:esc(ar.name)+' 영역',b:`<p>오늘 ${esc(ar.name)} 상태예요. 다른 영역과 서로 메꿔지지 않아요.</p><div class="brk"><span>아침 시작점</span><span>${base}</span><span>행동·용기</span><span>${acts>=0?'+':''}${acts}</span><span>식사</span><span>${fd>=0?'+':''}${fd}</span>${ng.map(n=>`<span>방치: ${esc(n.t.name)} ${n.since}일</span><span>−${n.pen}</span>`).join('')}<span><b>오늘</b></span><span><b>${areaValues(day)[a]}</b></span></div>${up.length?`<p class="small"><b style="color:var(--good)">올리는 것</b> ${esc(up.join(', '))}</p>`:''}${dn.length?`<p class="small"><b style="color:var(--bad)">내리는 것</b> ${esc(dn.join(', '))}</p>`:''}`+btns(goE('areas','영역 편집'),goE('actions','행동 편집'))}}
   case 'act':{const x=C.actions.find(y=>y.id===a);if(!x)return null;const w=countAct(e=>e.aid===a,7),m=countAct(e=>e.aid===a,30),all=countAct(e=>e.aid===a);const ar=C.areas.find(y=>y.id===x.area);
-    return{kind:x.type==='good'?'▲ 좋은 행동':'▼ 나쁜 행동',t:esc(x.name),b:`<div class="brk"><span>영역</span><span>${esc(ar?ar.name:'')}</span><span>7일 / 30일 / 전체</span><span>${w.c} / ${m.c} / ${all.c}번</span><span>마지막</span><span>${all.last?fmtD(all.last):'—'}</span></div><p class="tiny muted">${x.type==='good'?'점수·리듬(매일)·⚔ 용기·옵션은 ✎ 편집에서 한 번에 바꿔요.':'나쁜 행동은 컨디션·골드를 깎고 주간 보스를 회복시켜요.'}</p>`+`<div class="mcs" style="margin:8px 0">${metaChips(x,null,aeShowAll().map(z=>z[0]))}</div>`+(x.reframe?`<div class="reframe" style="font-size:13.5px"><b>💭 다르게 보기</b>${esc(x.reframe)}</div>`:'')+(x.opts&&x.opts.length?`<p class="tiny muted">세부 옵션: ${esc(x.opts.map(o=>o.name).join(' / '))}</p>`:'')+btns(x.doneAt?'':`<button class="btn sm" data-act="${x.id}">지금 기록</button>`,`<button class="btn sm" data-aedit="${x.id}">✎ 편집</button>`,`<button class="btn ghost sm" data-del="actions" data-id="${x.id}">지우기</button>`,goE('actions','목록에서 보기'))}}
-  case 'quest':{const q=C.dailies.find(y=>y.id===a);if(!q)return null;return{kind:'일퀘',t:esc(q.name),b:`<p>매일 새로 시작해요. 다 끝내면 상자(+🪙${C.dailyBonus.gold})를 열어요.</p>`+`<p class="small muted">점수는 행동 카드에서 정해요.</p>`+btns(((c0)=>c0?`<button class="btn ghost sm" data-aedit="${c0.id}">카드 편집</button>`:'')(C.actions.find(x=>x.daily&&(x.qid||'q'+x.id)===q.id)),`<button class="btn sm" data-quest="${q.id}">${questDone(day,q)?'체크 해제':'체크'}</button>`,goE('dailies','일퀘 전체 편집'))}}
-  case 'boss':{const ws=weekState(day.date),bs=bossOf(day.date);return{kind:'이번 주 보스',t:'⚔️ '+esc(bs.name),b:`<p>매주 월요일에 새 보스가 나와요. 이번 주에 얻은 XP가 그대로 데미지가 되고, 나쁜 행동은 깎인 컨디션만큼 보스를 회복시켜요.</p><div class="brk"><span>최대 HP</span><span>${ws.hp}</span><span>준 데미지 (이번 주 XP)</span><span>${ws.dmg}</span><span>회복 (나쁜 행동)</span><span>${ws.heal}</span><span><b>남은 HP</b></span><span><b>${ws.left}</b></span><span>처치 보상</span><span>+🪙${C.weekly.bossGold} · XP +${C.weekly.bossXp}</span></div>`+btns(gd('week'),goE('rules','보스 HP·보상 바꾸기'))}}
-  case 'wgoal':{const ws=weekState(day.date);return{kind:'이번 주',t:'⚡ 주간 용기 목표',b:`<p>이번 주 용기를 ${ws.goal}번 기록하면 +🪙${C.weekly.courageGold} · XP +${C.weekly.courageXp}. 지금 ${ws.brave}번.</p>`+btns(`<button class="btn sm brave" data-sugbrave="1">용기 기록하러 가기</button>`,goE('rules','목표 바꾸기'))}}
+    return{kind:x.type==='good'?'▲ 좋은 행동':'▼ 나쁜 행동',t:esc(x.name),b:`<div class="brk"><span>영역</span><span>${esc(ar?ar.name:'')}</span><span>7일 / 30일 / 전체</span><span>${w.c} / ${m.c} / ${all.c}번</span><span>마지막</span><span>${all.last?fmtD(all.last):'—'}</span></div><p class="tiny muted">${x.type==='good'?'점수·반복(매일)·⚔ 용기·옵션은 ✎ 편집에서 한 번에 바꿔요.':'나쁜 행동은 컨디션·골드를 깎고 주간 보스를 회복시켜요.'}</p>`+`<div class="mcs" style="margin:8px 0">${metaChips(x,null,aeShowAll().map(z=>z[0]))}</div>`+(x.reframe?`<div class="reframe" style="font-size:13.5px"><b>💭 다르게 보기</b>${esc(x.reframe)}</div>`:'')+(x.opts&&x.opts.length?`<p class="tiny muted">세부 옵션: ${esc(x.opts.map(o=>o.name).join(' / '))}</p>`:'')+btns(x.doneAt?'':`<button class="btn sm" data-act="${x.id}">지금 기록</button>`,`<button class="btn sm" data-aedit="${x.id}">✎ 편집</button>`,`<button class="btn ghost sm" data-del="actions" data-id="${x.id}">지우기</button>`,goE('actions','목록에서 보기'))}}
+  case 'quest':{const q=C.dailies.find(y=>y.id===a);if(!q)return null;return{kind:'일퀘',t:esc(q.name),b:`<p>매일 새로 시작해요. 다 끝내면 상자(+💰${C.dailyBonus.gold})를 열어요.</p>`+`<p class="small muted">점수는 행동 카드에서 정해요.</p>`+btns(((c0)=>c0?`<button class="btn ghost sm" data-aedit="${c0.id}">카드 편집</button>`:'')(C.actions.find(x=>x.daily&&(x.qid||'q'+x.id)===q.id)),`<button class="btn sm" data-quest="${q.id}">${questDone(day,q)?'체크 해제':'체크'}</button>`,goE('dailies','일퀘 전체 편집'))}}
+  case 'boss':{const ws=weekState(day.date),bs=bossOf(day.date);return{kind:'이번 주 보스',t:'⚔️ '+esc(bs.name),b:`<p>매주 월요일에 새 보스가 나와요. 이번 주에 얻은 XP가 그대로 데미지가 되고, 나쁜 행동은 깎인 컨디션만큼 보스를 회복시켜요.</p><div class="brk"><span>최대 HP</span><span>${ws.hp}</span><span>준 데미지 (이번 주 XP)</span><span>${ws.dmg}</span><span>회복 (나쁜 행동)</span><span>${ws.heal}</span><span><b>남은 HP</b></span><span><b>${ws.left}</b></span><span>처치 보상</span><span>+💰${C.weekly.bossGold} · XP +${C.weekly.bossXp}</span></div>`+btns(gd('week'),goE('rules','보스 HP·보상 바꾸기'))}}
+  case 'wgoal':{const ws=weekState(day.date);return{kind:'이번 주',t:'⚡ 주간 용기 목표',b:`<p>이번 주 용기를 ${ws.goal}번 기록하면 +💰${C.weekly.courageGold} · XP +${C.weekly.courageXp}. 지금 ${ws.brave}번.</p>`+btns(`<button class="btn sm brave" data-sugbrave="1">용기 기록하러 가기</button>`,goE('rules','목표 바꾸기'))}}
   case 'jar':{const j=C.jars.find(y=>y.id===a);if(!j)return null;const Lj=jarLayout(j),cnt={};marblesOf(j.id).forEach(t=>cnt[t]=(cnt[t]||0)+1);const links=[...C.actions,...C.courage].filter(x=>x.marble&&x.marble.split(':')[0]===j.id).map(x=>x.name);
     return{kind:'유리병',t:'🔮 '+esc(j.name),b:`<p>${esc(j.hint||'')}</p><div class="brk"><span>지금 병</span><span>${Math.round(Lj.acc/Lj.cap*100)}% 참</span><span>가득 찬 병</span><span>${Lj.full}개</span><span>모은 구슬</span><span>${Lj.total}개</span><span>직접 넣을 때</span><span>XP +${j.xp}</span></div><ul>${j.types.map(t=>`<li>${mGlyph(t)} ${esc(t.name)} · ${cnt[t.id]||0}개</li>`).join('')}</ul>${links.length?`<p class="small"><b>자동으로 들어오는 행동</b> ${esc(links.join(', '))}</p>`:''}`+btns(`<a class="btn ghost sm" href="#jars" data-viewjarlink="${j.id}">병 열기</a>`,goE('jars','구슬·병 편집'))}}
   case 'mt':{const j=C.jars.find(y=>y.id===a),t=j&&j.types.find(y=>y.id===b);if(!t)return null;return{kind:'구슬 종류 · '+esc(j.name),t:mGlyph(t)+' '+esc(t.name),b:qe('jt:'+j.id,t,[['name','이름','text'],['color','색','sel',COLORS],['shape','모양','sel',SHAPES],['size','크기','sel',SIZES]])+btns(goE('jars','병 편집'))}}
-  case 'stat':{const D={days:['기록한 날','행동·용기·식사·몸무게 중 하나라도 적은 날의 수예요.'],brave:['⚡ 용기','용기를 기록한 횟수예요. 목록에 없는 용기도 포함해요.'],good:['▲ 좋은 행동','좋은 행동 버튼을 누른 횟수예요. 용기·일퀘·구슬은 따로 세요.'],bad:['▼ 나쁜 행동','나쁜 행동 버튼을 누른 횟수예요. 적을수록 좋아요.'],clean:['✨ 깨끗한 날','기록이 있고, 나쁜 행동과 나쁜 식사가 하나도 없는 날이에요. 7일 연속이면 업적.'],marble:['🔮 구슬','병에 들어간 구슬 수예요. 행동·용기에 연결돼 자동으로 들어간 것도 포함해요.'],chest:['🎁 일퀘 상자','일퀘를 전부 끝내 상자를 연 날이에요.'],happy:['✨ 행복 기록','특별한 행동이 아니어도 좋았던 순간(시원한 바람, 예쁜 햇빛, 좋은 대화)을 적은 횟수예요.'],task:['✓ 끝낸 할 일','할 일을 끝낸 횟수예요. 반복 할 일은 끝낼 때마다 하나씩 세요.'],money:['💰 아낀 돈 / 쓴 돈','경제 행동에 금액을 적은 것만 모여요. 충동구매 참았다·절약했다는 아낀 돈, 충동구매는 쓴 돈이에요.'],avg:['평균 컨디션','기록이 있는 날의 컨디션(HP, 영역 평균 0~100)을 평균 낸 값이에요. 60 근처가 보통, 70 이상이면 좋은 흐름이에요. 아침 에너지가 출발점이라 그날 기분도 들어가요.']}[a];if(!D)return null;return{kind:'통계',t:D[0],b:`<p>${D[1]}</p>`}}
-  case 'badge':{const x=BADGES.find(y=>y.id===a);if(!x)return null;return{kind:'업적',t:x.ic+' '+esc(x.name),b:`<p>${esc(x.desc)}. 처음 달성하면 +🪙${x.gold}.</p><p class="small">${P.badges[a]?fmtD(P.badges[a])+'에 달성했어요.':'아직이에요.'}</p>`}}
+  case 'stat':{const D={days:['기록한 날','행동·용기·식사·몸무게 중 하나라도 적은 날의 수예요.'],brave:['⚡ 용기','용기를 기록한 횟수예요. 목록에 없는 용기도 포함해요.'],good:['▲ 좋은 행동','좋은 행동 버튼을 누른 횟수예요. 용기·일퀘·구슬은 따로 세요.'],bad:['▼ 나쁜 행동','나쁜 행동 버튼을 누른 횟수예요. 적을수록 좋아요.'],clean:['✨ 깨끗한 날','기록이 있고, 나쁜 행동과 나쁜 식사가 하나도 없는 날이에요. 7일 연속이면 업적.'],marble:['🔮 구슬','병에 들어간 구슬 수예요. 행동·용기에 연결돼 자동으로 들어간 것도 포함해요.'],chest:['🎁 일퀘 상자','일퀘를 전부 끝내 상자를 연 날이에요.'],happy:['✨ 행복 기록','특별한 행동이 아니어도 좋았던 순간(시원한 바람, 예쁜 햇빛, 좋은 대화)을 적은 횟수예요.'],task:['✓ 끝낸 할 일','할 일을 끝낸 횟수예요. 반복 할 일은 끝낼 때마다 하나씩 세요.'],money:['₩ 아낀 돈 / 쓴 돈','경제 행동에 금액을 적은 것만 모여요. 충동구매 참았다·절약했다는 아낀 돈, 충동구매는 쓴 돈이에요.'],avg:['평균 컨디션','기록이 있는 날의 컨디션(HP, 영역 평균 0~100)을 평균 낸 값이에요. 60 근처가 보통, 70 이상이면 좋은 흐름이에요. 아침 에너지가 출발점이라 그날 기분도 들어가요.']}[a];if(!D)return null;return{kind:'통계',t:D[0],b:`<p>${D[1]}</p>`}}
+  case 'badge':{const x=BADGES.find(y=>y.id===a);if(!x)return null;return{kind:'업적',t:x.ic+' '+esc(x.name),b:`<p>${esc(x.desc)}. 처음 달성하면 +💰${x.gold}.</p><p class="small">${P.badges[a]?fmtD(P.badges[a])+'에 달성했어요.':'아직이에요.'}</p>`}}
   case 'road':{const r=C.roadmap.find(y=>y.id===a);if(!r)return null;return{kind:'여정 단계',t:esc(r.item)+' '+esc(r.name),b:`<div class="brk"><span>열리는 레벨</span><span>Lv.${r.lv}</span><span>게임 아이템</span><span>${esc(r.itemName)}</span><span>남은 XP</span><span>${L.lv>=r.lv?'달성':xpTo(r.lv)}</span></div>`+qe('roadmap',r,[['real','현실 보상','text'],['lv','레벨','num','min="2"']])+btns(goE('road','여정 전체 편집'))}}
   case 'shop':{const x=C.shop.find(y=>y.id===a);if(!x)return null;return{kind:'상점',t:esc(x.name),b:qe('shop',x,[['name','이름','text'],['price','가격(G)','num','min="0"']])+`<p class="tiny muted">가격을 비우면 보상함으로 돌아가요.</p>`}}
   }
@@ -2420,7 +2426,7 @@ function searchIndex(){
   [['hp','HP · 컨디션','오늘 상태 0~100'],['xp','XP','영원히 쌓이는 경험치'],['lv','레벨','다음 보상'],['gold','골드','돈'],['brave','용기 점수·칭호','칭호 단계'],['energy','아침 에너지','시작점'],['boss','이번 주 보스','HP, 데미지'],['wgoal','주간 용기 목표','이번 주 용기']].forEach(([k,t,d])=>add('설명',t,d,()=>openInfo(k)));
   [['avg','평균 컨디션'],['clean','깨끗한 날'],['days','기록한 날'],['marble','구슬 수'],['chest','일퀘 상자']].forEach(([k,t])=>add('통계',t,'통계 용어 설명',()=>openInfo('stat:'+k)));
   C.areas.forEach(a=>add('영역',a.name+' 영역','오늘 무엇 때문에 오르고 내렸는지',()=>openInfo('area:'+a.id)));
-  C.actions.forEach(a=>add(a.brave?'⚔ 용기 카드':isHabit(a)?'🔁 습관':a.type==='good'?'좋은 행동':'나쁜 행동',a.name,(rhythmOf(a)?rhythmOf(a)+' · ':'')+'눌러서 설명·편집',()=>openInfo('act:'+a.id),(a.brave?'용기 brave ⚔ ':'')+(isHabit(a)?'습관 리듬 매일 일퀘':'')));
+  C.actions.forEach(a=>add(a.brave?'⚔ 용기 카드':isHabit(a)?'↻ 습관':a.type==='good'?'좋은 행동':'나쁜 행동',a.name,(rhythmOf(a)?rhythmOf(a)+' · ':'')+'눌러서 설명·편집',()=>openInfo('act:'+a.id),(a.brave?'용기 brave ⚔ ':'')+(isHabit(a)?'습관 반복 매일 일퀘':'')));
   add('할 일','⚡ 용기 할 일 목록','용기 표시가 붙은 할 일만',()=>{C.ui.tasks.sel='brave';location.hash='tasks';renderTasks()},'용기 brave');
   C.courage.forEach(a=>add('용기',a.name,'XP +'+a.xp,()=>openInfo('kbrave:'+a.id)));
   C.jars.forEach(j=>{add('유리병',j.name,j.hint||'',()=>openInfo('jar:'+j.id));j.types.forEach(t=>add('구슬',t.name,j.name+' 병',()=>openInfo('mt:'+j.id+':'+t.id)))});
@@ -2432,7 +2438,7 @@ function searchIndex(){
   add('기능','✨ 행복 기록','홈 빠른 기록에서 종류를 ✨ 행복으로',()=>{location.hash='home';setTimeout(()=>{$('qType').value='happy';render();$('qName').focus()},80)},'happy');
   (C.routines||[]).forEach(r=>add('루틴',r.name,r.steps.length+'단계 · 누르면 시작',()=>startRun({routine:r})));
   [['gacha','뽑기(가챠)','필터 걸고 3·5장 뽑기'],['gacha','도파민 메뉴','애피타이저·사이드·메인·디저트·스페셜'],['cal','캘린더','끌어다 놓기'],['tasks','할 일','틱틱처럼']].forEach(([id,t,d])=>add('화면',t,d,()=>location.hash=id,'가챠 todo ticktick'));
-  C.shop.forEach(x=>add(x.price>0?'상점':'보상함',x.name,x.price>0?'🪙'+x.price:'가격 미정',()=>location.hash='shop'));
+  C.shop.forEach(x=>add(x.price>0?'상점':'보상함',x.name,x.price>0?'💰'+x.price:'가격 미정',()=>location.hash='shop'));
   [['weekly','주간 목표·보스 설정','rules'],['dayStart','새 하루 시작 시각','rules'],['xpStep','레벨 곡선','rules'],['recovery','복귀 보너스','rules'],['reset','진행 기록 초기화','rules'],['avatar','아바타·캐릭터 바꾸기','avatar'],['weight','목표 몸무게','food'],['nav','아래 메뉴·홈 화면 바꾸기','screen'],['theme','테마·스킨·색·다크 모드','screen'],['tour','처음 안내','guide'],['quote','용기 문구','courage']].forEach(([k,t,tab])=>add('설정',t,'편집에서 바꾸기',()=>goEdit(tab),k));
   return R;
 }
@@ -2517,7 +2523,7 @@ document.addEventListener('click',e=>{
   if(d.rk){ui.rk=d.rk;renderStats();return}
   if(d.guide){openGuide(d.guide);return}
   if(d.food){if(!guard())return;const f=C.food.find(x=>x.id===d.food);if(!f)return;commit(()=>{const day=curDay();day.food[f.id]=clamp((+day.food[f.id]||0)+(+d.d),0,20)});if(+d.d>0)fxPop(f.points>0?`+${f.points}`:`${f.points}`,f.points>0?'var(--good)':'var(--bad)');return}
-  if(d.buy){if(!guard())return;const it=C.shop.find(x=>x.id===d.buy);if(!it||P.gold<it.price)return;ui.off=0;commit(()=>applyEntry(today(),{kind:'buy',type:'buy',name:it.name+' 구매',gold:-it.price,xp:0}));popup('보상 획득','🎁',`<b>${esc(it.name)}</b><br><span class="muted">즐겨요. 번 거예요.</span>`,'−🪙'+it.price);return}
+  if(d.buy){if(!guard())return;const it=C.shop.find(x=>x.id===d.buy);if(!it||P.gold<it.price)return;ui.off=0;commit(()=>applyEntry(today(),{kind:'buy',type:'buy',name:it.name+' 구매',gold:-it.price,xp:0}));popup('보상 획득','🎁',`<b>${esc(it.name)}</b><br><span class="muted">즐겨요. 번 거예요.</span>`,'−💰'+it.price);return}
   if(d.wishup){const it=C.shop.find(x=>x.id===d.wishup),inp=$('wp-'+d.wishup),v=parseInt(inp&&inp.value,10);if(!it)return;if(!(v>0)){toast('가격을 먼저 적어주세요');inp&&inp.focus();return}it.price=v;save('config');inp.blur();render();toast('상점에 올렸어요');return}
   if(d.goedit){goEdit(d.goedit);return}
   if(d.etab){ui.confirm=null;if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();ui.edit=d.etab;renderEdit();return}
@@ -2668,7 +2674,7 @@ let tasksReady=false;
 const EFFORTS=[['quick','⚡ 퀵','10분 안'],['mid','🕓 보통','30분쯤'],['heavy','🧱 무거움','1시간 넘게']];
 const PRIOS=[[0,'없음',''],[1,'낮음','!'],[3,'중간','!!'],[5,'높음','!!!']];
 const pmark=p=>p?`<span class="pmark p${p}" aria-label="중요도 ${PRIOS.find(x=>x[0]===p)?.[1]||''}">${PRIOS.find(x=>x[0]===p)?.[2]||''}</span>`:'';
-const gtx=n=>{n=Math.round(+n||0);return (n>0?'+':n<0?'−':'')+'🪙'+Math.abs(n)};
+const gtx=n=>{n=Math.round(+n||0);return (n>0?'+':n<0?'−':'')+'💰'+Math.abs(n)};
 const hm=m=>pad(Math.floor(((m%1440)+1440)%1440/60))+':'+pad(((m%60)+60)%60);
 const toMin=s=>{if(!s)return null;const[h,m]=String(s).split(':').map(Number);return h*60+(m||0)};
 const durTxt=m=>!m?'':m<60?m+'분':(m%60?Math.floor(m/60)+'시간 '+(m%60)+'분':m/60+'시간');
@@ -2811,7 +2817,7 @@ function parseChips(p){
   const c=[];
   if(p.due)c.push('📅 '+dueLabel(p.due)+(p.time?' '+p.time:''));
   if(p.dur)c.push('⏱ '+durTxt(p.dur));
-  if(p.rep)c.push('🔁 '+repLabel(p.rep));
+  if(p.rep)c.push('↻ '+repLabel(p.rep));
   if(p.prio)c.push(PRIOS.find(x=>x[0]===p.prio)[2]+' '+PRIOS.find(x=>x[0]===p.prio)[1]);
   if(p.list)c.push('📂 '+listName(p.list));else if(p.listName)c.push('📂 새 목록 '+p.listName);
   if(p.brave)c.push('⚡ 용기');
@@ -2995,7 +3001,7 @@ let snackT=null,snackRef=null;
 function snack(e,date){
   snackRef={date,id:e.id};pushUndo(date,e.id);const s=$('snack');
   const isAct=e.kind==='act'||e.kind==='task'||e.kind==='free';
-  s.innerHTML=`<span class="m">✓ ${esc(e.name)}${e.xp?' · +'+e.xp+'XP':e.cond<0?' · '+e.cond:''}</span>${isAct?`<button data-snack="n2">×2</button><button data-snack="n3">×3</button>`:''}<button data-snack="edit">${e.type==='bad'?'고치기':'구슬·편집'}</button><button data-snack="undo">되돌리기</button>`;
+  s.innerHTML=`<span class="m">✓ ${esc(e.name)}${e.xp?' · +'+e.xp+'XP':e.cond<0?' · '+e.cond:''}</span>${isAct?`<button data-snack="n2" title="방금 한 걸 2번 한 걸로 고쳐요 (점수 2배)">2번 했음</button><button data-snack="n3" title="3번 한 걸로 고쳐요 (점수 3배)">3번</button>`:''}<button data-snack="edit">${e.type==='bad'?'고치기':'구슬·편집'}</button><button data-snack="undo">되돌리기</button>`;
   s.hidden=false;clearTimeout(snackT);snackT=setTimeout(()=>{s.hidden=true},6500);
 }
 $('snack').addEventListener('click',ev=>{const b=ev.target.closest('[data-snack]');if(!b||!snackRef)return;const{date,id}=snackRef;const day=DAYS[date],e=day&&day.entries.find(x=>x.id===id);$('snack').hidden=true;if(!e)return;
@@ -3070,7 +3076,7 @@ function postpone(t,to){
   if(t.skull>=3)toast(`☠☠☠ 삼진아웃! '${t.title}' 쪼개거나, 가챠로 해치우거나, 버려요`);else toast(`${dueLabel(to)}로 미뤘어요${t.skull?' · ☠'.repeat(1)+t.skull:''}`);
 }
 /* ---- 스마트 목록 ---- */
-const SMART=[['today','📅 오늘'],['tomorrow','🌤 내일'],['week','🗓 다음 7일'],['inbox','📥 기본함'],['focus','🎯 집중'],['overdue','⏰ 지난 것'],['soon','⏳ 마감 3일 안'],['brave','⚡ 용기'],['skull','☠ 미룬 것'],['habit','🔁 습관 연결'],['nodate','💭 날짜 없음'],['all','📋 전체'],['done','✅ 완료']];
+const SMART=[['today','📅 오늘'],['tomorrow','🌤 내일'],['week','🗓 다음 7일'],['inbox','📥 기본함'],['focus','🎯 집중'],['overdue','⏰ 지난 것'],['soon','⏳ 마감 3일 안'],['brave','⚡ 용기'],['skull','☠ 미룬 것'],['habit','↻ 습관 연결'],['nodate','💭 날짜 없음'],['all','📋 전체'],['done','✅ 완료']];
 function taskMatches(t,sel){
   const td=dateKey();
   if(sel==='today')return t.status===0&&((t.due&&t.due<=td)||(!t.due&&t.deadline&&t.deadline<=td)||(t.checks||[]).some(c=>c.d===td&&!c.ok));
@@ -3107,7 +3113,7 @@ function taskRow(t,{showList=true,compact=false}={}){
   const meta=[];
   if(t.due)meta.push(`<span class="${late?'late':t.due===td?'tday':''}">${esc(dueLabel(t.due))}${t.time?' '+t.time:''}</span>`);
   if(t.dur)meta.push(`<span>⏱${durTxt(t.dur)}</span>`);
-  if(t.rep)meta.push(`<span title="${esc(repLabel(t.rep))}">🔁${t.rep.f==='x'?` ${(t.wc&&t.wc.w===weekStart(td)?t.wc.n:0)}/${t.rep.n||3}`:''}</span>`);
+  if(t.rep)meta.push(`<span title="${esc(repLabel(t.rep))}">↻${t.rep.f==='x'?` ${(t.wc&&t.wc.w===weekStart(td)?t.wc.n:0)}/${t.rep.n||3}`:''}</span>`);
   if(sd)meta.push(`<span><span class="subbar"><i style="width:${sdn/sd*100}%"></i></span> ${sdn}/${sd}</span>`);
   if(showList&&t.list&&t.list!=='inbox')meta.push(`<span>${esc(listName(t.list))}</span>`);
   {const ar=C.areas.find(x=>x.id===areaOfTask(t));if(ar&&!compact)meta.push(`<span class="areac">${esc(ar.name)}</span>`)}
@@ -3122,7 +3128,7 @@ function taskRow(t,{showList=true,compact=false}={}){
   return `<div class="trow p${t.prio||0} ${t.status===2?'done':''} ${t.brave?'brave':''} ${ui.msel&&ui.msel.has(t.id)?'msel':''}" data-task="${t.id}" data-drag="task:${t.id}" data-dragmode="hold">
     <button class="tchk" data-tdone="${t.id}" aria-label="${esc(t.title)} 완료">${t.status===2?'✓':''}</button>
     <span class="tb"><span class="tt">${pmark(t.prio)} ${t.brave?'⚡ ':''}${esc(t.title)}</span>${meta.length?`<span class="tm">${meta.join('')}</span>`:''}</span>
-    <span class="tx">${t.status===2?'':(t.brave?'⚡':'')+'+'+b.xp+(b.gold?` <span class="g">🪙${b.gold}</span>`:'')}</span>
+    <span class="tx">${t.status===2?'':(t.brave?'⚡':'')+'+'+b.xp+(b.gold?` <span class="g">💰${b.gold}</span>`:'')}</span>
     ${t.status===0?`<button class="trun" data-trun="${t.id}" aria-label="${esc(t.title)} 타이머로 하기" title="타이머로 하기">⏱</button>`:'<span></span>'}
   </div>`;
 }
@@ -3143,7 +3149,7 @@ function renderTasks(){
   $('tChips').innerHTML=smartList().filter(x=>x[0]!=='done').map(([k,l])=>`<button class="chipbtn" data-tsel="${k}" aria-pressed="${sel===k}">${l} ${cnt(k)||''}</button>`).join('')
     +`<select id="tListSel" aria-label="목록 고르기" style="width:auto;flex:none;padding:4px 8px;font-size:13px;border-radius:999px"><option value="">📂 목록…</option>${C.lists.filter(l=>l.id!=='inbox').map(l=>`<option value="l:${l.id}" ${sel==='l:'+l.id?'selected':''}>${esc((l.folder?l.folder+' / ':'')+l.name)} (${cnt('l:'+l.id)})</option>`).join('')}<option value="done" ${sel==='done'?'selected':''}>✅ 완료</option></select>`;
   $('tTitle').textContent=selTitle(sel);
-  $('tGroup').innerHTML=[['auto','묶기: 자동'],['date','날짜별'],['list','목록별'],['prio','중요도별'],['sec','칸(섹션)별'],['none','안 묶음']].map(([v,l])=>`<option value="${v}" ${T.group===v?'selected':''}>${l}</option>`).join('');
+  $('tGroup').innerHTML=[['auto','묶기: 자동'],['date','날짜별'],['list','목록별'],['prio','중요도별'],...(Object.values(TASKS).some(t=>t.sec&&t.status===0)?[['sec','칸(섹션)별']]:[]),['none','안 묶음']].map(([v,l])=>`<option value="${v}" ${T.group===v?'selected':''}>${l}</option>`).join('');
   $('tSort').innerHTML=[['due','정렬: 날짜'],['prio','중요도'],['manual','직접(끌기)'],['title','이름'],['created','최근 추가']].map(([v,l])=>`<option value="${v}" ${T.sort===v?'selected':''}>${l}</option>`).join('');
   let list=all.filter(t=>taskMatches(t,sel));
   if(sel==='done'){const ds=Object.values(DAYS).flatMap(d=>(d.entries||[]).filter(e=>e.tid).map(e=>({e,d:d.date}))).sort((a,b)=>(b.d+b.e.t).localeCompare(a.d+a.e.t)).slice(0,120);
@@ -3154,7 +3160,7 @@ function renderTasks(){
   let grp=T.group;if(grp==='auto')grp=sel.startsWith('l:')&&list.some(t=>t.sec)?'sec':(T.sort==='manual'?'none':'date');
   let groups;
   if(grp==='date'){const m={};list.forEach(t=>{const[k,n]=dateBucket(t);(m[k]=m[k]||{key:'d'+k,name:n,list:[]}).list.push(t)});groups=Object.keys(m).sort().map(k=>m[k])}
-  else if(grp==='list'){const m={};list.forEach(t=>{const k=t.list||'inbox';(m[k]=m[k]||{key:'l'+k,name:listName(k),list:[]}).list.push(t)});groups=Object.values(m)}
+  else if(grp==='list'){const m={};list.forEach(t=>{const k=listOk(t.list)?t.list:'inbox';(m[k]=m[k]||{key:'l'+k,name:listName(k),list:[]}).list.push(t)});groups=Object.values(m)}
   else if(grp==='prio'){groups=[5,3,1,0].map(p=>({key:'p'+p,name:p?PRIOS.find(x=>x[0]===p)[2]+' '+PRIOS.find(x=>x[0]===p)[1]:'중요도 없음',list:list.filter(t=>(t.prio||0)===p)}))}
   else if(grp==='sec'){const m={};list.forEach(t=>{const k=t.sec||'—';(m[k]=m[k]||{key:'s'+k,name:t.sec||'칸 없음',list:[]}).list.push(t)});groups=Object.values(m)}
   else groups=[{key:'',name:'',list}];
@@ -3210,7 +3216,7 @@ function drawTaskSheet(){
       ${curP==='custom'&&r.f==='m'?`<label class="f">기준<select id="tsRepM"><option value="md" ${!r.nth?'selected':''}>날짜(${(r.md||[t.due?+t.due.slice(8):1]).join(',')}일)</option>${[1,2,3,4,-1].map(n=>[0,1,2,3,4,5,6].map(w=>`<option value="${n},${w}" ${r.nth&&r.nth[0]===n&&r.nth[1]===w?'selected':''}>${n===-1?'마지막':n+'째'} ${WDK[w]}요일</option>`).join('')).join('')}</select></label>`:''}
       ${curP==='custom'&&r.f==='m'&&!r.nth?`<label class="f">매월 며칠 (쉼표, 말일은 -1)<input id="tsRepMd" value="${(r.md||[]).join(',')}" placeholder="예: 10, 25"></label>`:''}
       ${curP==='custom'||r.until?`<label class="row tiny" style="gap:6px">끝나는 날<input id="tsRepUntil" type="date" value="${r.until||''}" style="width:auto"></label>`:''}
-      ${t.rep?`<p class="tiny muted" style="margin:0">🔁 ${esc(repLabel(t.rep))}${t.due?` · 다음: ${esc(dueLabel(t.due))}`:''}${t.cnt?` · 지금까지 ${t.cnt}번`:''}</p>`:''}
+      ${t.rep?`<p class="tiny muted" style="margin:0">↻ ${esc(repLabel(t.rep))}${t.due?` · 다음: ${esc(dueLabel(t.due))}`:''}${t.cnt?` · 지금까지 ${t.cnt}번`:''}</p>`:''}
   </div>`:''}
   <div><div class="small muted" style="margin-bottom:4px">하위 할 일 ${(t.subs||[]).length?`${(t.subs||[]).filter(s=>s.done).length}/${t.subs.length}`:''}</div><div class="subs">${(t.subs||[]).map((s,i)=>`<div class="sr ${s.done?'on':''}"><input type="checkbox" data-tssub="${i}" ${s.done?'checked':''} style="width:auto" aria-label="${esc(s.t)} 완료"><input type="text" data-tssubt="${i}" value="${esc(s.t)}" aria-label="하위 할 일"><button class="x" data-tssubdel="${i}" aria-label="지우기">×</button></div>`).join('')}
     <form class="sr" data-tssubadd="1"><span class="muted" style="text-align:center">＋</span><input type="text" id="tsSubNew" placeholder="하위 할 일 추가" enterkeyhint="done"><span></span></form></div></div>
@@ -3661,7 +3667,7 @@ function actionsEditHTML(){
       <select id="aeSort" aria-label="정렬">${SORTS.map(([v,l])=>`<option value="${v}" ${E.sort===v?'selected':''}>${l}</option>`).join('')}</select><span class="tiny muted">${list.length}개</span></div>
     <div class="elist" data-drop="reorder:actions">${list.map(a=>{const ar=C.areas.find(x=>x.id===a.area);const s=st[a.id]||{};
       return `<div class="erow2" data-rowid="${a.id}"><span class="hand" ${drag?`data-drag="row:${a.id}" data-dragmode="now"`:''} aria-label="끌어서 순서 바꾸기">${drag?'⋮⋮':''}</span><span class="mk ${a.type}">${a.type==='good'?'▲':'▼'}</span>
-        <button class="nm" data-aedit="${a.id}" style="border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0;min-width:0"><b>${esc(a.name)}</b><span>${esc(ar?ar.name:'')} · ${a.type==='good'?'XP +'+a.xp+' · 컨디션 +'+Math.abs(a.cond):'컨디션 −'+Math.abs(a.cond)+(a.gold?' · '+gtx(-Math.abs(a.gold)):'')}${a.opts&&a.opts.length?' · 옵션 '+a.opts.length:''}${a.dur?' · ⏱'+a.dur+'분':''}${a.reframe?' · 💭':''}${a.money?' · 💰':''}${a.daily?' · ☑ 매일':''}${a.brave?' · ⚔':''}${a.link?' · 🔗':''} · 30일 ${s.n30||0}번</span></button>
+        <button class="nm" data-aedit="${a.id}" style="border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0;min-width:0"><b>${esc(a.name)}</b><span>${esc(ar?ar.name:'')} · ${a.type==='good'?'XP +'+a.xp+' · 컨디션 +'+Math.abs(a.cond):'컨디션 −'+Math.abs(a.cond)+(a.gold?' · '+gtx(-Math.abs(a.gold)):'')}${a.opts&&a.opts.length?' · 옵션 '+a.opts.length:''}${a.dur?' · ⏱'+a.dur+'분':''}${a.reframe?' · 💭':''}${a.money?' · ₩':''}${a.daily?' · ☑ 매일':''}${a.brave?' · ⚔':''}${a.link?' · 🔗':''} · 30일 ${s.n30||0}번</span></button>
         <button class="btn ghost sm" data-aedit="${a.id}">편집</button><span></span></div>`}).join('')||'<div class="empty">없어요.</div>'}</div>
     <div class="row" style="margin-top:10px"><button class="btn sm" data-addrow="actions" data-type="good">＋ 좋은 행동</button><button class="btn sm ghost" data-addrow="actions" data-type="bad">＋ 나쁜 행동</button></div>
     <h3 style="margin-top:18px">누적 페널티</h3><p class="help">나쁜 행동이 쌓이거나 이어지면 더 많이 깎여요. 그래서 흐름을 끊는 게 이득이에요.</p>
@@ -3687,11 +3693,11 @@ function openActionEditor(id){
     <div class="vtable"><div class="vrow head"><span>옵션 이름</span><span>${good?'XP':'—'}</span><span>컨디션</span><span>골드</span><span class="hr">부터(시)</span><span class="hr">까지(시)</span><span></span></div>
     ${(a.opts||[]).map((o,i)=>`<div class="vrow"><input data-aeo="${i}" data-f="name" value="${esc(o.name)}" aria-label="옵션 이름"><input data-aeo="${i}" data-f="xp" type="number" min="0" value="${v(o,'xp')}" ${good?'':'disabled'} aria-label="XP"><input data-aeo="${i}" data-f="cond" type="number" min="0" value="${v(o,'cond')}" aria-label="컨디션"><input data-aeo="${i}" data-f="gold" type="number" min="0" value="${v(o,'gold')}" aria-label="골드"><input class="hr" data-aeo="${i}" data-f="from" type="number" min="0" max="30" step="0.5" value="${v(o,'from')}" aria-label="부터"><input class="hr" data-aeo="${i}" data-f="to" type="number" min="0" max="30" step="0.5" value="${v(o,'to')}" aria-label="까지"><button class="x" data-aeodel="${i}" aria-label="옵션 지우기">×</button></div>`).join('')}</div>
     <button class="btn sm ghost" data-aeoadd="1" style="margin-top:6px">＋ 옵션 추가</button></div>
-  ${good?`<div class="links"><h3 style="font-size:15px;margin:0 0 4px">📅 리듬 · '오늘'에 띄우기</h3><p class="tiny muted" style="margin:0">☑ 매일로 두면 일퀘가 돼요 (오늘에 매일 뜨고, 일퀘를 다 하면 상자). 아니면 띄울 요일만 고르거나 📌 고정해요. 방치 경보에 걸려도 저절로 떠요.</p>
+  ${good?`<div class="links"><h3 style="font-size:15px;margin:0 0 4px">📅 반복 · '오늘'에 띄우기</h3><p class="tiny muted" style="margin:0">☑ 매일로 두면 일퀘가 돼요 (오늘에 매일 뜨고, 일퀘를 다 하면 상자). 아니면 띄울 요일만 고르거나 📌 고정해요. 방치 경보에 걸려도 저절로 떠요.</p>
     <div class="row" style="gap:6px;flex-wrap:wrap"><button class="chipbtn" data-aedaily="1" aria-pressed="${!!a.daily}">☑ 매일 (일퀘)</button><span class="wdays">${[1,2,3,4,5,6,0].map(w=>`<button data-aewd="${w}" aria-pressed="${(a.wd||[]).includes(w)}">${WDK[w]}</button>`).join('')}</span><button class="chipbtn" data-aepin="1" aria-pressed="${!!a.pin}">📌 매일 고정</button></div></div>`:''}
   <div class="links"><h3 style="font-size:15px;margin:0 0 4px">🔗 연결</h3>
     ${good?`<label class="f">🍬 도파민 코스<select id="aeDopa"><option value="">없음</option>${dopaC().map(([k,l])=>`<option value="${k}" ${a.dopa===k?'selected':''}>${l}</option>`).join('')}</select></label>`:''}
-    ${(()=>{const ts=openTasks().filter(t=>t.aid===a.id);return `<div class="small">✅ 연결된 할 일 ${ts.length?ts.map(t=>`<span class="chipbtn" role="button" tabindex="0" data-ctask="${t.id}" style="cursor:pointer">${esc(t.title)}${t.rep?' 🔁':''}</span>`).join(' '):'<span class="muted">없음</span>'} ${good?`<button class="btn ghost sm" data-aetask="${a.id}">＋ 반복 할 일로 만들기</button>`:''}</div>`})()}
+    ${(()=>{const ts=openTasks().filter(t=>t.aid===a.id);return `<div class="small">✅ 연결된 할 일 ${ts.length?ts.map(t=>`<span class="chipbtn" role="button" tabindex="0" data-ctask="${t.id}" style="cursor:pointer">${esc(t.title)}${t.rep?' ↻':''}</span>`).join(' '):'<span class="muted">없음</span>'} ${good?`<button class="btn ghost sm" data-aetask="${a.id}">＋ 반복 할 일로 만들기</button>`:''}</div>`})()}
     ${(()=>{const rs=(C.routines||[]).filter(r=>r.steps.some(s=>s.aid===a.id));return good?`<div class="small row" style="gap:4px">⏱ 루틴 ${rs.map(r=>`<span class="tagc">${esc(r.name)}</span>`).join(' ')||'<span class="muted">없음</span>'} ${(C.routines||[]).length?`<select id="aeRtSel" style="width:auto">${C.routines.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join('')}</select><button class="btn ghost sm" data-aeroutine="1">에 넣기</button>`:''}</div>`:''})()}
     ${(()=>{const ws=C.watches.filter(w=>w.action===a.id),qs=C.dailies.filter(q=>q.action===a.id);return `<div class="small muted">${ws.length?`⚠ 방치 경보: ${ws[0].days}일 넘으면 −${ws[0].penalty}/일 · `:''}${qs.length?`☑ 일퀘: ${qs.map(q=>esc(q.name)).join(', ')}`:''}</div>`})()}
   </div>
@@ -3732,7 +3738,7 @@ function listsEditHTML(){
   <h3 style="margin-top:18px">태그 → 영역</h3><p class="help">한 목록 안에 여러 갈래가 있을 때(예: Project 안의 #재정관리·#헌팅·#영상) 태그로 컨디션 영역을 정해요. 할 일에 직접 고른 영역이 가장 먼저예요.</p>
   ${Object.keys(tg).length?`<div class="kv">${Object.entries(tg).sort((a,b)=>b[1]-a[1]).slice(0,30).map(([x,n])=>`<label>#${esc(x)} <span class="tiny">(${n})</span><select data-tagarea="${esc(x)}"><option value="">영역 없음</option>${C.areas.map(a=>`<option value="${a.id}" ${(C.tagArea||{})[x]===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select></label>`).join('')}</div>`:'<p class="tiny muted">아직 태그가 없어요.</p>'}
   <h3 style="margin-top:18px">할 일 보상</h3><div class="kv" style="margin-top:6px"><label>⚡ 퀵 XP<input data-rule="taskXP.quick" type="number" min="0" value="${C.taskXP.quick}"></label><label>🕓 보통 XP<input data-rule="taskXP.mid" type="number" min="0" value="${C.taskXP.mid}"></label><label>🧱 무거움 XP<input data-rule="taskXP.heavy" type="number" min="0" value="${C.taskXP.heavy}"></label><label>제때 끝내면 +XP<input data-rule="taskXP.onTime" type="number" min="0" value="${C.taskXP.onTime}"></label><label>중요도 ! 보너스<input data-rule="taskXP.prio.1" type="number" min="0" value="${C.taskXP.prio[1]}"></label><label>!! 보너스<input data-rule="taskXP.prio.3" type="number" min="0" value="${C.taskXP.prio[3]}"></label><label>!!! 보너스<input data-rule="taskXP.prio.5" type="number" min="0" value="${C.taskXP.prio[5]}"></label></div>
-  <h3 style="margin-top:18px">완료할 때</h3><p class="help">체크하면 바로 기록되고, 아래에 ×2·구슬·편집 버튼이 잠깐 떠요. 세부 옵션이 있는 행동은 항상 창이 떠요.</p>
+  <h3 style="margin-top:18px">완료할 때</h3><p class="help">체크하면 바로 기록되고, 아래에 '2번 했음·3번·구슬·편집·되돌리기' 버튼이 잠깐 떠요. 세부 옵션이 있는 행동은 항상 창이 떠요.</p>
   <div class="seg3">${[['smart','필요할 때만 창'],['always','항상 창 열기']].map(([v,l])=>`<button data-sheetmode="${v}" aria-pressed="${(C.ui.sheet||'smart')===v}">${l}</button>`).join('')}</div>
   <h3 style="margin-top:18px">가챠</h3><div class="kv" style="margin-top:6px"><label>가챠 퀘스트 XP 배수<input data-rule="gacha.mult" type="number" step="0.1" min="1" max="3" value="${C.gacha.mult||1.5}"></label><label>다시 뽑기 기본 골드<input data-rule="gacha.rerollBase" type="number" min="0" value="${C.gacha.rerollBase||20}"></label><label>퀘스트 포기 골드<input data-rule="gacha.giveup" type="number" min="0" value="${C.gacha.giveup||30}"></label></div>`;
 }
@@ -4006,7 +4012,7 @@ let bfxT=null;
 function battleFx(xp,{bad,kill,gold}={}){
   if(C.ui.fx===false)return;const el=$('bfx');if(!el)return;
   const mood=moodKey(overallOf(today()));
-  el.innerHTML=`<div class="bfx-in ${bad?'bad':''}"><span class="bh">${spriteSVG(C.avatar.kind,mood,C.avatar.outfit,{fx:false})}</span><span class="slash">${bad?'💢':'⚔️'}</span><span class="bt2">${bad?minionSVG('#7a4fd0',false):kill?minionSVG(MINI_COL[Math.floor(Math.random()*6)],true):bossSVG(bossOf(dateKey()).color,false)}</span><span class="dmg">${bad?'보스 회복 +'+xp:(kill?'처치! ':'')+'−'+xp}</span>${gold>0?`<span class="gl">🪙+${gold}</span>`:''}</div>`;
+  el.innerHTML=`<div class="bfx-in ${bad?'bad':''}"><span class="bh">${spriteSVG(C.avatar.kind,mood,C.avatar.outfit,{fx:false})}</span><span class="slash">${bad?'💢':'⚔️'}</span><span class="bt2">${bad?minionSVG('#7a4fd0',false):kill?minionSVG(MINI_COL[Math.floor(Math.random()*6)],true):bossSVG(bossOf(dateKey()).color,false)}</span><span class="dmg">${bad?'보스 회복 +'+xp:(kill?'처치! ':'')+'−'+xp}</span>${gold>0?`<span class="gl">💰+${gold}</span>`:''}</div>`;
   el.hidden=false;el.firstChild.classList.add('go');clearTimeout(bfxT);bfxT=setTimeout(()=>{el.hidden=true},1500);
 }
 /* ---- 행복 기록 ---- */
@@ -4240,7 +4246,7 @@ const LIST_DEF=[['fixed','📌Fixed','고정 일정 · 정해진 시간에 하�
 const lnorm=s=>String(s||'').toLowerCase().replace(/[^a-z가-힣0-9]/g,'');
 /* ================= v5.4: 행동 카드 하나로 · 점수 다시 · 용기 표시 ================= */
 // 점수 뜻 (편집 화면에 띄움)
-const SCORE_MEANING='<b>XP</b> = 성장 (나를 키우는가 → 레벨) · <b>🪙 골드</b> = 현실의 돈·자원 (벌 가능성·아끼면 +, 낭비 −) · <b>컨디션</b> = 지금의 몸과 마음 (건강·수면·기분). 상관없는 칸은 0으로 둬요.';
+const SCORE_MEANING='<b>XP</b> = 성장 (나를 키우는가 → 레벨) · <b>💰 골드</b> = 현실의 돈·자원 (벌 가능성·아끼면 +, 낭비 −) · <b>컨디션</b> = 지금의 몸과 마음 (건강·수면·기분). 상관없는 칸은 0으로 둬요.';
 // 빠른 입력용 프리셋 (크기만, 부호는 좋은/나쁜에 따라)
 const PRESET0={
   good:[{id:'p-light',name:'가벼움',xp:3,gold:1,cond:2},{id:'p-mid',name:'보통',xp:8,gold:3,cond:3},{id:'p-hard',name:'힘듦',xp:18,gold:6,cond:4},
@@ -4319,7 +4325,7 @@ function aeTopHTML(a){
   const good=a.type==='good';
   if(a.link)return `<div class="reframe" style="margin:0"><b>🔗 ${esc(linkName(a.link))}</b>이 카드는 몸무게·식사·용기 기록과 이어져 있어요. 점수는 그쪽 기록에서 나오고, 여기선 '매일'로 두면 일퀘가 돼요.</div>`;
   return `<p class="tiny muted" style="margin:0">${SCORE_MEANING}</p>
-  <div class="row" style="gap:4px;flex-wrap:wrap"><span class="tiny muted">빠르게 채우기:</span>${presetList(a.type).map(p=>`<button class="chipbtn" data-aepre="${p.id}" title="XP ${good?p.xp:0} · 🪙${good?'+':'−'}${p.gold} · 컨디션 ${good?'+':'−'}${p.cond}">${esc(p.name)}</button>`).join('')}</div>`;
+  <div class="row" style="gap:4px;flex-wrap:wrap"><span class="tiny muted">빠르게 채우기:</span>${presetList(a.type).map(p=>`<button class="chipbtn" data-aepre="${p.id}" title="XP ${good?p.xp:0} · 💰${good?'+':'−'}${p.gold} · 컨디션 ${good?'+':'−'}${p.cond}">${esc(p.name)}</button>`).join('')}</div>`;
 }
 function aeBraveHTML(a){
   return `<label class="f">⚔ 용기 표시<select data-aebrave="1"><option value="">없음</option>${C.courageSizes.map(z=>`<option value="${z.id}" ${a.brave===z.id?'selected':''}>${esc(z.name)} · 용기 +${z.pts}</option>`).join('')}</select></label>`;
@@ -4330,7 +4336,7 @@ function dailiesEditHTML(){
   const hows=[['','눌러서 체크 (그냥 습관)'],['@weigh','⚖ 몸무게 기록하면 자동'],...C.food.filter(f=>f.points>0).map(f=>['@food:'+f.id,'🥗 '+f.name+' 기록하면 자동']),...C.courage.map(k=>[k.id,`⚡ '${k.name}' 하면 자동`])];
   const others=C.actions.filter(a=>!a.daily&&a.type==='good'&&!a.link);
   return `<p class="help">일퀘는 따로 있는 게 아니라 <b>'매일'로 정한 행동 카드</b>예요. 점수도 그 카드 하나에서만 나와요. 다 끝낸 날엔 상자를 열어요. 3~5개가 적당해요.</p>
-  <div class="elist">${ds.map(a=>{const ar=C.areas.find(x=>x.id===a.area);return `<div class="erow2"><span class="hand"></span><span class="mk good">☑</span><button class="nm" data-aedit="${a.id}" style="border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0;min-width:0"><b>${esc(a.name)}</b><span>${a.link?esc(linkName(a.link)):`${esc(ar?ar.name:'')} · XP +${a.xp||0} · 🪙${a.gold||0} · 컨디션 +${Math.abs(a.cond||0)}`}${a.brave?' · ⚔':''}</span></button><button class="btn ghost sm" data-dlyoff="${a.id}">매일 해제</button><span></span></div>`}).join('')||'<div class="empty">아직 없어요. 아래에서 추가하거나 행동 카드에서 ☑ 매일을 눌러요.</div>'}</div>
+  <div class="elist">${ds.map(a=>{const ar=C.areas.find(x=>x.id===a.area);return `<div class="erow2"><span class="hand"></span><span class="mk good">☑</span><button class="nm" data-aedit="${a.id}" style="border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0;min-width:0"><b>${esc(a.name)}</b><span>${a.link?esc(linkName(a.link)):`${esc(ar?ar.name:'')} · XP +${a.xp||0} · 💰${a.gold||0} · 컨디션 +${Math.abs(a.cond||0)}`}${a.brave?' · ⚔':''}</span></button><button class="btn ghost sm" data-dlyoff="${a.id}">매일 해제</button><span></span></div>`}).join('')||'<div class="empty">아직 없어요. 아래에서 추가하거나 행동 카드에서 ☑ 매일을 눌러요.</div>'}</div>
   <div class="row" style="gap:6px;margin-top:10px;flex-wrap:wrap"><input id="dlyName" maxlength="40" placeholder="새 매일 습관 (예: 물 2L 마시기)" style="flex:1;min-width:160px"><select id="dlyHow" style="width:auto">${hows.map(([v,l])=>`<option value="${esc(v)}">${esc(l)}</option>`).join('')}</select><button class="btn sm" data-dlyadd="1">＋ 추가</button></div>
   ${others.length?`<div class="row" style="gap:6px;margin-top:8px"><span class="tiny muted">있는 습관을 매일로:</span><select id="dlyPick" style="width:auto">${others.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select><button class="btn sm ghost" data-dlyon="1">☑ 매일로</button></div>`:''}
   <div class="kv" style="margin-top:14px"><label>다 끝낸 날 상자: XP<input id="r-dbxp" data-rule="dailyBonus.xp" type="number" min="0" value="${C.dailyBonus.xp}"></label><label>다 끝낸 날 상자: 골드<input id="r-dbgold" data-rule="dailyBonus.gold" type="number" min="0" value="${C.dailyBonus.gold}"></label></div>`;
@@ -4436,17 +4442,17 @@ function todayHabitsHTML(){
   const row=x=>{const a=x.a,ar=C.areas.find(z=>z.id===a.area);
     return `<div class="trow hab ${x.n?'done':''}" data-hab="${a.id}" data-drag="act:${a.id}" data-dragmode="hold">
       ${x.n?`<button class="tchk" data-rm="${x.last.id}" data-date="${k}" aria-label="${esc(a.name)} 되돌리기" title="눌러서 되돌리기">✓</button>`:`<button class="tchk hb" data-act="${a.id}" aria-label="${esc(a.name)} 했어요"></button>`}
-      <span class="tb"><span class="tt">🔁 ${esc(a.name)}${x.n>1?` <span class="tiny muted">×${x.n}</span>`:''}</span><span class="tm">${x.why.filter(w=>w!=='📌').map(w=>`<span class="${/⚠/.test(w)?'late':/⏳/.test(w)?'tday':''}">${esc(w)}</span>`).join('')}${ar?`<span class="areac">${esc(ar.name)}</span>`:''}${a.opts&&a.opts.length?`<span title="세부 옵션">◐ ${a.opts.length}</span>`:''}${a.pin?`<button class="rfbtn" data-pin="${a.id}" title="매일 고정 · 눌러서 풀기">📌 고정 ✕</button>`:''}</span></span>
+      <span class="tb"><span class="tt">↻ ${esc(a.name)}${x.n>1?` <span class="tiny muted">×${x.n}</span>`:''}</span><span class="tm">${x.why.filter(w=>w!=='📌').map(w=>`<span class="${/⚠/.test(w)?'late':/⏳/.test(w)?'tday':''}">${esc(w)}</span>`).join('')}${ar?`<span class="areac">${esc(ar.name)}</span>`:''}${a.opts&&a.opts.length?`<span title="세부 옵션">◐ ${a.opts.length}</span>`:''}${a.pin?`<button class="rfbtn" data-pin="${a.id}" title="매일 고정 · 눌러서 풀기">📌 고정 ✕</button>`:''}</span></span>
       <span class="tx">+${a.xp||0}</span>${x.n?'<span></span>':`<button class="trun" data-aerun="${a.id}" aria-label="${esc(a.name)} 타이머로 하기" title="타이머로 하기">⏱</button>`}</div>`};
   const qrow=q=>{const d=questDone(day,q);const how=q.action==='@weigh'?'몸무게 적으면 자동':q.action&&q.action.startsWith('@food:')?'식사 칸에서 자동':'';
     return `<div class="trow hab ${d?'done':''}"><button class="tchk ${d?'':'hb'}" data-quest="${q.id}" aria-label="${esc(q.name)}">${d?'✓':''}</button><span class="tb"><span class="tt">☑ ${esc(q.name)}</span><span class="tm"><span>일퀘</span>${how?`<span>${how}</span>`:''}</span></span><span class="tx">${q.xp?'+'+q.xp:''}</span><span></span></div>`};
-  return `<div class="tgroup habg"><div class="row" style="justify-content:space-between"><button class="ghead ${shut?'shut':''}" data-thab="1">${ic('chev')}🔁 오늘의 습관 <span class="c">${doneN}/${all}</span></button><a class="small" href="#log" style="color:var(--accent)">습관 모음 →</a></div>${shut?'':hs.map(row).join('')+qs.map(qrow).join('')}</div>`;
+  return `<div class="tgroup habg"><div class="row" style="justify-content:space-between"><button class="ghead ${shut?'shut':''}" data-thab="1">${ic('chev')}↻ 오늘의 습관 <span class="c">${doneN}/${all}</span></button><a class="small" href="#log" style="color:var(--accent)">습관 모음 →</a></div>${shut?'':hs.map(row).join('')+qs.map(qrow).join('')}</div>`;
 }
-function todayFeedback(){const d=DAYS[dateKey()];if(!d)return '';let xp=0,g=0;(d.entries||[]).forEach(e=>{xp+=+e.xp||0;g+=+e.gold||0});return xp||g?` · 오늘 +${xp} XP${g?` · 🪙${g>0?'+':''}${g}`:''}`:''}
+function todayFeedback(){const d=DAYS[dateKey()];if(!d)return '';let xp=0,g=0;(d.entries||[]).forEach(e=>{xp+=+e.xp||0;g+=+e.gold||0});return xp||g?` · 오늘 +${xp} XP${g?` · 💰${g>0?'+':''}${g}`:''}`:''}
 /* ---- 포기한 할 일 ---- */
 function selLoose(t,sel){
   if(sel==='today'||sel==='all'||sel==='week')return true;
-  if(sel==='inbox')return !t.list||t.list==='inbox';if(sel==='focus')return (t.tags||[]).includes('집중');
+  if(sel==='inbox')return !listOk(t.list)||t.list==='inbox';if(sel==='focus')return (t.tags||[]).includes('집중');
   if(sel.startsWith('l:'))return t.list===sel.slice(2);if(sel.startsWith('f:'))return (listOfTask(t)||{}).folder===sel.slice(2);if(sel.startsWith('#'))return (t.tags||[]).includes(sel.slice(1));return false}
 function wontHTML(sel){
   if(['tomorrow','nodate','done'].includes(sel))return '';
@@ -4550,7 +4556,7 @@ document.addEventListener('change',e=>{
 function repFromText(txt){const tk=TASKS[(sheetCtx||{}).task];if(!tk||!txt.trim())return;
   const p=parseQuick('할일 '+txt.trim());if(!p.rep){toast('반복을 알아듣지 못했어요. 예: 격주 토요일 · 매월 10일 · 3일마다');return}
   tsRead();tk.rep=p.rep;if(p.due)tk.due=p.due;else if(!tk.due)tk.due=dateKey();if(tk.rep.f==='x')tk.due=addDays(weekStart(dateKey()),6);
-  tsCommit(true,false);toast('🔁 '+repLabel(tk.rep))}
+  tsCommit(true,false);toast('↻ '+repLabel(tk.rep))}
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&e.target.id==='tsRepTxt'){e.preventDefault();e.stopPropagation();e.target.blur();return}
   if(e.key==='Escape'&&ui.msel&&(ui.msel.size||ui.mselOn)&&!document.querySelector('#sheet:not([hidden])')){mselClear();return}
@@ -4581,9 +4587,9 @@ route();boot();
 /* ================= v5.5: 1단계 마무리 — 행동/습관 편집 · 저장 방식 · 스마트 목록 ================= */
 var APP_V='v5.5';
 // 행동 카드 목록에 보일 칸 (켜고 끄기)
-function aeShowAll(){return [['area','영역'],['xp','⭐ XP'],['gold','🪙 골드'],['cond','❤ 컨디션'],['rhythm','🔁 리듬'],['brave','⚔ 용기'],['opts','옵션 수'],['dur','⏱ 목표 시간'],['n30','30일 횟수']]}
+function aeShowAll(){return [['area','영역'],['xp','⭐ XP'],['gold','💰 골드'],['cond','❤ 컨디션'],['rhythm','↻ 반복'],['brave','⚔ 용기'],['opts','옵션 수'],['dur','⏱ 목표 시간'],['n30','30일 횟수']]}
 function aeShow(){const s=C.ui&&C.ui.aeShow;return Array.isArray(s)?s:['area','xp','gold','cond','rhythm','brave','n30']}
-// 습관 = 리듬(매일·요일·고정)이 있는 행동
+// 습관 = 반복(매일·요일·고정)이 있는 행동
 function isHabit(a){return !!(a&&(a.daily||(a.wd||[]).length||a.pin))}
 function rhythmOf(a){if(a.daily)return '☑ 매일';if((a.wd||[]).length)return '📅 '+[1,2,3,4,5,6,0].filter(w=>a.wd.includes(w)).map(w=>WDK[w]).join('');if(a.pin)return '📌 고정';return ''}
 function metaChips(a,st,show){
@@ -4592,9 +4598,9 @@ function metaChips(a,st,show){
   c('area','ar',ar?esc(ar.name):'','영역');
   if(a.link)out.push(`<span class="mx ln" title="연결 카드">🔗 ${esc(linkName(a.link))}</span>`);
   else{c('xp','xp',good&&a.xp?'⭐ '+a.xp:'','XP (성장)');
-    c('gold','gd',a.gold?'🪙 '+(a.gold>0?'+':'−')+Math.abs(a.gold):'','골드 (돈·자원)');
+    c('gold','gd',a.gold?'💰 '+(a.gold>0?'+':'−')+Math.abs(a.gold):'','골드 (돈·자원)');
     c('cond',a.cond<0?'cd neg':'cd',a.cond?'❤ '+(a.cond>0?'+':'−')+Math.abs(a.cond):'','컨디션 (몸과 마음)')}
-  c('rhythm','rh',rhythmOf(a),'리듬');c('brave','bv',a.brave?'⚔ 용기':'','용기 표시');
+  c('rhythm','rh',rhythmOf(a),'반복');c('brave','bv',a.brave?'⚔ 용기':'','용기 표시');
   c('opts','op',a.opts&&a.opts.length?'옵션 '+a.opts.length:'','세부 옵션');c('dur','du',a.dur?'⏱ '+a.dur+'분':'','목표 시간');
   if(st)c('n30','n',`30일 ${st.n30||0}번`,'최근 30일에 한 횟수');
   return out.join('');
@@ -4618,9 +4624,9 @@ function actionsEditHTML(){
       <button class="btn ghost sm bad" data-x55="delsel" ${sel.size?'':'disabled'}>🗑 지우기</button>
       <button class="btn sm" data-x55="selmode">다 했어요</button></div>`:'';
   return `<p class="help" style="border-left:3px solid var(--accent);padding-left:8px">${SCORE_MEANING}</p>
-    <p class="help"><b>행동 카드</b> 목록이에요. 점수는 여기에만 있어요. 그중 리듬(☑ 매일 · 요일 · 📌)이 있는 카드가 <b>🔁 습관</b>이에요 (지금 ${nH}개). 이름을 누르면 전체 편집, 오른쪽 ☑·🗑로 바로 바꾸거나 지워요. ${drag?'왼쪽 ⋮⋮를 끌어서 순서를 바꿔요.':selOn?'':'순서를 바꾸려면 정렬을 "기본 순서", 검색을 비워요.'}</p>
+    <p class="help"><b>행동 카드</b> 목록이에요. 점수는 여기에만 있어요. 그중 반복(☑ 매일 · 요일 · 📌)이 있는 카드가 <b>↻ 습관</b>이에요 (지금 ${nH}개). 이름을 누르면 전체 편집, 오른쪽 ☑·🗑로 바로 바꾸거나 지워요. ${drag?'왼쪽 ⋮⋮를 끌어서 순서를 바꿔요.':selOn?'':'순서를 바꾸려면 정렬을 "기본 순서", 검색을 비워요.'}</p>
     <div class="toolbar"><input id="aeQ" type="search" placeholder="🔍 행동 찾기" value="${esc(E.q)}" style="max-width:200px;padding:5px 10px;border-radius:999px;font-size:13px" autocomplete="off">
-      <span class="seg3">${[['all','모두'],['good','▲ 좋은'],['bad','▼ 나쁜'],['habit','🔁 습관'],['brave','⚔ 용기']].map(([v,l])=>`<button data-aetype="${v}" aria-pressed="${E.type===v}">${l}</button>`).join('')}</span>
+      <span class="seg3">${[['all','모두'],['good','▲ 좋은'],['bad','▼ 나쁜'],['habit','↻ 습관'],['brave','⚔ 용기']].map(([v,l])=>`<button data-aetype="${v}" aria-pressed="${E.type===v}">${l}</button>`).join('')}</span>
       <select id="aeArea" aria-label="영역"><option value="">모든 영역</option>${C.areas.map(a=>`<option value="${a.id}" ${E.area===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>
       <select id="aeSort" aria-label="정렬">${SORTS.map(([v,l])=>`<option value="${v}" ${E.sort===v?'selected':''}>${l}</option>`).join('')}</select>
       <button class="chipbtn" data-x55="selmode" aria-pressed="${selOn}">☐ 여러 개 고르기</button>
@@ -4799,7 +4805,7 @@ function tsChipsHTML(t){
   const pr=PRIOS.find(x=>x[0]===(t.prio||0))||PRIOS[0],ef=EFFORTS.find(x=>x[0]===effortOf(t))||EFFORTS[1];
   const ch=(k,txt,on,tip)=>`<button class="tch ${on?'':'off'}" data-x56panel="${k}" aria-pressed="${P===k}" title="${esc(tip)}">${txt}</button>`;
   return `<div class="tchips">
-    ${ch('when',`📅 ${t.due?esc(dueLabel(t.due)):'날짜'}${t.time?' '+esc(ampm(t.time)):''}${t.rep?' · 🔁 '+esc(repLabel(t.rep)):''}${t.deadline?' · ⏳ '+esc(dueLabel(t.deadline)):''}`,t.due||t.rep||t.deadline,'날짜 · 시간 · 반복 · 마감 · 점검일')}
+    ${ch('when',`📅 ${t.due?esc(dueLabel(t.due)):'날짜'}${t.time?' '+esc(ampm(t.time)):''}${t.rep?' · ↻ '+esc(repLabel(t.rep)):''}${t.deadline?' · ⏳ '+esc(dueLabel(t.deadline)):''}`,t.due||t.rep||t.deadline,'날짜 · 시간 · 반복 · 마감 · 점검일')}
     ${ch('card',`🃏 ${card?esc(card.name):'행동 카드'}`,card,'행동 카드 연결 (점수가 카드에서 나와요)')}
     ${ch('tags',(t.tags||[]).length?t.tags.map(x=>'#'+esc(x)).join(' '):'# 태그',(t.tags||[]).length,'태그')}
     ${ch('area',`🧭 ${ar?esc(ar.name):'영역'}${t.area?'':' <small>(자동)</small>'}`,ar,'컨디션 영역 · 구슬')}
@@ -4817,7 +4823,7 @@ function tsRestyle(){
   // 반복·중요도 줄 쪼개기
   const prRow=up(q('.flags'),'.row');let repWrap=null,prWrap=null;
   if(prRow){prWrap=document.createElement('div');prWrap.className='row';prWrap.style.gap='8px';prWrap.innerHTML='<span class="small muted">중요도</span>';prWrap.appendChild(q('.flags'));
-    repWrap=document.createElement('div');repWrap.className='row';repWrap.style.gap='8px';repWrap.innerHTML='<span class="small muted">🔁 반복</span>';repWrap.appendChild($('tsRepSel'));prRow.remove()}
+    repWrap=document.createElement('div');repWrap.className='row';repWrap.style.gap='8px';repWrap.innerHTML='<span class="small muted">↻ 반복</span>';repWrap.appendChild($('tsRepSel'));prRow.remove()}
   const sizeBox=up(q('[data-tseff]'),'.seg');const sizeWrap=sizeBox?sizeBox.parentElement:null;
   const aidL=lab('tsAid'),cardNote=aidL&&aidL.nextElementSibling&&aidL.nextElementSibling.querySelector('.mcs')?aidL.nextElementSibling:null;
   const moreDet=up($('tsTags'),'details'),moreTail=moreDet?[...moreDet.children].filter(c=>c.tagName==='P'):[];
@@ -4943,7 +4949,7 @@ function homeMove(id,d){
 }
 
 /* ---- 이름: 습관 모음 → 행동/습관 ---- */
-(function(){const n=NAV_ITEMS.find(x=>x[0]==='log');if(n){n[1]='행동/습관';n[2]='행동 기록·🔁 습관·용기 · 식사·몸무게'}})();
+(function(){const n=NAV_ITEMS.find(x=>x[0]==='log');if(n){n[1]='행동/습관';n[2]='행동 기록·↻ 습관·용기 · 식사·몸무게'}})();
 
 /* ---- 할 일 상세: 칩 (💭 문구 칩 따로, ⋯는 필요할 때만) ---- */
 var TS_PANEL_NAME={when:'📅 날짜 · 시간 · 반복',card:'🃏 행동 카드',tags:'# 태그',area:'🧭 영역 · 구슬',list:'📂 목록',prio:'⚑ 중요도',size:'크기(보상) · 용기',timer:'⏱ 타이머',rf:'💭 하기 싫을 때 읽을 문구',more:'⋯ 칸 · 기록'};
@@ -4953,7 +4959,7 @@ function tsChipsHTML(t){
   const ch=(k,txt,on,tip)=>`<button class="tch ${on?'':'off'}" data-x56panel="${k}" aria-pressed="${P===k}" aria-expanded="${P===k}" title="${esc(tip)}">${txt}</button>`;
   const rf=(t.reframe||'').trim();
   return `<div class="tchips">
-    ${ch('when',`📅 ${t.due?esc(dueLabel(t.due)):'날짜'}${t.time?' '+esc(ampm(t.time)):''}${t.rep?' · 🔁 '+esc(repLabel(t.rep)):''}${t.deadline?' · ⏳ '+esc(dueLabel(t.deadline)):''}`,t.due||t.rep||t.deadline,'날짜 · 마감 · 시간 · 반복 · 점검일')}
+    ${ch('when',`📅 ${t.due?esc(dueLabel(t.due)):'날짜'}${t.time?' '+esc(ampm(t.time)):''}${t.rep?' · ↻ '+esc(repLabel(t.rep)):''}${t.deadline?' · ⏳ '+esc(dueLabel(t.deadline)):''}`,t.due||t.rep||t.deadline,'날짜 · 마감 · 시간 · 반복 · 점검일')}
     ${ch('card',`🃏 ${card?esc(card.name):'행동 카드'}${t.hab&&t.quest?' · ☑ 일퀘':''}`,card,'행동 카드 연결 (점수가 카드에서 나와요)')}
     ${ch('tags',(t.tags||[]).length?t.tags.map(x=>'#'+esc(x)).join(' '):'# 태그',(t.tags||[]).length,'태그')}
     ${ch('area',`🧭 ${ar?esc(ar.name):'영역'}${t.area?'':' <small>(자동)</small>'}`,ar,'컨디션 영역 · 구슬')}
@@ -4985,7 +4991,7 @@ function tsPolish(){
   // 칸 머리 (어느 칩이 펼쳐졌는지 글자로도)
   pan.querySelectorAll('.tpanel').forEach(d=>{const k=d.dataset.p;d.hidden=P!==k;if(d.querySelector(':scope>.tph'))return;
     d.insertAdjacentHTML('afterbegin',`<div class="tph"><b>${TS_PANEL_NAME[k]||''}</b><button class="x" data-x56panel="${k}" aria-label="접기" title="접기">▴ 접기</button></div>`)});
-  // 행동 카드 칸: 리듬(반복 할 일)인지 보이기
+  // 행동 카드 칸: 반복(반복 할 일)인지 보이기
   const cp=panel('card');if(cp&&t.aid){const a=C.actions.find(x=>x.id===t.aid);if(a)cp.insertAdjacentHTML('beforeend',habInfoHTML(t,a))}
   // 체크리스트: '+' 눌러도 추가
   const sf=sc.querySelector('form[data-tssubadd]');if(sf){const last=sf.lastElementChild;if(last&&last.tagName==='SPAN'){const bt=document.createElement('button');bt.type='submit';bt.className='x';bt.textContent='추가';bt.setAttribute('aria-label','체크리스트에 추가');last.replaceWith(bt)}
@@ -5003,9 +5009,9 @@ function tsPolish(){
     bar.appendChild(box)}
 }
 function habInfoHTML(t,a){
-  if(!t.hab||!t.rep)return `<p class="tiny muted" style="margin:0">점수는 '${esc(a.name)}' 카드에서 나와요.${t.rep?' 이 반복 할 일을 카드의 🔁 리듬으로 삼으려면 아래를 눌러요.':''}</p>${t.rep&&!habT(a)?`<button class="btn ghost sm" data-x57mkhab="${t.id}">🔁 '${esc(a.name)}' 카드의 리듬으로</button>`:''}`;
+  if(!t.hab||!t.rep)return `<p class="tiny muted" style="margin:0">점수는 '${esc(a.name)}' 카드에서 나와요.${t.rep?' 이 반복 할 일을 카드의 ↻ 반복으로 삼으려면 아래를 눌러요.':''}</p>${t.rep&&!habT(a)?`<button class="btn ghost sm" data-x57mkhab="${t.id}">↻ '${esc(a.name)}' 카드의 반복으로</button>`:''}`;
   const daily=t.rep.f==='d'&&(+t.rep.i||1)===1;
-  return `<div class="habinfo"><span class="small">🔁 <b>'${esc(a.name)}' 카드의 리듬</b>이에요. 반복은 여기(📅 칩)에서만 정해요.</span>
+  return `<div class="habinfo"><span class="small">↻ <b>'${esc(a.name)}' 카드의 반복</b>이에요. 반복은 여기(📅 칩)에서만 정해요.</span>
     <label class="row small" style="gap:6px"><input type="checkbox" data-x57quest="${t.id}" ${t.quest?'checked':''} ${daily?'':'disabled'} style="width:auto"> ☑ 일퀘로 (다 끝내면 상자)${daily?'':' — 매일 반복일 때만'}</label></div>`;
 }
 
@@ -5014,7 +5020,7 @@ function logChips(){
   const box=$('actGroups');if(!box)return;const show=aeShow().filter(k=>k!=='n30'&&!((C.ui.list||{}).group==='area'&&k==='area'));
   box.querySelectorAll('.act[data-info^="act:"]').forEach(r=>{const a=C.actions.find(x=>x.id===r.dataset.info.slice(4));const ab=r.querySelector('.ab');if(!a||!ab||ab.querySelector('.mxs'))return;
     const h=metaChips(a,null,show);if(h)ab.insertAdjacentHTML('beforeend',`<span class="mxs">${h}</span>`);
-    const pb=r.querySelector('.pinb');if(pb&&C.mig57){const on=!!habT(a);pb.textContent='🔁';pb.classList.add('rh57b');pb.classList.toggle('on',on);pb.setAttribute('aria-pressed',String(on));pb.title=on?'리듬 풀기 (오늘에 안 뜸)':"매일 '오늘'에 띄우기 (리듬)";pb.setAttribute('aria-label',a.name+(on?' 리듬 풀기':' 매일 리듬으로'))}});
+    const pb=r.querySelector('.pinb');if(pb&&C.mig57){const on=!!habT(a);pb.textContent='↻';pb.classList.add('rh57b');pb.classList.toggle('on',on);pb.setAttribute('aria-pressed',String(on));pb.title=on?'반복 풀기 (오늘에 안 뜸)':"매일 '오늘'에 띄우기 (반복)";pb.setAttribute('aria-label',a.name+(on?' 반복 풀기':' 매일 반복으로'))}});
 }
 
 /* ---- 이벤트 ---- */
@@ -5024,7 +5030,7 @@ document.addEventListener('click',e=>{
   if(d.x57pp){e.preventDefault();e.stopPropagation();
     if(d.x57pp==='open'){ui.ppOpen=!ui.ppOpen;const bx=document.querySelector('#sheetC .pp57');if(bx)bx.hidden=!ui.ppOpen;b.setAttribute('aria-expanded',String(ui.ppOpen));return}
     const t=tsRead();if(!t)return;ui.ppOpen=false;closeSheet();postpone(t,d.x57pp);return}
-  if(d.x57mkhab){e.preventDefault();e.stopPropagation();const t=tsRead();if(!t)return;const a=C.actions.find(x=>x.id===t.aid);if(!a)return;t.hab=1;saveTask(t);tsRedraw();render();toast(`'${a.name}' 카드의 🔁 리듬이 됐어요`);return}
+  if(d.x57mkhab){e.preventDefault();e.stopPropagation();const t=tsRead();if(!t)return;const a=C.actions.find(x=>x.id===t.aid);if(!a)return;t.hab=1;saveTask(t);tsRedraw();render();toast(`'${a.name}' 카드의 ↻ 반복이 됐어요`);return}
 },true);
 document.addEventListener('change',e=>{
   const t=e.target;
@@ -5034,12 +5040,12 @@ document.addEventListener('change',e=>{
 },true);
 {const _ot=openTaskSheet;openTaskSheet=function(...r){ui.ppOpen=false;return _ot(...r)}}
 
-/* ================= 반복과 리듬 하나로: 반복(언제 뜨나)은 할 일에만, 카드는 점수만 =================
-   카드의 🔁 리듬 = 그 카드에 연결된 반복 할 일 하나(t.hab). 일퀘 = 매일 반복 + t.quest.
-   카드를 직접 기록해도 그날의 리듬 할 일이 같이 끝나요(중복 없음). 놓친 날은 쌓이지 않고 오늘로 넘어와요. */
+/* ================= 반복과 반복 하나로: 반복(언제 뜨나)은 할 일에만, 카드는 점수만 =================
+   카드의 ↻ 반복 = 그 카드에 연결된 반복 할 일 하나(t.hab). 일퀘 = 매일 반복 + t.quest.
+   카드를 직접 기록해도 그날의 반복 할 일이 같이 끝나요(중복 없음). 놓친 날은 쌓이지 않고 오늘로 넘어와요. */
 var HAB_LIST='Lhabit';
 function habT(a){if(!a)return null;for(const k in TASKS){const t=TASKS[k];if(t&&t.hab&&t.aid===a.id&&t.status===0&&t.rep&&t.rep.f)return t}return null}
-function habList(){if(!C.lists.some(l=>l.id===HAB_LIST)){C.lists.push({id:HAB_LIST,name:'🔁 습관',area:'',folder:''});save('config')}return HAB_LIST}
+function habList(){if(!C.lists.some(l=>l.id===HAB_LIST)){C.lists.push({id:HAB_LIST,name:'↻ 습관',area:'',folder:''});save('config')}return HAB_LIST}
 function doneToday(a){const d=DAYS[dateKey()];return !!(d&&(d.entries||[]).some(e=>e.kind==='act'&&e.aid===a.id))}
 function habDue(a,rep){const td=dateKey();let d=firstDue(rep,td);if(d===td&&doneToday(a))d=nextDue(rep,td)||d;return d}
 function setRhythm(a,rep,opt={}){
@@ -5052,7 +5058,7 @@ function setRhythm(a,rep,opt={}){
   if(!(rep.f==='d'&&(+rep.i||1)===1))delete t.quest;
   saveTask(t);syncDailies(C);save('config');return t;
 }
-function rhythmText(t){if(!t)return '';const r=t.rep;if(r.f==='d'&&(+r.i||1)===1)return t.quest?'☑ 매일 · 일퀘':'🔁 매일';if(r.f==='w'&&(+r.i||1)===1&&(r.wd||[]).length)return '🔁 '+[1,2,3,4,5,6,0].filter(w=>r.wd.includes(w)).map(w=>WDK[w]).join('');return '🔁 '+repLabel(r)}
+function rhythmText(t){if(!t)return '';const r=t.rep;if(r.f==='d'&&(+r.i||1)===1)return t.quest?'☑ 매일 · 일퀘':'↻ 매일';if(r.f==='w'&&(+r.i||1)===1&&(r.wd||[]).length)return '↻ '+[1,2,3,4,5,6,0].filter(w=>r.wd.includes(w)).map(w=>WDK[w]).join('');return '↻ '+repLabel(r)}
 function isHabit(a){if(!a)return false;if(!C.mig57)return !!(a.daily||(a.wd||[]).length||a.pin);return !!habT(a)}
 function rhythmOf(a){if(!C.mig57){if(a.daily)return '☑ 매일';if((a.wd||[]).length)return '📅 '+[1,2,3,4,5,6,0].filter(w=>a.wd.includes(w)).map(w=>WDK[w]).join('');if(a.pin)return '📌 고정';return ''}return rhythmText(habT(a))}
 // 옛 화면 코드가 읽는 a.daily·a.wd·a.pin은 할 일에서 비춰만 줌(저장 안 됨)
@@ -5077,7 +5083,7 @@ function mig57(){
   if(C.mig57||!ready||!tasksReady)return;
   let n=0;C.actions.forEach(a=>{if(habMigCard(a))n++;delete a.daily;delete a.pin;delete a.wd});
   C.mig57=1;save('config');syncDailies(C);
-  later(()=>toast(n?`v5.7 · 리듬 있던 카드 ${n}개를 '🔁 습관' 목록의 반복 할 일로 옮겼어요`:'v5.7 · 반복은 이제 할 일에서만 정해요',6000));
+  later(()=>toast(n?`v5.7 · 반복 있던 카드 ${n}개를 '↻ 습관' 목록의 반복 할 일로 옮겼어요`:'v5.7 · 반복은 이제 할 일에서만 정해요',6000));
 }
 {const _sd=syncDailies;syncDailies=function(c){
   if(!c||!c.mig57)return _sd(c);
@@ -5092,7 +5098,7 @@ function habRoll(){
   Object.values(TASKS).forEach(t=>{if(!(t.hab&&t.status===0&&t.rep&&t.due&&t.due<td))return;const a=C.actions.find(x=>x.id===t.aid);
     const nd=a?habDue(a,t.rep):firstDue(t.rep,td);if(nd&&nd!==t.due){t.due=nd;delete t.skull;saveTask(t)}});
 }
-// 카드를 그냥 기록해도 그날 리듬 할 일이 끝나요 (되돌리면 다시 열림)
+// 카드를 그냥 기록해도 그날 반복 할 일이 끝나요 (되돌리면 다시 열림)
 function habAuto(day,e){
   if(!C.mig57||e.tid||!day||day.date!==dateKey())return;
   let t=null;
@@ -5105,7 +5111,7 @@ function habAuto(day,e){
 }
 {const _ae=applyEntry;applyEntry=function(day,e){const r=_ae(day,e);try{habAuto(day,e)}catch(x){console.error(x)}return r}}
 {const _ue=unapplyEntry;unapplyEntry=function(day,e){_ue(day,e);try{if(e.kind==='quest'&&e.tid)undoTaskFrom(e)}catch(x){console.error(x)}}}
-// 오늘: '습관' 줄은 방치 경보만 (리듬은 할 일로 떠요)
+// 오늘: '습관' 줄은 방치 경보만 (반복은 할 일로 떠요)
 {const _th=todayHabits;todayHabits=function(){
   if(!C.mig57)return _th();
   const k=dateKey(),day=DAYS[k]||{entries:[]},out=[],skip=todayTaskAids();
@@ -5115,9 +5121,9 @@ function habAuto(day,e){
 {const _thh=todayHabitsHTML;todayHabitsHTML=function(){
   if(!C.mig57)return _thh();
   const keep=C.dailies;C.dailies=[];let h='';try{h=_thh()}finally{C.dailies=keep}
-  return h.replace('🔁 오늘의 습관','⚠ 오래 안 한 행동').replace('습관 모음 →','행동/습관 →');
+  return h.replace('↻ 오늘의 습관','⚠ 오래 안 한 행동').replace('습관 모음 →','행동/습관 →');
 }}
-// 할 일 줄: 리듬 할 일 표시 · 연결 카드(몸무게·식사)는 그 기록으로
+// 할 일 줄: 반복 할 일 표시 · 연결 카드(몸무게·식사)는 그 기록으로
 {const _tr=taskRow;taskRow=function(t,o={}){let h=_tr(t,o);
   if(t.hab&&t.rep&&C.mig57){const tag=t.quest?'<span class="qtag" title="일퀘 · 다 끝내면 상자">☑ 일퀘</span>':'';const a=C.actions.find(x=>x.id===t.aid);
     const ln=a&&a.link?`<span class="tiny">${esc(linkName(a.link))}</span>`:'';
@@ -5128,11 +5134,11 @@ document.addEventListener('click',e=>{
   const a=C.actions.find(x=>x.id===t.aid);if(!a||!a.link)return;e.preventDefault();e.stopPropagation();linkGo(a);
 },true);
 
-/* ---- 카드 편집: 리듬 칸 = 연결된 반복 할 일 창구 ---- */
+/* ---- 카드 편집: 반복 칸 = 연결된 반복 할 일 창구 ---- */
 function rhythmEditHTML(a){
   const t=habT(a),r=t&&t.rep,kind=!r?'':r.f==='d'&&(+r.i||1)===1?'d':r.f==='w'&&(+r.i||1)===1?'w':'x';
-  return `<h3 style="font-size:15px;margin:0 0 4px">🔁 리듬 · 언제 '오늘'에 뜨나</h3>
-  <p class="tiny muted" style="margin:0">리듬은 이 카드에 이어진 <b>반복 할 일</b> 하나로 저장돼요. 오늘 목록엔 그 할 일만 떠요(두 번 뜨지 않아요). 하루 여러 번 하는 건 리듬 없이 그때그때 기록해요. 리듬은 바로 저장돼요.</p>
+  return `<h3 style="font-size:15px;margin:0 0 4px">↻ 반복 · 언제 '오늘'에 뜨나</h3>
+  <p class="tiny muted" style="margin:0">반복은 이 카드에 이어진 <b>반복 할 일</b> 하나로 저장돼요. 오늘 목록엔 그 할 일만 떠요(두 번 뜨지 않아요). 하루 여러 번 하는 건 반복 없이 그때그때 기록해요. 반복은 바로 저장돼요.</p>
   <div class="seg" style="margin-top:6px">${[['','없음'],['d','매일'],['w','요일 고르기'],['x','다른 반복…']].map(([k,l])=>`<button data-x57rh="${k}" aria-pressed="${kind===k}">${l}</button>`).join('')}</div>
   ${kind==='w'?`<div class="wdays" style="margin-top:6px">${[1,2,3,4,5,6,0].map(w=>`<button data-x57wd="${w}" aria-pressed="${(r.wd||[]).includes(w)}">${WDK[w]}</button>`).join('')}</div>`:''}
   ${kind==='d'?`<label class="row small" style="gap:6px;margin-top:6px"><input type="checkbox" data-x57aq="1" ${t.quest?'checked':''} style="width:auto"> ☑ 일퀘로 (오늘 일퀘를 다 끝내면 상자)</label>`:''}
@@ -5152,14 +5158,14 @@ document.addEventListener('click',e=>{
     else if(d.x57rh==='d')setRhythm(a,{f:'d',i:1});
     else if(d.x57rh==='w')setRhythm(a,{f:'w',i:1,wd:t&&t.rep.f==='w'&&(t.rep.wd||[]).length?t.rep.wd:[dowOf(td)]});
     else{const k=t||setRhythm(a,{f:'d',i:1});ui.tsPanel='when';openTaskSheet(k.id);return}
-    aeRe();toast(d.x57rh===''?'리듬을 없앴어요 (연결된 반복 할 일을 지웠어요)':'리듬을 정했어요 · 🔁 습관 목록에 반복 할 일로 있어요');return}
+    aeRe();toast(d.x57rh===''?'반복을 없앴어요 (연결된 반복 할 일을 지웠어요)':'반복을 정했어요 · ↻ 습관 목록에 반복 할 일로 있어요');return}
   if(d.x57wd!=null){stop();const a=cur(),t=a&&habT(a);if(!t)return;const w=+d.x57wd;let wd=(t.rep.wd||[]).slice();wd=wd.includes(w)?wd.filter(x=>x!==w):[...wd,w];if(!wd.length)wd=[w];setRhythm(a,{...t.rep,wd});aeRe();return}
   if(d.x55daily){stop();const a=C.actions.find(x=>x.id===d.x55daily);if(!a)return;const t=habT(a);
     if(t&&t.quest){setRhythm(a,null);toast(`'${a.name}' 매일(일퀘)을 껐어요`)}else{setRhythm(a,{f:'d',i:1},{quest:1});toast(`'${a.name}' 매일 · ☑ 일퀘로 켰어요`)}reEdit();render();return}
   if(d.aedaily){stop();const a=cur();if(!a)return;const t=habT(a);if(t&&t.quest)setRhythm(a,null);else setRhythm(a,{f:'d',i:1},{quest:1});aeRe();return}
   if(d.aewd!=null||d.aepin){stop();return}
   if(d.pin){stop();const a=C.actions.find(x=>x.id===d.pin);if(!a)return;const t=habT(a);
-    if(t){setRhythm(a,null);toast(`'${a.name}' 리듬을 풀었어요`)}else{setRhythm(a,{f:'d',i:1});toast(`🔁 '${a.name}' 매일 '오늘'에 떠요 (🔁 습관 목록)`)}render();return}
+    if(t){setRhythm(a,null);toast(`'${a.name}' 반복을 풀었어요`)}else{setRhythm(a,{f:'d',i:1});toast(`↻ '${a.name}' 매일 '오늘'에 떠요 (↻ 습관 목록)`)}render();return}
   if(d.dlyoff){stop();const a=C.actions.find(x=>x.id===d.dlyoff);if(!a)return;const t=habT(a);if(t){delete t.quest;saveTask(t);syncDailies(C);save('config')}reEdit();return}
   if(d.dlyon){stop();const a=C.actions.find(x=>x.id===$('dlyPick').value);if(!a)return;setRhythm(a,{f:'d',i:1},{quest:1});reEdit();return}
   if(d.dlyadd){stop();const nm=$('dlyName').value.trim();if(!nm){$('dlyName').focus();toast('이름을 먼저 적어주세요');return}
@@ -5170,19 +5176,19 @@ document.addEventListener('click',e=>{
     const at=C.actions.findIndex(x=>x.type==='bad');C.actions.splice(at<0?C.actions.length:at,0,card);setRhythm(card,{f:'d',i:1},{quest:1});reEdit();toast(`'${nm}' 매일 일퀘를 만들었어요`);return}
   if(d.x55==='daily1'||d.x55==='daily0'){stop();const E=ui.ae||{};let n=0;
     C.actions.forEach(a=>{if(!(E.sel||[]).includes(a.id))return;const t=habT(a);if(d.x55==='daily1'){if(a.type==='good'&&!a.once&&!(t&&t.quest)){setRhythm(a,{f:'d',i:1},{quest:1});n++}}else if(t){setRhythm(a,null);n++}});
-    reEdit();render();toast(d.x55==='daily1'?`${n}개를 매일 · 일퀘로 켰어요`:`${n}개 리듬을 껐어요`);return}
+    reEdit();render();toast(d.x55==='daily1'?`${n}개를 매일 · 일퀘로 켰어요`:`${n}개 반복을 껐어요`);return}
 },true);
 document.addEventListener('change',e=>{
   const t=e.target;if(!t.dataset||!t.dataset.x57aq||!C.mig57)return;e.stopPropagation();
   const a=C.actions.find(x=>x.id===(sheetCtx||{}).aedit),k=a&&habT(a);if(!k)return;if(t.checked)k.quest=1;else delete k.quest;saveTask(k);syncDailies(C);save('config');aeRe();
 },true);
-// 일퀘 편집 탭: 리듬 할 일 기준으로
+// 일퀘 편집 탭: 반복 할 일 기준으로
 {const _de=dailiesEditHTML;dailiesEditHTML=function(){
   const h=_de();if(!C.mig57)return h;
-  return h.replace(/<p class="help">일퀘는[\s\S]*?<\/p>/,`<p class="help">일퀘는 <b>매일 반복하는 리듬 할 일 중 ☑ 일퀘 표시를 한 것</b>이에요. 점수는 연결된 행동 카드에서만 나와요. 오늘 일퀘를 다 끝내면 상자를 열어요. 3~5개가 적당해요. 할 일 상세의 🃏 칩에서도 켜고 꺼요.</p>`).replace(/>매일 해제</g,'>일퀘 해제<');
+  return h.replace(/<p class="help">일퀘는[\s\S]*?<\/p>/,`<p class="help">일퀘는 <b>매일 반복하는 반복 할 일 중 ☑ 일퀘 표시를 한 것</b>이에요. 점수는 연결된 행동 카드에서만 나와요. 오늘 일퀘를 다 끝내면 상자를 열어요. 3~5개가 적당해요. 할 일 상세의 🃏 칩에서도 켜고 꺼요.</p>`).replace(/>매일 해제</g,'>일퀘 해제<');
 }}
 
-// 오늘의 일퀘 칸의 '일퀘 추가' → 매일 리듬 할 일 + 카드
+// 오늘의 일퀘 칸의 '일퀘 추가' → 매일 반복 할 일 + 카드
 document.addEventListener('submit',e=>{const f=e.target;if(!C.mig57||!f.dataset||f.dataset.addform!=='quest')return;e.preventDefault();e.stopPropagation();
   const inp=f.querySelector('input'),nm=inp.value.trim();if(!nm){inp.focus();toast('이름을 먼저 적어주세요');return}
   let a=C.actions.find(x=>x.name===nm&&x.type==='good');if(!a){a=newAction(uid(),nm,'good',C.areas[0].id,'');const at=C.actions.findIndex(x=>x.type==='bad');C.actions.splice(at<0?C.actions.length:at,0,a)}
@@ -5401,6 +5407,150 @@ document.addEventListener('change',e=>{if(e.target.id!=='x57HMini')return;e.stop
 {const _ah=applyHomeEdit;applyHomeEdit=function(){homePresetsBar();_ah();if(!ui.homeEdit){document.body.classList.remove('hmini');const c=$('x57HMini');if(c)c.checked=false}}}
 // 나쁜 행동을 기록하면: 다음엔 그 순간에 꺼낼 대신할 것 (벌만 주고 끝내지 않기)
 {const _da=doAction;doAction=function(a,ctx={}){_da(a,ctx);try{if(a&&a.type==='bad'&&!a.link)setTimeout(()=>toastAct(`기록했어요. 다음에 당길 땐 대신할 것부터 볼까요?`,'🍬 지금 어때?',()=>openDopaNow('urge'),6000),900)}catch(e){console.error(e)}}}
+
+/* ================= v5.8 (v5o) — 스크립트 맨 끝 =================
+   · 할 일/습관/일퀘가 같은 '했나?'를 보게 (연결 카드: 몸무게·식사·용기)
+   · 행동/습관 보드: 검색·필터·정렬·여러 개 고르기
+   · 전투 기록(여정) · 캘린더: 창마다 따로 설정, 월 보기 날짜 누르기=추가 / 두 번=하루 보기, 목록=이모지
+   · 목록별 묶기에서 기본함이 둘로 갈리던 것, '↻ 습관 연결' 스마트 목록 정리
+   주의: 맨 끝 모듈이라 최상위 값은 var/function만. 행동 카드(C.actions) 내용은 건드리지 않음. */
+
+/* ---- 목록: 없는 목록 id는 기본함으로 (기본함이 '기본함'·'📥 기본함' 둘로 갈리던 원인) ---- */
+function listOk(id){return !!id&&C.lists.some(l=>l.id===id)}
+function listName(id){const l=C.lists.find(x=>x.id===id)||C.lists.find(x=>x.id==='inbox');return l?l.name:'기본함'}
+function listEmoji(id){const m=(listName(listOk(id)?id:'inbox')||'').match(/^\s*([^\p{L}\p{N}\s]+)/u);return m?m[1]:''}
+{const i=SMART.findIndex(x=>x[0]==='habit');if(i>=0)SMART.splice(i,1)} // '↻ 습관 연결' → '↻ 습관' 목록이 같은 일을 함
+
+/* ---- 연결 카드(몸무게·식사·용기)의 '오늘 했나?' — 일퀘·할 일·행동/습관이 모두 이걸 봄 ---- */
+function linkMet(a,day){if(!a||!a.link)return false;day=day||DAYS[dateKey()];if(!day)return false;return !!questCondMet(day,{action:a.link})}
+function doneToday(a){if(!a)return false;if(a.link)return linkMet(a);const d=DAYS[dateKey()];return !!(d&&(d.entries||[]).some(e=>e.kind==='act'&&e.aid===a.id))}
+var HLS_BUSY=false;
+function habLinkSync(){
+  if(HLS_BUSY||!C.mig57||!ready||!tasksReady)return;HLS_BUSY=true;
+  try{const td=dateKey(),day=DAYS[td];if(!day)return;
+    Object.values(TASKS).forEach(t=>{
+      if(!(t.hab&&t.status===0&&t.rep&&t.due&&t.due<=td))return;
+      const a=C.actions.find(x=>x.id===t.aid);if(!a||!a.link||!linkMet(a,day))return;
+      if((day.entries||[]).some(e=>e.tid===t.id))return;
+      const qid=t.qid||('q'+t.id);
+      const e=(day.entries||[]).find(x=>x.kind==='quest'&&x.qid===qid&&!x.tid)||(a.link==='@weigh'?(day.entries||[]).find(x=>x.kind==='weigh'&&!x.tid):null);
+      if(e){e.tid=t.id;e.prevDue=t.due;e.prevStatus=0;e.prevCnt=t.cnt||0;save(td)}
+      t.cnt=(t.cnt||0)+1;t.last=td;let nx=nextDue(t.rep,t.due);while(nx&&nx<=td)nx=nextDue(t.rep,nx);
+      if(nx)t.due=nx;else{t.status=2;t.doneAt=td}saveTask(t);
+    });
+  }catch(x){console.error(x)}finally{HLS_BUSY=false}
+}
+{const _ue=unapplyEntry;unapplyEntry=function(day,e){_ue(day,e);try{if(e.kind==='weigh'&&e.tid)undoTaskFrom(e)}catch(x){console.error(x)}}}
+// 행동/습관 화면: 연결 카드는 연결된 기록으로 체크 표시 · 누르면 그 기록으로
+function logLinkMarks(){
+  document.querySelectorAll('#actGroups .act[data-info^="act:"]').forEach(r=>{const a=C.actions.find(x=>x.id===r.dataset.info.slice(4));if(!a||!a.link)return;
+    const b=r.querySelector('.chk');if(!b)return;const on=linkMet(a);b.classList.toggle('on',on);b.textContent=on?'✓':'';b.title=linkName(a.link);b.dataset.x58link=a.id});
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-x58link]');if(!b)return;e.preventDefault();e.stopPropagation();const a=C.actions.find(x=>x.id===b.dataset.x58link);if(a)linkGo(a)},true);
+
+/* ---- 행동/습관 편집 보드: 목록과 같은 검색·필터·정렬·여러 개 고르기 ---- */
+function actBoardHTML(){
+  const E=ui.ae||(ui.ae={q:'',type:'all',area:'',sort:'manual'});
+  const okType=a=>E.type==='all'?true:E.type==='good'||E.type==='bad'?a.type===E.type:E.type==='habit'?isHabit(a):E.type==='brave'?!!a.brave:true;
+  const q=(E.q||'').toLowerCase();
+  const st=listStats();let pool=C.actions.filter(a=>!a.doneAt&&okType(a)&&(!q||a.name.toLowerCase().includes(q)));
+  if(E.sort&&E.sort!=='manual')pool=sortList(pool,st,E.sort);
+  const selOn=!!E.selOn,sel=new Set(E.sel||[]);
+  const show=aeShow().filter(k=>k!=='area');
+  const chip=a=>{const on=sel.has(a.id);return `<div class="dchip bchip ${a.type} ${on?'on58':''}" ${selOn?'':`data-drag="act:${a.id}" data-dragmode="hold"`} role="button" tabindex="0"><span class="erow3" data-rowid="${a.id}" hidden></span>
+    <span class="bn">${selOn?`<input type="checkbox" data-x55sel="${a.id}" ${on?'checked':''} style="width:auto;margin:0 4px 0 0" aria-label="${esc(a.name)} 고르기">`:''}<b aria-label="${a.type==='good'?'좋은':'나쁜'}">${a.type==='good'?'▲':'▼'}</b> <button class="nm57" ${selOn?`data-x55sel="${a.id}"`:`data-aedit="${a.id}"`}>${esc(a.name)}</button></span><span class="mxs">${metaChips(a,st[a.id]||{},show)}</span></div>`};
+  const cols=C.areas.filter(ar=>!E.area||ar.id===E.area);
+  return `<p class="tiny muted" style="margin:0 0 6px">${selOn?'카드를 눌러 고른 뒤 위에서 한꺼번에 바꿔요.':'카드를 꾹 눌러(PC는 끌어서) 다른 영역 칸에 놓으면 영역이 바뀌어요. 이름을 누르면 편집.'} ▲ 좋은 · ▼ 나쁜. 정렬은 칸 안에서 적용돼요.</p>
+  <div class="dedit board57">${cols.map(ar=>{const its=pool.filter(a=>a.area===ar.id);return `<div class="dcol" data-drop="dopa:@a:${ar.id}"><div class="dh"><b>${esc(ar.name)}</b><span class="tiny muted">${its.length}개</span></div>${its.map(chip).join('')||'<span class="tiny muted">없어요</span>'}</div>`}).join('')}</div>`;
+}
+{const _aeh=actionsEditHTML;actionsEditHTML=function(){
+  const on=!!ui.aeBoard;ui.aeBoard=false;let h;try{h=_aeh()}finally{ui.aeBoard=on}if(!on)return h;
+  h=h.replace('data-x57board="" aria-pressed="true"','data-x57board="" aria-pressed="false"').replace('data-x57board="1" aria-pressed="false"','data-x57board="1" aria-pressed="true"');
+  const i=h.indexOf('<div class="elist"'),j=h.indexOf('<div class="row" style="margin-top:10px"><button class="btn sm" data-addrow="actions"');
+  if(i<0||j<0)return h;return h.slice(0,i)+actBoardHTML()+h.slice(j);
+}}
+// 보드에서도 '보이는 것 모두'
+document.addEventListener('click',e=>{const b=e.target.closest('[data-x55="selall"]');if(!b||!ui.aeBoard)return;e.preventDefault();e.stopPropagation();const E=ui.ae||{};
+  const vis=[...document.querySelectorAll('.board57 [data-rowid]')].map(r=>r.dataset.rowid);E.sel=(E.sel||[]).length===vis.length?[]:vis;reEdit()},true);
+
+/* ---- 📜 전투 기록 (여정) ---- */
+var BLOG_KIND=[['all','모두'],['act','▲▼ 행동'],['task','✓ 할 일'],['bonus','🎁 보너스·보상'],['bad','▼ 나쁜 것만']];
+var BLOG_BONUS=['chest','boss','wbrave','badge','chain','quest','routine'];
+function blogPass(e,k){if(k==='all')return true;if(k==='act')return e.kind==='act'||e.kind==='free'||isBrave(e);if(k==='task')return e.kind==='task'||!!e.tid;
+  if(k==='bonus')return BLOG_BONUS.includes(e.kind)||!!(e.spd||e.mult||e.gq);if(k==='bad')return e.type==='bad';return true}
+function blogBonusTxt(e){const o=[];if(e.kind==='chest')o.push('일퀘 상자');if(e.kind==='boss')o.push('보스 처치');if(e.kind==='wbrave')o.push('주간 용기 목표');if(e.kind==='badge')o.push('업적');if(e.kind==='chain')o.push('나쁜 흐름 끊기');
+  if(e.kind==='routine')o.push('루틴 완주');if(e.spd)o.push('속도 '+e.spd);if(e.mult&&e.type==='bad')o.push('누적 페널티 ×'+e.mult);if(e.gq)o.push('뽑기 배수');if(isBrave(e))o.push('용기');return o}
+function blogHTML(){
+  const B=ui.blog||(ui.blog={k:'all',r:7,n:10});
+  const keys=(B.r==='all'?Object.keys(DAYS):lastNDates(B.r)).filter(k=>DAYS[k]&&(DAYS[k].entries||[]).length).sort().reverse();
+  let tx=0,tg=0,tc=0,tb=0;const days=[];
+  keys.forEach(k=>{const es=(DAYS[k].entries||[]).filter(e=>blogPass(e,B.k));if(!es.length)return;days.push([k,es]);es.forEach(e=>{tx+=e.xp||0;tg+=e.gold||0;tc+=e.cond||0;if(blogBonusTxt(e).length)tb++})});
+  const row=(k,e)=>{let h=logRow(k,e).replace(/<button class="x" data-rm="[^"]*" data-date="[^"]*"[^>]*>×<\/button>/,'<span></span>').replace(/data-entry="[^"]*" style="cursor:pointer" title="눌러서 고치기"/,'');
+    const bt=blogBonusTxt(e);return bt.length?h.replace(/<\/li>$/,`<span class="b58">⤷ 보너스: ${esc(bt.join(' · '))}</span></li>`):h};
+  const sum=es=>{const x=es.reduce((s,e)=>s+(e.xp||0),0),g=es.reduce((s,e)=>s+(e.gold||0),0);return `XP +${x}${g?' · '+gtx(g):''}`};
+  return `<div class="toolbar"><span class="seg3">${BLOG_KIND.map(([v,l])=>`<button data-x58bk="${v}" aria-pressed="${B.k===v}">${l}</button>`).join('')}</span>
+    <span class="seg3">${[[7,'7일'],[30,'30일'],['all','전체']].map(([v,l])=>`<button data-x58br="${v}" aria-pressed="${String(B.r)===String(v)}">${l}</button>`).join('')}</span></div>
+    <p class="small" style="margin:4px 0 8px"><b>합계</b> · XP +${tx} · ${gtx(tg)} · 컨디션 ${tc>=0?'+':'−'}${Math.abs(tc)} · 보너스 붙은 기록 ${tb}개 <span class="tiny muted">(${B.r==='all'?'불러온 기록 전체':'최근 '+B.r+'일'})</span></p>
+    ${days.slice(0,B.n).map(([k,es])=>`<div class="bday58"><div class="ptitle" style="margin:8px 0 2px"><b class="small">${esc(fmtD(k))} (${wdOf(k)})</b><span class="tiny muted num">${es.length}개 · ${sum(es)}</span></div><ul class="log">${es.slice().sort((a,b)=>(a.t||'').localeCompare(b.t||'')).map(e=>row(k,e)).join('')}</ul></div>`).join('')||'<div class="empty">이 조건에 맞는 기록이 없어요.</div>'}
+    ${days.length>B.n?`<button class="btn ghost sm" data-x58bmore="1" style="margin-top:8px">더 보기 (${days.length-B.n}일 남음)</button>`:''}
+    <p class="tiny muted" style="margin-top:8px">기록을 고치거나 지우는 건 '기록' 화면(오늘·어제·그저께)에서 해요. 여기는 보기 전용이에요.</p>`;
+}
+function renderBlog(){const b=$('blog58');if(!b||curView()!=='journey')return;b.innerHTML=blogHTML()}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-x58bk],[data-x58br],[data-x58bmore]');if(!b)return;e.preventDefault();e.stopPropagation();const B=ui.blog||(ui.blog={k:'all',r:7,n:10});const d=b.dataset;
+  if(d.x58bk)B.k=d.x58bk;if(d.x58br)B.r=d.x58br==='all'?'all':+d.x58br;if(d.x58br||d.x58bk)B.n=10;if(d.x58bmore)B.n+=10;renderBlog()},true);
+
+/* ---- 캘린더: 할 일 창(3단 화면)과 캘린더 창의 보기 설정을 따로 ---- */
+function calSplitInstall(){
+  // C.ui.cal(저장됨) = 캘린더 창 설정, 그 안의 _t = 할 일 창 옆 캘린더 설정. normConfig가 ui 키를 걸러내서 cal 안에 둠.
+  const u=C&&C.ui;if(!u)return;const d=Object.getOwnPropertyDescriptor(u,'cal');if(d&&d.get)return;
+  const base=(d&&d.value)||{mode:'month',actual:true};
+  if(!base._t||typeof base._t!=='object'){const t=JSON.parse(JSON.stringify(base));delete t._t;Object.defineProperty(base,'_t',{value:t,writable:true,configurable:true,enumerable:true})}
+  delete u.cal;
+  Object.defineProperty(u,'cal',{get(){return splitOn()?base._t:base},set(v){if(splitOn())base._t=v;else{const t=base._t;Object.keys(base).forEach(k=>delete base[k]);Object.assign(base,v);if(!base._t)base._t=t}},enumerable:false,configurable:true});
+  Object.defineProperty(u,'toJSON',{value:function(){return {...this,cal:base}},enumerable:false,configurable:true});
+}
+// 목록 기준: 색 대신 목록 이모지 (이모지 없는 목록은 앞 두 글자)
+{const _rc=renderCal;renderCal=function(){calSplitInstall();_rc();try{
+  const sel=$('cal57Color');if(sel){const o=sel.querySelector('option[value="list"]');if(o)o.textContent='표시: 목록 이모지'}
+  if((C.ui.cal||{}).color!=='list')return;
+  document.querySelectorAll('#calPane [data-ctask]').forEach(el=>{const t=TASKS[el.dataset.ctask];if(!t)return;el.style.borderLeft='';el.style.background='';
+    const em=listEmoji(t.list),s=el.querySelector('.ck57');const txt=em||listName(listOk(t.list)?t.list:'inbox').replace(/^[^\p{L}\p{N}]+/u,'').slice(0,2);
+    if(s){s.textContent=txt;s.style.borderColor='';s.className='ck58'}else el.insertAdjacentHTML('afterbegin',`<span class="ck58">${esc(txt)}</span>`)});
+}catch(e){console.error(e)}}}
+// 월 보기: 날짜 한 번 = 그날 할 일 추가 · 두 번 = 하루 보기
+var MC58=null;
+document.addEventListener('click',e=>{
+  const c=e.target.closest('.mc[data-calday]');if(!c||e.target.closest('[data-ctask],button,a,input'))return;
+  e.preventDefault();e.stopPropagation();const k=c.dataset.calday;
+  if(MC58&&MC58.k===k){clearTimeout(MC58.t);MC58=null;calGoDay(k);return}
+  if(MC58)clearTimeout(MC58.t);
+  ui.calSel=k;document.querySelectorAll('#calPane .mc.sel').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');
+  MC58={k,t:setTimeout(()=>{MC58=null;calAddDay(k)},280)};
+},true);
+function calGoDay(k){ui.calSel=k;ui.calAnchor=k;C.ui.cal.mode='1day';save('config');ui.calKeepScroll=false;closeSheet();renderCal()}
+function calAddDay(k){
+  sheetCtx={cal58:{k}};
+  openSheet(`<div class="sh"><h3>📅 ${esc(fmtD(k))} (${wdOf(k)}) · 할 일 추가</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <form class="tadd" data-x58caladd="1"><div class="in"><input id="cal58Add" maxlength="160" placeholder="할 일 (3시, #태그, ~목록, !! 도 돼요)" enterkeyhint="done" autocomplete="off"><button class="btn sm" type="submit">추가</button></div></form>
+    <div class="row small" style="gap:6px;margin-top:6px"><button class="btn ghost sm" data-x58day="${k}">이 날 하루 보기 →</button><span class="tiny muted">날짜를 두 번 눌러도 하루 보기로 가요.</span></div>`);
+  setTimeout(()=>$('cal58Add')&&$('cal58Add').focus(),60);
+}
+document.addEventListener('submit',e=>{const f=e.target;if(!f.dataset||!f.dataset.x58caladd)return;e.preventDefault();e.stopPropagation();
+  const c=(sheetCtx||{}).cal58;const v=$('cal58Add').value.trim();if(!c||!v){$('cal58Add').focus();return}
+  const p=parseQuick(v,{baseDate:c.k});if(!p.title)return;if(!p.due)p.due=c.k;if(!p.list)p.list='inbox';
+  const a=C.actions.find(x=>x.name===p.title&&x.type==='good');if(a)p.aid=a.id;
+  const t=newTask(p);saveTask(t);$('cal58Add').value='';render();toast(`'${t.title}' · ${dueLabel(t.due)}${t.time?' '+t.time:''} 추가 · 계속 적어도 돼요`)},true);
+document.addEventListener('click',e=>{const b=e.target.closest('[data-x58day]');if(!b)return;e.preventDefault();e.stopPropagation();calGoDay(b.dataset.x58day)},true);
+
+/* ---- 첫 실행 정리: '↻ 습관' 목록 이름 (윈도에서 파란 네모로 보이던 이모지) ---- */
+function mig58(){if(C.mig58||!ready)return;const l=C.lists.find(x=>x.id===HAB_LIST);if(l&&l.name==='\u{1F501} 습관')l.name='\u21BB 습관';C.mig58=1;save('config')}
+
+{const _r=render;render=function(){
+  try{calSplitInstall();mig58();habLinkSync()}catch(e){console.error(e)}
+  _r();
+  try{logLinkMarks();renderBlog()}catch(e){console.error(e)}
+}}
+addEventListener('hashchange',()=>setTimeout(()=>{try{renderBlog()}catch(e){console.error(e)}},0));
 
 </script>
 <script type="module" src="backend.js"></script>
