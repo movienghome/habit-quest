@@ -1,11 +1,11 @@
-# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v6.0 기준, 2026-11-05)
+# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v6.1 기준, 2026-11-06)
 
 > **새 채팅에서 할 일 (Claude에게)**: 먼저 `add_repo`로 `movienghome/habit-quest`를 붙이고 `git clone --depth 1`. 이 파일은 저장소의 `dev/HANDOFF.md`에도 있음 — 저장소 쪽이 최신이면 그걸 따름. 릴리스할 때마다 이 파일도 같이 고쳐서 커밋.
 
 ## 저장소·주소
 - 저장소: github.com/movienghome/habit-quest (GitHub Pages + Firebase)
 - 본 앱: https://movienghome.github.io/habit-quest/ → **v4.4 그대로**
-- 베타: https://movienghome.github.io/habit-quest/beta/ → **v6.0** (데이터: habit-beta, 실제 기록과 분리)
+- 베타: https://movienghome.github.io/habit-quest/beta/ → **v6.1** (데이터: habit-beta, 실제 기록과 분리)
 - 작업 방식: 고친 건 베타에 먼저 → 사용자가 "반영해" 하면 본 앱에 옮김
 
 ## 사용자 요청 (항상)
@@ -19,11 +19,11 @@
 - `beta/index.html`은 **생성 파일**. 직접 고치지 말고 `dev/v5/`의 모듈을 고친 뒤 빌드.
 - 빌드: `ln -sfn <저장소>/dev/v5 /home/claude/v5` 후 `cd dev/v5 && python3 patch.py`
   (patch.py의 SRC/DST/V는 /home/claude/habit-quest, /home/claude/v5 기준. 중간 파일은 임시 폴더에 씀)
-  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → **patch12(v6.0)**
-  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + **v5q(v6.0)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
+  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → patch12(v6.0) → **patch13(v6.1)**
+  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + v5q(v6.0) + **v5r(v6.1)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
   - 주의: 맨 끝 모듈의 const/let은 첫 render 때 아직 초기화 전 → 최상위 값은 function이나 var로.
   - 클래스 이름 `.mc`는 월 캘린더 칸이 씀 → 칩은 `.mx`.
-- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-05-v60`). 베타 띠에 버전 표시(`β 베타 v6.0`) — 같이 올리기.
+- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-06-v61`). 베타 띠에 버전 표시(`β 베타 v6.1`) — 같이 올리기.
 - **patch10은 빌드 결과 전체에서 글자 치환을 함**: `💰`→`₩`, `🪙`→`💰`, `🔁`→`↻`, `리듬`→`반복`. 그러니 **v5o 이후 모듈에서 🪙·🔁·'리듬'을 비교 문자열로 쓰면 바뀌어 버림** → `\u{1F501}`처럼 이스케이프로 쓰기.
 - `normConfig`는 `C.ui`의 정해진 키만 남김(새 키는 사라짐) → 새 ui 설정은 기존 키 안(예: `C.ui.cal._t`)이나 `C` 최상위에.
 - `route()`는 journey 같은 화면 전환 때 render를 안 부름 → 새 화면 내용은 hashchange에서 따로 그림(renderBlog).
@@ -32,6 +32,8 @@
 - 함수 선언 덮어쓰기(v5p): actBoardHTML·dopaEditHTML·blogHTML은 v5p의 function 선언이 이김. render·renderNav·taskBase·drawTaskSheet·parseQuick·dndMove·dndEnd·actionsEditHTML은 감쌈.
 - 함수 선언 덮어쓰기(v5q): spriteSVG·calc59·blogHTML·dopaEditHTML·routinesEditHTML·habRows59·did59·sched59는 v5q 선언이 이김. syncDailies·watchTarget·toggleQuest·finishRoutine·applyEntry·effortOf·drawTaskSheet·aeTopHTML·infoFor·reviewHTML59·applyHomeEdit·weekState·render는 감쌈.
 - 테스트 하네스(v6.0): backend.js를 `window.__hqResolve(window.__mockApi)`로, config.js·sw.js는 빈 응답으로 가로채고 init script에 mockdb.js. `window.claude`는 index.html이 만드니 건드리지 말 것. 시드: `window.__seed({'game/config':cfg})`.
+- **patch13(v6.1)은 아이콘을 빌드 전체에서 바꿔요**: 원래 ⚔(사냥·전투) → 🏹·👾, `✨`→`🌸`(행복), `⭐`→`✨`(XP), `❤`→`🔋`(컨디션), `⚡`→`⚔️`(용기, FE0F 붙임), 그다음 번개 자리만 `⚡`로 되돌림. **v5r은 아이콘 바꾸기 뒤에 넣어요**(그래서 v5r 안의 글자는 그대로). v5r보다 앞 모듈에서 ⚡를 쓰면 ⚔️가 돼요 → 번개는 `\u26A1`.
+- v6.1 테스트 하네스: `dev/v5/h61.py`(목업·경로 가로채기) + `t61.py`(루틴·고르기·메뉴·뒤로·배치·일퀘). 서버: 저장소 루트 `python3 -m http.server 8765`.
 - 테스트: Playwright + `dev/v5/mockdb.js`. 저장소 루트에서 `python3 -m http.server 8765`. 옛 t*.py는 경로 수정 필요. v5.4 테스트는 v7 설정(일퀘·용기·샤워/술 옵션)을 넣고 마이그레이션·완료 흐름 확인하는 식.
 
 ## 핵심 설계 (v5.4에서 정함)
@@ -116,12 +118,34 @@
 - 홈: '배치 끝' 때 `C.homeMine60={at,h}` 저장, 배치 화면에 '↺ 내 배치' 버튼. (업데이트가 홈을 되돌리는 코드는 없음 — 시험함. 원인은 v5.9에서 고친 옛 기기 사본 덮어쓰기로 봄.)
 - **3단계 ①**: BOSSES 이름 바꿈(무한 스크롤 슬라임→망설임의 안개, 야식 고블린→무기력 늪지기, 불안 안개 색만). weekState 감싸 ⚔ 용기 XP = 치명타(한 번 더 데미지, s.crit). **장비 상점**(상점 맨 위 #gear60): GEAR60(투구·갑옷·무기·방패·피부·배경, at=[x,y] 아바타 픽셀 좌표), `C.gear60={own,eq,got}`, 사기 = buy 엔트리. spriteSVG 새로(배경 → 그림자 → 방패·몸·갑옷·투구·무기, 피부는 사람형 S만). 보스 전리품: 처치 기록 있는 주마다 BOSS 이름의 drop 장비(옛 이름은 BOSS_OLD60로).
 
+## v6.1에서 한 것 (v5r.js · patch13.py)
+- **고친 버그**: normConfig가 `C.ui`의 smart(스마트 목록 순서)·tfold(묶음 접힘)·navAll·aeShow를 버려서 새로고침하면 되돌아갔음 → normConfig 감싸 UIKEEP61 키를 지킴. **새 ui 키를 쓰면 UIKEEP61에 넣을 것.**
+- **루틴 단계 = 카드(aid)·할 일(tid)·이름만(name)**. 단계 이름은 stName61로 카드·할 일에서 읽음(따로 저장 안 함). 편집 UI rtCard61(편집 화면·루틴 창 같음, data-r61*). ＋ 단계 = 고르기 창(카드/할 일/이름만, 여러 개, 새 카드·새 할 일 바로 만들기). 이름만 단계는 🃏로 카드 만들기. 사냥: startRun 감싸 끝났거나 지워진 할 일 단계는 건너뜀, huntDo 감싸 할 일 단계 끝내면 completeTask(direct).
+- 반대 방향: 카드·할 일에서 **⏱ 루틴에 넣기**(rtJoin61 → 루틴 고르기 → 몇 번째) · **루틴으로 만들기**(promoteTask61: 묶인 할 일→tid 단계, 체크리스트→이름 단계, 카드→첫 단계, 그 할 일은 t.rid로 루틴 시작 버튼이 됨 / promoteCard61).
+- 루틴 칩(data-x60rt)은 편집 화면으로 가지 않고 **루틴 창**(openRt61, sheetCtx.rt61).
+- **일퀘 = 반복 할 일의 ☑, 그 일이 뜨는 날만**(qOn61: 매일/요일/그 외는 due·last 날). syncDailies 새로. t.skip61=[날짜] = 오늘 건너뛰기. 편집 → 일퀘 = 요일 표(qToggleWd61, 칸 = 요일 켜고 끄기) + ＋ 일퀘 추가(고르기 창). ☑는 매일이 아니어도 켤 수 있게(v5n·v5q 소스 고침).
+- **같은 거르기**: flt61/fltBar61(모두·좋은·나쁜·🍬 도파민·↻ 습관·⚔ 용기 + 개수). 편집 화면 ui.ae.type은 C.ui.list.filter를 가리키는 getter(둘이 같이 바뀜). patch13이 기록 화면 pool·칩과 편집 화면 okType·칩을 바꿈. 좋은 = good&&!dopaOnly (도파민 전용은 🍬에서만) — 개수가 달랐던 이유.
+- **행동/습관 화면 배치**: '▦ 화면 배치' = 시트(layMap61) 작은 지도 끌기 + ↑↓⇄▾👁 + 프리셋 4개. 폰(<900px)은 한 줄 전역 순서(applyLog59 감쌈). 예전엔 폰에서 오른쪽 칸 것을 위로 못 올렸음.
+- **고르기 창** openPicker61({title,tabs:[{k,label,items:[{id,label,sub,grp,score}],newLabel,onNew}],multi,onPick}) — 찾기·탭·묶음·⭐ 자주 쓰는 것. 📦 '있는 할 일 넣기'도 이걸로(kidPick61).
+- **우클릭(폰 꾹) 메뉴** menu61: 목록(이름·색 LCOL61·폴더·설명·순서·지우기, 색은 l.color → 사이드바 왼쪽 띠), 할 일·캘린더 블록·쫄따구(열기·끝내기·오늘로·미루기/건너뛰기·안 하기·일퀘·루틴에·루틴으로·묶음에·지우기), 오늘의 일퀘(체크·열기·건너뛰기·일퀘 빼기·요일), 행동(기록·편집·설명·반복·일퀘·루틴·용기·도파민 코스·지우기), 연결 칩(열기·끊기). 터치에서 끌기용 꾹(data-dragmode=hold)과 겹치는 건 메뉴 안 띄움.
+- **이어진 곳 칩 ×**(cx61, data-x61un): 반복 끄기·루틴에서 빼기·도파민 빼기·용기 끄기·할 일-카드 연결 끊기, 모두 되돌리기 알림. connRt60은 단계마다 칩. 할 일 상세 🃏 칸에 '⏱ 루틴 단계' 줄.
+- **뒤로 가기**: NAV61 스택(창에서 다른 창 열면 push). 시트 맨 위 '← 뒤로', 시트를 닫고 다른 화면으로 가면 아래 '← … 돌아가기' 알약(9초). 창 밖에서 새로 열면 스택 비움.
+- **📖 보스·쫄따구 도감**(openDex61, 전투 칸 버튼·보스 정보 창): 보스 설명·약점 글(LORE61, 점수 효과 없음)·처치 횟수·전리품·차례. 쫄따구 종류 MOB61(📋↻☠⏰⚔📦⏱, mobKind61) — 전투 칸 쫄따구에 작은 표시.
+- 아이콘: ✨ XP · 🔋 컨디션 · ⚔️ 용기 · ⚡ 번개(할 일 크기 '짧게'→'번개', #번개·#퀵 태그) · 🌸 행복 · 🏹 사냥 · 👾 전투 · ➕ 빠른 추가. mig61: 뽑기 프리셋 이름.
+
+## 사용자가 거듭 말하는 것 (매번 확인)
+- **연결·통합이 매끄러운가**: 같은 것이 화면마다 다르게 보이면(개수·거르기·이름) 바로 맞출 것. 어디서 연 것이든 거기서 고치고 돌아올 수 있게(칩·우클릭·뒤로).
+- 목록이 '텍스트만 쭉'이면 막막해함 → 찾기·묶음·자주 쓰는 것 먼저(고르기 창).
+- 새로고침·업데이트 뒤 되돌아가는 설정 → 저장 경로(normConfig 키) 먼저 의심.
+- 화면 배치는 홈처럼 지도 끌기로.
+
 ## 아직 안 한 요청 (사용자 요청 기준, 매 릴리스마다 갱신해서 답변에 붙이기)
-- 2단계: 끝. 사용자 확인 받기(돌아보기 새 메뉴를 계속 쓸지 · 화면 배치).
-- 3단계 ② (다음): **직접 그린 장비**(16칸 픽셀 그리기 → GEAR 형식으로 C.gear60.custom에 저장) · 보스 확장(보스마다 약점·대사, 처치 연출) · 도파민 디저트 골드 스위치(기록 2주 뒤 판단, 기본 꺼짐) · 장비 효과는 넣을지 사용자와 상의(지금은 꾸미기만).
-- 목적 점검에서 나온 것(제안): '오늘의 용기 한 가지'를 오늘 목록 맨 위에 / ⚔ 용기 카드가 아직 0개 → 사용자와 같이 정하기
-- 하나로 잇기 후속(제안): 오늘 화면에서 루틴 일퀘 누르면 사냥 바로 시작되는지 사용자 확인 · '일퀘 (매일)' 편집 탭이 카드 습관만 보여줌 → 루틴·할 일 일퀘도 한 목록에.
-- 본 앱 승격("반영해" 때) — v4.4 → v5.x는 마이그레이션이 많으니 승격 전 백업 필수
+- 사용자 확인 받기: 아이콘(✨·🔋·⚔️·⚡·🌸·🏹·👾) · 루틴 단계 방식 · 요일별 일퀘 표 · 우클릭 메뉴 · 화면 배치 지도.
+- 3단계 ② : **직접 그린 장비**(16칸 픽셀 → C.gear60.custom) · 보스 확장(약점에 실제 효과를 붙일지 사용자와 정하기, 대사·처치 연출) · 도파민 디저트 골드 스위치(2주 뒤 판단, 기본 꺼짐) · **장비 점수 효과는 사용자와 상의 중**(제안: 꾸미기만 유지, 또는 점수 말고 '편의' 효과).
+- 용기: 매일 용기 강요하지 않기로(제안: 주간 용기 목표 + '이번 주 용기 한 가지'를 돌아보기/홈에 선택으로). ⚔️ 용기 카드 0개 → 사용자와 같이 고르기.
+- 우클릭 메뉴 확장 후보: 캘린더 빈 칸·루틴 줄·도파민 코스 칸·홈 칸. 목록 색을 캘린더 '표시: 목록'에도 쓰기.
+- 고르기 창을 할 일 상세 🃏 카드 고르기(지금 select)에도.
+- 본 앱 승격("반영해" 때) — v4.4 → v6.x는 마이그레이션이 많으니 승격 전 백업 필수, backend.js 저장 안전장치·normConfig UIKEEP61도 같이.
 
 ## 1단계 마무리 (v5.7에서 끝남 — 기록용)
 - ~~루틴 통일~~ (v5.5 완료) 메모:: finishRoutine은 루틴 덩어리 XP 하나만 주고, aid로 이어진 단계(예: Lethe의 샤워)를 해도 그 습관 카드가 기록되지 않음 → 일퀘·방치 경보·통계에 안 잡힘. 단계 체크 시 연결 카드로 기록(카드 점수), 루틴 점수는 '완주 보너스'만 작게. aid 없는 단계는 점수 없는 체크 항목으로 두거나 카드로 만들기 버튼.

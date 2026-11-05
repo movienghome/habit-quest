@@ -66,7 +66,7 @@ function setRt60(r,wd,quest){
   const rep=all?{f:'d',i:1}:{f:'w',i:1,wd:wd.slice().sort()};
   if(!t){t=newTask({title:r.name,rid:r.id,list:r.list||'inbox',rep})}else t.rep=rep;
   const td=dateKey();let d=firstDue(rep,td);if(d===td&&tDone60(t.id,DAYS[td]))d=nextDue(rep,td)||d;t.due=d;delete t.skull;
-  if(quest!==undefined){if(quest&&all)t.quest=1;else delete t.quest}if(!all)delete t.quest;
+  if(quest!==undefined){if(quest)t.quest=1;else delete t.quest}
   saveTask(t);syncDailies(C);save('config');return t;
 }
 function rtWd60(t){if(!t||!t.rep)return [];if(isDailyRep(t.rep))return [0,1,2,3,4,5,6];return t.rep.f==='w'?(t.rep.wd||[]).slice():[]}
@@ -78,7 +78,7 @@ function routinesEditHTML(){
     return `<div class="jarcard" id="rt60-${r.id}"><div class="kv"><label>루틴 이름<input data-rt="${r.id}" data-f="name" value="${esc(r.name)}"></label><label>완주 XP<input data-rt="${r.id}" data-f="xp" type="number" min="0" value="${r.xp||0}"></label><label>완주 골드<input data-rt="${r.id}" data-f="gold" type="number" min="0" value="${r.gold||0}"></label><label>영역<select data-rt="${r.id}" data-f="area">${C.areas.map(a=>`<option value="${a.id}" ${(r.area||'life')===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select></label></div>
     <div class="when60"><b class="small">📅 언제</b>${odd?`<span class="small">${esc(repLabel(t.rep))}</span><button class="chipbtn" data-x60task="${t.id}">할 일에서 바꾸기</button>`:
       `${[1,2,3,4,5,6,0].map(w=>`<button type="button" class="chipbtn wd60" data-x60rwd="${r.id}:${w}" aria-pressed="${wd.includes(w)}">${WDK[w]}</button>`).join('')}<button type="button" class="chipbtn" data-x60rwd="${r.id}:all" aria-pressed="${wd.length===7}">매일</button>${wd.length?`<button type="button" class="chipbtn" data-x60rwd="${r.id}:none">안 정함</button>`:''}`}
-      <label class="row small" style="gap:4px;margin-left:6px"><input type="checkbox" data-x60rq="${r.id}" ${t&&t.quest?'checked':''} ${t&&isDailyRep(t.rep)?'':'disabled'} style="width:auto">☑ 일퀘${t&&isDailyRep(t.rep)?'':' (매일일 때)'}</label>
+      <label class="row small" style="gap:4px;margin-left:6px"><input type="checkbox" data-x60rq="${r.id}" ${t&&t.quest?'checked':''} ${t?'':'disabled'} style="width:auto">☑ 일퀘${t?(isDailyRep(t.rep)?'':' (고른 요일에만)'):' (언제를 정하면)'}</label>
       ${t?`<span class="tiny muted">다음: ${esc(dueLabel(t.due))} · 📂 ${esc(listName(t.list||'inbox'))}</span>`:'<span class="tiny muted">안 정하면 ⏱ 사냥·목록에서 직접 시작해요</span>'}</div>
     <div class="vtable" style="margin-top:8px"><div class="vrow head" style="grid-template-columns:minmax(0,1.6fr) .5fr 1.2fr 26px 26px 26px"><span>단계</span><span>분</span><span>이을 행동 카드</span><span></span><span></span><span></span></div>
     ${r.steps.map((s,i)=>{const a=s.aid&&C.actions.find(x=>x.id===s.aid),ht=a&&habT(a);
@@ -110,11 +110,11 @@ function tsLink60(){
   const pan=sc.querySelector('.tpanel[data-p="card"]');if(!pan||pan.querySelector('.ln60'))return;
   const h=pan.querySelector('.tph b');if(h)h.textContent='🃏 카드 · ⏱ 루틴 연결';
   const box=document.createElement('div');box.className='ln60';
-  const daily=isDailyRep(t.rep),qOK=daily&&!(t.hab&&t.aid);
+  const daily=!!(t.rep&&t.rep.f),qOK=daily&&!(t.hab&&t.aid);
   box.innerHTML=`<label class="f">⏱ 루틴과 잇기<select id="x60Rid" ${a?'disabled':''}><option value="">없음</option>${(C.routines||[]).map(x=>`<option value="${x.id}" ${t.rid===x.id?'selected':''}>${esc(x.name)} · 완주 +${x.xp||0}</option>`).join('')}</select></label>
     ${a?'<p class="tiny muted" style="margin:0">카드와 이어져 있어서 루틴은 못 골라요. 둘 중 하나만 잇어요.</p>':''}
     ${r?`<p class="tiny muted" style="margin:0">이 할 일을 누르면 루틴이 시작돼요. 완주하면 이 할 일도 끝나요.</p><div class="row" style="gap:6px"><button class="btn sm" data-rrun="${r.id}">⏱ 지금 시작</button><button class="btn ghost sm" data-x60rt="${r.id}">✎ 루틴 편집</button></div>`:''}
-    ${qOK?`<label class="row small" style="gap:6px"><input type="checkbox" data-x60tq="${t.id}" ${t.quest?'checked':''} style="width:auto"> ☑ 일퀘로 (오늘 다 끝내면 상자)</label>`:(!t.hab&&(a||r)&&!daily?'<p class="tiny muted" style="margin:0">📅에서 매일 반복으로 두면 ☑ 일퀘로도 둘 수 있어요.</p>':'')}
+    ${qOK?`<label class="row small" style="gap:6px"><input type="checkbox" data-x60tq="${t.id}" ${t.quest?'checked':''} style="width:auto"> ☑ 일퀘로 (${isDailyRep(t.rep)?'매일':'반복하는 날에만'} · 그날 다 끝내면 상자)</label>`:(!t.hab&&!daily?'<p class="tiny muted" style="margin:0">📅에서 반복을 정하면 ☑ 일퀘로도 둘 수 있어요 (요일마다 다른 일퀘도 돼요).</p>':'')}
     ${connLine60(a?connCard60(a,'task:'+t.id):r?connRt60(r,'task:'+t.id):[])}`;
   pan.appendChild(box);
   // 카드를 고르면 루틴은 풀기 (하나만)

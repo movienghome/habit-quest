@@ -91,7 +91,7 @@ function habInfoHTML(t,a){
   if(!t.hab||!t.rep)return `<p class="tiny muted" style="margin:0">점수는 '${esc(a.name)}' 카드에서 나와요.${t.rep?' 이 반복 할 일을 카드의 🔁 리듬으로 삼으려면 아래를 눌러요.':''}</p>${t.rep&&!habT(a)?`<button class="btn ghost sm" data-x57mkhab="${t.id}">🔁 '${esc(a.name)}' 카드의 리듬으로</button>`:''}`;
   const daily=t.rep.f==='d'&&(+t.rep.i||1)===1;
   return `<div class="habinfo"><span class="small">🔁 <b>'${esc(a.name)}' 카드의 리듬</b>이에요. 반복은 여기(📅 칩)에서만 정해요.</span>
-    <label class="row small" style="gap:6px"><input type="checkbox" data-x57quest="${t.id}" ${t.quest?'checked':''} ${daily?'':'disabled'} style="width:auto"> ☑ 일퀘로 (다 끝내면 상자)${daily?'':' — 매일 반복일 때만'}</label></div>`;
+    <label class="row small" style="gap:6px"><input type="checkbox" data-x57quest="${t.id}" ${t.quest?'checked':''} style="width:auto"> ☑ 일퀘로 (그날 일퀘를 다 끝내면 상자)${daily?'':' — 반복하는 날에만 일퀘로 떠요'}</label></div>`;
 }
 
 /* ---- 행동/습관 목록에도 칩 요약 ---- */
@@ -134,7 +134,6 @@ function setRhythm(a,rep,opt={}){
   else t.rep=rep;
   t.due=habDue(a,rep);delete t.skull;
   if(opt.quest!==undefined){if(opt.quest)t.quest=1;else delete t.quest}
-  if(!(rep.f==='d'&&(+rep.i||1)===1))delete t.quest;
   saveTask(t);syncDailies(C);save('config');return t;
 }
 function rhythmText(t){if(!t)return '';const r=t.rep;if(r.f==='d'&&(+r.i||1)===1)return t.quest?'☑ 매일 · 일퀘':'🔁 매일';if(r.f==='w'&&(+r.i||1)===1&&(r.wd||[]).length)return '🔁 '+[1,2,3,4,5,6,0].filter(w=>r.wd.includes(w)).map(w=>WDK[w]).join('');return '🔁 '+repLabel(r)}
@@ -220,7 +219,7 @@ function rhythmEditHTML(a){
   <p class="tiny muted" style="margin:0">리듬은 이 카드에 이어진 <b>반복 할 일</b> 하나로 저장돼요. 오늘 목록엔 그 할 일만 떠요(두 번 뜨지 않아요). 하루 여러 번 하는 건 리듬 없이 그때그때 기록해요. 리듬은 바로 저장돼요.</p>
   <div class="seg" style="margin-top:6px">${[['','없음'],['d','매일'],['w','요일 고르기'],['x','다른 반복…']].map(([k,l])=>`<button data-x57rh="${k}" aria-pressed="${kind===k}">${l}</button>`).join('')}</div>
   ${kind==='w'?`<div class="wdays" style="margin-top:6px">${[1,2,3,4,5,6,0].map(w=>`<button data-x57wd="${w}" aria-pressed="${(r.wd||[]).includes(w)}">${WDK[w]}</button>`).join('')}</div>`:''}
-  ${kind==='d'?`<label class="row small" style="gap:6px;margin-top:6px"><input type="checkbox" data-x57aq="1" ${t.quest?'checked':''} style="width:auto"> ☑ 일퀘로 (오늘 일퀘를 다 끝내면 상자)</label>`:''}
+  ${kind?`<label class="row small" style="gap:6px;margin-top:6px"><input type="checkbox" data-x57aq="1" ${t.quest?'checked':''} style="width:auto"> ☑ 일퀘로 (${kind==='d'?'매일':'반복하는 날에만'} · 그날 일퀘를 다 끝내면 상자)</label>`:''}
   ${t?`<div class="row small" style="gap:6px;margin-top:6px"><span class="muted">${esc(rhythmText(t))} · 다음 ${esc(dueLabel(t.due))}${t.cnt?` · 지금까지 ${t.cnt}번`:''}</span><button class="btn ghost sm" data-x56open="${t.id}">할 일 열기 ↗</button></div>`:''}`;
 }
 {const _oae=openActionEditor;openActionEditor=function(id){_oae(id);try{
