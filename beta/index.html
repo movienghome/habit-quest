@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v5.5</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v5.6</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -909,6 +909,31 @@ body.wideview .hud-in,body.split .hud-in{max-width:none}
 .aeshow .pop55{position:absolute;right:0;top:110%;z-index:6;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:grid;gap:4px;min-width:160px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
 .tbtn55{margin-left:8px;background:var(--panel);color:var(--ink);border:0;border-radius:8px;padding:3px 10px;font-weight:700;cursor:pointer}
 @media (max-width:600px){.erow3 .hidem{display:none}.erow3 .ib{width:34px;height:34px}}
+.homegrid{columns:auto!important}
+.homegrid.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.hcol{display:flex;flex-direction:column;min-width:0;min-height:80px}
+body.homeedit .hcol{outline:1px dashed var(--line);border-radius:14px;padding-bottom:40px}
+.trow.tparent .tt{font-weight:700}
+.tfold{border:0;background:none;color:var(--muted);cursor:pointer;padding:0 4px 0 0;font:inherit}
+.tkids{margin-left:22px;border-left:2px solid var(--line);padding-left:6px}
+.tkids .trow{padding-top:5px;padding-bottom:5px}
+.kcount,.kpar{color:var(--muted)}
+.ts56.sc,#sheetC.ts56{gap:8px}
+.ts56 #tsTitle{border:0;padding:4px 2px;background:none}
+.ts56 #tsNote{min-height:0}
+.tchips{display:flex;flex-wrap:wrap;gap:5px}
+.tch{border:1px solid var(--line);background:var(--panel);color:inherit;border-radius:999px;padding:3px 10px;font:inherit;font-size:12.5px;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tch.off{color:var(--muted);border-style:dashed}
+.tch[aria-pressed="true"]{border:2px solid var(--accent);font-weight:700}
+.tpanel{display:grid;gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px}
+.tpanel[hidden]{display:none}
+.kids56{display:grid;gap:4px}
+.krow{display:grid;grid-template-columns:28px minmax(0,1fr) auto auto;gap:6px;align-items:center}
+.krow.on .kt{text-decoration:line-through;color:var(--muted)}
+.krow .kt{border:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:4px 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.krow .tchk{width:22px;height:22px}
+.col56{display:grid;gap:6px}
+.huntset{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin:4px 0 8px}
 </style>
 
 <header class="hud" id="hud">
@@ -2247,6 +2272,7 @@ function renderGuide(){
       </ul></div>
   </div>
   <div class="panel"><h2>자세한 규칙</h2><p class="help">눌러서 펼쳐요. 화면 곳곳의 <b>?</b> 버튼을 누르면 해당 항목이 열려요. 숫자·버튼·병을 <b>꾹 누르거나 우클릭</b>하면 그 자리에서 설명과 편집이 떠요.</p>
+    ${acc('card56','🆕 v5.6 · 홈 좌우 배치 · 할 일 묶음 · 타이머 방식','지금 버전',`<ul><li><b>홈 배치</b>: ✎ 홈 배치에서 칸을 왼쪽·오른쪽 단 어디든 끌어 놓거나 ⇢/⇠로 옮겨요. 한쪽이 길어도 다른 쪽으로 넘어가지 않아요. 폰은 한 줄이라 순서만.</li><li><b>📦 할 일 묶음</b>: 할 일 상세의 '묶인 할 일'에 추가하거나, 여러 개 고른 뒤 '📦 묶기'. 묶여도 각자 따로인 할 일이라 하나만 끝내도 그 점수를 받아요. 목록에서 ▾로 접고 펴요.</li><li>체크리스트(점수 없는 작은 단계)는 그대로 있고, ↗로 묶인 할 일로 바꿀 수 있어요.</li><li><b>할 일 상세</b>: 위에 칩 한 줄(📅 날짜 · 🃏 카드 · # 태그 · 🧭 영역 · 📂 목록 · ⚑ · 크기 · ⏱). 눌러야 그 칸이 펼쳐져요.</li><li><b>타이머 방식</b>: ⏱ 시간 안에 = 목표 안에 끝내면 보너스(샤워처럼 서두를 필요 없는 것). ⚡ 빠를수록 = 빨리 끝낼수록 보너스가 커요(설거지·청소·답장 몰아 하기처럼 해치우고 싶은 것). 카드·할 일에 정해두고, 시작하고 2분 안에는 목표 분과 방식을 그때그때 바꿔요.</li></ul>`)}
     ${acc('card55','🆕 v5.5 · 행동/습관 편집이 쉬워졌어요','지금 버전',`<ul><li>이름이 <b>행동 카드</b>로 바뀌었어요. 점수는 카드에만 있고, 그중 <b>리듬</b>(☑ 매일·요일·📌)이 있는 카드를 <b>🔁 습관</b>이라고 불러요.</li><li>편집 → 행동/습관: 줄마다 <b>☑</b>(매일 켜고 끄기)·<b>🗑</b>(지우기, 되돌리기 가능). <b>☐ 여러 개 고르기</b>로 한꺼번에 지우기·영역 바꾸기·매일 켜기.</li><li><b>👁 보이는 칸</b>에서 영역·XP·골드·컨디션·리듬·용기·30일 횟수를 켜고 꺼요. 점수는 아이콘이 붙은 칩으로 보여요.</li><li>행동 카드 편집은 <b>완료</b>를 눌러야 저장돼요. ×나 바깥을 누르면 취소 (알림의 '되살리기'로 살릴 수 있어요).</li><li>할 일 상세는 반대로 <b>자동 저장</b>. 바깥을 누르면 저장하고 닫혀요 (PC 오른쪽 상세도).</li><li>루틴: 단계마다 연결된 카드 점수가 들어가고, 루틴 자체는 <b>완주 보너스</b>만 줘요.</li><li>할 일 스마트 목록: ⏰ 지난 것 · ⏳ 마감 3일 안 · ⚡ 용기 · ☠ 미룬 것 · 🔁 습관 연결. 할 일 화면 왼쪽 목록을 끌어서 순서를 바꿔요.</li></ul>`)}
     ${acc('card54','🃏 행동 카드 하나로 · 점수 뜻 · ⚔ 용기','v5.4',`<ul><li>점수는 <b>행동 카드</b>에만 있어요. 일퀘·도파민 메뉴·할 일 연결·루틴은 그 카드를 보여주는 방법일 뿐이에요.</li><li><b>일퀘</b> = '☑ 매일'로 둔 행동 카드. 따로 점수가 없고, 다 하면 상자를 열어요. 몸무게·채소처럼 다른 기록과 이어진 카드(🔗)도 있어요.</li><li><b>XP</b> = 성장(레벨) · <b>골드</b> = 현실의 돈·자원 · <b>컨디션</b> = 지금의 몸과 마음. 상관없는 칸은 0이에요.</li><li>새 습관은 <b>프리셋</b>(가벼움·보통·힘듦·작품·일…)을 눌러 바로 채워요. 프리셋 숫자는 습관 탭 맨 아래에서 바꿔요.</li><li>행동 카드에 <b>⚔ 용기 표시</b>를 붙이면 할 때마다 용기 점수·용기 구슬이 함께 쌓여요.</li><li>HP(컨디션)는 영역 평균이 아니라 <b>모두 더한 값</b>이에요. 점수 낼 일이 적은 영역(경제 등)이 깎아먹지 않아요.</li></ul>`)}
     ${acc('flow','컨디션 (HP)','오늘의 몸·마음 상태',`<ul><li>아침 에너지(지금 ${C.energyBase.join(' / ')})가 모든 영역의 시작점이에요.</li><li>영역(${C.areas.map(a=>esc(a.name)).join('·')})끼리는 서로 메꿔지지 않아요. 운동을 많이 해도 과음의 몸 페널티는 그대로예요.</li><li>네 영역 평균이 HP이고, 아바타 표정이 돼요: 75↑ 활기, 55↑ 괜찮음, 35↑ 지침, 그 아래 바닥.</li><li>"지금 하면 좋은 것"은 방치 경보, 이번 주 용기, 남은 일퀘, 가장 낮은 영역을 보고 골라줘요.</li></ul>`)}
@@ -3091,7 +3117,7 @@ function renderTasks(){
   else groups=[{key:'',name:'',list}];
   const showList=!sel.startsWith('l:');
   $('tList').innerHTML=list.length?groups.filter(g=>g.list.length).map(g=>{const shut=g.key&&C.ui.collapsed['tg'+g.key];
-    return `<div class="tgroup">${g.name?`<button class="ghead ${shut?'shut':''}" data-tgcollapse="${esc(g.key)}">${ic('chev')}${esc(g.name)} <span class="c">${g.list.length}</span></button>`:''}${shut?'':`<div data-drop="reorder:tasks" data-grp="${esc(g.key)}">${g.list.map(t=>taskRow(t,{showList})).join('')}</div>`}</div>`}).join('')
+    return `<div class="tgroup">${g.name?`<button class="ghead ${shut?'shut':''}" data-tgcollapse="${esc(g.key)}">${ic('chev')}${esc(g.name)} <span class="c">${g.list.length}</span></button>`:''}${shut?'':`<div data-drop="reorder:tasks" data-grp="${esc(g.key)}">${nestRows(g.list,{showList},list)}</div>`}</div>`}).join('')
     :`<div class="empty">${sel==='today'?'오늘 할 일이 없어요. 위에 적거나, 🎲 뽑기로 하나 골라요.':'비어 있어요. 위에 적어서 추가해요.'}</div>`;
   if(sel==='today')$('tList').insertAdjacentHTML('beforeend',todayHabitsHTML());
   if(sel.startsWith('l:'))$('tList').insertAdjacentHTML('afterbegin',listRoutinesHTML(sel.slice(2)));
@@ -3147,7 +3173,7 @@ function drawTaskSheet(){
     <form class="sr" data-tssubadd="1"><span class="muted" style="text-align:center">＋</span><input type="text" id="tsSubNew" placeholder="하위 할 일 추가" enterkeyhint="done"><span></span></form></div></div>
   <details><summary class="small" style="cursor:pointer;font-weight:700">더 보기 · 행동 카드 연결 · 태그 · 영역</summary><div class="f2" style="margin-top:8px">
     <label class="f">태그 (쉼표)<input id="tsTags" value="${esc((t.tags||[]).join(', '))}"></label>
-    <label class="f">습관과 연결 ${t.aid?'':'<button class="btn ghost sm" data-tohabit="1" style="padding:1px 6px;font-size:11px">이 할 일로 습관 만들기</button>'}<select id="tsAid"><option value="">없음 (할 일 점수)</option>${acts.map(a=>`<option value="${a.id}" ${t.aid===a.id?'selected':''}>${esc(a.name)} · +${a.xp}</option>`).join('')}</select></label>${taskCardNote(t)}
+    <label class="f">행동 카드 연결 ${t.aid?'':'<button class="btn ghost sm" data-tohabit="1" style="padding:1px 6px;font-size:11px">이 할 일로 행동 카드 만들기</button>'}<select id="tsAid"><option value="">없음 (할 일 크기 점수)</option>${acts.map(a=>`<option value="${a.id}" ${t.aid===a.id?'selected':''}>${esc(a.name)} · +${a.xp}</option>`).join('')}</select></label>${taskCardNote(t)}
     <label class="f">컨디션 영역<select id="tsArea"><option value="">자동 (${esc((C.areas.find(x=>x.id===(tagArea(t)||((t.aid&&C.actions.find(x=>x.id===t.aid))||{}).area))||{}).name||'없음 · 컨디션 변화 없음')})</option>${C.areas.map(a=>`<option value="${a.id}" ${t.area===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select></label>
     <label class="f">끝내면 넣을 구슬<select id="tsMarble">${jarSelOpts().map(([v,l])=>`<option value="${esc(v)}" ${(t.marble||'')===v?'selected':''}>${esc(l)}</option>`).join('')}</select></label>
     ${t.sec?`<label class="f">칸(섹션)<input id="tsSec" value="${esc(t.sec)}"></label>`:''}
@@ -3338,7 +3364,7 @@ function dndMove(x,y,fromScroll){
   clearHi();DND.drop=null;if(!tgt)return;
   const dv=tgt.dataset.drop;
   if(dv.startsWith('reorder:')){
-    if((DND.kind==='row'&&dv!=='reorder:tasks'&&(DND.el.parentElement===tgt||[...tgt.children].some(c=>c.dataset&&c.dataset.rowid===DND.id)))||(DND.kind==='task'&&dv==='reorder:tasks')){
+    if((DND.kind==='row'&&dv==='reorder:home')||(DND.kind==='row'&&dv!=='reorder:tasks'&&(DND.el.parentElement===tgt||[...tgt.children].some(c=>c.dataset&&c.dataset.rowid===DND.id)))||(DND.kind==='task'&&dv==='reorder:tasks')){
       const sel=DND.kind==='row'?'[data-rowid]':'.trow';const kids=[...tgt.children].filter(c=>c!==DND.el&&c.matches(sel)&&!(DND.kind==='row'&&c.dataset.rowid===DND.id));
       let before=null;const hit=kids.find(c=>{const r=c.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom});
       if(hit){const r=hit.getBoundingClientRect();before=y<r.top+r.height/2?hit:kids[kids.indexOf(hit)+1]||null}
@@ -3367,6 +3393,7 @@ function dndEnd(x,y){
   if(drop.type==='reorder'){
     if(drop.col==='smart'){const o=smartOrder();const it=o.find(x=>x[0]===id);if(!it)return;const rest=o.filter(x=>x!==it);let i=drop.before?rest.findIndex(x=>x[0]===drop.before):rest.length;if(i<0)i=rest.length;rest.splice(i,0,it);C.ui.smart=rest;save('config');render();return}
     if(drop.col==='lists'){const it=C.lists.find(l=>l.id===id);if(!it)return;const rest=C.lists.filter(l=>l!==it);let i=drop.before?rest.findIndex(l=>l.id===drop.before):rest.length;if(i<0)i=rest.length;rest.splice(i,0,it);C.lists=rest;save('config');render();return}
+    if(drop.col==='home'&&homeDrop(id,drop))return;
     if(drop.col==='home'||drop.col==='nav'){const arr=drop.col==='home'?C.ui.home:C.ui.navAll;const it=arr.find(h=>(h[0]||h)===id);if(!it)return;const rest=arr.filter(h=>h!==it);let i=drop.before?rest.findIndex(h=>(h[0]||h)===drop.before):rest.length;if(i<0)i=rest.length;rest.splice(i,0,it);if(drop.col==='home')C.ui.home=rest;else{C.ui.navAll=rest}save('config');render();return}
     if(drop.col==='actions'){const it=C.actions.find(a=>a.id===id);if(!it)return;C.actions=C.actions.filter(a=>a!==it);let i=drop.before?C.actions.findIndex(a=>a.id===drop.before):C.actions.length;if(i<0)i=C.actions.length;C.actions.splice(i,0,it);save('config');render();toast('순서를 바꿨어요');return}
     if(Array.isArray(C[drop.col])&&!['tasks','home','nav'].includes(drop.col)){const arr=C[drop.col],it=arr.find(x=>x.id===id);if(!it)return;const rest=arr.filter(x=>x!==it);let i=drop.before?rest.findIndex(x=>x.id===drop.before):rest.length;if(i<0)i=rest.length;rest.splice(i,0,it);C[drop.col]=rest;save('config');render();return}
@@ -3510,7 +3537,7 @@ function drawHunt(full){
     if(isR&&$('huntTot'))$('huntTot').textContent='전체 '+mmss(runElapsed());
     if(over&&!RUN.beeped){RUN.beeped=isR?RUN.si+1:1;runSave();beep();buzz(200)}
     document.title=`⚔ ${mmss(el)} · ${RUN.name}`;return}
-  const sp=speedOf(el,tgt/60,runBaseXP());
+  const sp=speedOf(el,tgt/60,runBaseXP(),RUN.mode);
   $('hunt').innerHTML=`<div class="ht"><button class="btn ghost sm" data-hunt="min">⌄ 내리기</button><b>${isR?'⏱ '+esc(RUN.name):'⚔ 사냥'}</b><button class="btn ghost sm" data-hunt="quit">그만</button></div>
     <div class="arena"><div class="tier" id="huntName">${esc(isR?st.name:RUN.name)}</div>
       <div class="mon" id="huntMon">${bossSVG(RUN.color,false)}</div>
@@ -3540,15 +3567,15 @@ function huntDo(k){
 }
 function finishSingle(){
   const el=runElapsed(),R=RUN,base=runBaseXP()||10;endRun(true);ui.off=0;
-  const sp=speedOf(el,R.target,base);
+  const sp=speedOf(el,R.target,base,R.mode);
   if(R.kind==='task'){const t=TASKS[R.id];if(t){const a=t.aid&&C.actions.find(x=>x.id===t.aid);
       if(a&&a.opts&&a.opts.length){openDoneSheet({t,a,spd:sp,elapsed:el})}else completeTask(t,{direct:true,spd:sp,elapsed:el})}}
   else{const a=C.actions.find(x=>x.id===R.id);if(a){if(a.opts&&a.opts.length)openDoneSheet({a,spd:sp,elapsed:el});else doAction(a,{direct:true,spd:sp,elapsed:el})}}
-  later(()=>popup(sp.tier,'⚔️',`<b>${esc(R.name)}</b><br>${mmss(el)} 걸렸어요 (목표 ${R.target}분)${sp.bonus?`<br><span style="color:var(--good)">스피드 보너스 +${sp.bonus} XP</span>`:''}`,sp.r<=1?'⚡':'✓'));runLater();
+  later(()=>popup(sp.tier,'⚔️',`<b>${esc(R.name)}</b><br>${mmss(el)} 걸렸어요 (목표 ${R.target}분)${sp.bonus?`<br><span style="color:var(--good)">${R.mode==='speed'?'스피드':'시간 안에'} 보너스 +${sp.bonus} XP</span>`:''}`,sp.r<=1?'⚡':'✓'));runLater();
 }
 function finishRoutine(){
   const R=RUN,tot=runElapsed(),r=(C.routines||[]).find(x=>x.id===R.id);endRun(true);ui.off=0;
-  const done=R.log.filter(x=>!x.skip).length,all=R.steps.length;const sp=speedOf(tot,R.target,+(r&&r.xp)||20);
+  const done=R.log.filter(x=>!x.skip).length,all=R.steps.length;const sp=speedOf(tot,R.target,+(r&&r.xp)||20,R.mode);
   let xp=done===all?(+(r&&r.xp)||0)+sp.bonus:0;if(recoveryActive())xp=Math.round(xp*C.recovery.mult);
   const e={kind:'routine',type:'good',name:R.name+(done<all?` (${done}/${all})`:' 완주'),area:(r&&r.area)||'life',cond:0,xp,gold:done===all?+(r&&r.gold)||0:0,note:R.log.map(x=>`${x.skip?'✕':'✓'}${x.name} ${mmss(x.sec)}`).join(' · ')};
   if(done===all)e.spd=sp.tier;e.dur=Math.max(1,Math.round(tot/60));const st=new Date(Date.now()-tot*1000);e.st=pad(st.getHours())+':'+pad(st.getMinutes());
@@ -3569,7 +3596,7 @@ function renderHomeV5(){
   $('htCount').textContent=list.length||dn.length?`${dn.length} / ${list.length+dn.length}`:'';
   $('hQuest').innerHTML=questBarHTML();
   const shown=list.slice(0,ui.htMore?99:8);
-  $('htList').innerHTML=(shown.map(t=>taskRow(t,{compact:true})).join('')||`<div class="empty">${tasksReady||mode==='local'?'오늘 할 일이 없어요. 🎲 뽑기로 하나 골라도 좋아요.':'불러오는 중…'}</div>`)
+  $('htList').innerHTML=(nestRows(shown,{compact:true})||`<div class="empty">${tasksReady||mode==='local'?'오늘 할 일이 없어요. 🎲 뽑기로 하나 골라도 좋아요.':'불러오는 중…'}</div>`)
     +(list.length>8&&!ui.htMore?`<button class="btn ghost sm" data-htmore="1" style="margin-top:6px">${list.length-8}개 더 보기</button>`:'')
     +(dn.length?`<div class="tiny muted" style="margin-top:6px">✓ 끝낸 것: ${dn.slice(0,6).map(e=>esc(e.name)).join(', ')}${dn.length>6?' 외 '+(dn.length-6):''}</div>`:'')+todayHabitsHTML();
   const g=C.gacha||{};const rs=(C.routines||[]).slice(0,2);
@@ -3608,7 +3635,7 @@ function openActionEditor(id){
     <label class="f">컨디션 ${good?'+':'−'}<input data-ae="cond" type="number" min="0" max="100" value="${Math.abs(a.cond||0)}"></label>
     <label class="f">골드 ${good?'+':'−'}<input data-ae="gold" type="number" min="0" value="${Math.abs(a.gold||0)}"></label>
     ${good?`<label class="f">XP<input data-ae="xp" type="number" min="0" value="${a.xp||0}"></label>${aeBraveHTML(a)}<label class="f">구슬<select data-ae="marble">${marbleOpts().map(([v2,l])=>`<option value="${esc(v2)}" ${(a.marble||'')===v2?'selected':''}>${esc(l)}</option>`).join('')}</select></label>
-    <label class="f">목표 시간(분) · 타이머<input data-ae="dur" type="number" min="0" max="300" value="${a.dur||''}"></label>
+    <label class="f">목표 시간(분) · 타이머<input data-ae="dur" type="number" min="0" max="300" value="${a.dur||''}"></label><label class="f">타이머 방식<select data-ae="tmode"><option value="">⏱ 시간 안에 끝내면 보너스</option><option value="speed" ${a.tmode==='speed'?'selected':''}>⚡ 빠를수록 보너스</option></select></label>
     <label class="f">크기 (뽑기 필터)<select data-ae="effort"><option value="">자동</option>${EFFORTS.map(([k,l])=>`<option value="${k}" ${a.effort===k?'selected':''}>${l}</option>`).join('')}</select></label>`:''}
     <label class="f">금액 적기 (경제)<select data-ae="money"><option value="" ${a.money?'':'selected'}>안 적음</option><option value="1" ${a.money?'selected':''}>${good?'아낀':'쓴'} 돈 적기</option></select></label></div>
   <label class="f">💭 하기 싫을 때 읽을 문구 (관점 바꾸기)<textarea data-ae="reframe" rows="3" placeholder="예: 나는 물 맞는 걸 좋아해. 생각보다 금방 끝나!">${esc(a.reframe||'')}</textarea></label>
@@ -4642,6 +4669,206 @@ function taskCardNote(t){
   return `<div class="f" style="grid-column:1/-1"><span class="small muted">연결된 행동 카드 · 점수는 이 카드에서 나와요</span><div class="row" style="gap:6px;flex-wrap:wrap"><span class="mcs">${metaChips(a,null,aeShowAll().map(z=>z[0]))}</span><button class="btn ghost sm" data-aedit="${a.id}">✎ 카드 편집</button></div></div>`;
 }
 function todayTaskAids(){const td=dateKey();return new Set(openTasks().filter(t=>t.aid&&t.due&&t.due<=td).map(t=>t.aid))}
+
+/* ================= v5.6: 홈 좌우 배치 · 할 일 묶음 · 타이머 방식 · 상세 화면 간단히 ================= */
+
+/* ---- 홈: 왼쪽·오른쪽 칸을 직접 정하기 (폰은 순서만) ---- */
+function homeTwo(){const g=$('homeGrid');if(!g)return false;const w=g.clientWidth||(innerWidth>=960?innerWidth-260:innerWidth-32);return w>=760}
+function homeCols(){
+  const h=C.ui.home;if(h.some(x=>x[2]!=='L'&&x[2]!=='R')){const n=h.length;h.forEach((x,i)=>{if(x[2]!=='L'&&x[2]!=='R')x[2]=i<Math.ceil(n/2)?'L':'R'})}
+}
+function applyHome(){
+  const g=$('homeGrid');if(!g)return;homeCols();
+  const two=homeTwo();g.classList.toggle('two',two);
+  let L=$('hcolL'),R=$('hcolR');
+  if(!L){L=document.createElement('div');L.id='hcolL';L.className='hcol';L.dataset.grp='L';R=document.createElement('div');R.id='hcolR';R.className='hcol';R.dataset.grp='R'}
+  if(two){g.appendChild(L);g.appendChild(R)}
+  C.ui.home.forEach(([id,on,col])=>{const el=g.querySelector(`[data-hid="${id}"]`);if(!el)return;el.hidden=!on;el.classList.toggle('collapsed',!!C.ui.collapsed[id]);(two?(col==='R'?R:L):g).appendChild(el)});
+  if(!two){L.remove();R.remove()}
+}
+function applyHomeEdit(){
+  const two=homeTwo();
+  document.querySelectorAll('#homeGrid .hblock').forEach(el=>{const id=el.dataset.hid;el.dataset.rowid=id;
+    let h=el.querySelector(':scope>.hedit');if(ui.homeEdit){if(!h){h=document.createElement('div');h.className='hedit';el.prepend(h)}
+      const it=C.ui.home.find(x=>x[0]===id)||[0,1,'L'];const on=it[1];
+      h.innerHTML=`<span class="hand" data-drag="row:${id}" data-dragmode="now" aria-label="끌어서 옮기기">⋮⋮</span><b>${esc(HOME_BLOCKS[id]||id)}</b>${two?`<button class="x" data-x56hcol="${id}" title="${it[2]==='R'?'왼쪽 칸으로':'오른쪽 칸으로'}" aria-label="다른 칸으로">${it[2]==='R'?'⇠':'⇢'}</button>`:''}<button class="x" data-hvis="${id}" aria-label="보이기·숨기기">${on?'👁':'🚫'}</button>`;el.hidden=false;el.classList.toggle('hoff',!on)}
+    else{if(h)h.remove();el.classList.remove('hoff')}});
+  const g=$('homeGrid');
+  ['hcolL','hcolR'].forEach(k=>{const c=$(k);if(c)c.dataset.drop=ui.homeEdit&&two?'reorder:home':''});
+  g.dataset.drop=ui.homeEdit&&!two?'reorder:home':'';
+  const hb=$('homeEditBtn');if(hb)hb.textContent=ui.homeEdit?'✓ 배치 끝':'✎ 홈 배치';
+}
+// 끌어서 놓은 칸(왼쪽/오른쪽)으로 옮기기
+function homeDrop(id,drop){
+  if(drop.grp!=='L'&&drop.grp!=='R')return false;
+  const arr=C.ui.home,it=arr.find(h=>h[0]===id);if(!it)return true;it[2]=drop.grp;
+  const rest=arr.filter(h=>h!==it);let i;
+  if(drop.before)i=rest.findIndex(h=>h[0]===drop.before);
+  else{i=-1;rest.forEach((h,k)=>{if(h[2]===drop.grp)i=k});i=i<0?rest.length:i+1}
+  if(i<0)i=rest.length;rest.splice(i,0,it);C.ui.home=rest;save('config');render();return true;
+}
+{let lastTwo=null;addEventListener('resize',()=>{const t=homeTwo();if(t!==lastTwo){lastTwo=t;if(curView()==='home'){applyHome();if(ui.homeEdit)applyHomeEdit()}}})}
+
+/* ---- 할 일 묶음: 각자 따로인 할 일을 한 묶음으로 (하나만 해도 보상) ---- */
+function kidsOf(id){return Object.values(TASKS).filter(k=>k.parent===id&&k.status!==-1)}
+function nestRows(arr,opt,whole){
+  const inList=new Set((whole||arr).map(t=>t.id));
+  return arr.filter(t=>!(t.parent&&inList.has(t.parent)&&TASKS[t.parent]&&TASKS[t.parent].status===0)).map(t=>{
+    const kids=kidsOf(t.id).filter(k=>k.status===0);let h=taskRow(t,opt);
+    if(!kids.length||t.status!==0)return h;
+    const shut=(C.ui.tfold||{})[t.id];
+    return h+(shut?'':`<div class="tkids">${kids.sort(taskSorter('due')).map(k=>taskRow(k,{...opt,nested:1})).join('')}</div>`);
+  }).join('');
+}
+{const _tr=taskRow;taskRow=function(t,o={}){
+  let h=_tr(t,o);
+  const ks=kidsOf(t.id);
+  if(ks.length&&t.status===0){const open=ks.filter(k=>k.status===0).length,done=ks.filter(k=>k.status===2).length,shut=(C.ui.tfold||{})[t.id];
+    h=h.replace('<span class="tt">',`<span class="tt"><button class="tfold" data-x56fold="${t.id}" aria-label="묶음 ${shut?'펴기':'접기'}" title="묶음 ${shut?'펴기':'접기'}">${shut?'▸':'▾'}</button>📦 `)
+       .replace(/(<span class="tm">)/,`$1<span class="kcount" title="묶인 할 일">📦 ${done}/${open+done}</span>`);
+    if(!/class="tm"/.test(h))h=h.replace(/(<span class="tt">[\s\S]*?<\/span>)(<\/span>)/,`$1<span class="tm"><span class="kcount">📦 ${done}/${open+done}</span></span>$2`);
+    h=h.replace('class="trow ','class="trow tparent ')}
+  if(t.parent&&!o.nested&&TASKS[t.parent]){const p=TASKS[t.parent];h=h.replace(/(<span class="tm">)/,`$1<span class="kpar" title="묶음">📦 ${esc(p.title)}</span>`);if(!/class="tm"/.test(h))h=h.replace(/(<span class="tt">[\s\S]*?<\/span>)(<\/span>)/,`$1<span class="tm"><span class="kpar">📦 ${esc(p.title)}</span></span>$2`)}
+  if(o.nested)h=h.replace('class="trow ','class="trow tkid ');
+  return h}}
+{const _dt=deleteTask;deleteTask=function(id){Object.values(TASKS).filter(k=>k.parent===id).forEach(k=>{delete k.parent;saveTask(k)});_dt(id)}}
+function nestUnder(head,ids){
+  ids.forEach(id=>{const k=TASKS[id];if(!k||k.id===head.id)return;
+    kidsOf(k.id).forEach(g=>{g.parent=head.id;saveTask(g)});k.parent=head.id;saveTask(k)});
+  delete head.parent;saveTask(head);C.ui.tfold=C.ui.tfold||{};delete C.ui.tfold[head.id];save('config');
+}
+// 여러 개 고르기 막대에 '📦 묶기'
+{const _dm=drawMsel;drawMsel=function(){_dm();const bar=$('mselBar');if(!bar||!ui.msel||ui.msel.size<2||bar.querySelector('[data-x56group]'))return;
+  const b=document.createElement('button');b.className='btn ghost sm';b.dataset.x56group='1';b.textContent='📦 묶기';const ref=bar.querySelector('[data-mb="done"]');ref?bar.insertBefore(b,ref):bar.appendChild(b)}}
+function openGroupSheet(){
+  const ids=mselIds().filter(id=>TASKS[id]&&TASKS[id].status===0);if(ids.length<2){toast('두 개 넘게 골라요');return}
+  sheetCtx={grp:ids};
+  openSheet(`<div class="sh"><h3>📦 묶기 · ${ids.length}개</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <p class="small muted" style="margin:0">묶어도 각자 따로인 할 일이에요. 하나만 끝내도 그 할 일 점수를 받아요. 목록에서 접고 펼 수 있어요.</p>
+    <div class="small"><b>어느 할 일을 묶음 머리로?</b></div>
+    <div class="col56">${ids.map(id=>`<button class="btn ghost" data-x56head="${id}" style="justify-content:flex-start">📦 ${esc(TASKS[id].title)}</button>`).join('')}</div>
+    <form class="row" data-x56newhead="1" style="gap:6px"><input id="x56HeadName" placeholder="또는 새 묶음 이름 (예: 집 청소)" enterkeyhint="done"><button class="btn">새 묶음</button></form>`);
+}
+
+/* ---- 할 일 상세: 칩 한 줄 + 펼치는 칸 (간단하게) ---- */
+function tsChipsHTML(t){
+  const P=ui.tsPanel||'',ar=C.areas.find(x=>x.id===areaOfTask(t)),card=t.aid&&C.actions.find(x=>x.id===t.aid);
+  const pr=PRIOS.find(x=>x[0]===(t.prio||0))||PRIOS[0],ef=EFFORTS.find(x=>x[0]===effortOf(t))||EFFORTS[1];
+  const ch=(k,txt,on,tip)=>`<button class="tch ${on?'':'off'}" data-x56panel="${k}" aria-pressed="${P===k}" title="${esc(tip)}">${txt}</button>`;
+  return `<div class="tchips">
+    ${ch('when',`📅 ${t.due?esc(dueLabel(t.due)):'날짜'}${t.time?' '+esc(ampm(t.time)):''}${t.rep?' · 🔁 '+esc(repLabel(t.rep)):''}${t.deadline?' · ⏳ '+esc(dueLabel(t.deadline)):''}`,t.due||t.rep||t.deadline,'날짜 · 시간 · 반복 · 마감 · 점검일')}
+    ${ch('card',`🃏 ${card?esc(card.name):'행동 카드'}`,card,'행동 카드 연결 (점수가 카드에서 나와요)')}
+    ${ch('tags',(t.tags||[]).length?t.tags.map(x=>'#'+esc(x)).join(' '):'# 태그',(t.tags||[]).length,'태그')}
+    ${ch('area',`🧭 ${ar?esc(ar.name):'영역'}${t.area?'':' <small>(자동)</small>'}`,ar,'컨디션 영역 · 구슬')}
+    ${ch('list',`📂 ${esc(listName(t.list||'inbox'))}`,t.list&&t.list!=='inbox','목록')}
+    ${ch('prio',`⚑ ${pr[2]||'중요도'}`,t.prio,'중요도')}
+    ${ch('size',`${esc(ef[1])}${t.brave?' · ⚡ 용기':''}`,true,'크기(보상) · 용기')}
+    ${ch('timer',`⏱ ${t.dur?durTxt(t.dur):'타이머'} · ${t.tmode==='speed'?'빠를수록':'시간 안에'}`,t.dur,'타이머 목표·방식')}
+    ${ch('more','⋯',t.reframe,'하기 싫을 때 문구 · 칸 · 기록')}
+  </div><div class="tpanels"></div>`;
+}
+function tsRestyle(){
+  const sc=$('sheetC'),t=TASKS[sheetCtx&&sheetCtx.task];if(!t||!$('tsTitle'))return;
+  const q=s=>sc.querySelector(s),lab=id=>{const e=$(id);return e?e.closest('label'):null},up=(e,s)=>e?e.closest(s):null;
+  sc.classList.add('ts56');
+  // 반복·중요도 줄 쪼개기
+  const prRow=up(q('.flags'),'.row');let repWrap=null,prWrap=null;
+  if(prRow){prWrap=document.createElement('div');prWrap.className='row';prWrap.style.gap='8px';prWrap.innerHTML='<span class="small muted">중요도</span>';prWrap.appendChild(q('.flags'));
+    repWrap=document.createElement('div');repWrap.className='row';repWrap.style.gap='8px';repWrap.innerHTML='<span class="small muted">🔁 반복</span>';repWrap.appendChild($('tsRepSel'));prRow.remove()}
+  const sizeBox=up(q('[data-tseff]'),'.seg');const sizeWrap=sizeBox?sizeBox.parentElement:null;
+  const aidL=lab('tsAid'),cardNote=aidL&&aidL.nextElementSibling&&aidL.nextElementSibling.querySelector('.mcs')?aidL.nextElementSibling:null;
+  const moreDet=up($('tsTags'),'details'),moreTail=moreDet?[...moreDet.children].filter(c=>c.tagName==='P'):[];
+  const rfDet=up($('tsReframe'),'details'),explain=q('.sh + p.tiny');
+  const timerWrap=document.createElement('div');timerWrap.className='row';timerWrap.style.gap='8px';
+  timerWrap.innerHTML=`<label class="row small" style="gap:6px">목표<input id="x56Dur" type="number" min="1" max="600" step="5" value="${t.dur||''}" placeholder="${({quick:10,mid:25,heavy:50})[effortOf(t)]||25}" style="width:80px">분</label><span class="seg">${[['','⏱ 시간 안에','목표 시간 안에 끝내면 보너스'],['speed','⚡ 빠를수록','빨리 끝낼수록 보너스가 커요']].map(([k,l,d])=>`<button data-x56tmode="${k}" aria-pressed="${(t.tmode||'')===k}" title="${d}">${l}</button>`).join('')}</span><span class="tiny muted">시작할 때 그때그때 바꿀 수도 있어요</span>`;
+  const tagWrap=document.createElement('div');const all={};Object.values(TASKS).forEach(x=>(x.tags||[]).forEach(g=>all[g]=(all[g]||0)+1));
+  tagWrap.innerHTML=`<div class="row" style="gap:4px;flex-wrap:wrap">${Object.entries(all).sort((a,b)=>b[1]-a[1]).slice(0,24).map(([g])=>`<button class="chipbtn" data-x56tag="${esc(g)}" aria-pressed="${(t.tags||[]).includes(g)}">#${esc(g)}</button>`).join('')||'<span class="tiny muted">아직 태그가 없어요</span>'}</div>`;
+  const panels={
+    when:[lab('tsDue'),lab('tsDl'),up($('tsTime'),'.f'),up(q('[data-tsdue]'),'.row'),repWrap,q('.repbox'),q('.cks')],
+    card:[aidL,cardNote],tags:[lab('tsTags'),tagWrap],area:[lab('tsArea'),lab('tsMarble')],list:[lab('tsList')],prio:[prWrap],
+    size:[sizeWrap,explain],timer:[timerWrap],more:[rfDet,lab('tsSec'),...moreTail]};
+  const box=document.createElement('div');box.innerHTML=tsChipsHTML(t);const chips=box.firstElementChild,pan=box.lastElementChild;
+  $('tsTitle').after(chips);chips.after(pan);
+  const P=ui.tsPanel||'';
+  for(const k in panels){const d=document.createElement('div');d.className='tpanel';d.dataset.p=k;d.hidden=P!==k;panels[k].filter(Boolean).forEach(e=>d.appendChild(e));pan.appendChild(d)}
+  if(rfDet)rfDet.open=true;
+  if(moreDet)moreDet.remove();
+  const f2=q('.f2');if(f2&&!f2.children.length)f2.remove();
+  // 메모는 칩 아래로
+  const note=$('tsNote');if(note){note.rows=Math.min(6,Math.max(1,(t.note||'').split('\n').length));pan.after(note)}
+  // 묶음 · 체크리스트
+  const subsBox=up(q('.subs'),'div:not(.subs)');
+  if(subsBox){const hd=subsBox.firstElementChild;if(hd&&/하위 할 일/.test(hd.textContent))hd.textContent=hd.textContent.replace('하위 할 일','☑ 체크리스트 (점수 없음)');
+    subsBox.querySelectorAll('.sr input[data-tssubt]').forEach(inp=>{const i=inp.dataset.tssubt;const b=document.createElement('button');b.className='x';b.dataset.x56promote=i;b.title='묶인 할 일로 (점수 따로)';b.textContent='↗';inp.after(b)});
+    subsBox.insertAdjacentHTML('beforebegin',kidsBoxHTML(t))}
+  // 끝 버튼 이름
+  const db=q('[data-tsdone2]');if(db)db.textContent='닫기';
+}
+function kidsBoxHTML(t){
+  if(t.parent&&TASKS[t.parent]){const p=TASKS[t.parent];
+    return `<div class="kids56"><span class="small muted">📦 묶음</span> <button class="chipbtn" data-x56open="${p.id}">${esc(p.title)}</button> <button class="btn ghost sm" data-x56unnest="${t.id}">묶음에서 빼기</button></div>`}
+  const ks=kidsOf(t.id).sort((a,b)=>(a.status-b.status)||taskSorter('due')(a,b));
+  const cand=openTasks().filter(x=>x.id!==t.id&&x.parent!==t.id&&!kidsOf(x.id).length).sort((a,b)=>a.title.localeCompare(b.title)).slice(0,200);
+  return `<div class="kids56"><div class="small muted">📦 묶인 할 일 ${ks.length?`${ks.filter(k=>k.status===2).length}/${ks.length}`:''} <span class="tiny">— 각자 따로인 할 일 · 하나만 해도 보상</span></div>
+    ${ks.map(k=>`<div class="krow ${k.status===2?'on':''}"><button class="tchk" data-tdone="${k.id}" aria-label="${esc(k.title)} 완료">${k.status===2?'✓':''}</button><button class="kt" data-x56open="${k.id}">${esc(k.title)}${k.due?` <span class="tiny muted">${esc(dueLabel(k.due))}</span>`:''}</button><span class="tiny muted">+${taskBase(k).xp}</span><button class="x" data-x56unnest="${k.id}" title="묶음에서 빼기" aria-label="묶음에서 빼기">×</button></div>`).join('')}
+    <form class="krow" data-x56kadd="1"><span class="muted" style="text-align:center">＋</span><input id="x56KNew" placeholder="묶음에 할 일 추가 (예: 욕실 청소 #청소)" enterkeyhint="done" autocomplete="off"><span></span><span></span></form>
+    ${cand.length?`<select id="x56KPick" aria-label="있는 할 일 넣기"><option value="">있는 할 일을 묶음에 넣기…</option>${cand.map(x=>`<option value="${x.id}">${esc(x.title)}${x.due?' · '+esc(dueLabel(x.due)):''}</option>`).join('')}</select>`:''}</div>`;
+}
+{const _os=openSheet;openSheet=function(h,c){$('sheetC').classList.remove('ts56');_os(h,c)}}
+{const _dts=drawTaskSheet;drawTaskSheet=function(){_dts();try{tsRestyle()}catch(e){console.error(e)}}}
+function tsRedraw(){const y=$('sheetC').scrollTop;drawTaskSheet();$('sheetC').scrollTop=y}
+
+/* ---- 타이머: 시간 안에 / 빠를수록 · 목표는 그때그때 ---- */
+function speedOf(elapsed,targetMin,baseXP,mode){const tgt=Math.max(1,targetMin)*60,r=elapsed/tgt;
+  if(mode!=='speed')return r<=1?{tier:'시간 안에 처치',bonus:Math.max(1,Math.round(baseXP*.25)),r}:{tier:'처치',bonus:0,r};
+  if(r<=.5)return{tier:'번개 처치',bonus:Math.max(2,Math.round(baseXP*.6)),r};if(r<=.8)return{tier:'빠른 처치',bonus:Math.max(1,Math.round(baseXP*.35)),r};if(r<=1)return{tier:'제시간 처치',bonus:Math.max(1,Math.round(baseXP*.15)),r};return{tier:'처치',bonus:0,r}}
+var HUNT_LOCK=120; // 시작하고 2분 안에만 목표·방식 바꾸기
+{const _sr=startRun;startRun=function(o){_sr(o);if(RUN&&!RUN.mode){const t=o.task,a=o.act||(t&&t.aid&&C.actions.find(x=>x.id===t.aid));RUN.mode=(t&&t.tmode)||(a&&a.tmode)||'within';runSave();drawHunt(true)}}}
+{const _dh=drawHunt;drawHunt=function(full){_dh(full);if(!RUN||RUN.kind==='routine')return;
+  const el=runElapsed(),locked=el>HUNT_LOCK;let box=$('huntSet');
+  if(full||!box){if(box)box.remove();box=document.createElement('div');box.id='huntSet';box.className='huntset';const ctl=$('hunt').querySelector('.ctl');ctl?ctl.before(box):$('hunt').appendChild(box)}
+  const key=RUN.target+'|'+RUN.mode+'|'+locked;if(box.dataset.k===key)return;box.dataset.k=key;
+  box.innerHTML=locked?`<span class="tiny">목표 ${RUN.target}분 · ${RUN.mode==='speed'?'⚡ 빠를수록 보너스':'⏱ 시간 안에 끝내면 보너스'}</span>`
+    :`<span class="row" style="gap:4px"><button class="btn ghost sm" data-x56tgt="-5">−5</button><b>${RUN.target}분</b><button class="btn ghost sm" data-x56tgt="5">+5</button></span>
+      <span class="seg"><button data-x56rmode="within" aria-pressed="${RUN.mode!=='speed'}">⏱ 시간 안에</button><button data-x56rmode="speed" aria-pressed="${RUN.mode==='speed'}">⚡ 빠를수록</button></span>
+      <span class="tiny">시작 2분 안에만 바꿀 수 있어요 · ${mmss(HUNT_LOCK-el)} 남음</span>`}}
+
+/* ---- 이벤트 ---- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-x56fold],[data-x56open],[data-x56hcol],[data-x56panel],[data-x56tag],[data-x56tmode],[data-x56unnest],[data-x56promote],[data-x56group],[data-x56head],[data-x56tgt],[data-x56rmode]');if(!b)return;const d=b.dataset;
+  e.preventDefault();e.stopPropagation();
+  if(d.x56fold){C.ui.tfold=C.ui.tfold||{};if(C.ui.tfold[d.x56fold])delete C.ui.tfold[d.x56fold];else C.ui.tfold[d.x56fold]=1;save('config');render();return}
+  if(d.x56open){tsFlush();openTaskSheet(d.x56open);return}
+  if(d.x56hcol){const it=C.ui.home.find(x=>x[0]===d.x56hcol);if(!it)return;homeDrop(it[0],{grp:it[2]==='R'?'L':'R',before:null});applyHome();applyHomeEdit();return}
+  if(d.x56panel!=null){ui.tsPanel=ui.tsPanel===d.x56panel?'':d.x56panel;
+    document.querySelectorAll('#sheetC .tpanel').forEach(p=>p.hidden=p.dataset.p!==ui.tsPanel);document.querySelectorAll('#sheetC .tch').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.x56panel===ui.tsPanel)));return}
+  if(d.x56tag){const t=tsRead();if(!t)return;const g=d.x56tag;t.tags=(t.tags||[]).includes(g)?t.tags.filter(x=>x!==g):[...(t.tags||[]),g];tsCommit(true,false);return}
+  if(d.x56tmode!=null){const t=tsRead();if(!t)return;if(d.x56tmode)t.tmode=d.x56tmode;else delete t.tmode;tsCommit(true,false);return}
+  if(d.x56unnest){tsFlush();const k=TASKS[d.x56unnest];if(k){delete k.parent;saveTask(k)}render();if(sheetCtx&&sheetCtx.task)tsRedraw();toast('묶음에서 뺐어요');return}
+  if(d.x56promote!=null){const t=tsRead();if(!t)return;const s=(t.subs||[])[+d.x56promote];if(!s)return;t.subs.splice(+d.x56promote,1);
+    const k=newTask({title:s.t,list:t.list,tags:[...(t.tags||[])]});k.parent=t.id;if(s.done){k.status=2;k.doneAt=dateKey()}saveTask(k);tsCommit(true,false);toast(`'${s.t}'를 묶인 할 일로 바꿨어요`);return}
+  if(d.x56group){openGroupSheet();return}
+  if(d.x56head){const ids=(sheetCtx||{}).grp||[];const h=TASKS[d.x56head];if(!h)return;nestUnder(h,ids);closeSheet();mselClear();render();toast(`'${h.title}' 묶음으로 ${ids.length-1}개를 묶었어요`);return}
+  if(d.x56tgt){if(!RUN||runElapsed()>HUNT_LOCK)return;RUN.target=clamp((+RUN.target||25)+(+d.x56tgt),1,600);runSave();drawHunt(false);return}
+  if(d.x56rmode){if(!RUN||runElapsed()>HUNT_LOCK)return;RUN.mode=d.x56rmode;runSave();drawHunt(false);return}
+},true);
+document.addEventListener('submit',e=>{
+  const f=e.target;
+  if(f.dataset.x56kadd){e.preventDefault();e.stopPropagation();const v=$('x56KNew').value.trim();if(!v)return;const t=tsRead();if(!t)return;
+    const p=parseQuick(v);if(!p.list)p.list=t.list||'inbox';if(!(p.tags||[]).length)p.tags=[...(t.tags||[])];
+    const a=C.actions.find(x=>x.name===p.title&&x.type==='good');if(a)p.aid=a.id;
+    const k=newTask(p);k.parent=t.id;saveTask(k);saveTask(t);tsRedraw();render();setTimeout(()=>$('x56KNew')&&$('x56KNew').focus(),30);toast(`'${k.title}'를 묶음에 넣었어요`);return}
+  if(f.dataset.x56newhead){e.preventDefault();e.stopPropagation();const v=$('x56HeadName').value.trim();if(!v){$('x56HeadName').focus();return}
+    const ids=(sheetCtx||{}).grp||[];const first=TASKS[ids[0]]||{};const h=newTask({title:v,list:first.list||'inbox',due:first.due||null});saveTask(h);nestUnder(h,ids);closeSheet();mselClear();render();toast(`'${v}' 묶음을 만들었어요`);return}
+},true);
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.id==='x56KNew'||t.id==='x56HeadName'){e.stopPropagation();return}
+  if(t.id==='x56KPick'&&t.value){e.stopPropagation();const p=tsRead();if(!p)return;const k=TASKS[t.value];if(!k)return;k.parent=p.id;saveTask(k);saveTask(p);tsRedraw();render();toast(`'${k.title}'를 묶음에 넣었어요`);return}
+  if(t.id==='x56Dur'){e.stopPropagation();const k=tsRead();if(!k)return;const v=parseInt(t.value);k.dur=v>0?v:null;saveTask(k);tsRedraw();render();return}
+},true);
+// 묶인 할 일을 상세 안에서 끝내면 상세도 새로
+document.addEventListener('click',e=>{const b=e.target.closest('#sheetC .kids56 [data-tdone]');if(b)setTimeout(()=>{if(sheetCtx&&sheetCtx.task&&$('tsTitle'))tsRedraw()},80)});
 
 </script>
 <script type="module" src="backend.js"></script>
