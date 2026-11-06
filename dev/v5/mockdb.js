@@ -17,7 +17,7 @@
         if(c[0]==='orderBy'){const[_,f,dir]=c;docs.sort((a,b)=>(a.v[f]>b.v[f]?1:-1)*(dir==='desc'?-1:1))}if(c[0]==='limit')docs=docs.slice(0,c[1])}
       return{docs:docs.map(d=>({id:d.id,exists:true,data:()=>clone(d.v)})),size:docs.length,empty:!docs.length,metadata:{}}};
     return{path,doc:id=>docApi(path+'/'+id),where:(f,op,v)=>colApi(path,[...cons,['where',f,op,v]]),orderBy:(f,d)=>colApi(path,[...cons,['orderBy',f,d]]),limit:n=>colApi(path,[...cons,['limit',n]]),
-      get:async()=>run(),onSnapshot:(next)=>{const f=()=>next(run());subs.add(f);setTimeout(f,15);return()=>subs.delete(f)}}}
+      get:async()=>run(),onSnapshot:(next)=>{const f=()=>next(run());const st=window.__staleT;if(st&&path.endsWith('/tasks')&&!st.done){setTimeout(()=>{const r=run();r.docs=r.docs.filter(d=>!st.hide.includes(d.id));r.metadata={fromCache:true};next(r)},12);setTimeout(()=>{subs.add(f);f()},st.ms||600);return()=>subs.delete(f)}subs.add(f);setTimeout(f,15);return()=>subs.delete(f)}}}
   window.__mockApi={db:{doc:p=>docApi('u/'+p),collection:p=>colApi('u/'+p)},account:{email:'test@example.com'},
     exportAll:async()=>({}),importAll:async()=>{},putTasks:async ts=>{ts.forEach(t=>store.set('u/tasks/'+t.id,clone(t)));setTimeout(notify,5)},logout:async()=>{}};
   window.__seed=(o)=>{for(const k in o)store.set('u/'+k,clone(o[k]))};

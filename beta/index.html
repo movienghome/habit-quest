@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v6.3</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v6.4</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -1217,6 +1217,60 @@ body:not(.calview63) .fab63{display:none!important}
 #battleBox .boss2 .say62{text-align:center;font-size:11.5px}
 body:not(.cal62) .cal62only{display:none!important}
 .calbar2 .ib{white-space:nowrap;flex:none}
+
+/* v6.4 */
+/* 캘린더: PC도 캐릭터 칸·베타 띠 숨기고 넓게 */
+body.calview63 #hud,body.calview63 .betabar{display:none}
+body.calview63:not(.cal62) main{padding-top:8px}
+body.calview63:not(.cal62) .calbar2{padding:0 0 4px}
+/* 날짜 펼침 = 그 주 아래 카드 (틱틱처럼) */
+.dp63.dp64{background:var(--panel);border:0;overflow:visible;padding:4px 6px 8px;min-height:0;display:flex}
+.dp64c{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 22px rgba(0,0,0,.13);overflow:hidden;animation:dp64in .16s ease-out}
+@keyframes dp64in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.dp64c{animation:none}}
+.dp64h{display:flex;align-items:center;gap:8px;padding:8px 8px 6px 14px;border-bottom:1px solid var(--line)}
+.dp64h b{font-size:14px}
+.dp64h .ib{min-height:30px;width:auto;height:auto;padding:4px 10px;font-size:12.5px;white-space:nowrap;flex:none}
+.dp64h .x64{font-size:18px;min-width:30px;padding:0}
+.dp64l{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:2px 0}
+.d64{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;min-height:40px;padding:4px 14px 4px 11px;border-left:3px solid var(--lc,transparent);cursor:pointer}
+.d64+.d64{border-top:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+.d64:hover{background:color-mix(in srgb,var(--accent) 6%,var(--panel))}
+.d64 .ck{width:20px;height:20px;border-radius:6px;border:1.8px solid var(--muted);background:none;cursor:pointer;padding:0;display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.d64.p5 .ck{border-color:#d23c3c}.d64.p3 .ck{border-color:#e07a10}
+.d64 .tt{min-width:0;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d64 .tt small{color:var(--muted);font-size:11.5px}
+.d64 .tm{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.d64.done{opacity:.55;cursor:default}.d64.done .tt{text-decoration:line-through}
+.d64.done .ck{border-style:solid;border-color:var(--line)}
+.d64e{padding:14px;color:var(--muted);font-size:13px;text-align:center}
+.d64add{border-top:1px solid var(--line);padding:6px 10px 8px;margin:0}
+.d64add .in input{border-radius:10px}
+body.calfill63 .mc.open63{background:color-mix(in srgb,var(--accent) 10%,var(--panel))}
+body.calfill63 .mc.open63::after{content:"";position:absolute;left:50%;bottom:-1px;width:12px;height:7px;transform:translateX(-50%);background:var(--line);clip-path:polygon(0 100%,50% 0,100% 100%);z-index:3}
+body.calfill63 .mc.open63 .dn{outline:2px solid var(--accent);outline-offset:-1px}
+/* 루틴 체크로 기록 */
+.d64s{display:grid;gap:4px}
+.d64r{display:grid;grid-template-columns:auto auto 1fr auto auto;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.d64r input[type=checkbox]{width:20px;height:20px;margin:0}
+.d64r .no{font-size:12px;color:var(--muted);min-width:16px;text-align:center}
+.d64r .nm{min-width:0;font-weight:600}
+.d64r.ok{opacity:.6}
+.d64r .w64{width:76px;padding:4px 6px}
+.d64r .pt{white-space:nowrap}
+/* 할 일 상세 안 루틴 편집 */
+.rt64p .jarcard{border:0;padding:0;box-shadow:none;background:transparent}
+.note64{border:1px dashed var(--gold);background:var(--gold-soft);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.q64ed{margin:8px 0;padding-top:8px;border-top:1px dashed var(--line)}
+.rt64p .kv{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.rt64p .kv label:first-child{display:none}
+.rt64p .kv input,.rt64p .kv select{padding:5px 6px;min-height:32px}
+.rt64p .st62{grid-template-columns:24px minmax(0,1fr) auto}
+.rt64p .st62 .pt62{grid-column:3;grid-row:1;white-space:nowrap}
+.rt64p .st62 .mn{grid-row:2;grid-column:2}
+.rt64p .st62 .ops{grid-row:2;grid-column:3}
+.rt64p .st62 .why{grid-row:3;grid-column:2/-1}
+.rt64p .st62 > .tiny.muted{grid-row:2;grid-column:2}
 </style>
 
 <header class="hud" id="hud">
@@ -1804,8 +1858,8 @@ async function boot(){
     },()=>mark('d'),{meta:1});
     const tsnap=(kind,s)=>{const now=new Set();s.docs.forEach(doc=>{now.add(doc.id);if(!dirty.has('t:'+doc.id)){const d=doc.data();d.id=doc.id;TASKS[doc.id]=d}});
       const other=kind==='open'?tSets.recent:tSets.open;tSets[kind].forEach(id=>{if(!now.has(id)&&!other.has(id)&&!dirty.has('t:'+id))delete TASKS[id]});tSets[kind]=now;if(kind==='open')tasksReady=true;render()};
-    db.collection('tasks').where('status','==',0).onSnapshot(s=>tsnap('open',s),e=>{console.error(e);tasksReady=true;render()});
-    db.collection('tasks').where('doneAt','>=',addDays(dateKey(),-60)).onSnapshot(s=>tsnap('recent',s),e=>console.error(e));
+    db.collection('tasks').where('status','==',0).onSnapshot(s=>{if(!(s.metadata&&s.metadata.fromCache))TSRV64=true;tsnap('open',s)},e=>{console.error(e);tasksReady=true;render()},{meta:1});
+    db.collection('tasks').where('doneAt','>=',addDays(dateKey(),-60)).onSnapshot(s=>{if(!(s.metadata&&s.metadata.fromCache))TSRV64r=true;tsnap('recent',s)},e=>{console.error(e);TSRV64r=true},{meta:1});
   }else{
     mode='local';
     try{const s=JSON.parse(localStorage.getItem(LKEY));if(s){C=normConfig(s.C);P=normProgress(s.P);for(const k in (s.DAYS||{}))DAYS[k]=normDay(k,s.DAYS[k]);TASKS=s.TASKS||{}}}catch(e){}
@@ -2243,7 +2297,7 @@ function renderHome(day,av,ov,L,items,mood,base){
   const ws=weekState(day.date),bs=bossOf(day.date),wk=weekKeys(day.date);
   $('weekLbl').textContent=fmtD(wk[0])+' ~ '+fmtD(wk[6]);
   const hpPct=Math.round(ws.left/ws.hp*100);
-  $('weekBox').innerHTML=`<div class="boss ${ws.dead?'dead':''}" data-info="boss">${bossSVG(bs.color,ws.dead)}<div style="min-width:0"><b>${esc(bs.name)}</b><div class="tiny muted">${ws.dead?'처치 완료! 보상 받음':`좋은 행동 XP가 데미지, 나쁜 행동은 회복`}</div><div class="track lg" style="margin-top:5px"><div class="fill" style="width:${hpPct}%;background:var(--bad)"></div></div><div class="tiny muted num" style="margin-top:2px">HP ${ws.left} / ${ws.hp}${ws.heal?` · 회복 +${ws.heal}`:''}</div></div></div>
+  $('weekBox').innerHTML=`<div class="boss ${ws.dead?'dead':''}" data-info="boss">${bossSVG(bs.color,ws.dead,bs.name)}<div style="min-width:0"><b>${esc(bs.name)}</b><div class="tiny muted">${ws.dead?'처치 완료! 보상 받음':`좋은 행동 XP가 데미지, 나쁜 행동은 회복`}</div><div class="track lg" style="margin-top:5px"><div class="fill" style="width:${hpPct}%;background:var(--bad)"></div></div><div class="tiny muted num" style="margin-top:2px">HP ${ws.left} / ${ws.hp}${ws.heal?` · 회복 +${ws.heal}`:''}</div></div></div>
     <div class="goalbox" data-info="wgoal"><b>⚔️ 용기 목표</b><div class="gems">${Array.from({length:Math.max(ws.goal,ws.brave)},(_,i)=>`<span class="${i<ws.brave?'':'off'}">⚔️</span>`).join('')||'<span class="tiny muted">편집 → 규칙에서 목표를 정해요</span>'}</div><div class="tiny muted">${ws.goal?(ws.brave>=ws.goal?'달성! 보상 받음':`${ws.brave}/${ws.goal} · 채우면 +💰${C.weekly.courageGold}`):''}</div></div>`;
   // 경보
   const al=buildAlerts();
@@ -2560,6 +2614,7 @@ function renderGuide(){
       </ul></div>
   </div>
   <div class="panel"><h2>자세한 규칙</h2><p class="help">눌러서 펼쳐요. 화면 곳곳의 <b>?</b> 버튼을 누르면 해당 항목이 열려요. 숫자·버튼·병을 <b>꾹 누르거나 우클릭</b>하면 그 자리에서 설명과 편집이 떠요.</p>
+    ${acc('card64','🆕 v6.4 · 루틴 체크로 기록 · ⏱ 루틴 목록 · 캘린더 날짜 카드','지금 버전',`<ul><li><b>루틴 단계가 새로고침할 때마다 늘어나던 오류</b>를 고쳤어요. 이미 늘어난 단계는 하나씩만 남기고 정리했어요(편집 → 루틴 맨 위에서 되돌릴 수 있어요).</li><li><b>루틴을 타이머 없이 기록</b>: 루틴 할 일의 ○를 누르면 단계 목록이 떠요. 한 걸 체크하고 '기록'. 다 하면 완주 보너스도 받아요. 타이머는 같은 창의 '⏱ 타이머로 하기'.</li><li>할 일 왼쪽 목록에 <b>⏱ 루틴</b>: 모든 루틴이 한곳에. 루틴을 열면 그 자리에서 언제·순서·분·보너스를 다 고쳐요.</li><li>캘린더: PC에서도 캐릭터 칸을 숨겨 넓게. <b>날짜를 누르면 그 주 아래에 카드</b>로 그날 목록이 펼쳐져요. 다시 누르거나 ×로 접어요.</li><li>보스와 쫄따구 모양이 종류마다 달라요(📖 도감).</li><li>홈 '오늘의 일퀘' 창에서 바로 요일 표를 고칠 수 있어요.</li></ul>`)}
     ${acc('card63','🆕 v6.3 · 캘린더 날짜 펼치기 · 일퀘 칸 · 루틴 접힘','지금 버전',`<ul><li><b>캘린더 월 보기</b>가 PC에서도 화면을 꽉 채워요. <b>날짜를 누르면 그 주 아래에 그날 전체 목록</b>이 펼쳐지고(+n을 눌러도), 거기서 바로 할 일을 추가해요. 다시 누르거나 ×로 접어요. 빨리 두 번 누르면 하루 보기.</li><li>할 일 추가: 폰은 오른쪽 아래 <b>＋</b>, PC는 위의 <b>＋ 할 일</b>.</li><li>할 일 목록의 <b>⏱ 루틴은 늘 접혀</b> 있어요. ▸를 눌러 펼친 것만 펼친 채로 남아요.</li><li>홈 <b>오늘의 일퀘</b> 칸은 상자 진행만 보여요. 누르면 일퀘 목록이 떠요. <b>이번 주</b> 칸은 용기 목표만(보스는 전투 칸에).</li><li>루틴 단계의 <b>🃏 카드 연결은 선택</b>이에요. 루틴 밖에서도 하는 행동일 때만 이으면 돼요.</li><li>몸무게 단계는 체크하면 몸무게 입력 칸이 떠요(사냥과 같은 점수).</li></ul>`)}
     ${acc('card62','🆕 v6.2 · 루틴 단계 = 할 일 · 사냥 화면 · 캘린더 꽉 차게','지금 버전',`<ul><li><b>루틴은 할 일 하나에 단계(할 일)를 묶은 것</b>이에요. 할 일 목록 '⏱ 루틴'에 있고, 펼치면 단계가 보여요. 루틴을 누르면 단계·분·점수가 맨 위에 나와요.</li><li>새 단계를 적으면 할 일로 생겨요. 할 일 목록에서 '⏱ 루틴에 넣기'로 넣으면 그 할 일이 단계가 돼요(날짜는 루틴을 따라요). 빼면 원래 자리로 돌아가요.</li><li>단계를 <b>🃏 카드와 이으면 카드 점수</b>(↻ 습관·☑ 일퀘도 체크), 아니면 할 일 크기·중요도 점수. 사냥 화면에 단계마다 점수가 보여요.</li><li>사냥 화면 버튼이 늘 아래에 보여요. 💭 다르게 보기는 눌러서 펼쳐요. <b>그만</b>을 누르면 한 번 더 물어요(여기까지 하고 끝내기도 있어요).</li><li>폰 캘린더: 캐릭터 줄을 숨기고 화면 가득. 오른쪽 위 '월 ▾'로 보기, ⋯로 색·서랍·거르기. 옆으로 밀면 달이 넘어가요.</li><li>장비 상점의 <b>✏ 직접 그리기</b>(꾸미기 전용, 점수 효과 없음). 홈·돌아보기에 <b>이번 주 용기 한 가지</b>(선택).</li></ul>`)}
     ${acc('card61','🆕 v6.1 · 루틴은 카드·할 일을 줄 세운 것 · 요일별 일퀘 · 우클릭','지금 버전',`<ul><li><b>루틴 단계 = 행동 카드나 할 일 그대로</b>예요. 따로 만드는 '단계'가 없어요. ＋ 단계에서 카드·할 일을 찾아 넣고(여러 개 한 번에), 이름만 있는 단계는 🃏로 카드가 될 수 있어요. 반대로 카드 편집·할 일 상세에서 <b>⏱ 루틴에 넣기</b>로 몇 번째 단계인지 정해요.</li><li>할 일 상세 🃏 칸의 <b>⏱ 이 할 일을 루틴으로</b>: 📦 묶인 할 일·체크리스트가 단계가 되고, 그 할 일을 누르면 루틴이 시작돼요.</li><li><b>일퀘는 요일마다 달라요</b>: 반복하는 일에 ☑를 붙이면 그 일이 뜨는 날에만 일퀘. 편집 → 일퀘에서 요일 칸을 눌러 바꿔요.</li><li><b>우클릭</b>(폰은 꾹): 목록(이름·색·폴더·순서), 할 일(오늘로·미루기·건너뛰기·루틴에·묶음에), 오늘의 일퀘(건너뛰기·일퀘 빼기), 행동(기록·반복·일퀘·루틴·용기·도파민 코스).</li><li>이어진 곳 칩의 <b>×</b>로 그 자리에서 연결을 끊어요(되돌리기 있음). ⏱ 루틴 칩은 루틴 창이 바로 떠요.</li><li>창에서 다른 창으로 넘어가면 <b>← 뒤로</b>가 생겨요.</li><li>행동/습관 화면과 편집 화면이 <b>같은 거르기·같은 개수</b>를 써요. 🍬 도파민 전용 카드는 🍬에서만 보여요.</li><li>행동/습관 화면 <b>▦ 화면 배치</b>: 작은 지도에서 끌어서. 폰은 한 줄 순서.</li><li>새로고침하면 되돌아가던 것 고침: 스마트 목록 순서, 접어 둔 묶음, 보이는 칸.</li><li>아이콘: ✨ XP · 🔋 컨디션 · ⚔️ 용기 · ⚡ 번개(10분 안) · 🌸 행복 · 🏹 사냥 · 👾 전투. 👾 전투 칸의 📖 도감.</li></ul>`)}
@@ -2916,7 +2971,7 @@ $('wishForm').addEventListener('submit',e=>{e.preventDefault();const n=$('wishNa
 let TASKS={};
 const tSets={open:new Set(),recent:new Set()};
 const tDirty=new Set();
-let tasksReady=false;
+let tasksReady=false;var TSRV64=false,TSRV64r=false;
 const EFFORTS=[['quick','⚔️ 퀵','10분 안'],['mid','🕓 보통','30분쯤'],['heavy','🧱 무거움','1시간 넘게']];
 const PRIOS=[[0,'없음',''],[1,'낮음','!'],[3,'중간','!!'],[5,'높음','!!!']];
 const pmark=p=>p?`<span class="pmark p${p}" aria-label="중요도 ${PRIOS.find(x=>x[0]===p)?.[1]||''}">${PRIOS.find(x=>x[0]===p)?.[2]||''}</span>`:'';
@@ -4250,15 +4305,15 @@ function renderBattle(){
   const mins=[...open.map(t=>({id:t.id,n:t.title,dead:false})),...done.map(e=>({id:e.tid,n:e.name,dead:true}))].slice(0,12);
   $('btLbl').textContent=`쫄따구 ${open.length}마리 남음`;
   box.innerHTML=`<div class="arena2"><div class="hero2">${spriteSVG(C.avatar.kind,mood,C.avatar.outfit,{level:L.lv})}<span class="tiny">Lv.${L.lv}</span></div><div class="vs">VS</div>
-    <div class="boss2 ${ws.dead?'dead':''}" data-info="boss">${bossSVG(bs.color,ws.dead)}<b class="small">${esc(bs.name)}</b><div class="track"><div class="fill" style="width:${Math.round(ws.left/ws.hp*100)}%;background:var(--bad)"></div></div><span class="tiny muted num">${ws.left}/${ws.hp}</span></div></div>
-    <div class="minions">${mins.map((m,i)=>`<button class="mini ${m.dead?'dead':''}" ${m.id&&TASKS[m.id]?`data-ctask="${m.id}"`:''} title="${esc(m.n)}">${minionSVG(MINI_COL[i%MINI_COL.length],m.dead)}</button>`).join('')||'<span class="tiny muted">오늘 할 일이 쫄따구가 돼요. 하나씩 해치워요.</span>'}</div>
+    <div class="boss2 ${ws.dead?'dead':''}" data-info="boss">${bossSVG(bs.color,ws.dead,bs.name)}<b class="small">${esc(bs.name)}</b><div class="track"><div class="fill" style="width:${Math.round(ws.left/ws.hp*100)}%;background:var(--bad)"></div></div><span class="tiny muted num">${ws.left}/${ws.hp}</span></div></div>
+    <div class="minions">${mins.map((m,i)=>`<button class="mini ${m.dead?'dead':''}" ${m.id&&TASKS[m.id]?`data-ctask="${m.id}"`:''} title="${esc(m.n)}">${minionSVG(MINI_COL[i%MINI_COL.length],m.dead,m.id&&TASKS[m.id]?mobOf64(TASKS[m.id]):'task')}</button>`).join('')||'<span class="tiny muted">오늘 할 일이 쫄따구가 돼요. 하나씩 해치워요.</span>'}</div>
     <p class="tiny muted" style="margin:6px 0 0">할 일을 끝내면 쫄따구 처치, 얻은 XP는 그대로 보스 데미지. 나쁜 행동은 보스를 회복시켜요.</p>`;
 }
 let bfxT=null;
 function battleFx(xp,{bad,kill,gold}={}){
   if(C.ui.fx===false)return;const el=$('bfx');if(!el)return;
   const mood=moodKey(overallOf(today()));
-  el.innerHTML=`<div class="bfx-in ${bad?'bad':''}"><span class="bh">${spriteSVG(C.avatar.kind,mood,C.avatar.outfit,{fx:false})}</span><span class="slash">${bad?'💢':'💥'}</span><span class="bt2">${bad?minionSVG('#7a4fd0',false):kill?minionSVG(MINI_COL[Math.floor(Math.random()*6)],true):bossSVG(bossOf(dateKey()).color,false)}</span><span class="dmg">${bad?'보스 회복 +'+xp:(kill?'처치! ':'')+'−'+xp}</span>${gold>0?`<span class="gl">💰+${gold}</span>`:''}</div>`;
+  el.innerHTML=`<div class="bfx-in ${bad?'bad':''}"><span class="bh">${spriteSVG(C.avatar.kind,mood,C.avatar.outfit,{fx:false})}</span><span class="slash">${bad?'💢':'💥'}</span><span class="bt2">${bad?minionSVG('#7a4fd0',false):kill?minionSVG(MINI_COL[Math.floor(Math.random()*6)],true):bossSVG(bossOf(dateKey()).color,false,bossOf(dateKey()).name)}</span><span class="dmg">${bad?'보스 회복 +'+xp:(kill?'처치! ':'')+'−'+xp}</span>${gold>0?`<span class="gl">💰+${gold}</span>`:''}</div>`;
   el.hidden=false;el.firstChild.classList.add('go');clearTimeout(bfxT);bfxT=setTimeout(()=>{el.hidden=true},1500);
 }
 /* ---- 행복 기록 ---- */
@@ -6955,9 +7010,9 @@ function dexHTML61(){
   return `<div class="sh"><h3>📖 보스·쫄따구 도감</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
   <p class="tiny muted" style="margin:0 0 8px">보스는 한 주에 한 마리씩 돌아가며 나와요(HP ${ws.hp}). 그 주에 얻은 XP가 데미지, 나쁜 행동은 회복, ⚔️ 용기는 치명타. 쓰러뜨리면 그 보스의 장비가 떨어져요. 이름은 일부러 '나쁜 습관'이 아니라 마음의 장애물로 지었어요.</p>
   <div class="dex61">${BOSSES.map(([n,c])=>{const g=(typeof GEAR60!=='undefined'?GEAR60:[]).find(x=>x.drop===n),L=LORE61[n]||['',''];
-    return `<div class="dx61 ${n===cur?'now':''}"><div class="pic">${bossSVG(c,false)}</div><div><b>${esc(n)}</b> ${n===cur?'<span class="qtag">이번 주</span>':`<span class="tiny muted">${next(n)}</span>`}<p class="small" style="margin:2px 0">${esc(L[0])}</p><p class="tiny" style="margin:2px 0">💡 ${esc(L[1])}</p><span class="tiny muted">처치 ${kills[n]||0}번${g?` · 전리품 🛡 ${esc(g.name)}${kills[n]?' (얻음)':''}`:''}</span></div></div>`}).join('')}</div>
+    return `<div class="dx61 ${n===cur?'now':''}"><div class="pic">${bossSVG(c,false,n)}</div><div><b>${esc(n)}</b> ${n===cur?'<span class="qtag">이번 주</span>':`<span class="tiny muted">${next(n)}</span>`}<p class="small" style="margin:2px 0">${esc(L[0])}</p><p class="tiny" style="margin:2px 0">💡 ${esc(L[1])}</p><span class="tiny muted">처치 ${kills[n]||0}번${g?` · 전리품 🛡 ${esc(g.name)}${kills[n]?' (얻음)':''}`:''}</span></div></div>`}).join('')}</div>
   <h3 style="margin:14px 0 6px;font-size:15px">쫄따구 (오늘 할 일)</h3>
-  <div class="dex61 mob">${MOB61.map(([k,ic,n,d],i)=>`<div class="dx61"><div class="pic">${minionSVG(MINI_COL[i%MINI_COL.length],false)}<span class="mb61">${ic}</span></div><div><b>${ic} ${n}</b> <span class="tiny muted">오늘 ${cnt[k]||0}마리</span><p class="tiny" style="margin:2px 0">${d}</p></div></div>`).join('')}</div>
+  <div class="dex61 mob">${MOB61.map(([k,ic,n,d],i)=>`<div class="dx61"><div class="pic">${minionSVG(MINI_COL[i%MINI_COL.length],false,MOBK64[k]||'task')}<span class="mb61">${ic}</span></div><div><b>${ic} ${n}</b> <span class="tiny muted">오늘 ${cnt[k]||0}마리</span><p class="tiny" style="margin:2px 0">${d}</p></div></div>`).join('')}</div>
   <p class="tiny muted">약점에 실제 점수 효과를 붙일지는 아직 안 정했어요 (지금은 설명만).</p>`}
 function openDex61(){sheetCtx={dex61:1};openSheet(dexHTML61())}
 renderBattle=(function(prev){return function(){prev.apply(this,arguments);try{const box=$('battleBox');if(!box)return;
@@ -7479,6 +7534,235 @@ render=(function(prev){return function(){
   return x}})(render);
 renderBattle=(function(prev){return function(){const x=prev.apply(this,arguments);bossSay63();return x}})(renderBattle);
 addEventListener('hashchange',()=>setTimeout(()=>{try{cal62tog()}catch(e){}},0));
+
+/* ================= v6.4: 루틴 단계 자가증식 고침 · 루틴 타이머 없이 체크 · ⏱ 루틴 목록 · 루틴 바로 편집 · 캘린더 날짜 펼침(틱틱처럼) · PC 캘린더 넓게 · 보스·쫄따구 모양 · 메뉴 아이콘 =================
+   맨 끝 모듈(v5t 뒤). 최상위 값은 var/function. 앞 모듈의 함수 선언은 '다시 대입'으로 바꿔요. */
+
+/* ---- 0) 할 일이 서버에서 확인됐나 ----
+   원인: 새로고침하면 할 일이 먼저 기기 캐시(옛 사본)에서 와요. 다른 기기에서 만든 단계 할 일이 캐시에 없으면
+   '단계 할 일이 없네' 하고 새로 만들고, 곧 서버 것이 오면 옛 것도 단계로 다시 붙어서 단계가 두 배가 됐어요.
+   그래서 할 일을 '만드는' 자동 처리(루틴 단계·머리, 습관 반복 할 일)는 서버 확인 뒤에만 해요. */
+function tOK64(){return mode!=='db'||(tasksReady&&TSRV64)}
+function tAll64(){return mode!=='db'||(tasksReady&&TSRV64&&TSRV64r)}
+rtH62=(function(prev){return function(r,make){return prev(r,!!make&&tOK64())}})(rtH62);
+mig62=(function(prev){return function(){if(!tOK64())return;return prev.apply(this,arguments)}})(mig62);
+mig57=(function(prev){return function(){if(!tOK64())return;return prev.apply(this,arguments)}})(mig57);
+habMigCard=(function(prev){return function(a){if(!tOK64())return false;return prev.apply(this,arguments)}})(habMigCard);
+habMirror=(function(prev){return function(){if(!tOK64())return;return prev.apply(this,arguments)}})(habMirror);
+// 단계 맞추기: 순서표에 있는데 할 일이 안 보이면 새로 만들지 않고 기다려요. 서버에서 확인된 뒤에도 없으면 그때 빼요.
+sync62=function(r){
+  if(!r||!tOK64()||!ready||!C.mig62)return;
+  const head=rtH62(r,true);if(!head)return;let ch=false;
+  if(head.title&&head.title!==r.name){r.name=head.title;ch=true}
+  r.steps=r.steps||[];
+  // 옛 형식(할 일 없는 카드·이름 단계)만 할 일로 만들어요
+  r.steps.forEach(s=>{if(s.tid)return;
+    const a=s.aid&&s.aid!=='@weigh'&&C.actions.find(x=>x.id===s.aid);
+    const k=mkChild62(head,{title:s.aid==='@weigh'?'⚖ 몸무게 기록':a?a.name:(s.name||'단계'),aid:a?a.id:null,min:s.min});
+    s.tid=k.id;if(s.aid!=='@weigh')delete s.aid;delete s.name;ch=true});
+  r.steps.forEach(s=>{const t=TASKS[s.tid];if(t&&!t.parent&&t.rstep&&t.status!==-1){t.parent=head.id;t.list=head.list;saveTask(t)}});
+  const all=tAll64(),before=r.steps.length,seen=new Set();
+  r.steps=r.steps.filter(s=>{if(seen.has(s.tid))return false;seen.add(s.tid);const t=TASKS[s.tid];if(!t)return !all;return t.status!==-1&&t.parent===head.id});
+  if(r.steps.length!==before)ch=true;
+  const have=new Set(r.steps.map(s=>s.tid));
+  kidsOf(head.id).filter(k=>!have.has(k.id)).sort((a,b)=>(a.order||0)-(b.order||0)).forEach(k=>{if(k.due||k.rep)join62(k,head);k.rstep=1;saveTask(k);r.steps.push({id:uid(),tid:k.id,min:k.dur||5});ch=true});
+  r.steps.forEach(s=>{const t=TASKS[s.tid];if(t&&t.dur&&+t.dur!==+s.min){s.min=+t.dur;ch=true}});
+  if(ch)save('config')};
+// 아직 안 보이는 단계는 그리지 않아요
+{const live=r=>({...r,steps:(r.steps||[]).filter(s=>!s.tid||TASKS[s.tid])});
+  rtSum62=(function(prev){return function(r){return prev(live(r))}})(rtSum62);}
+
+/* ---- 1) 한 번만: 이미 불어난 단계·머리·습관 반복 할 일 정리 (되돌리기 있음) ---- */
+function dupKey64(t){return (t.title||'').trim()+'|'+(t.aid||'')+'|'+(t.rstep?'s':'')}
+function better64(a,b){ // 남길 것: 많이 한 것 → 먼저 만든 것
+  return ((b.cnt||0)-(a.cnt||0))||String(a.created||a.order||a.id).localeCompare(String(b.created||b.order||b.id))}
+function fix64(){
+  if(C.mig64||!ready||!tAll64()||!C.mig62)return;
+  const bak={at:dateKey(),routines:clone(C.routines||[]),tasks:[],del:[]},keepT=t=>{if(!bak.tasks.some(x=>x.id===t.id))bak.tasks.push(clone(t))};
+  let nStep=0,nHead=0,nHab=0;
+  try{
+    (C.routines||[]).forEach(r=>{
+      const heads=Object.values(TASKS).filter(t=>t.rid===r.id&&t.status===0);if(!heads.length)return;
+      const head=rtH62(r,false)||heads[0];
+      heads.filter(h=>h.id!==head.id).forEach(h=>{kidsOf(h.id).forEach(k=>{keepT(k);k.parent=head.id;saveTask(k)});keepT(h);bak.del.push(h.id);deleteTask(h.id);nHead++});
+      const kids=kidsOf(head.id),grp={};kids.forEach(k=>{(grp[dupKey64(k)]=grp[dupKey64(k)]||[]).push(k)});
+      const map={};
+      Object.values(grp).forEach(g=>{g.sort(better64);g.forEach(k=>map[k.id]=g[0].id);g.slice(1).forEach(k=>{keepT(k);bak.del.push(k.id);deleteTask(k.id);nStep++})});
+      if(Object.values(grp).some(g=>g.length>1)||nHead){
+        const out=[],used=new Set();
+        (r.steps||[]).forEach(s=>{const id=map[s.tid]||s.tid;if(!id||used.has(id)||!TASKS[id])return;used.add(id);out.push({...s,tid:id})});
+        kidsOf(head.id).filter(k=>!used.has(k.id)).forEach(k=>{used.add(k.id);out.push({id:uid(),tid:k.id,min:k.dur||5})});
+        r.steps=out}});
+    const hg={};Object.values(TASKS).filter(t=>t.status===0&&t.hab&&t.aid&&t.rep&&t.rep.f).forEach(t=>{(hg[t.aid]=hg[t.aid]||[]).push(t)});
+    Object.values(hg).forEach(g=>{if(g.length<2)return;g.sort((a,b)=>((b.quest?1:0)-(a.quest?1:0))||better64(a,b));g.slice(1).forEach(t=>{keepT(t);bak.del.push(t.id);deleteTask(t.id);nHab++})});
+  }catch(e){console.error(e)}
+  C.mig64=1;
+  if(nStep||nHead||nHab){C.bak64=bak;syncDailies(C);
+    later(()=>toastAct(`v6.4 · 저절로 불어난 것을 정리했어요: 루틴 단계 ${nStep}개${nHead?` · 루틴 머리 ${nHead}개`:''}${nHab?` · 겹친 습관 반복 ${nHab}개`:''}`,'되돌리기',undo64),12000)}
+  save('config')}
+function undo64(){const b=C.bak64;if(!b)return;
+  b.tasks.forEach(t=>saveTask(clone(t)));C.routines=clone(b.routines);delete C.bak64;C.mig64=1;save('config');syncDailies(C);if(curView()==='edit')reEdit();render();toast('정리 전으로 되돌렸어요')}
+addEventListener('click',e=>{const b=e.target.closest('[data-x64undo]');if(!b)return;e.preventDefault();e.stopPropagation();if(b.dataset.x64undo==='keep'){delete C.bak64;save('config');reEdit();render();toast('정리한 그대로 둘게요');return}undo64()},true);
+routinesEditHTML=(function(prev){return function(){const h=prev.apply(this,arguments);const b=C.bak64;if(!b||b.at<addDays(dateKey(),-14))return h;
+  return `<div class="note64"><b>🧹 v6.4에서 겹친 단계를 정리했어요</b> <span class="tiny muted">(${esc(b.at)})</span><div class="tiny">새로고침할 때마다 단계가 불어나던 오류로 생긴 것들을 하나씩만 남겼어요. 원래 같은 단계를 일부러 두 번 넣었다면 되돌려요.</div><div class="row" style="gap:6px;margin-top:6px"><button class="btn sm ghost" data-x64undo="1">↺ 정리 전으로</button><button class="btn sm ghost" data-x64undo="keep">이대로 둘게요</button></div></div>`+h}})(routinesEditHTML);
+
+/* ---- 2) 루틴: 타이머 없이 체크 ----
+   루틴 머리 할 일의 ○를 누르면(목록·캘린더·홈·일퀘) 고르는 창: 한 단계에 체크 → 기록. 다 하면 완주 보너스. */
+function rtDone64(r){
+  if(!r)return;sync62(r);const head=rtH62(r,false),td=dateKey(),day=DAYS[td];
+  const st=(r.steps||[]).filter(s=>TASKS[s.tid]),full=day&&(day.entries||[]).some(e=>e.kind==='routine'&&e.rid===r.id&&e.full);
+  sheetCtx={rt64:r.id};
+  const row=(s,i)=>{const t=TASKS[s.tid],dn=stDone62(t),w=s.aid==='@weigh',p=stPts62(s);
+    return `<label class="d64r ${dn?'ok':''}"><input type="checkbox" data-d64="${s.tid}" ${dn?'checked disabled':'checked'}><span class="no">${dn?'✓':i+1}</span><span class="nm">${esc(stName61(s))}${dn?' <small class="muted">오늘 함</small>':''}</span>
+      ${w&&!dn?`<input class="w64" type="number" step="0.1" min="30" max="250" inputmode="decimal" placeholder="kg" value="${day&&day.weight?day.weight:''}" aria-label="몸무게">`:''}<span class="tiny muted pt">${pts62(p,{zero:''})}</span></label>`};
+  openSheet(`<div class="sh"><h3>✓ ${esc(r.name)}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <p class="help" style="margin:0 0 8px">타이머 없이 한 걸 체크해요. 체크한 단계 점수가 들어가고, <b>모든 단계를 하면 완주 보너스</b> ${pts62({xp:r.xp,gold:r.gold},{zero:'0'})}도 받아요.${full?' <b>오늘은 이미 완주했어요</b>(보너스는 하루 한 번).':''}</p>
+    <div class="row" style="gap:6px;margin-bottom:6px"><button type="button" class="chipbtn" data-d64all="1">모두 체크</button><button type="button" class="chipbtn" data-d64all="0">모두 해제</button><span style="flex:1"></span><span class="tiny muted">${st.filter(s=>stDone62(TASKS[s.tid])).length}/${st.length} 오늘 함</span></div>
+    <div class="d64s">${st.map(row).join('')||'<div class="empty">단계가 없어요</div>'}</div>
+    <div class="row" style="gap:6px;margin-top:10px;flex-wrap:wrap"><button class="btn go" data-d64go="${r.id}">✓ 체크한 것 기록</button><button class="btn ghost" data-rrun="${r.id}">⏱ 타이머로 하기</button><span style="flex:1"></span>${head?`<button class="btn ghost sm" data-x60task="${head.id}">✎ 루틴 열기</button>`:''}</div>`)}
+function rtDoneGo64(r){
+  if(!guard())return;const td=dateKey();const box=$('sheetC');let did=0,got={xp:0,gold:0};
+  const sel=[...box.querySelectorAll('[data-d64]')].filter(c=>c.checked&&!c.disabled).map(c=>c.dataset.d64);
+  ui.off=0;
+  sel.forEach(tid=>{const s=(r.steps||[]).find(x=>x.tid===tid),t=TASKS[tid];if(!s||!t)return;
+    if(s.aid==='@weigh'){const v=(box.querySelector(`[data-d64="${tid}"]`).closest('.d64r').querySelector('.w64')||{}).value;if(v&&!wSave63(v))return;t.last=td;t.cnt=(t.cnt||0)+1;saveTask(t);did++;return}
+    if(t.status!==0)return;const p=taskBase(t);got.xp+=+p.xp||0;got.gold+=+p.gold||0;
+    completeTask(t,{direct:true});if(t.status===2){t.status=0;delete t.doneAt}t.last=td;saveTask(t);did++});
+  const st=(r.steps||[]).filter(s=>TASKS[s.tid]),all=st.length&&st.every(s=>stDone62(TASKS[s.tid]));
+  const day=today(),full=(day.entries||[]).some(e=>e.kind==='routine'&&e.rid===r.id&&e.full);
+  let bonus=0;
+  if(all&&!full){let xp=+r.xp||0;if(recoveryActive())xp=Math.round(xp*C.recovery.mult);
+    const e={kind:'routine',type:'good',name:r.name+' 완주',area:r.area||'life',cond:0,xp,gold:+r.gold||0,rid:r.id,full:1,note:'타이머 없이 체크'};
+    if(gachaMatch('routine',r.id)){e.xp=Math.round(e.xp*(C.gacha.mult||1.5));e.gq=1}
+    commit(()=>applyEntry(today(),e));try{afterGacha(e)}catch(x){}bonus=e.xp;
+    const h=rtH62(r,false);if(h){if(h.rep&&h.rep.f){if(h.due&&h.due<=td){let nx=nextDue(h.rep,h.due);while(nx&&nx<=td)nx=nextDue(h.rep,nx);if(nx)h.due=nx}}else h.due=null;delete h.skull;h.last=td;h.cnt=(h.cnt||0)+1;saveTask(h)}}
+  closeSheet();render();
+  if(!did&&!bonus){toast('체크한 단계가 없어요');return}
+  popup(all?'루틴 완주':'루틴 기록','✓',`<b>${esc(r.name)}</b> · ${did}단계 기록${got.xp?` · ✨${got.xp}`:''}${got.gold?` 💰${got.gold}`:''}<br>${bonus?`<b>완주 보너스 +${bonus} XP</b>`:all?'<span class="muted">오늘 완주 보너스는 이미 받았어요</span>':`<span class="muted">남은 ${st.filter(s=>!stDone62(TASKS[s.tid])).length}단계를 마저 하면 완주 보너스</span>`}`,all?'완주':'수고했어요')}
+addEventListener('click',e=>{const b=e.target.closest('[data-d64all],[data-d64go],[data-rt64done]');if(!b)return;e.preventDefault();e.stopPropagation();
+  if(b.dataset.d64all!=null){$('sheetC').querySelectorAll('[data-d64]:not(:disabled)').forEach(c=>c.checked=b.dataset.d64all==='1');return}
+  const r=(C.routines||[]).find(x=>x.id===(b.dataset.d64go||b.dataset.rt64done));if(!r)return;
+  if(b.dataset.d64go){rtDoneGo64(r);return}lastPt={x:e.clientX,y:e.clientY};rtDone64(r)},true);
+// 루틴 머리의 ○ = 고르는 창 (끝낸 걸 되돌리는 건 그대로)
+addEventListener('click',e=>{const b=e.target.closest('[data-tdone]');if(!b)return;const t=TASKS[b.dataset.tdone];if(!t||t.status!==0||!C.mig62)return;const r=rtOfT62(t);if(!r)return;
+  e.preventDefault();e.stopImmediatePropagation();lastPt={x:e.clientX,y:e.clientY};rtDone64(r)},true);
+// 일퀘의 루틴도 같은 창
+toggleQuest=(function(prev){return function(q){try{if(q&&q.action&&q.action.startsWith('@t:')){const t=TASKS[q.action.slice(3)],r=t&&rtOfT62(t),day=curDay();
+  if(r&&!(day.entries||[]).some(x=>x.kind==='routine'&&x.rid===r.id)){if(!guard())return;closeInfo&&closeInfo();rtDone64(r);return}}}catch(e){console.error(e)}return prev.apply(this,arguments)}})(toggleQuest);
+// 메뉴·루틴 칸에도 '타이머 없이'
+rtCard62=(function(prev){return function(r){let h=prev.apply(this,arguments);try{h=h.replace(`<button class="btn sm" data-rrun="${r.id}">⏱ 시작</button>`,`<button class="btn sm ghost" data-rt64done="${r.id}" title="타이머 없이 한 단계를 체크해서 기록">✓ 체크로 기록</button><button class="btn sm" data-rrun="${r.id}">⏱ 시작</button>`)}catch(e){}return h}})(rtCard62);
+rtCard61=rtCard62;
+menu61=(function(prev){return function(x,y,title,items){try{if(Array.isArray(items)){const i=items.findIndex(it=>it&&it.l==='⏱ 루틴 시작');if(i>=0){const f=items[i].f;const t=Object.values(TASKS).find(z=>z.status===0&&z.rid&&title&&title.includes(z.title));const r=t&&rtOfT62(t);if(r)items.splice(i,0,{l:'✓ 체크로 기록 (타이머 없이)',f:()=>rtDone64(r)})}}}catch(e){}return prev.apply(this,arguments)}})(menu61);
+
+/* ---- 3) 할 일 상세: 루틴이면 그 자리에서 다 고쳐요 (언제·순서·분·카드·보너스) ---- */
+rtPanel62=function(h,r){sync62(r);const S=rtSum62(r),st=(r.steps||[]).filter(s=>TASKS[s.tid]),dn=st.filter(s=>stDone62(TASKS[s.tid])).length;
+  return `<div class="rt62p rt64p"><div class="spread" style="margin-bottom:6px"><b>⏱ 루틴 · ${st.length}단계 · ${S.min}분</b><span class="tiny muted">${dn?`오늘 ${dn}/${st.length} 함`:'여기서 바로 고쳐요'}</span></div>${rtCard62(r,true).replace(` id="rt60-${r.id}"`,'')}</div>`};
+
+/* ---- 4) ⏱ 루틴 스마트 목록 (모든 루틴 머리를 한곳에) ---- */
+if(!SMART.some(x=>x[0]==='routine')){const i=SMART.findIndex(x=>x[0]==='nodate');SMART.splice(i<0?SMART.length:i,0,['routine','⏱ 루틴'])}
+taskMatches=(function(prev){return function(t,sel){if(sel==='routine')return t.status===0&&!!t.rid&&!!rtOfT62(t);return prev.apply(this,arguments)}})(taskMatches);
+
+// ⏱ 루틴 목록에서 위 입력칸에 적으면 = 새 루틴
+addTaskFrom=(function(prev){return function(raw,o){try{const ae=document.activeElement;
+  if(C.mig62&&tOK64()&&curView()==='tasks'&&(C.ui.tasks||{}).sel==='routine'&&ae&&ae.id==='tAdd'){const p=parseQuick(raw);if(!p.title){toast('루틴 이름을 적어주세요');return null}
+    const r=rtNew61(p.title);sync62(r);const h=rtH62(r,true);render();if(h){C.ui.tfold=C.ui.tfold||{};C.ui.tfold[h.id]='o';save('config');setTimeout(()=>openTaskSheet(h.id),60)}
+    toast(`⏱ '${p.title}' 루틴을 만들었어요 · 단계를 적어요`);return h}}catch(e){console.error(e)}return prev.apply(this,arguments)}})(addTaskFrom);
+
+/* ---- 5) 캘린더 ----
+   PC도 캘린더 화면에선 위의 캐릭터 칸·베타 띠를 숨겨 넓게(css). 날짜를 누르면 그 주 아래에 카드처럼 그날 목록 (틱틱처럼). */
+function dItems64(k){
+  const ts=tasksOn(k).sort((a,b)=>(a.time||'99').localeCompare(b.time||'99')||(b.prio||0)-(a.prio||0)),dn=doneOn(k);
+  const lc=t=>{const l=C.lists.find(z=>z.id===(t.list||'inbox'));return l&&l.color};
+  const row=t=>{const r=rtOfT62(t),n=r?(r.steps||[]).filter(s=>TASKS[s.tid]).length:0,c=lc(t);
+    return `<div class="d64 p${t.prio||0}" data-ctask="${t.id}" ${c?`style="--lc:${c}"`:''}><button type="button" class="ck" data-tdone="${t.id}" aria-label="'${esc(t.title)}' ${r?'체크로 기록':'끝내기'}"></button>
+      <span class="tt">${r?'⏱ ':''}${esc(t.title)}${r?` <small>${n}단계</small>`:''}${t.quest?' <small title="일퀘">☑</small>':''}${t.rep?' <small title="반복">↻</small>':''}${t.brave?' <small title="용기">⚔️</small>':''}</span>
+      <span class="tm">${t.time?esc(t.time):''}</span></div>`};
+  return {n:ts.length,dn:dn.length,html:ts.map(row).join('')+dn.map(e=>`<div class="d64 done"><span class="ck">✓</span><span class="tt">${esc(e.name)}</span><span class="tm">${esc(e.t||'')}</span></div>`).join('')}}
+dp63=function(){
+  const g=$('calMain')&&$('calMain').querySelector('.mgrid'),cd=$('calDay');if(!g||!cd)return;
+  g.querySelectorAll('.dp63').forEach(x=>x.remove());
+  if(!document.body.classList.contains('calfill63')){cd.hidden=false;return}
+  cd.hidden=true;if(!ui.cal63)return;
+  const mcs=[...g.querySelectorAll('.mc')],i=mcs.findIndex(m=>m.dataset.calday===ui.calSel);if(i<0)return;
+  cd.innerHTML='';// 같은 입력칸 id가 두 개가 되지 않게
+  const k=ui.calSel;mcs[i].classList.add('open63');const w=Math.floor(i/7),after=mcs[Math.min(mcs.length-1,w*7+6)];
+  const it=dItems64(k);
+  const box=document.createElement('div');box.className='dp63 dp64';box.dataset.w=w;box.style.gridColumn='1/-1';box.style.setProperty('--col',i%7);
+  box.innerHTML=`<div class="dp64c" data-drop="day:${k}"><div class="dp64h"><b>${+k.slice(5,7)}월 ${+k.slice(8)}일 ${wdOf(k)}</b><span class="tiny muted">${esc(dueLabel(k))}${it.n?` · ${it.n}개`:''}${it.dn?` · ${it.dn}개 끝`:''}</span><span style="flex:1"></span>
+      <button class="ib" type="button" data-x58day="${k}" title="하루 보기">하루 보기 ›</button><button class="ib x64" type="button" data-dp63x="1" aria-label="닫기" title="닫기">×</button></div>
+    <div class="dp64l">${it.html||'<div class="d64e">비어 있어요 · 아래에 적어서 추가해요</div>'}</div>
+    <form class="tadd d64add" data-taddform="cal"><div class="in"><input id="calAdd" maxlength="160" placeholder="＋ 이 날에 추가 (3시 30분 #번개…)" enterkeyhint="done" autocomplete="off"></div><div class="parse" id="calParse"></div></form></div>`;
+  after.after(box)};
+cal62fit=function(){
+  const g=$('calMain')&&$('calMain').querySelector('.mgrid');if(!g)return;
+  if(!document.body.classList.contains('calfill63')){g.style.height='';g.style.gridTemplateRows='';return}
+  const mcs=[...g.querySelectorAll('.mc')],rows=Math.ceil(mcs.length/7)||5,phone=innerWidth<760;
+  const nav=document.querySelector('.bnav'),nh=nav&&getComputedStyle(nav).display!=='none'?nav.getBoundingClientRect().height:0;
+  const H=Math.max(phone?360:420,Math.floor(innerHeight-g.getBoundingClientRect().top-nh-(phone?4:10)));
+  const dp=g.querySelector('.dp64'),dw=dp?+dp.dataset.w:-1,tr=['auto'];
+  let ph=0;if(dp){const q=x=>dp.querySelector(x),need=(q('.dp64h')||{}).offsetHeight+(q('.dp64l')||{}).scrollHeight+(q('.d64add')||{}).offsetHeight+16;ph=Math.min(Math.round(H*(phone?.55:.55)),Math.max(150,need))}
+  for(let w=0;w<rows;w++){tr.push(dw<0?'minmax(0,1fr)':w===dw?'minmax(0,1.25fr)':'minmax(0,.6fr)');if(w===dw)tr.push(ph+'px')}
+  g.style.height=H+'px';g.style.gridTemplateRows=tr.join(' ');
+  mcs.forEach(mc=>{const cap=mc.clientHeight,chips=[...mc.querySelectorAll('.cchip')],mr=mc.querySelector('.more');if(mc.dataset.b62==null)mc.dataset.b62=mr?(parseInt(mr.textContent.replace(/\D/g,''))||0):0;let base=+mc.dataset.b62,hid=0;
+    chips.forEach(c=>{c.hidden=false});chips.forEach(c=>{if(c.offsetTop+c.offsetHeight>cap-12){c.hidden=true;hid++}});
+    if(hid||base){let m=mr;if(!m){m=document.createElement('span');m.className='more';mc.appendChild(m)}m.textContent='+'+(hid+base);m.title='눌러서 이 날 전체 보기'}else if(mr)mr.remove()});
+  if(dp)requestAnimationFrame(()=>{const r=dp.getBoundingClientRect();if(r.bottom>innerHeight-nh)dp.scrollIntoView({block:'nearest',behavior:'smooth'})})};
+
+/* ---- 6) 보스·쫄따구 모양 (슬라임만 아니게) ---- */
+function sh64(hex,f){const m=/^#?([0-9a-f]{6})$/i.exec(hex||'');if(!m)return hex;const n=parseInt(m[1],16);let r=n>>16,g=n>>8&255,b=n&255;const t=f<0?0:255,p=Math.abs(f);r=Math.round(r+(t-r)*p);g=Math.round(g+(t-g)*p);b=Math.round(b+(t-b)*p);return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)}
+function px64(rows,color,W,H,ox,oy){const pal={K:'#1d2130',C:color,D:sh64(color,-.32),L:sh64(color,.38),W:'#fff',R:'#d23c3c',Y:'#f2c94c',G:'#4caf50',B:'#8a5a2b'};let s='';
+  rows.forEach((r,y)=>{for(let x=0;x<r.length;x++){const ch=r[x];if(ch==='.'||!pal[ch])continue;s+=`<rect x="${x+ox}" y="${y+oy}" width="1.02" height="1.02" fill="${pal[ch]}"/>`}});return s}
+var BOSS64={
+  monster:['.K............K.','.KK..........KK.','..KKKKKKKKKKKK..','.KCLLCCCCCCCCCK.','KCCWWWCCCCWWWCCK','KCCWKWCCCCWKWCCK','KCCCCCCCCCCCCCCK','KCKKKKKKKKKKKKCK','KCKWRWRWRWRWRKCK','KCKRRRRRRRRRRKCK','KCCKKKKKKKKKKCCK','.KCCCCCCCCCCCCK.','.KCCK.KCCK.KCCK.','.KKKK.KKKK.KKKK.'],
+  ghost:['....KKKKKKKK....','..KKLLCCCCCCKK..','.KLLCCCCCCCCCCK.','.KCCCCCCCCCCCCK.','KCCCKKCCCCKKCCCK','KCCCWKCCCCWKCCCK','KCCCCCCCCCCCCCCK','KCCCCCCKKCCCCCCK','KCCCCCKCCKCCCCCK','KCCCCCCKKCCCCCCK','KCCCCCCCCCCCCCCK','KCCKCCCKKCCCKCCK','KCK.KCK..KCK.KCK','KK...K....K...KK'],
+  golem:['....KKKKKKKK....','....KDCCCCDK....','....KCRKKRCK....','....KCCCCCCK....','....KDKKKKDK....','.KKKKKKKKKKKKKK.','KCCKDCCCCCCDKCCK','KCCKCCCDDCCCKCCK','KCCKCCDCCDCCKCCK','KDDKCCCCCCCCKDDK','KKKKKCCCCCCKKKKK','...KCCCKKCCCK...','...KCCK..KCCK...','...KKKK..KKKK...'],
+  bat:['K..............K','KK....K..K....KK','KCK...KKKK...KCK','KCCK.KCCCCK.KCCK','KCCCKCRCCRCKCCCK','KCCCCCCCCCCCCCCK','KCDCCCCKKCCCCDCK','.KDK.KCWWCK.KDK.','..K..KCCCCK..K..','......KCCK......','.......KK.......'],
+  swamp:['......K..K......','.....KGKKGK.....','......KGGK......','...KKKKKKKKKK...','.KKCCCCCCCCCCKK.','KCCCCCCCCCCCCCCK','KCCKKKKCCKKKKCCK','KCCWWKWCCWKWWCCK','KCCCCCCCCCCCCCCK','KCDCCCCKKKCCCDCK','KCCCCCCCCCCCCCCK','KDCCDCCCCDCCDCCK','.KDK.KDDK.KDK.K.','..K...KK...K....'],
+  spiky:['..K....KK....K..','.KCK..KCCK..KCK.','.KCCKKCCCCKKCCK.','KCCWWCCCCCCWWCCK','KCCWKCCWWCCWKCCK','KCCCCCCWKCCCCCCK','KCCCCCCCCCCCCCCK','.KCCCKKKKKKCCCK.','KCCCKCKCKCKCCCCK','.KCCCCCCCCCCCCK.','..KKCCK..KCCKK..','....KK....KK....'],
+  slime:['....KKKKKKKK....','..KKCCCCCCCCKK..','.KCCCCCCCCCCCCK.','KCCWWKCCCCWWKCCK','KCCWKKCCCCWKKCCK','KCCCCCCCCCCCCCCK','KCCCKWKWKWKCCCCK','KCCCCKKKKKKCCCCK','.KCCCCCCCCCCCCK.','..KCCK.KK.KCCK..','...KK......KK...']};
+function bossKind64(n){n=n||'';if(/골렘|거인|돌/.test(n))return 'golem';if(/박쥐/.test(n))return 'bat';if(/늪|무기력/.test(n))return 'swamp';if(/불안/.test(n))return 'spiky';if(/안개|망설임|유령/.test(n))return 'ghost';if(/괴물|미루기/.test(n))return 'monster';if(/슬라임/.test(n))return 'slime';
+  const ks=['monster','ghost','golem','bat','swamp','spiky'];let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))>>>0;return n?ks[h%ks.length]:'slime'}
+bossSVG=function(color,dead,name){const g=BOSS64[bossKind64(name)]||BOSS64.slime,h=g.length;let s=px64(g,color,16,h,4,Math.floor((24-h)/2)+1);
+  if(dead)s+=`<path d="M6 9 L18 21 M18 9 L6 21" stroke="#d23c3c" stroke-width="1.4"/>`;
+  return `<svg viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><g class="${dead?'':'boss-sp'}">${s}</g></svg>`};
+var MOB64={
+  task:['K..........K','KK.KKKKKK.KK','.KKCCCCCCKK.','.KCCCCCCCCK.','KCCWKCCWKCCK','KCCCCCCCCCCK','KCCCKKKKCCCK','.KCCCCCCCCK.','..KCK..KCK..','..KK....KK..'],
+  rep:['......KKKK..','.....KLCCCK.','K...KCKKKCCK','KK..KCKCKCCK','KWK.KCKKCCCK','KCCKKCCCCCK.','KCCCCKKKKKKK','KDDDDDDDDDDK','.KKKKKKKKKK.'],
+  skull:['..KKKKKKKK..','.KWWWWWWWWK.','KWWWWWWWWWWK','KWKKWWWWKKWK','KWKKWWWWKKWK','KWWWWKKWWWWK','.KWWWWWWWWK.','..KWKWKWKK..','..KKKKKKKK..'],
+  late:['...KKKKKK...','..KCCCCCCK..','.KCCCCCCCCK.','.KCWKCCWKCK.','KCCWWCCWWCCK','KCCCCKKCCCCK','KCCCCCCCCCCK','KCKCCKKCCKCK','KK.KK..KK.KK'],
+  brave:['K.K.K.K.K...','.KKKKKKKKK..','KCDCDCDCDCK.','KDCDCDCDCCCK','KCDCDCDCWKCK','KDCDCDCCCCCK','KCDCDCCCCKKK','.KCCCCCCCK..','..KK...KK...'],
+  pack:['KKKKKKKKKKKK','KYBBBBBBBBYK','KBBBBBBBBBBK','KKKKKKKKKKKK','KWKWKWKWKWKK','KRRRRRRRRRRK','KKWKWKWKWKWK','KBBBBYYBBBBK','KBBBBYYBBBBK','KKKKKKKKKKKK'],
+  rt:['.........K.K','........KKKK','.KK.KK.KCCCK','KCCKCCKCCWKK','KCCKCCKCCCCK','KCCKCCKCCKKK','.KK.KK.KK...','..K..K..K...']};
+minionSVG=function(color,dead,kind){const g=MOB64[kind]||MOB64.task,h=g.length;let s=px64(g,color,12,h,2,14-h);
+  if(dead)s+=`<path d="M3 3 L13 13 M13 3 L3 13" stroke="#d23c3c" stroke-width="1.2"/>`;
+  return `<svg viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><g class="${dead?'':'boss-sp'}">${s}</g></svg>`};
+var MOBK64={task:'task',rep:'rep',hab:'rep',skull:'skull',late:'late',brave:'brave',pack:'pack',rt:'rt'};
+function mobOf64(t){try{const k=mobKind61(t);return MOBK64[k]||'task'}catch(e){return 'task'}}
+
+/* ---- 7) 메뉴 아이콘: 뽑기 = 캡슐 뽑기 기계 · 행동/습관 = 체크한 카드 · 돌아보기 = 막대 그래프 ---- */
+ICONS.gacha='<circle cx="12" cy="9" r="6"/><path d="M6.5 13.5h11l-1 7.5h-9z"/><path d="M10.5 17.5h3"/><circle cx="10" cy="8" r="1.4"/><circle cx="14" cy="10.2" r="1.4"/>';
+ICONS.log='<rect x="7" y="3" width="13" height="17" rx="2"/><path d="M4 7v12a2 2 0 0 0 2 2h9"/><path d="M10.5 11.5l2 2 4-4"/>';
+ICONS.review='<path d="M4 20h16"/><rect x="5" y="12" width="3" height="6" rx=".5"/><rect x="10.5" y="6" width="3" height="12" rx=".5"/><rect x="16" y="9" width="3" height="9" rx=".5"/>';
+
+/* ---- 8) 홈: '지금 하면 좋은 것'에서 오늘 목록에 이미 있는 일퀘는 빼요 ---- */
+suggestions=(function(prev){return function(){const out=prev.apply(this,arguments);try{const td=dateKey();
+  return out.filter(s=>{if(!/^일퀘/.test(s.why||'')||!s.act)return true;const a=C.actions.find(x=>x.id===s.act),t=a&&habT(a);return !(t&&t.due&&t.due<=td)})}catch(e){console.error(e);return out}}})(suggestions);
+
+/* ---- 9) 일퀘 창에서 바로 요일 표 고치기 (편집 화면에 안 가도 돼요) ---- */
+qSheet63=(function(prev){return function(){prev.apply(this,arguments);try{
+  const sc=$('sheetC'),b=sc&&sc.querySelector('[data-goedit="dailies"]');if(!b)return;
+  b.removeAttribute('data-goedit');b.dataset.q64ed='1';b.textContent=ui.q64ed?'▴ 요일 표 접기':'✎ 요일 표 (여기서 고치기)';
+  if(ui.q64ed){const d=document.createElement('div');d.className='q64ed';d.innerHTML=dailiesEditHTML();b.closest('.row').before(d)}
+}catch(e){console.error(e)}}})(qSheet63);
+addEventListener('click',e=>{const b=e.target.closest('[data-q64ed]');if(!b)return;e.preventDefault();e.stopPropagation();ui.q64ed=!ui.q64ed;qSheet63()},true);
+reEdit=(function(prev){return function(){const x=prev.apply(this,arguments);try{if(curView()!=='edit'&&sheetCtx&&sheetCtx.q63&&!$('sheet').hidden)qSheet63()}catch(e){}return x}})(reEdit);
+
+/* ---- 10) 렌더 앞뒤 ---- */
+render=(function(prev){return function(){
+  try{fix64()}catch(e){console.error(e)}
+  const x=prev.apply(this,arguments);
+  try{cal62tog();const ta=$('tAdd');if(ta){const rt=curView()==='tasks'&&(C.ui.tasks||{}).sel==='routine';if(rt&&!ta.dataset.ph64){ta.dataset.ph64=ta.placeholder;ta.placeholder='⏱ 새 루틴 이름 (예: 출근 준비) · Enter로 만들기'}else if(!rt&&ta.dataset.ph64){ta.placeholder=ta.dataset.ph64;delete ta.dataset.ph64}}}catch(e){}
+  return x}})(render);
 
 </script>
 <script type="module" src="backend.js"></script>

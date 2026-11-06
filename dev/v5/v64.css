@@ -1,0 +1,53 @@
+/* v6.4 */
+/* 캘린더: PC도 캐릭터 칸·베타 띠 숨기고 넓게 */
+body.calview63 #hud,body.calview63 .betabar{display:none}
+body.calview63:not(.cal62) main{padding-top:8px}
+body.calview63:not(.cal62) .calbar2{padding:0 0 4px}
+/* 날짜 펼침 = 그 주 아래 카드 (틱틱처럼) */
+.dp63.dp64{background:var(--panel);border:0;overflow:visible;padding:4px 6px 8px;min-height:0;display:flex}
+.dp64c{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 22px rgba(0,0,0,.13);overflow:hidden;animation:dp64in .16s ease-out}
+@keyframes dp64in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.dp64c{animation:none}}
+.dp64h{display:flex;align-items:center;gap:8px;padding:8px 8px 6px 14px;border-bottom:1px solid var(--line)}
+.dp64h b{font-size:14px}
+.dp64h .ib{min-height:30px;width:auto;height:auto;padding:4px 10px;font-size:12.5px;white-space:nowrap;flex:none}
+.dp64h .x64{font-size:18px;min-width:30px;padding:0}
+.dp64l{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:2px 0}
+.d64{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;min-height:40px;padding:4px 14px 4px 11px;border-left:3px solid var(--lc,transparent);cursor:pointer}
+.d64+.d64{border-top:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+.d64:hover{background:color-mix(in srgb,var(--accent) 6%,var(--panel))}
+.d64 .ck{width:20px;height:20px;border-radius:6px;border:1.8px solid var(--muted);background:none;cursor:pointer;padding:0;display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.d64.p5 .ck{border-color:#d23c3c}.d64.p3 .ck{border-color:#e07a10}
+.d64 .tt{min-width:0;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d64 .tt small{color:var(--muted);font-size:11.5px}
+.d64 .tm{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.d64.done{opacity:.55;cursor:default}.d64.done .tt{text-decoration:line-through}
+.d64.done .ck{border-style:solid;border-color:var(--line)}
+.d64e{padding:14px;color:var(--muted);font-size:13px;text-align:center}
+.d64add{border-top:1px solid var(--line);padding:6px 10px 8px;margin:0}
+.d64add .in input{border-radius:10px}
+body.calfill63 .mc.open63{background:color-mix(in srgb,var(--accent) 10%,var(--panel))}
+body.calfill63 .mc.open63::after{content:"";position:absolute;left:50%;bottom:-1px;width:12px;height:7px;transform:translateX(-50%);background:var(--line);clip-path:polygon(0 100%,50% 0,100% 100%);z-index:3}
+body.calfill63 .mc.open63 .dn{outline:2px solid var(--accent);outline-offset:-1px}
+/* 루틴 체크로 기록 */
+.d64s{display:grid;gap:4px}
+.d64r{display:grid;grid-template-columns:auto auto 1fr auto auto;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.d64r input[type=checkbox]{width:20px;height:20px;margin:0}
+.d64r .no{font-size:12px;color:var(--muted);min-width:16px;text-align:center}
+.d64r .nm{min-width:0;font-weight:600}
+.d64r.ok{opacity:.6}
+.d64r .w64{width:76px;padding:4px 6px}
+.d64r .pt{white-space:nowrap}
+/* 할 일 상세 안 루틴 편집 */
+.rt64p .jarcard{border:0;padding:0;box-shadow:none;background:transparent}
+.note64{border:1px dashed var(--gold);background:var(--gold-soft);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.q64ed{margin:8px 0;padding-top:8px;border-top:1px dashed var(--line)}
+.rt64p .kv{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.rt64p .kv label:first-child{display:none}
+.rt64p .kv input,.rt64p .kv select{padding:5px 6px;min-height:32px}
+.rt64p .st62{grid-template-columns:24px minmax(0,1fr) auto}
+.rt64p .st62 .pt62{grid-column:3;grid-row:1;white-space:nowrap}
+.rt64p .st62 .mn{grid-row:2;grid-column:2}
+.rt64p .st62 .ops{grid-row:2;grid-column:3}
+.rt64p .st62 .why{grid-row:3;grid-column:2/-1}
+.rt64p .st62 > .tiny.muted{grid-row:2;grid-column:2}

@@ -4,13 +4,13 @@ SP='/tmp/'
 URL='http://localhost:8765/beta/index.html'
 MOCK=open('/home/claude/habit-quest/dev/v5/mockdb.js').read()
 errs=[]
-def run(pw,W=1400,H=900,seed=None,store=None):
+def run(pw,W=1400,H=900,seed=None,store=None,pre=''):
     b=pw.chromium.launch()
     ctx=b.new_context(viewport={'width':W,'height':H})
     init=MOCK+"\n"
     if store: init+="window.__seedAll="+json.dumps(store)+";for(const k in window.__seedAll)window.__store.set(k,window.__seedAll[k]);\n"
     if seed: init+="window.__seed("+json.dumps(seed)+");\n"
-    init+="try{localStorage.clear()}catch(e){}\n"
+    init+="try{localStorage.clear()}catch(e){}\n"+pre
     ctx.add_init_script(init)
     ctx.route('**/backend.js',lambda r:r.fulfill(body="window.__hqResolve(window.__mockApi)",content_type='application/javascript'))
     ctx.route('**/config.js',lambda r:r.fulfill(body="",content_type='application/javascript'))

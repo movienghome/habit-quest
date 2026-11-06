@@ -1,11 +1,11 @@
-# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v6.3 기준, 2026-11-06)
+# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v6.4 기준, 2026-11-06)
 
 > **새 채팅에서 할 일 (Claude에게)**: 먼저 `add_repo`로 `movienghome/habit-quest`를 붙이고 `git clone --depth 1`. 이 파일은 저장소의 `dev/HANDOFF.md`에도 있음 — 저장소 쪽이 최신이면 그걸 따름. 릴리스할 때마다 이 파일도 같이 고쳐서 커밋.
 
 ## 저장소·주소
 - 저장소: github.com/movienghome/habit-quest (GitHub Pages + Firebase)
 - 본 앱: https://movienghome.github.io/habit-quest/ → **v4.4 그대로**
-- 베타: https://movienghome.github.io/habit-quest/beta/ → **v6.3** (데이터: habit-beta, 실제 기록과 분리)
+- 베타: https://movienghome.github.io/habit-quest/beta/ → **v6.4** (데이터: habit-beta, 실제 기록과 분리)
 - 작업 방식: 고친 건 베타에 먼저 → 사용자가 "반영해" 하면 본 앱에 옮김
 
 ## 사용자 요청 (항상)
@@ -19,11 +19,11 @@
 - `beta/index.html`은 **생성 파일**. 직접 고치지 말고 `dev/v5/`의 모듈을 고친 뒤 빌드.
 - 빌드: `ln -sfn <저장소>/dev/v5 /home/claude/v5` 후 `cd dev/v5 && python3 patch.py`
   (patch.py의 SRC/DST/V는 /home/claude/habit-quest, /home/claude/v5 기준. 중간 파일은 임시 폴더에 씀)
-  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → patch12(v6.0) → patch13(v6.1) → patch14(v6.2) → **patch15(v6.3)**
-  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + v5q(v6.0) + v5r(v6.1) + v5s(v6.2, CSS는 v62.css) + **v5t(v6.3, CSS는 v63.css)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
+  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → patch12(v6.0) → patch13(v6.1) → patch14(v6.2) → patch15(v6.3) → **patch16(v6.4)**
+  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + v5q(v6.0) + v5r(v6.1) + v5s(v6.2, CSS는 v62.css) + v5t(v6.3, CSS는 v63.css) + **v5u(v6.4, CSS는 v64.css)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
   - 주의: 맨 끝 모듈의 const/let은 첫 render 때 아직 초기화 전 → 최상위 값은 function이나 var로.
   - 클래스 이름 `.mc`는 월 캘린더 칸이 씀 → 칩은 `.mx`.
-- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-06-v63`). 베타 띠에 버전 표시(`β 베타 v6.3`) — 같이 올리기.
+- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-06-v64`). 베타 띠에 버전 표시(`β 베타 v6.4`) — 같이 올리기.
 - **patch10은 빌드 결과 전체에서 글자 치환을 함**: `💰`→`₩`, `🪙`→`💰`, `🔁`→`↻`, `리듬`→`반복`. 그러니 **v5o 이후 모듈에서 🪙·🔁·'리듬'을 비교 문자열로 쓰면 바뀌어 버림** → `\u{1F501}`처럼 이스케이프로 쓰기.
 - `normConfig`는 `C.ui`의 정해진 키만 남김(새 키는 사라짐) → 새 ui 설정은 기존 키 안(예: `C.ui.cal._t`)이나 `C` 최상위에.
 - `route()`는 journey 같은 화면 전환 때 render를 안 부름 → 새 화면 내용은 hashchange에서 따로 그림(renderBlog).
@@ -159,6 +159,22 @@
 - 루틴 단계 '🃏 카드와 잇기'는 '(선택)'으로 작게, 설명 문구 바꿈(카드 연결은 루틴 밖에서도 하는 행동일 때만).
 - 테스트: `dev/v5/t63.py`.
 
+## v6.4에서 한 것 (v5u.js · v64.css · patch16.py)
+- **루틴 단계 자가증식 고침 (중요)**: 원인 = 할 일 onSnapshot 첫 응답이 기기 캐시(옛 사본). 다른 기기에서 만든 단계 할 일이 캐시에 없으면 sync62가 새로 만들고, 서버 것이 오면 옛 것도 kidsOf로 단계에 다시 붙음 → 새로고침·기기 바꿀 때마다 두 배. 머리 할 일·습관 반복 할 일도 같은 이유로 겹침.
+  - patch16: 할 일 두 쿼리에 `{meta:1}`, 서버 확인되면 `TSRV64`(open)·`TSRV64r`(recent). `tOK64()`/`tAll64()`.
+  - 할 일을 **만드는** 자동 처리는 tOK64 뒤에만: rtH62(make)·sync62·mig62·mig57·habMigCard·habMirror를 감쌈. **새 자동 생성 코드를 쓰면 꼭 tOK64로 막을 것.**
+  - sync62 새로: tid 있는 단계는 절대 새로 만들지 않음(옛 형식 tid 없는 단계만). 할 일이 안 보이면 기다리고, tAll64 뒤에도 없으면 뺌. 같은 tid 두 번이면 하나만.
+  - 테스트 `dev/v5/t64dup.py`: mockdb에 `window.__staleT={hide:[ids],ms}`(첫 tasks 스냅샷을 fromCache로, 일부 숨김). h61.run(pre=…) 추가.
+  - **fix64 (C.mig64, 한 번)**: 루틴마다 머리 여러 개 → 하나(자식 옮김), 단계 = 제목+aid 같은 것 하나만(많이 한 것·먼저 만든 것 남김, 원래 순서), 같은 카드의 습관 반복 할 일 여러 개 → 하나(☑ 우선). 백업 `C.bak64={at,routines,tasks,del}` → 알림 '되돌리기', 편집 → 루틴 맨 위 안내(14일)·'정리 전으로'(undo64)·'이대로 둘게요'. 테스트 t64fix.py.
+- **루틴 체크로 기록(타이머 없이)**: 루틴 머리 ○(목록·캘린더·홈, data-tdone capture)·일퀘(toggleQuest 감쌈)·루틴 칸 '✓ 체크로 기록'·우클릭 메뉴 → rtDone64 창(단계 체크, 몸무게 단계는 kg 칸). rtDoneGo64: 단계 completeTask(direct)→status 0으로 되돌림·t.last, 전부 오늘 했으면 완주 엔트리 {kind:'routine',rid,full:1}(하루 한 번)·머리 due 넘김.
+- **⏱ 루틴 스마트 목록**(SMART 'routine', taskMatches 감쌈). 그 목록 위 입력칸 = 새 루틴(addTaskFrom 감쌈, #tAdd 포커스일 때), placeholder도 바뀜.
+- 할 일 상세 루틴 패널 = rtCard62 전체(언제·보너스·단계 분·순서·빼기·카드), .rt64p로 좁은 칸 배치(이름 칸 숨김, id 뺌).
+- **캘린더**: body.calview63이면 PC도 #hud·.betabar 숨김. 날짜 펼침 = dp63 새로(카드 .dp64: 머리·간단한 줄 .d64(체크 data-tdone, 열기 data-ctask, 시간 오른쪽, 목록 색 왼쪽 띠)·끝낸 것·아래 입력칸 #calAdd). #calDay는 비움(id 겹침 방지). cal62fit 새로: 카드 높이 = 내용(화면 55%까지), 고른 주 1.25fr·나머지 .6fr.
+- **보스·쫄따구 모양**: bossSVG(color,dead,name) — BOSS64(monster·ghost·golem·bat·swamp·spiky·slime), bossKind64(이름으로). minionSVG(color,dead,kind) — MOB64(task 꼬마도깨비·rep 달팽이·skull 해골·late 유령·brave 고슴도치·pack 미믹 상자·rt 애벌레), mobOf64(t)=mobKind61. patch16이 호출부에 이름·종류를 넘김.
+- 메뉴 아이콘(ICONS): 뽑기 = 캡슐 뽑기 기계, 행동/습관 = 체크한 카드, 돌아보기 = 막대 그래프.
+- 홈 '지금 하면 좋은 것'에서 오늘 목록에 이미 있는 일퀘 뺌. 일퀘 창(qSheet63)에서 '✎ 요일 표' = 그 자리에서 dailiesEditHTML(ui.q64ed), reEdit 감싸 창 다시 그림.
+- 테스트: t64.py(체크 기록·목록·상세·일퀘 표·도감·캘린더 PC/폰). t61.py는 v6.1 선택자라 지금은 안 맞음(옛 것).
+
 ## 사용자가 거듭 말하는 것 (매번 확인)
 - **연결·통합이 매끄러운가**: 같은 것이 화면마다 다르게 보이면(개수·거르기·이름) 바로 맞출 것. 어디서 연 것이든 거기서 고치고 돌아올 수 있게(칩·우클릭·뒤로).
 - 목록이 '텍스트만 쭉'이면 막막해함 → 찾기·묶음·자주 쓰는 것 먼저(고르기 창).
@@ -166,8 +182,9 @@
 - 화면 배치는 홈처럼 지도 끌기로.
 
 ## 아직 안 한 요청 (사용자 요청 기준, 매 릴리스마다 갱신해서 답변에 붙이기)
-- 사용자 확인 받기: v6.3 캘린더 날짜 펼침·＋ 버튼 · 일퀘 칸 · 이번 주에서 보스 뺀 것. 루틴 = 할 일 묶음(v6.2) · 사냥 그만 확인 · 폰 캘린더 · 직접 그린 장비 · 이번 주 용기 한 가지. (v6.1 것: 아이콘 · 요일별 일퀘 표 · 우클릭 · 화면 배치 지도)
-- 홈 겹침: v6.3에서 일퀘 칸·이번 주 칸 정리함. 남은 겹침 = '오늘' 목록과 '지금 하면 좋은 것'에 같은 일퀘가 또 나옴(제안: 지금 하면 좋은 것에서 오늘 목록에 이미 있는 일퀘는 빼기).
+- 사용자 확인 받기: **v6.4 단계 정리 결과(Lethe·Vesper 단계 수가 맞는지, 일부러 같은 단계 두 번 넣은 게 있었는지)** · 루틴 체크로 기록 · ⏱ 루틴 목록 · 캘린더 날짜 카드 · 보스 모양. v6.3 캘린더 날짜 펼침·＋ 버튼 · 일퀘 칸 · 이번 주에서 보스 뺀 것. 루틴 = 할 일 묶음(v6.2) · 사냥 그만 확인 · 폰 캘린더 · 직접 그린 장비 · 이번 주 용기 한 가지. (v6.1 것: 아이콘 · 요일별 일퀘 표 · 우클릭 · 화면 배치 지도)
+- 편집 화면에 가야 하는 것 더 줄이기: 용기 버튼·도파민 메뉴·병·규칙·화면 배치(아직 편집 화면). 루틴·일퀘·카드는 v6.4까지 창에서 됨.
+- 루틴 머리 줄의 '+30 💰20'은 머리 할 일 자체 점수라 헷갈림 → 단계 합·완주 보너스로 보일지.
 - 보스 약점에 실제 효과를 붙일지 · 처치 연출 · 도파민 디저트 골드 스위치(2주 뒤 판단, 기본 꺼짐).
 - 우클릭 메뉴 확장 후보: 캘린더 빈 칸·루틴 줄·도파민 코스 칸·홈 칸. 고르기 창을 할 일 상세 🃏 카드 고르기(지금 select)에도.
 - 본 앱 승격("반영해" 때) — v4.4 → v6.x는 마이그레이션이 많으니 승격 전 백업 필수, backend.js 저장 안전장치·normConfig UIKEEP61도 같이.
