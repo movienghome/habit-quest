@@ -1,7 +1,7 @@
 // 습관 퀘스트 service worker: 기기 사본으로 바로 열고, 파일은 뒤에서 새로 받아요.
 const BETA = self.location.pathname.includes('/beta/');
 const PRE = BETA ? 'hqb-' : 'hq-';
-const VERSION = PRE + '2026-11-06-v64';
+const VERSION = PRE + '2026-11-06-v65';
 const EXT = VERSION + '-ext';
 const SHELL = ['./', './index.html', './backend.js', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png', './icons/favicon.ico'];
@@ -24,6 +24,14 @@ async function networkFirst(req) {
   try { const res = await fetch(req, { cache: 'no-store' }); if (res.ok) cache.put(req, res.clone()); return res; }
   catch (e) { return (await cache.match(req, { ignoreSearch: true })) || new Response('', { status: 503 }); }
 }
+async function navFirst(req) {
+  const cache = await caches.open(VERSION);
+  const net = fetch(req, { cache: 'no-store' }).then(res => { if (res && res.ok) cache.put('./index.html', res.clone()); return res; }).catch(() => null);
+  const slow = new Promise(r => setTimeout(() => r('slow'), 3500));
+  const first = await Promise.race([net, slow]);
+  if (first && first !== 'slow') return first;
+  return (await cache.match('./index.html', { ignoreSearch: true })) || (await net) || new Response('오프라인', { status: 503 });
+}
 async function cacheFirst(req) {
   const cache = await caches.open(EXT);
   const hit = await cache.match(req);
@@ -39,7 +47,8 @@ self.addEventListener('fetch', e => {
   if (url.origin === location.origin) {
     if (!BETA && url.pathname.startsWith(new URL('./beta/', self.location).pathname)) return;  // 베타는 자기 worker가 따로 있어요
     if (url.pathname.endsWith('/config.js')) { e.respondWith(networkFirst(req)); return; }
-    if (req.mode === 'navigate') { e.respondWith(staleWhileRevalidate(req, './index.html')); return; }
+    if (req.mode === 'navigate') { e.respondWith(navFirst(req)); return; }  // 새 버전이 바로 열리게(옛 버전이 한 번 더 도는 일 없음), 느리면 기기 사본
+    if (url.pathname.endsWith('/index.html') || url.pathname.endsWith('/backend.js')) { e.respondWith(networkFirst(req)); return; }
     e.respondWith(staleWhileRevalidate(req)); return;
   }
   if (url.hostname === 'www.gstatic.com' && url.pathname.startsWith('/firebasejs/')) { e.respondWith(cacheFirst(req)); return; }
