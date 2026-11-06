@@ -46,7 +46,7 @@ function daySheet67(){const day=curDay(),c=dayCount67(day),hp=overallOf(day),bas
   openSheet(`<div class="sh"><h3>${ui.off?'그날':'오늘'} 숫자 풀이</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
   <p class="small" style="margin:0"><b>HP ${hp}</b> = 아침 시작점 ${base}(${ENERGY_LBL[(day.energy||3)-1]||'보통'}) + 오늘 컨디션 변화의 합. 영역 평균이 아니에요.</p>
   <p class="small" style="margin:10px 0 4px"><b>기록 ${(day.entries||[]).length}개</b> = '오늘 한 일'에 적힌 줄 수예요. 종류별로:</p>
-  <div class="brk">${c.list.map(([k,n])=>`<span>${esc(k)}</span><span>${n}</span>`).join('')||'<span>아직 없어요</span><span></span>'}</div>
+  <div class="brk68">${c.list.map(([k,n])=>`<span class="chipbtn"><span>${esc(k)}</span> <b class="num">${n}</b></span>`).join(' ')||'<span class="muted">아직 없어요</span>'}</div>
   <p class="tiny muted" style="margin:8px 0 0">일퀘 상자·보스 처치·흐름 보너스 같은 보너스 줄도 하나로 세요. 식사 칸(채소·나쁜 식사 등)은 줄이 아니라 칸의 숫자라서 따로 셌어요${c.food?`(오늘 ${c.food}칸)`:''}. 몸무게는 줄 하나예요.</p>`)}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-ds67]');if(!b)return;e.preventDefault();e.stopPropagation();daySheet67()},true);
 

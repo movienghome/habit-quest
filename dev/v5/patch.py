@@ -1,5 +1,5 @@
 import re,sys
-SRC='/home/claude/habit-quest/index.html'
+SRC='/home/claude/habit-quest/dev/v5/base44.html'  # 본 앱 v4.4 원본 (v6.8에서 본 앱을 베타 빌드로 바꿔서 여기로 옮김)
 DST='/home/claude/habit-quest/beta/index.html'
 s=open(SRC,encoding='utf-8').read()
 V='/home/claude/v5/'
@@ -86,5 +86,6 @@ exec(open(V+'patch16.py',encoding='utf-8').read())
 exec(open(V+'patch17.py',encoding='utf-8').read())
 exec(open(V+'patch18.py',encoding='utf-8').read())
 exec(open(V+'patch19.py',encoding='utf-8').read())
+exec(open(V+'patch20.py',encoding='utf-8').read())
 open(DST,'w',encoding='utf-8').write(s)
 print('ok',len(s))

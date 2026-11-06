@@ -1,4 +1,4 @@
-// Firebase backend for 해비티카틱 (포켓 노트·어항 일지와 같은 Firebase 프로젝트, 기록은 자기 폴더에): 로그인, Firestore 저장(오프라인에서도 동작).
+// Firebase backend for 해비티카틱 (본 앱·베타 같은 파일, 경로로 구분) (포켓 노트·어항 일지와 같은 Firebase 프로젝트, 기록은 자기 폴더에): 로그인, Firestore 저장(오프라인에서도 동작).
 const V = '10.12.2';
 const base = `https://www.gstatic.com/firebasejs/${V}/`;
 const $ = s => document.querySelector(s);
@@ -124,6 +124,70 @@ async function start() {
     await importAll(live);
   }
 
+  // ---------- v6.8 본 앱 승격: 베타 기록을 본 앱으로 (본 앱 옛 기록은 같은 계정 폴더 habit-bak68에 백업) ----------
+  async function readNS(ns) {
+    const src = `data/users/${uid}/${ns}`, out = { game: {}, days: {}, tasks: {} };
+    for (const id of ['config', 'progress']) { const s = await F.getDoc(F.doc(fs, `${src}/game/${id}`)).catch(() => null); if (s && s.exists()) out.game[id] = s.data(); }
+    (await F.getDocs(F.collection(fs, `${src}/days`)).catch(() => ({ docs: [] }))).docs.forEach(d => out.days[d.id] = d.data());
+    (await F.getDocs(F.collection(fs, `${src}/tasks`)).catch(() => ({ docs: [] }))).docs.forEach(d => out.tasks[d.id] = d.data());
+    return out;
+  }
+  async function writeNS(ns, data, wipe) {
+    const dst = `data/users/${uid}/${ns}`;
+    let batch = F.writeBatch(fs), n = 0;
+    const flush = async () => { if (n) { await batch.commit(); batch = F.writeBatch(fs); n = 0; } };
+    if (wipe) for (const c of ['days', 'tasks']) { const old = await F.getDocs(F.collection(fs, `${dst}/${c}`)).catch(() => ({ docs: [] })); for (const d of old.docs) { batch.delete(F.doc(fs, `${dst}/${c}/${d.id}`)); if (++n >= 400) await flush(); } }
+    for (const id of ['config', 'progress']) { if (data.game[id]) batch.set(F.doc(fs, `${dst}/game/${id}`), data.game[id]); else if (wipe) batch.delete(F.doc(fs, `${dst}/game/${id}`)); if (++n >= 400) await flush(); }
+    for (const c of ['days', 'tasks']) for (const [k, v] of Object.entries(data[c] || {})) { batch.set(F.doc(fs, `${dst}/${c}/${k}`), v); if (++n >= 400) await flush(); }
+    await flush();
+  }
+  const isNew = c => !!(c && (c.mig67ds || c.mig62 || c.mig57));
+  async function promote68() {
+    if (BETA) return;
+    const mainCfg = await F.getDoc(F.doc(fs, `${root()}/game/config`)).catch(() => null);
+    const m = mainCfg && mainCfg.exists() ? mainCfg.data() : null;
+    if (m && (isNew(m) || m.keepOld68)) return;
+    const betaCfg = await F.getDoc(F.doc(fs, `data/users/${uid}/habit-beta/game/config`)).catch(() => null);
+    if (!betaCfg || !betaCfg.exists()) return;
+    gate.hidden = false; $('#login').hidden = true; const box = $('#nocfg'); box.hidden = false;
+    box.innerHTML = '<h1><img src="icons/icon-192.png" alt="">해비티카틱</h1><p>본 앱이 새 버전(v6.8)이 됐어요. 기록을 확인하는 중…</p>';
+    const main = m ? await readNS('habit') : null, beta = await readNS('habit-beta');
+    let diff = [];
+    if (main) { const lim = new Date(Date.now() - 45 * 864e5).toISOString().slice(0, 10); const ids = d => new Set(((d && d.entries) || []).map(e => e && e.id).filter(Boolean)); diff = Object.keys(main.days).filter(k => { if (k < lim) return false; const b = ids(beta.days[k]); return [...ids(main.days[k])].some(i => !b.has(i)); }).sort(); }
+    const nd = Object.keys(beta.days).length, nt = Object.keys(beta.tasks).length;
+    const choice = await new Promise(res => {
+      box.innerHTML = `<h1><img src="icons/icon-192.png" alt="">해비티카틱 v6.8</h1>
+        <p><b>베타에서 쓰던 기록을 본 앱으로 옮길까요?</b></p>
+        <p style="font-size:13px">베타 기록: 날짜 ${nd}일 · 할 일 ${nt}개. 옮기면 지금 본 앱 기록은 지우지 않고 같은 계정의 백업 칸(habit-bak68)에 통째로 남겨요(나중에 계정·백업에서 되돌릴 수 있어요).</p>
+        ${diff.length ? `<p style="font-size:13px">⚠ 최근 45일 중 <b>본 앱에만 적힌 기록이 있는 날 ${diff.length}일</b>: ${diff.slice(-12).map(k => k.slice(5).replace('-', '/')).join(', ')}${diff.length > 12 ? ' …' : ''} — 이 날들은 백업에 남아요. 옮긴 뒤 필요한 것만 다시 적어 주세요.</p>` : ''}
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><button class="btn primary" id="p68b">베타 기록으로 옮기기 (권장)</button><button class="btn ghost" id="p68o">본 앱 옛 기록 그대로 새 버전으로</button></div>
+        <p class="err" id="p68e"></p>`;
+      $('#p68b').onclick = () => res('beta'); $('#p68o').onclick = () => res('old');
+    });
+    if (choice === 'old') { await F.setDoc(F.doc(fs, `${root()}/game/config`), { keepOld68: 1 }, { merge: true }).catch(() => {}); gate.hidden = true; return; }
+    box.querySelector('p').textContent = '옮기는 중이에요… 창을 닫지 마세요.';
+    try {
+      const had = await F.getDoc(F.doc(fs, `data/users/${uid}/habit-bak68/game/meta`)).catch(() => null), bk = had && had.exists() ? 'habit-bak68-' + Date.now() : 'habit-bak68'; // 첫 백업은 절대 덮어쓰지 않음
+      if (main) { await writeNS(bk, main, true); await F.setDoc(F.doc(fs, `data/users/${uid}/${bk}/game/meta`), { at: new Date().toISOString(), from: 'habit', days: Object.keys(main.days).length, tasks: Object.keys(main.tasks).length }); }
+      await writeNS('habit', beta, true);
+      await F.setDoc(F.doc(fs, `${root()}/game/config`), { moved68: { at: new Date().toISOString(), bak: !!main } }, { merge: true });
+      try { localStorage.removeItem('hq-snap'); localStorage.removeItem('hq-run'); } catch (e) {}
+      gate.hidden = true;
+    } catch (e) { console.error(e); const er = $('#p68e'); if (er) er.textContent = '옮기지 못했어요: ' + (e.code || e.message) + ' · 새로고침해서 다시 해 보세요. 본 앱 기록은 그대로예요.'; throw e; }
+  }
+  // 옮기기 전 본 앱 기록으로 되돌리기 (지금 기록은 habit-bak68b에 남김)
+  async function restoreBak68() {
+    if (BETA) throw new Error('본 앱에서만 돼요');
+    const meta = await F.getDoc(F.doc(fs, `data/users/${uid}/habit-bak68/game/meta`));
+    if (!meta.exists()) throw new Error('백업이 없어요');
+    const cur = await readNS('habit'), bak = await readNS('habit-bak68');
+    await writeNS('habit-bak68b', cur, true);
+    bak.game.config = { ...(bak.game.config || {}), keepOld68: 1 };
+    await writeNS('habit', bak, true);
+    try { localStorage.removeItem('hq-snap'); } catch (e) {}
+  }
+  async function bak68Info() { if (BETA) return null; const m = await F.getDoc(F.doc(fs, `data/users/${uid}/habit-bak68/game/meta`)).catch(() => null); return m && m.exists() ? m.data() : null; }
+
   let resolved = false;
   A.onAuthStateChanged(auth, async user => {
     if (user) {
@@ -131,11 +195,12 @@ async function start() {
       if (resolved) { if (user.uid !== uid) location.reload(); return; }
       resolved = true; uid = user.uid;
       if (BETA) { try { const has = await F.getDoc(F.doc(fs, `${root()}/game/config`)); if (!has.exists()) { gate.hidden = false; $('#login').hidden = true; $('#nocfg').hidden = false; $('#nocfg p').textContent = '베타용으로 실제 기록을 복사하는 중이에요…'; await copyFromLive(); gate.hidden = true; } } catch (e) { console.error(e); gate.hidden = true; } }
+      if (!BETA) { try { await promote68(); } catch (e) { console.error(e); return; } }
       window.__hqResolve({
         db: { doc: p => docApi(`${root()}/${p}`), collection: p => colApi(`${root()}/${p}`) },
         user: { id: async () => uid, isOwner: () => true, canEdit: () => true, can: () => true },
         account: { email: user.email },
-        exportAll, importAll, copyFromLive, putTasks,
+        exportAll, importAll, copyFromLive, putTasks, restoreBak68, bak68Info,
         logout: async () => { await A.signOut(auth); try { await F.terminate(fs); await F.clearIndexedDbPersistence(fs); } catch (e) {} location.reload(); }
       });
     } else {

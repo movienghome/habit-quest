@@ -446,7 +446,7 @@ function calKey(t){const by=(C.ui.cal||{}).color;if(by==='area'){const i=C.areas
   const m=$('calModes');if(m&&!$('cal57Color')){m.insertAdjacentHTML('afterend',`<select id="cal57Color" aria-label="일정 색 기준" title="일정 색 기준" style="width:auto;font-size:12px;padding:2px 4px"><option value="">색: 중요도</option><option value="area">색: 영역</option><option value="list">색: 목록</option></select>`)}
   const sel=$('cal57Color');if(sel)sel.value=(C.ui.cal||{}).color||'';
   if(!(C.ui.cal||{}).color)return;
-  document.querySelectorAll('[data-view="cal"] [data-ctask]').forEach(el=>{const t=TASKS[el.dataset.ctask];if(!t)return;const k=calKey(t);if(!k)return;const v=`var(${CAL_PAL[k[0]%CAL_PAL.length]})`;
+  document.querySelectorAll('#calPane [data-ctask]').forEach(el=>{const t=TASKS[el.dataset.ctask];if(!t)return;const k=calKey(t);if(!k)return;const v=`var(${CAL_PAL[k[0]%CAL_PAL.length]})`;
     el.style.borderLeft=`4px solid ${v}`;el.style.background=`color-mix(in srgb,${v} 16%,var(--panel))`;
     if(!el.querySelector('.ck57')){const s=document.createElement('span');s.className='ck57';s.textContent=k[1];s.style.borderColor=v;el.prepend(s)}});
 }catch(e){console.error(e)}}}
