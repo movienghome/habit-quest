@@ -1,11 +1,11 @@
-# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v6.2 기준, 2026-11-06)
+# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v6.3 기준, 2026-11-06)
 
 > **새 채팅에서 할 일 (Claude에게)**: 먼저 `add_repo`로 `movienghome/habit-quest`를 붙이고 `git clone --depth 1`. 이 파일은 저장소의 `dev/HANDOFF.md`에도 있음 — 저장소 쪽이 최신이면 그걸 따름. 릴리스할 때마다 이 파일도 같이 고쳐서 커밋.
 
 ## 저장소·주소
 - 저장소: github.com/movienghome/habit-quest (GitHub Pages + Firebase)
 - 본 앱: https://movienghome.github.io/habit-quest/ → **v4.4 그대로**
-- 베타: https://movienghome.github.io/habit-quest/beta/ → **v6.2** (데이터: habit-beta, 실제 기록과 분리)
+- 베타: https://movienghome.github.io/habit-quest/beta/ → **v6.3** (데이터: habit-beta, 실제 기록과 분리)
 - 작업 방식: 고친 건 베타에 먼저 → 사용자가 "반영해" 하면 본 앱에 옮김
 
 ## 사용자 요청 (항상)
@@ -19,11 +19,11 @@
 - `beta/index.html`은 **생성 파일**. 직접 고치지 말고 `dev/v5/`의 모듈을 고친 뒤 빌드.
 - 빌드: `ln -sfn <저장소>/dev/v5 /home/claude/v5` 후 `cd dev/v5 && python3 patch.py`
   (patch.py의 SRC/DST/V는 /home/claude/habit-quest, /home/claude/v5 기준. 중간 파일은 임시 폴더에 씀)
-  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → patch12(v6.0) → patch13(v6.1) → **patch14(v6.2)**
-  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + v5q(v6.0) + v5r(v6.1) + **v5s(v6.2, CSS는 v62.css)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
+  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → patch12(v6.0) → patch13(v6.1) → patch14(v6.2) → **patch15(v6.3)**
+  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + v5q(v6.0) + v5r(v6.1) + v5s(v6.2, CSS는 v62.css) + **v5t(v6.3, CSS는 v63.css)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
   - 주의: 맨 끝 모듈의 const/let은 첫 render 때 아직 초기화 전 → 최상위 값은 function이나 var로.
   - 클래스 이름 `.mc`는 월 캘린더 칸이 씀 → 칩은 `.mx`.
-- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-06-v62`). 베타 띠에 버전 표시(`β 베타 v6.2`) — 같이 올리기.
+- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-06-v63`). 베타 띠에 버전 표시(`β 베타 v6.3`) — 같이 올리기.
 - **patch10은 빌드 결과 전체에서 글자 치환을 함**: `💰`→`₩`, `🪙`→`💰`, `🔁`→`↻`, `리듬`→`반복`. 그러니 **v5o 이후 모듈에서 🪙·🔁·'리듬'을 비교 문자열로 쓰면 바뀌어 버림** → `\u{1F501}`처럼 이스케이프로 쓰기.
 - `normConfig`는 `C.ui`의 정해진 키만 남김(새 키는 사라짐) → 새 ui 설정은 기존 키 안(예: `C.ui.cal._t`)이나 `C` 최상위에.
 - `route()`는 journey 같은 화면 전환 때 render를 안 부름 → 새 화면 내용은 hashchange에서 따로 그림(renderBlog).
@@ -149,6 +149,16 @@
 - 보스 대사(BLINE62, 날마다 바뀜, 처치하면 BDEAD62) — 홈 이번 주 보스 밑.
 - 테스트: `dev/v5/t62.py`(루틴·사냥·그만·캘린더·빼기/넣기·장비·용기) · t62b(점수) · t62c(폰 월 보기) · t62d(화면 점검 스샷).
 
+## v6.3에서 한 것 (v5t.js · v63.css · patch15.py)
+- **루틴 머리는 할 일 목록에서 늘 접힘**: tShut63(t) — 루틴 머리면 C.ui.tfold[id]==='o'일 때만 펼침, 그 외 묶음은 예전대로(truthy=접힘). patch15가 nestRows·taskRow의 `(C.ui.tfold||{})[t.id]` 2곳을 바꿈. 루틴 머리 줄 아이콘 📦 → ⏱.
+- **캘린더 월 보기 화면 가득 = PC도**: body.calfill63(캘린더 화면·분할 아님·월). cal62tog·cal62fit·calN62는 v5t 함수 선언이 이김. 폰 전용(cal62) 도구줄은 그대로.
+- **날짜 누르면 그 주 밑에 그날 목록**(dp63): 원래 #calDay의 .dayp를 그 주 마지막 칸 뒤로 옮겨 grid-column 1/-1 줄로(입력칸 calAdd 그대로). ui.cal63=펼침 여부, ui.calSel=날짜. 같은 날 다시/× /Esc = 접기, 320ms 안 두 번 = 하루 보기, +n = 펼치기. 펼친 주 1fr·나머지 .7fr·목록 폰 5fr/PC 3fr. 클릭은 window capture(v5o의 MC58 document capture보다 먼저) → 날짜 한 번 = 할 일 추가 창은 없어짐. 할 일 추가 = 폰 오른쪽 아래 ＋(#cal63fab) · PC 도구줄 '＋ 할 일'(#cal63add) → calAddDay. PC에서 '월 ▾'(cal62only)가 보이던 버그 고침.
+- **홈 오늘의 일퀘 칸 = 상자 진행만**(목록·추가칸 CSS로 숨김) + '남은 것 n개' · 누르면 qSheet63(목록=#quests 내용 복사, render마다 다시 그림). **이번 주 칸 = 용기 목표만**(#weekBox>.boss 숨김), 보스 대사는 전투 칸 boss2 밑(bossSay63).
+- 지금 하면 좋은 것: 일퀘 줄 '+0 XP' → 카드 점수(suggestions 감쌈).
+- **몸무게 단계**: wStep63(t). 목록·캘린더에서 체크 = 몸무게 입력 창(wAsk63, 사냥과 같은 C.weight.xp, 할 일 점수 안 들어감). 오늘 몸무게가 있으면 render 때 단계 t.last=오늘(wSync63). 줄에 '⚖ 누르면 입력'.
+- 루틴 단계 '🃏 카드와 잇기'는 '(선택)'으로 작게, 설명 문구 바꿈(카드 연결은 루틴 밖에서도 하는 행동일 때만).
+- 테스트: `dev/v5/t63.py`.
+
 ## 사용자가 거듭 말하는 것 (매번 확인)
 - **연결·통합이 매끄러운가**: 같은 것이 화면마다 다르게 보이면(개수·거르기·이름) 바로 맞출 것. 어디서 연 것이든 거기서 고치고 돌아올 수 있게(칩·우클릭·뒤로).
 - 목록이 '텍스트만 쭉'이면 막막해함 → 찾기·묶음·자주 쓰는 것 먼저(고르기 창).
@@ -156,11 +166,10 @@
 - 화면 배치는 홈처럼 지도 끌기로.
 
 ## 아직 안 한 요청 (사용자 요청 기준, 매 릴리스마다 갱신해서 답변에 붙이기)
-- 사용자 확인 받기: 루틴 = 할 일 묶음(v6.2) · 사냥 그만 확인 · 폰 캘린더 · 직접 그린 장비 · 이번 주 용기 한 가지. (v6.1 것: 아이콘 · 요일별 일퀘 표 · 우클릭 · 화면 배치 지도)
-- 홈 겹침 정리 제안(사용자 결정 대기): 같은 일퀘가 '오늘'·'오늘의 일퀘'·'지금 하면 좋은 것' 세 곳에, 보스가 '전투'·'이번 주' 두 곳에 나옴 → 일퀘 칸은 상자 진행만, 이번 주 칸은 용기 목표만 남기는 안.
+- 사용자 확인 받기: v6.3 캘린더 날짜 펼침·＋ 버튼 · 일퀘 칸 · 이번 주에서 보스 뺀 것. 루틴 = 할 일 묶음(v6.2) · 사냥 그만 확인 · 폰 캘린더 · 직접 그린 장비 · 이번 주 용기 한 가지. (v6.1 것: 아이콘 · 요일별 일퀘 표 · 우클릭 · 화면 배치 지도)
+- 홈 겹침: v6.3에서 일퀘 칸·이번 주 칸 정리함. 남은 겹침 = '오늘' 목록과 '지금 하면 좋은 것'에 같은 일퀘가 또 나옴(제안: 지금 하면 좋은 것에서 오늘 목록에 이미 있는 일퀘는 빼기).
 - 보스 약점에 실제 효과를 붙일지 · 처치 연출 · 도파민 디저트 골드 스위치(2주 뒤 판단, 기본 꺼짐).
 - 우클릭 메뉴 확장 후보: 캘린더 빈 칸·루틴 줄·도파민 코스 칸·홈 칸. 고르기 창을 할 일 상세 🃏 카드 고르기(지금 select)에도.
-- 몸무게 단계: 목록에서 직접 체크하면 할 일 점수(+4)가 들어감(사냥에선 몸무게 칸 점수). 몸무게 단계 줄은 체크 대신 몸무게 칸으로 가게 할지.
 - 본 앱 승격("반영해" 때) — v4.4 → v6.x는 마이그레이션이 많으니 승격 전 백업 필수, backend.js 저장 안전장치·normConfig UIKEEP61도 같이.
 
 ## 1단계 마무리 (v5.7에서 끝남 — 기록용)
