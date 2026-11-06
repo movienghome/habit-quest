@@ -1,0 +1,107 @@
+/* v6.6 */
+.linkbtn{background:none;border:0;padding:0;font:inherit;font-size:inherit;color:var(--accent);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+/* 홈 뽑기·사냥: 긴 루틴 이름이 넘치지 않게 */
+.hgacha .btn{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 140px}
+.hg66{display:grid;gap:4px;margin-top:10px}
+.hgr66{display:grid;grid-template-columns:auto 1fr auto auto;gap:6px;align-items:center;padding:4px 6px;border-radius:10px;border:1px solid var(--line)}
+.hgr66:not(.on){opacity:.7;grid-template-columns:auto 1fr}
+.hgr66.on{background:color-mix(in srgb,var(--accent) 6%,var(--panel))}
+/* 유리병 */
+.jar svg{max-width:calc(78px * var(--jz,1))}
+.jbar66{margin:0 0 10px;padding:8px 10px;border-radius:12px;background:var(--panel2)}
+.dec66{display:grid;grid-template-columns:120px 1fr;gap:16px;margin-top:8px}
+.dprev66 svg{width:110px;height:auto;display:block;margin:0 auto}
+@media (max-width:560px){.dec66{grid-template-columns:1fr}.dprev66 svg{width:90px}}
+.dlooks66{display:flex;gap:6px;flex-wrap:wrap}
+.dlooks66 button{display:grid;justify-items:center;gap:2px;width:74px;padding:6px 4px;border:2px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);font:inherit;font-size:11.5px;cursor:pointer}
+.dlooks66 button[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--panel))}
+.dlooks66 svg{width:40px;height:auto}
+.sw66{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:3px 8px 3px 4px;font:inherit;font-size:12px;cursor:pointer}
+.sw66 span{width:16px;height:16px;border-radius:50%;background:var(--sw);display:inline-block}
+.sw66.sm{padding:3px}
+.sw66[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:1px}
+.sw66[aria-pressed="true"]::after{content:'✓';font-size:11px;font-weight:700;margin-left:1px}
+.sw66.sm[aria-pressed="true"]::after{margin:0 2px 0 0}
+.mrow66{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;padding:5px 0;border-bottom:1px dashed var(--line)}
+.an66{display:grid;gap:10px;margin-top:10px}
+.anj66{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:start;padding:8px;border:1px solid var(--line);border-radius:12px}
+.anr66{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;margin-top:4px}
+.anr66 input{width:84px;text-align:right}
+/* 행동/습관 화면 구슬 넣기 */
+.j66jars{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.j66jars button{display:grid;justify-items:center;gap:1px;min-width:62px;padding:4px 6px;border:2px solid transparent;border-radius:12px;background:transparent;color:var(--ink);font:inherit;cursor:pointer}
+.j66jars button[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel))}
+.j66jars .minijar svg{width:30px}
+.mtype[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--panel));font-weight:700}
+/* 한 줄 일기 */
+.jw66 .jstrip66{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;margin:2px 0 12px;padding:8px;border-radius:12px;background:var(--panel2)}
+.jd66s{display:grid;grid-template-rows:auto repeat(4,26px);justify-items:center;align-items:center;gap:2px}
+.jd66s.lbl{justify-items:end;padding-right:2px}
+.jdot66{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:14px;background:var(--track);opacity:.5}
+.jdot66[class*="m-"]{opacity:1;background:var(--panel);box-shadow:0 0 0 1px var(--line)}
+.jdot66.m-g{background:color-mix(in srgb,#2e9a4a 22%,var(--panel))}
+.jdot66.m-o{background:color-mix(in srgb,#2e9a4a 10%,var(--panel))}
+.jdot66.m-t{background:color-mix(in srgb,#e07a10 14%,var(--panel))}
+.jdot66.m-h{background:color-mix(in srgb,#d23c3c 16%,var(--panel))}
+.jcards66{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.jday66{border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--panel)}
+.jday66.today{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+.jday66 header{font-size:14px;margin-bottom:6px}
+.jday66 ol{list-style:none;margin:0;padding:0;display:grid;gap:8px;position:relative}
+.jday66 ol::before{content:'';position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--line);border-radius:2px}
+.jday66 li{position:relative;padding-left:24px;display:grid;grid-template-columns:1fr auto;gap:0 8px}
+.jday66 li::before{content:'';position:absolute;left:4px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--panel);border:2px solid var(--edge)}
+.jday66 li.m-g::before{background:#2e9a4a;border-color:#2e9a4a}
+.jday66 li.m-o::before{background:color-mix(in srgb,#2e9a4a 50%,var(--panel));border-color:#2e9a4a}
+.jday66 li.m-t::before{background:#e07a10;border-color:#e07a10}
+.jday66 li.m-h::before{background:#d23c3c;border-color:#d23c3c}
+.jday66 .sl66{font-size:11.5px;color:var(--muted)}
+.jday66 .mo66{font-size:15px;line-height:1;text-align:right}
+.jday66 .mo66 small{font-size:10.5px;color:var(--muted);margin-left:3px}
+.jday66 li p{grid-column:1/-1;margin:2px 0 0;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere}
+.jday66 li .ib{position:absolute;right:-4px;bottom:-4px;font-size:12px;opacity:.6}
+.jday66 li.empty66{grid-template-columns:1fr auto;opacity:.75}
+/* 영역 · HP · 점수 점검 */
+.rv66{margin-top:0}
+.ar66{display:grid;gap:7px}
+.arr66{display:grid;grid-template-columns:96px 1fr 54px;gap:2px 8px;align-items:center}
+.arr66 .tiny{grid-column:1/-1;padding-left:2px}
+.arr66 .nm{font-size:13.5px;font-weight:600}
+.bar66{height:9px;border-radius:9px;background:var(--track);overflow:hidden}
+.bar66 i{display:block;height:100%;background:var(--good);border-radius:9px}
+.hps66{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end}
+.hp66{display:grid;justify-items:center;gap:3px}
+.hp66 i{display:block;position:relative;width:16px;height:64px;border-radius:6px;background:var(--track);overflow:visible}
+.hp66 i::after{content:'';position:absolute;left:0;right:0;bottom:0;height:calc(var(--h) * 1%);border-radius:6px;background:var(--good)}
+.hp66 i b{position:absolute;left:-4px;right:-4px;bottom:calc(var(--h) * 1%);height:2px;background:var(--ink);z-index:1;border-radius:2px}
+.sc66{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.sc66 li{display:grid;grid-template-columns:26px 1fr;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--line)}
+.sc66 li.warn{background:color-mix(in srgb,var(--bad) 7%,var(--panel));border-color:color-mix(in srgb,var(--bad) 35%,var(--line))}
+.sc66 li.warn b::before{content:'⚠ ';}
+.sc66 li.ok b::before{content:'✓ ';color:var(--muted)}
+.sc66 .ic{font-size:18px}
+.sc66 .btn{margin-top:6px}
+/* 캘린더 서랍 */
+.tctl66{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.tctl66 select{flex:1 1 90px;min-width:0;font-size:12.5px;padding:4px 6px}
+.tf66{display:grid;gap:4px;padding:8px;border-radius:10px;background:var(--panel2)}
+.tf66 .row{gap:3px;flex-wrap:wrap}
+.tgh66{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--muted);padding:6px 4px 2px;border-bottom:1px solid var(--line);margin-top:2px}
+/* 팁 모음 */
+.tipb66{display:block;margin-top:6px}
+.tip66{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.tip66 li{display:grid;grid-template-columns:26px 1fr;gap:8px;padding:8px 10px;border-radius:12px;background:var(--panel2)}
+.tip66 .ic{font-size:17px}
+.tip66big{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;padding:12px 14px;margin:6px 0 10px;border-radius:14px;background:color-mix(in srgb,var(--gold) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--gold) 40%,var(--line))}
+.tip66big span{font-size:30px;text-align:center}
+.tip66big p{margin:0;font-size:15px;line-height:1.55}
+@keyframes spin66{0%{transform:rotate(0) scale(1)}40%{transform:rotate(200deg) scale(1.15)}100%{transform:rotate(360deg) scale(1)}}
+.spin66{animation:spin66 .9s ease}
+/* 전투 기록 골라 지우기 */
+.b66bar{position:sticky;top:0;z-index:3;display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:8px 10px;margin:0 0 6px;border-radius:12px;background:var(--panel);border:1px solid var(--line);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+[data-b66li]{position:relative;padding-left:34px!important}
+.b66c{position:absolute;left:4px;top:10px;width:18px;height:18px;margin:0;accent-color:var(--bad)}
+.bad66{background:var(--bad);border-color:var(--bad);color:#fff}
+.bad66[disabled]{opacity:.4}
+/* 행동/습관 화면 위 줄을 조금 얇게 */
+[data-view="log"]>.panel:first-child{padding-top:8px;padding-bottom:8px}
