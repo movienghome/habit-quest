@@ -1,7 +1,7 @@
 exec(open('h61.py').read())
 import json
 J=lambda pg,x:pg.evaluate(x)
-SP='/tmp/claude-0/-home-claude/74b32692-3be4-589b-80d1-8903b783ffca/scratchpad/'
+SP='/tmp/claude-0/sp/'
 with sync_playwright() as pw:
     b,pg=run(pw);closepops(pg);pg.wait_for_timeout(1500)
     # 지난 기록 조금 만들기 (보스·할 일 컨디션 점검용)
