@@ -1,0 +1,15 @@
+exec(open('h61.py').read())
+J=lambda pg,x:pg.evaluate(x)
+S="C.routines[0].steps.map(s=>stName61(s)+':'+((TASKS[s.tid]||{}).status))"
+with sync_playwright() as pw:
+    b,pg=run(pw,W=412,H=860);closepops(pg)
+    print(J(pg,S))
+    J(pg,"startRun({routine:C.routines[0]})");pg.wait_for_timeout(300)
+    x0=J(pg,"P.xp");J(pg,"huntDo('done')");pg.wait_for_timeout(300);print('xp1',J(pg,"P.xp")-x0, J(pg,"today().entries.map(e=>e.kind+':'+e.name+':'+e.xp).join(' | ')"))
+    J(pg,"huntDo('done')");pg.wait_for_timeout(300);closepops(pg);print('xp2',J(pg,"P.xp")-x0,J(pg,"today().entries.map(e=>e.kind+':'+e.name+':'+e.xp).join(' | ')"))
+    J(pg,"finishRoutine()");pg.wait_for_timeout(300);closepops(pg)
+    print(J(pg,"today().entries.map(e=>e.kind+':'+e.name+':'+e.xp).join(' | ')"))
+    print(J(pg,S))
+    J(pg,"unstep62(C.routines[0],0);render()");pg.wait_for_timeout(500);print('after del',J(pg,S))
+    pg.wait_for_timeout(1000);print('later',J(pg,S))
+    for e in errs[:12]:print(e[:400])

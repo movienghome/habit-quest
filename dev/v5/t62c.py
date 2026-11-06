@@ -1,0 +1,12 @@
+exec(open('h61.py').read())
+J=lambda pg,x:pg.evaluate(x)
+with sync_playwright() as pw:
+    b,pg=run(pw,W=412,H=860);closepops(pg)
+    for i in range(12):J(pg,f"addTaskFrom('할 일 {i} 이번주 금요일')")
+    J(pg,"addTaskFrom('영화 보기 11월 20일');addTaskFrom('아사모사 편집 11월 12일');addTaskFrom('편집 강의 11월 12일')")
+    pg.evaluate("location.hash='cal'");pg.wait_for_timeout(400)
+    pg.click('#cal62v');pg.wait_for_timeout(150);pg.screenshot(path=SP+'s62_menu.png')
+    pg.locator('#m61 button',has_text='월').first.click();pg.wait_for_timeout(500)
+    pg.screenshot(path=SP+'s62_month.png')
+    J(pg,"goEdit('routines')");pg.wait_for_timeout(300);pg.screenshot(path=SP+'s62_edit.png',full_page=True)
+    for e in errs[:12]:print(e[:400])
