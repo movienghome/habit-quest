@@ -201,7 +201,7 @@ function bak68Box(){if(location.pathname.includes('/beta/'))return;const v=docum
   let b=$('bak68');if(!BAK68){if(b)b.remove();return}
   if(!b){b=document.createElement('div');b.id='bak68';b.className='panel';v.appendChild(b)}
   b.innerHTML=`<div class="ptitle"><h2>↩ 옮기기 전 본 앱 기록</h2></div><p class="small" style="margin:0">v6.8에서 베타 기록을 본 앱으로 옮길 때 그 전 본 앱 기록(날짜 ${BAK68.days||0}일)을 같은 계정 안에 백업해 뒀어요 (${esc(String(BAK68.at||'').slice(0,10))}).</p>
-    <p class="tiny muted" style="margin:6px 0">되돌리면 지금 기록은 또 다른 백업 칸에 남기고, 옛 기록으로 바꾼 뒤 새로고침해요.</p><button class="btn ghost sm" data-bak68="1">옛 기록으로 되돌리기…</button>`}
+    <p class="tiny muted" style="margin:6px 0">되돌리면 지금 기록은 또 다른 백업 칸에 남기고, 옛 기록으로 바꾼 뒤 새로고침해요.</p><button class="btn ghost sm" data-bak68="1">옛 기록으로 되돌리기…</button>${((BAK68.promo||{}).hist||[]).length?`<details class="tiny" style="margin-top:8px"><summary>옮기기 이력 ${BAK68.promo.hist.length}번</summary><ul style="margin:4px 0 0;padding-left:18px">${BAK68.promo.hist.map(h=>`<li>${esc(new Date(h.at).toLocaleString('ko-KR'))} · ${({beta:'베타 기록으로 옮김',old:'옛 기록 그대로',restore:'옛 기록으로 되돌림',already:'(예전에 옮긴 것 확인)'})[h.choice]||esc(h.choice)}${h.bak?` · 백업 ${esc(h.bak)}`:''}</li>`).join('')}</ul></details>`:''}`}
 addEventListener('click',async e=>{const b=e.target.closest('[data-bak68]');if(!b)return;e.preventDefault();e.stopPropagation();
   if(!confirm('옮기기 전 본 앱 기록으로 되돌릴까요? 지금 기록은 따로 백업해 둬요.'))return;b.disabled=true;b.textContent='되돌리는 중…';
   try{const api=await window.HQ_READY;await api.restoreBak68();location.reload()}catch(x){console.error(x);b.disabled=false;b.textContent='옛 기록으로 되돌리기…';toast('되돌리지 못했어요: '+(x.message||x))}},true);

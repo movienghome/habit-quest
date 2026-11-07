@@ -125,33 +125,52 @@ async function start() {
   }
 
   // ---------- v6.8 본 앱 승격: 베타 기록을 본 앱으로 (본 앱 옛 기록은 같은 계정 폴더 habit-bak68에 백업) ----------
-  async function readNS(ns) {
+  // v6.8.1: 읽기에 실패하면 '없음'으로 여기지 않음(그래서 열 때마다 다시 뜨던 문제). 끝났다는 표시는 앱이 절대 덮어쓰지 않는 따로 문서(game/promo68)에.
+  const sGet = r => (F.getDocFromServer ? F.getDocFromServer(r) : F.getDoc(r));
+  const sGets = q => (F.getDocsFromServer ? F.getDocsFromServer(q) : F.getDocs(q));
+  async function readNS(ns) {   // 실패하면 throw (빈 것으로 여기지 않음)
     const src = `data/users/${uid}/${ns}`, out = { game: {}, days: {}, tasks: {} };
-    for (const id of ['config', 'progress']) { const s = await F.getDoc(F.doc(fs, `${src}/game/${id}`)).catch(() => null); if (s && s.exists()) out.game[id] = s.data(); }
-    (await F.getDocs(F.collection(fs, `${src}/days`)).catch(() => ({ docs: [] }))).docs.forEach(d => out.days[d.id] = d.data());
-    (await F.getDocs(F.collection(fs, `${src}/tasks`)).catch(() => ({ docs: [] }))).docs.forEach(d => out.tasks[d.id] = d.data());
+    for (const id of ['config', 'progress']) { const s = await sGet(F.doc(fs, `${src}/game/${id}`)); if (s.exists()) out.game[id] = s.data(); }
+    (await sGets(F.collection(fs, `${src}/days`))).docs.forEach(d => out.days[d.id] = d.data());
+    (await sGets(F.collection(fs, `${src}/tasks`))).docs.forEach(d => out.tasks[d.id] = d.data());
     return out;
   }
   async function writeNS(ns, data, wipe) {
     const dst = `data/users/${uid}/${ns}`;
     let batch = F.writeBatch(fs), n = 0;
     const flush = async () => { if (n) { await batch.commit(); batch = F.writeBatch(fs); n = 0; } };
-    if (wipe) for (const c of ['days', 'tasks']) { const old = await F.getDocs(F.collection(fs, `${dst}/${c}`)).catch(() => ({ docs: [] })); for (const d of old.docs) { batch.delete(F.doc(fs, `${dst}/${c}/${d.id}`)); if (++n >= 400) await flush(); } }
-    for (const id of ['config', 'progress']) { if (data.game[id]) batch.set(F.doc(fs, `${dst}/game/${id}`), data.game[id]); else if (wipe) batch.delete(F.doc(fs, `${dst}/game/${id}`)); if (++n >= 400) await flush(); }
-    for (const c of ['days', 'tasks']) for (const [k, v] of Object.entries(data[c] || {})) { batch.set(F.doc(fs, `${dst}/${c}/${k}`), v); if (++n >= 400) await flush(); }
+    const add = async () => { if (++n >= 150) await flush(); };
+    if (wipe) for (const c of ['days', 'tasks']) { const old = await sGets(F.collection(fs, `${dst}/${c}`)); for (const d of old.docs) if (!(data[c] && d.id in data[c])) { batch.delete(F.doc(fs, `${dst}/${c}/${d.id}`)); await add(); } }
+    for (const c of ['days', 'tasks']) for (const [k, v] of Object.entries(data[c] || {})) { batch.set(F.doc(fs, `${dst}/${c}/${k}`), v); await add(); }
+    for (const id of ['progress', 'config']) { if (data.game[id]) batch.set(F.doc(fs, `${dst}/game/${id}`), data.game[id]); else if (wipe) batch.delete(F.doc(fs, `${dst}/game/${id}`)); await add(); }  // config는 맨 끝
     await flush();
   }
-  const isNew = c => !!(c && (c.mig67ds || c.mig62 || c.mig57));
+  const isNew = c => !!(c && (c.mig67ds || c.mig62 || c.mig57 || c.moved68 || c.keepOld68 || (+c.v || 0) >= 8));
+  const promoRef = () => F.doc(fs, `${root()}/game/promo68`);
+  async function promoMark(rec) {
+    let hist = [];
+    try { const s = await sGet(promoRef()); if (s.exists()) hist = s.data().hist || []; } catch (e) {}
+    hist.push({ at: new Date().toISOString(), ...rec });
+    await F.setDoc(promoRef(), { done: 1, hist: hist.slice(-20) });
+  }
   async function promote68() {
     if (BETA) return;
-    const mainCfg = await F.getDoc(F.doc(fs, `${root()}/game/config`)).catch(() => null);
-    const m = mainCfg && mainCfg.exists() ? mainCfg.data() : null;
-    if (m && (isNew(m) || m.keepOld68)) return;
-    const betaCfg = await F.getDoc(F.doc(fs, `data/users/${uid}/habit-beta/game/config`)).catch(() => null);
-    if (!betaCfg || !betaCfg.exists()) return;
+    // 1) 이미 끝났나 (기기 사본에 있어도 끝난 것으로)
+    try { const c = await F.getDoc(promoRef()); if (c.exists()) return; } catch (e) {}
+    let m, betaCfg;
+    try {
+      const mainCfg = await sGet(F.doc(fs, `${root()}/game/config`));
+      m = mainCfg.exists() ? mainCfg.data() : null;
+      if (m && isNew(m)) { promoMark({ choice: 'already' }).catch(() => {}); return; }   // 예전에 옮긴 것 → 표시만 남김
+      betaCfg = await sGet(F.doc(fs, `data/users/${uid}/habit-beta/game/config`));
+    } catch (e) { console.warn('promote68: 서버를 못 읽어서 이번엔 건너뜀', e); return; }   // 못 읽으면 아무것도 안 함
+    if (!betaCfg.exists()) return;
     gate.hidden = false; $('#login').hidden = true; const box = $('#nocfg'); box.hidden = false;
     box.innerHTML = '<h1><img src="icons/icon-192.png" alt="">해비티카틱</h1><p>본 앱이 새 버전(v6.8)이 됐어요. 기록을 확인하는 중…</p>';
-    const main = m ? await readNS('habit') : null, beta = await readNS('habit-beta');
+    let main, beta;
+    try { main = m ? await readNS('habit') : null; beta = await readNS('habit-beta'); }
+    catch (e) { console.warn(e); gate.hidden = true; return; }
+    if (!beta.game.config) { gate.hidden = true; return; }
     let diff = [];
     if (main) { const lim = new Date(Date.now() - 45 * 864e5).toISOString().slice(0, 10); const ids = d => new Set(((d && d.entries) || []).map(e => e && e.id).filter(Boolean)); diff = Object.keys(main.days).filter(k => { if (k < lim) return false; const b = ids(beta.days[k]); return [...ids(main.days[k])].some(i => !b.has(i)); }).sort(); }
     const nd = Object.keys(beta.days).length, nt = Object.keys(beta.tasks).length;
@@ -164,17 +183,19 @@ async function start() {
         <p class="err" id="p68e"></p>`;
       $('#p68b').onclick = () => res('beta'); $('#p68o').onclick = () => res('old');
     });
-    if (choice === 'old') { await F.setDoc(F.doc(fs, `${root()}/game/config`), { keepOld68: 1 }, { merge: true }).catch(() => {}); gate.hidden = true; return; }
+    if (choice === 'old') { await F.setDoc(F.doc(fs, `${root()}/game/config`), { keepOld68: 1 }, { merge: true }).catch(() => {}); await promoMark({ choice: 'old' }).catch(() => {}); gate.hidden = true; return; }
     box.querySelector('p').textContent = '옮기는 중이에요… 창을 닫지 마세요.';
     try {
-      const had = await F.getDoc(F.doc(fs, `data/users/${uid}/habit-bak68/game/meta`)).catch(() => null), bk = had && had.exists() ? 'habit-bak68-' + Date.now() : 'habit-bak68'; // 첫 백업은 절대 덮어쓰지 않음
+      const had = await sGet(F.doc(fs, `data/users/${uid}/habit-bak68/game/meta`)), bk = had.exists() ? 'habit-bak68-' + Date.now() : 'habit-bak68'; // 첫 백업은 절대 덮어쓰지 않음
       if (main) { await writeNS(bk, main, true); await F.setDoc(F.doc(fs, `data/users/${uid}/${bk}/game/meta`), { at: new Date().toISOString(), from: 'habit', days: Object.keys(main.days).length, tasks: Object.keys(main.tasks).length }); }
+      beta.game.config = { ...beta.game.config, moved68: { at: new Date().toISOString(), bak: main ? bk : '' } };
       await writeNS('habit', beta, true);
-      await F.setDoc(F.doc(fs, `${root()}/game/config`), { moved68: { at: new Date().toISOString(), bak: !!main } }, { merge: true });
+      await promoMark({ choice: 'beta', bak: main ? bk : '', days: nd, tasks: nt });
       try { localStorage.removeItem('hq-snap'); localStorage.removeItem('hq-run'); } catch (e) {}
       gate.hidden = true;
-    } catch (e) { console.error(e); const er = $('#p68e'); if (er) er.textContent = '옮기지 못했어요: ' + (e.code || e.message) + ' · 새로고침해서 다시 해 보세요. 본 앱 기록은 그대로예요.'; throw e; }
+    } catch (e) { console.error(e); const er = $('#p68e'); if (er) er.textContent = '옮기지 못했어요: ' + (e.code || e.message) + ' · 새로고침해서 다시 해 보세요. 본 앱 기록은 백업에 있어요.'; throw e; }
   }
+  async function promoInfo() { if (BETA) return null; try { const s = await F.getDoc(promoRef()); return s.exists() ? s.data() : null; } catch (e) { return null; } }
   // 옮기기 전 본 앱 기록으로 되돌리기 (지금 기록은 habit-bak68b에 남김)
   async function restoreBak68() {
     if (BETA) throw new Error('본 앱에서만 돼요');
@@ -184,9 +205,10 @@ async function start() {
     await writeNS('habit-bak68b', cur, true);
     bak.game.config = { ...(bak.game.config || {}), keepOld68: 1 };
     await writeNS('habit', bak, true);
+    await promoMark({ choice: 'restore' }).catch(() => {});
     try { localStorage.removeItem('hq-snap'); } catch (e) {}
   }
-  async function bak68Info() { if (BETA) return null; const m = await F.getDoc(F.doc(fs, `data/users/${uid}/habit-bak68/game/meta`)).catch(() => null); return m && m.exists() ? m.data() : null; }
+  async function bak68Info() { if (BETA) return null; const m = await F.getDoc(F.doc(fs, `data/users/${uid}/habit-bak68/game/meta`)).catch(() => null); const d = m && m.exists() ? m.data() : null; if (d) d.promo = await promoInfo(); return d; }
 
   let resolved = false;
   A.onAuthStateChanged(auth, async user => {
@@ -200,7 +222,7 @@ async function start() {
         db: { doc: p => docApi(`${root()}/${p}`), collection: p => colApi(`${root()}/${p}`) },
         user: { id: async () => uid, isOwner: () => true, canEdit: () => true, can: () => true },
         account: { email: user.email },
-        exportAll, importAll, copyFromLive, putTasks, restoreBak68, bak68Info,
+        exportAll, importAll, copyFromLive, putTasks, restoreBak68, bak68Info, promoInfo,
         logout: async () => { await A.signOut(auth); try { await F.terminate(fs); await F.clearIndexedDbPersistence(fs); } catch (e) {} location.reload(); }
       });
     } else {
