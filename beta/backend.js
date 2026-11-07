@@ -1,4 +1,4 @@
-// Firebase backend for 해비티카틱 (본 앱·베타 같은 파일, 경로로 구분) (포켓 노트·어항 일지와 같은 Firebase 프로젝트, 기록은 자기 폴더에): 로그인, Firestore 저장(오프라인에서도 동작).
+// v6.9 · Firebase backend for 해비티카틱 (본 앱·베타 같은 파일, 경로로 구분) (포켓 노트·어항 일지와 같은 Firebase 프로젝트, 기록은 자기 폴더에): 로그인, Firestore 저장(오프라인에서도 동작).
 const V = '10.12.2';
 const base = `https://www.gstatic.com/firebasejs/${V}/`;
 const $ = s => document.querySelector(s);
@@ -41,8 +41,24 @@ async function start() {
     try { signup ? await A.createUserWithEmailAndPassword(auth, em, pw) : await A.signInWithEmailAndPassword(auth, em, pw); }
     catch (e) { say(e); } finally { sub.disabled = false; } };
 
+  /* ---------- v6.9: Firestore가 못 받는 모양 바꿔 담기 ----------
+     Firestore는 '배열 속 배열'과 빈 이름 칸을 거절해요(설정의 홈 배치 [[id,켜짐,칸]] 같은 것). 그래서 v4.1부터 설정이 서버에 한 번도 못 올라갔어요.
+     쓸 때 [[…]] → [{_na:[…]}], '' 칸 → '_e0_' 로 바꾸고, 읽을 때 되돌려요. 이미 바꾼 것을 또 바꿔도 그대로(멱등). */
+  const enc = v => {
+    if (Array.isArray(v)) return v.map(x => Array.isArray(x) ? { _na: enc(x) } : enc(x));
+    if (v && typeof v === 'object') { const o = {}; for (const k in v) { const x = v[k]; if (x === undefined || typeof x === 'function') continue; o[k === '' ? '_e0_' : (/^__.*__$/.test(k) ? '_x' + k : k)] = enc(x); } return o; }
+    if (typeof v === 'number' && !isFinite(v)) return null;
+    return v;
+  };
+  const dec = v => {
+    if (Array.isArray(v)) return v.map(dec);
+    if (v && typeof v === 'object') { const ks = Object.keys(v); if (ks.length === 1 && ks[0] === '_na' && Array.isArray(v._na)) return dec(v._na);
+      const o = {}; for (const k of ks) o[k === '_e0_' ? '' : (/^_x__.*__$/.test(k) ? k.slice(2) : k)] = dec(v[k]); return o; }
+    return v;
+  };
+  window.__hqEnc = enc; window.__hqDec = dec;
   /* ---------- 저장소 연결 (아티팩트 db와 같은 모양) ---------- */
-  const wrap = s => ({ id: s.id, exists: s.exists(), data: () => s.data(), metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } });
+  const wrap = s => ({ id: s.id, exists: s.exists(), data: () => { const d = s.data(); return d == null ? d : dec(d); }, metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } });
   // 기기 사본에 바로 쓰고 서버 확인은 나중에. 오프라인에서도 앱이 기다리지 않게.
   let pending = 0;
   function fastWrite(p) {
@@ -52,6 +68,7 @@ async function start() {
     window.HQ_PENDING = true;
     return Promise.race([p, new Promise(r => setTimeout(r, 1200))]);
   }
+  const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code: 'deadline-exceeded', message: 'timeout' }), ms))]);
   const errOf = e => ({ code: e.code === 'permission-denied' ? 'revoked' : 'unavailable', message: e.message });
   function docApi(path) {
     const r = F.doc(fs, path);
@@ -59,8 +76,14 @@ async function start() {
       path, id: r.id,
       collection: c => colApi(path + '/' + c),
       get: async () => { try { return wrap(await F.getDoc(r)); } catch (e) { return wrap(await F.getDocFromCache(r)); } },
-      set: d => fastWrite(F.setDoc(r, d)),
-      update: d => fastWrite(F.updateDoc(r, d)),
+      set: d => fastWrite(F.setDoc(r, enc(d))),
+      update: d => fastWrite(F.updateDoc(r, enc(d))),
+      // v6.9: 서버 것과 합쳐서 쓰기(트랜잭션). fn(서버 것|null) → 쓸 것(undefined면 안 씀). 다른 기기 변경을 덮어쓰지 않게.
+      merge: fn => withTimeout(F.runTransaction(fs, async tx => {
+        const s = await tx.get(r); const cur = s.exists() ? dec(s.data()) : null;
+        const next = fn(cur); if (next === undefined) return { skip: 1, cur };
+        tx.set(r, enc(next)); return { data: next };
+      }, { maxAttempts: 4 }), 12000),
       delete: () => fastWrite(F.deleteDoc(r)),
       onSnapshot: (next, error, o) => (o && o.meta) ? F.onSnapshot(r, { includeMetadataChanges: true }, s => next(wrap(s)), e => error && error(errOf(e))) : F.onSnapshot(r, s => next(wrap(s)), e => error && error(errOf(e)))
     };
@@ -84,12 +107,12 @@ async function start() {
   // 백업 전체를 한 번에 읽고, 복원은 한 번에 덮어쓰기
   async function exportAll() {
     const out = { app: 'habit-quest', exportedAt: new Date().toISOString(), game: {}, days: {} };
-    for (const id of ['config', 'progress']) { const s = await F.getDoc(F.doc(fs, `${root()}/game/${id}`)).catch(() => null); if (s && s.exists()) out.game[id] = s.data(); }
+    for (const id of ['config', 'progress']) { const s = await F.getDoc(F.doc(fs, `${root()}/game/${id}`)).catch(() => null); if (s && s.exists()) out.game[id] = dec(s.data()); }
     const ds = await F.getDocs(F.collection(fs, `${root()}/days`));
-    ds.docs.forEach(d => out.days[d.id] = d.data());
+    ds.docs.forEach(d => out.days[d.id] = dec(d.data()));
     out.tasks = {};
     const ts = await F.getDocs(F.collection(fs, `${root()}/tasks`)).catch(() => ({ docs: [] }));
-    ts.docs.forEach(d => out.tasks[d.id] = d.data());
+    ts.docs.forEach(d => out.tasks[d.id] = dec(d.data()));
     return out;
   }
   async function importAll(data) {
@@ -98,19 +121,19 @@ async function start() {
     let batch = F.writeBatch(fs), n = 0;
     const flush = async () => { if (n) { await batch.commit(); batch = F.writeBatch(fs); n = 0; } };
     for (const d of old.docs) { batch.delete(F.doc(fs, `${root()}/days/${d.id}`)); if (++n >= 400) await flush(); }
-    for (const id of ['config', 'progress']) if (data.game[id]) { batch.set(F.doc(fs, `${root()}/game/${id}`), data.game[id]); if (++n >= 400) await flush(); }
-    for (const [k, v] of Object.entries(data.days || {})) { batch.set(F.doc(fs, `${root()}/days/${k}`), v); if (++n >= 400) await flush(); }
+    for (const id of ['config', 'progress']) if (data.game[id]) { batch.set(F.doc(fs, `${root()}/game/${id}`), enc(data.game[id])); if (++n >= 400) await flush(); }
+    for (const [k, v] of Object.entries(data.days || {})) { batch.set(F.doc(fs, `${root()}/days/${k}`), enc(v)); if (++n >= 400) await flush(); }
     if (data.tasks && typeof data.tasks === 'object') {
       const oldT = await F.getDocs(F.collection(fs, `${root()}/tasks`));
       for (const d of oldT.docs) { batch.delete(F.doc(fs, `${root()}/tasks/${d.id}`)); if (++n >= 400) await flush(); }
-      for (const [k, v] of Object.entries(data.tasks)) { batch.set(F.doc(fs, `${root()}/tasks/${k}`), v); if (++n >= 400) await flush(); }
+      for (const [k, v] of Object.entries(data.tasks)) { batch.set(F.doc(fs, `${root()}/tasks/${k}`), enc(v)); if (++n >= 400) await flush(); }
     }
     await flush();
   }
   // 할 일 여러 개를 한 번에 (틱틱 가져오기)
   async function putTasks(list) {
     let batch = F.writeBatch(fs), n = 0;
-    for (const t of list) { batch.set(F.doc(fs, `${root()}/tasks/${t.id}`), JSON.parse(JSON.stringify(t))); if (++n >= 400) { await fastWrite(batch.commit()); batch = F.writeBatch(fs); n = 0; } }
+    for (const t of list) { batch.set(F.doc(fs, `${root()}/tasks/${t.id}`), enc(JSON.parse(JSON.stringify(t)))); if (++n >= 400) { await fastWrite(batch.commit()); batch = F.writeBatch(fs); n = 0; } }
     if (n) await fastWrite(batch.commit());
   }
   // 베타는 실제 기록의 복사본으로 시작
@@ -141,8 +164,8 @@ async function start() {
     const flush = async () => { if (n) { await batch.commit(); batch = F.writeBatch(fs); n = 0; } };
     const add = async () => { if (++n >= 150) await flush(); };
     if (wipe) for (const c of ['days', 'tasks']) { const old = await sGets(F.collection(fs, `${dst}/${c}`)); for (const d of old.docs) if (!(data[c] && d.id in data[c])) { batch.delete(F.doc(fs, `${dst}/${c}/${d.id}`)); await add(); } }
-    for (const c of ['days', 'tasks']) for (const [k, v] of Object.entries(data[c] || {})) { batch.set(F.doc(fs, `${dst}/${c}/${k}`), v); await add(); }
-    for (const id of ['progress', 'config']) { if (data.game[id]) batch.set(F.doc(fs, `${dst}/game/${id}`), data.game[id]); else if (wipe) batch.delete(F.doc(fs, `${dst}/game/${id}`)); await add(); }  // config는 맨 끝
+    for (const c of ['days', 'tasks']) for (const [k, v] of Object.entries(data[c] || {})) { batch.set(F.doc(fs, `${dst}/${c}/${k}`), enc(v)); await add(); }
+    for (const id of ['progress', 'config']) { if (data.game[id]) batch.set(F.doc(fs, `${dst}/game/${id}`), enc(data.game[id])); else if (wipe) batch.delete(F.doc(fs, `${dst}/game/${id}`)); await add(); }  // config는 맨 끝
     await flush();
   }
   const isNew = c => !!(c && (c.mig67ds || c.mig62 || c.mig57 || c.moved68 || c.keepOld68 || (+c.v || 0) >= 8));

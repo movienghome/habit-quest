@@ -1,11 +1,11 @@
-# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v6.8.1 기준, 2026-11-07)
+# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v6.9 베타 기준, 2026-11-07)
 
 > **새 채팅에서 할 일 (Claude에게)**: 먼저 `add_repo`로 `movienghome/habit-quest`를 붙이고 `git clone --depth 1`. 이 파일은 저장소의 `dev/HANDOFF.md`에도 있음 — 저장소 쪽이 최신이면 그걸 따름. 릴리스할 때마다 이 파일도 같이 고쳐서 커밋.
 
 ## 저장소·주소
 - 저장소: github.com/movienghome/habit-quest (GitHub Pages + Firebase)
 - 본 앱: https://movienghome.github.io/habit-quest/ → **v6.8** (v6.8에서 승격. 데이터: habit)
-- 베타: https://movienghome.github.io/habit-quest/beta/ → **v6.8** (데이터: habit-beta. 승격 뒤엔 시험용)
+- 베타: https://movienghome.github.io/habit-quest/beta/ → **v6.9** (데이터: habit-beta. 승격 뒤엔 시험용) — **v6.9는 저장 버그 고침이라 본 앱 승격이 급함**
 - 작업 방식: 고친 건 베타에 먼저 → 사용자가 "반영해" 하면 본 앱에 옮김
 - **승격 방법(v6.8부터)**: 빌드는 베타와 같은 파일. `cp beta/index.html beta/backend.js beta/sw.js .` (index.html·backend.js·sw.js가 경로 `/beta/`로 베타/본 앱을 스스로 구분 — β 띠·데이터 폴더·캐시 이름). manifest만 따로(이름).
 - **빌드 원본**: patch.py의 SRC = `dev/v5/base44.html`(옛 본 앱 v4.4). 루트 index.html은 이제 빌드 결과라 원본으로 쓰면 안 됨.
@@ -21,11 +21,12 @@
 - `beta/index.html`은 **생성 파일**. 직접 고치지 말고 `dev/v5/`의 모듈을 고친 뒤 빌드.
 - 빌드: `ln -sfn <저장소>/dev/v5 /home/claude/v5` 후 `cd dev/v5 && python3 patch.py`
   (patch.py의 SRC/DST/V는 /home/claude/habit-quest, /home/claude/v5 기준. 중간 파일은 임시 폴더에 씀)
-  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → patch12(v6.0) → patch13(v6.1) → patch14(v6.2) → patch15(v6.3) → patch16(v6.4) → patch17(v6.5) → patch18(v6.6) → **patch19(v6.7)**
-  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + v5q(v6.0) + v5r(v6.1) + v5s(v6.2, CSS는 v62.css) + v5t(v6.3, CSS는 v63.css) + v5u(v6.4, CSS는 v64.css) + v5v(v6.5, CSS는 v65.css) + v5w(v6.6, CSS는 v66.css) + **v5x(v6.7, CSS는 v67.css)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
+  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → patch12(v6.0) → patch13(v6.1) → patch14(v6.2) → patch15(v6.3) → patch16(v6.4) → patch17(v6.5) → patch18(v6.6) → patch19(v6.7) → patch20(v6.8) → **patch21(v6.9)**
+  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + v5q(v6.0) + v5r(v6.1) + v5s(v6.2, CSS는 v62.css) + v5t(v6.3, CSS는 v63.css) + v5u(v6.4, CSS는 v64.css) + v5v(v6.5, CSS는 v65.css) + v5w(v6.6, CSS는 v66.css) + v5x(v6.7, CSS는 v67.css) + v5y(v6.8, v68.css) + **v5z(v6.9, v69.css)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
   - 주의: **첫 render는 스크립트 중간(route())에서 돌아서 맨 끝 모듈의 const/let은 물론 var도 아직 비어 있음.** 함수 선언(호이스팅)이 첫 render에서 쓰는 상수는 함수 안에(v5w의 `K66()` 식).
   - 클래스 이름 `.mc`는 월 캘린더 칸이 씀 → 칩은 `.mx`.
-- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-06-v67`). 베타 띠에 버전 표시(`β 베타 v6.7`) — 같이 올리기.
+- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-07-v69`). 베타 띠에 버전 표시(`β 베타 v6.9`) — 같이 올리기.
+- **v6.9부터 `route();boot();`는 스크립트 맨 끝(v5z 뒤)에서 불러요.** 첫 render 때 모든 모듈·감싸기가 준비돼 있음. (위 '첫 render는 스크립트 중간' 주의는 이제 옛 얘기)
 - **patch10은 빌드 결과 전체에서 글자 치환을 함**: `💰`→`₩`, `🪙`→`💰`, `🔁`→`↻`, `리듬`→`반복`. 그러니 **v5o 이후 모듈에서 🪙·🔁·'리듬'을 비교 문자열로 쓰면 바뀌어 버림** → `\u{1F501}`처럼 이스케이프로 쓰기.
 - `normConfig`는 `C.ui`의 정해진 키만 남김(새 키는 사라짐) → 새 ui 설정은 기존 키 안(예: `C.ui.cal._t`)이나 `C` 최상위에.
 - `route()`는 journey 같은 화면 전환 때 render를 안 부름 → 새 화면 내용은 hashchange에서 따로 그림(renderBlog).
@@ -237,6 +238,19 @@
 - **v6.8.1 (2026-11-07) 옮기기 화면이 열 때마다 다시 뜨던 문제**: promote68이 `getDoc(...).catch(()=>null)`이라 서버를 못 읽으면(앱 켤 때 흔함) '본 앱 config 없음'으로 여겨 다시 물었고, 그때 옮기기를 누르면 백업 없이 본 앱을 베타 사본으로 덮었음(그 사이 본 앱에 적은 기록 사라질 수 있음). 고침: 끝남 표시 = **따로 문서 `habit/game/promo68`**({done,hist[]}: beta/old/restore/already, 앱은 이 문서를 안 씀) 먼저 확인 · 확인은 getDocFromServer, **읽기 실패면 아무것도 안 함** · readNS 실패는 throw(빈 것으로 안 봄) · isNew에 moved68·keepOld68·v>=8 · writeNS 150개씩, config는 맨 끝, 지울 때 새로 쓸 문서는 안 지움. 계정·백업 #bak68에 옮기기 이력. 시험: Node 가짜 Firestore(서버 실패 전/후, 다시 열기, 표시 없는 옛 v6.8.0 상태).
 - 테스트: `dev/v5/t68.py`(새벽 1:30 clock · 목록 색 · 숫자 풀이 · 장비 · 보스 · 처치 · 우클릭 · 도파민 · 카드 고르기). t66은 날짜에 따라 업적 창이 클릭을 막아서 원래부터 실패(v6.7 빌드도 같음).
 
+## v6.9에서 한 것 (v5z.js · v69.css · patch21.py · beta/backend.js · mockdb.js) — 저장 바로잡기
+- **진짜 원인(중요)**: 설정 C에 '배열 속 배열'(C.ui.home=[[id,켜짐,칸]], C.logLay59)이 있어 **Firestore가 setDoc을 바로 거절**(Nested arrays are not supported) → v4.1(11/2)부터 **설정이 서버에 한 번도 안 올라감**. flush가 실패해도 dirty만 남아서 그 세션은 멀쩡해 보였고, 열 때마다 서버의 옛(v4) 설정 + 모든 마이그레이션을 다시 돌렸음. v5.9 '되살아난 카드', v6.4·6.5 '루틴 단계 불어남', v6.8.1 '옮기기 화면 매번', '돌아보기로 묶었어요' 매번 알림 전부 이것. 할 일·날짜·진행 문서는 배열 속 배열이 없어 저장됐음. Node + firebase 10.12.2로 확인(setDoc이 동기 throw). **옛 mockdb는 아무거나 받아줘서 못 잡았음 → mockdb가 이제 진짜처럼 거절함.**
+- backend.js: `enc`/`dec`(배열 속 배열 → `{_na:[…]}`, 빈 칸 이름 → `_e0_`, `__x__` → `_x__x__`, 멱등). 모든 쓰기(set·update·importAll·putTasks·writeNS) enc, 모든 읽기(wrap.data·exportAll) dec. `doc.merge(fn)` = runTransaction(서버 것 읽고 fn(cur) → 쓰기, undefined면 안 씀, 12초 제한). **본 앱 승격 때 루트 backend.js도 같이 바꿔야 함**(같은 파일 복사).
+- v5z 저장: `flush` 새로 — `merge3(기준 BASE69[n], 내 것, 서버 것)` 3방향 합치기(객체: 키별 · id 배열: id별 합치기/순서 · 값 배열: 개수 합치기(구슬) · 진행(progress) 맨 위 숫자는 더하기 s+(l−b)). 기준 없으면 null 기준(그 사이 다른 기기가 처음 만든 문서 = 합침). 다른 기기에서 지운 할 일은 되살리지 않음(skip). 합친 결과가 내 것과 다르면 adopt69로 화면에도 넣음. 같은 qid 일퀘(xp 0) 중복은 합칠 때 하나로. 실패: 일시 오류는 2·4·8…초 재시도, 두 번 넘게 실패하면 그냥 set(기기 사본 큐, 앱 닫아도 남음). 그 밖의 오류는 **빨간 띠 #err69**(무엇이 왜). 설정이 700KB 넘으면 bak64·scoreBak·lcolBak68·bak65부터 뺌(slim69).
+- v5z `boot` 새로: 스냅샷이 BASE69와 같으면(내가 쓴 게 돌아온 것·메타데이터만 바뀐 것) 안 그림, 여러 스냅샷은 requestAnimationFrame 한 번에(rr). **처음 고친 버전으로 열 때**: 서버 설정에 `v69`가 없으면 이 기기의 hq-snap(지난 세션 마지막 C)으로 시작해 저장(SNAP69) → 먼저 연 기기의 마지막 설정이 이김. 그 뒤로 `C.v69=1`.
+- mig59 알림 없이 한 번만. 겹친 것 정리 '이대로 둘게요' → `C.heal69ok=날짜`(그날 다시 안 띄움).
+- **새로고침**: 새 SW가 깔리면(controllerchange) 바로 reload하던 것 → 화면이 가려졌을 때만, 보이는 중엔 '🆕 새 버전' 버튼(#upd69). (사용자가 말한 '주기적 새로고침'의 원인 중 하나 — 배포할 때마다)
+- **한글 조합**: 메인 스크립트 맨 앞에 input 막기(조합 중 input은 다른 리스너에 안 보냄, compositionend 뒤 한 번 보냄). 고르기 창(pk61q)은 조합 중에도 목록만 다시 그림(drawPk61 감쌈 — 입력칸 노드를 안 바꿈). '독서' 입력이 ㄷㅗㄱㅅㅓ 되던 것.
+- **📅 기록 날짜**: 완료 창·기록 고치기 창 맨 위 '언제?'(오늘·어제·그저께·📅 date input, S.d69) → sheetOK를 그날 ui.off로(withDay69). 고치기에서 날짜 바꾸면 moveEntry69. 스낵바 '📅 날짜' → mvSheet69 → moveEntry69(점수 합계 그대로, otb69만 빠짐, 몸무게면 day.weight도, 할 일이면 t.doneAt·last). 기록하기 화면 '📅 다른 날'(#off69, ui.off 아무 날) + 띠. 루틴 체크 창(rtDone64·rtDoneGo64 새로) 날짜 칩(RD69) — 단계 '그날 함' = 그날 tid 기록(stOn69). wSave63(v,날짜).
+- **✍ 그날 기록 보너스** `C.otb69={on,xp:2,max:20}`(기본값, UI 없음): applyEntry 감싸 OTBK69 종류이고 그날(dateKey) 새 기록이면 e.otb69·xp+. 나쁜 행동도(솔직하게 적기). 지난 날/옮긴 기록엔 없음. replaceEntry에서 유지.
+- **빠르게**: daysSince·neglectList 기억(그리기마다·기록마다 비움), toUTC·addDays 기억(patch21이 const 정의를 바꿈), homeTwo는 홈일 때만 폭 잼, applyTheme은 바뀔 때만 getComputedStyle, renderStats는 통계·여정 화면일 때만(나중에 hashchange에서). 120일·할 일 200개로 그리기 87ms → 25~40ms.
+- 테스트: `dev/v5/t69.py` — Python이 '서버'(CAS)인 두 기기 시험(설정 저장·다시 열기·카드 지우기/더하기 동시·같은 날 기록 동시·XP 더하기·지운 할 일 안 되살아남·렌더 횟수) + 날짜·보너스·옮기기·루틴 어제·몸무게·한글 조합·처음 고친 버전 복구. 기준 비교는 `git worktree`로 옛 빌드를 8766에서 돌려 t64~t68 출력 diff(차이 = 보너스 점수만).
+
 ## 사용자가 거듭 말하는 것 (매번 확인)
 - **연결·통합이 매끄러운가**: 같은 것이 화면마다 다르게 보이면(개수·거르기·이름) 바로 맞출 것. 어디서 연 것이든 거기서 고치고 돌아올 수 있게(칩·우클릭·뒤로).
 - 목록이 '텍스트만 쭉'이면 막막해함 → 찾기·묶음·자주 쓰는 것 먼저(고르기 창).
@@ -244,9 +258,11 @@
 - 화면 배치는 홈처럼 지도 끌기로.
 
 ## 아직 안 한 요청 (사용자 요청 기준, 매 릴리스마다 갱신해서 답변에 붙이기)
-- 사용자 확인 받기: **v6.8.1 옮기기 화면이 이제 안 뜨는지 · 반복해서 옮겼다면 그 사이 본 앱에 적은 기록이 남았는지** · **v6.8 본 앱 옮기기 결과(백업 생겼는지·기록 다 왔는지) · 목록 색 · 자정/새벽 🌙 · 영역 장비 · 보스 약점·처치 연출 · 우클릭 · 🍬 바로 추가** · v6.7 화면 배치·영역 레벨·요즘 지표·흐름 탭·몸 종합 기록·구슬 순서/개수·한 줄·기능 지도·AI에게 물어보기·용기 카드 · v6.6 점수 점검 버튼 · v6.5 루틴 단계 수.
+- **v6.9 본 앱 승격("반영해")**: 실제 기록(habit)도 같은 저장 버그라 급함. 승격 = `cp beta/index.html beta/backend.js beta/sw.js .` (backend.js 꼭 같이).
+- 사용자 확인 받기: v6.9 — 폰↔PC 바로 맞는지 · 지운 루틴 단계(운동·일기)가 한 번 지우면 안 돌아오는지(**처음 고친 버전은 마지막으로 고친 기기에서 먼저 열기**) · 빨간 띠가 뜨는지 · 📅 날짜·✍ 보너스 크기(✨2, 하루 20) · 한글 입력. v6.8 이전 확인 항목(목록 색·자정 🌙·영역 장비·보스 약점 등)은 그동안 설정이 저장 안 됐으니 v6.9 뒤에 다시 보기.
+- ✍ 보너스 점수를 사용자가 바꾸는 UI(지금은 C.otb69 기본값만) — 원하면.
 - **도파민 디저트 골드 스위치: 2026-11-20쯤 판단**(사용자가 '2주 뒤'로 정함. 기본 꺼짐 스위치로, 디저트 기록 2주치 보고).
-- 제안만 하고 안 한 것: HP '어제 이월' · 레벨 30 이후 여정(시즌 2) · 자정/5시 나누기 끄는 스위치 UI(지금은 C.taskMid68=false로만).
+- 제안만 하고 안 한 것: HP '어제 이월' · 레벨 30 이후 여정(시즌 2) · 자정/5시 나누기 끄는 스위치 UI(지금은 C.taskMid68=false로만) · 설정 문서 쪼개기(지금 한 문서 — 1MB 한도 근처면 slim69가 백업부터 덞).
 - 우클릭 후보 남은 것: 루틴 단계 줄·도파민 코스 칸 머리·유리병. 편집 화면 거치는 것 남은 것: 병 규칙·일반 규칙(레벨 곡선 등).
 - 베타는 이제 시험용. 본 앱과 기록이 갈라짐 → 베타를 다시 본 앱 기록으로 맞추려면 베타 띠 '실제 기록 다시 복사'.
 
