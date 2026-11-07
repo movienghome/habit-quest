@@ -1,0 +1,23 @@
+/* v7.0 */
+.w70{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
+.w70 .w70p{display:inline-flex;gap:6px;flex-wrap:wrap}
+.w70 .w70p input{width:auto;padding:5px 8px}
+.w70 .w70s{flex-basis:100%;color:var(--ink)}
+.w70 .w70s .tiny{margin-left:4px}
+@media (max-width:640px){.snack{flex-wrap:wrap;justify-content:flex-start;row-gap:6px;left:10px;right:10px;transform:none;max-width:none}.snack .m{flex-basis:100%;max-width:none;white-space:normal}.snack button{flex:1 1 auto}}
+.toast{transition:opacity .2s,bottom .15s}
+.trow.lc68{box-shadow:inset 5px 0 0 var(--lc68)}
+.tm .lt70{background:color-mix(in srgb,var(--lc68) 26%,transparent);border-radius:6px;padding:0 5px;font-weight:600;color:var(--ink)}
+#calPane .lc70{color:var(--ink)}
+.ls70b{padding:4px 9px;flex:none}
+.ls70{display:flex;flex-direction:column;gap:6px}
+.ls70r{display:grid;grid-template-columns:30px 1fr auto auto auto auto auto;gap:4px;align-items:center;padding:4px;border-radius:10px}
+.ls70r.on{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.ls70r input{min-width:0;padding:6px 8px}
+.ls70d{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);background:var(--c);cursor:pointer;font-size:11px;color:var(--muted);padding:0}
+.ls70r .ib{min-width:28px;height:28px}
+.ls70c{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px;padding:4px 0 2px}
+.ls70add{display:flex;gap:6px;margin-top:6px}.ls70add input{flex:1;min-width:0}
+.st62 .fl70{opacity:.45}.st62 .fl70[aria-pressed="true"]{opacity:1;background:color-mix(in srgb,var(--good) 18%,transparent)}
+#hunt.flow70 .mhp .fill{background:var(--good)!important}
+#es70 #editBody{padding:0}

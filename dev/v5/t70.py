@@ -1,0 +1,42 @@
+exec(open('h61.py').read())
+import os
+SP='/tmp/claude-0/sp/'
+J=lambda pg,x:pg.evaluate(x)
+with sync_playwright() as pw:
+    b,pg=run(pw,W=412,H=900);closepops(pg);pg.wait_for_timeout(500)
+    # 1) 언제? 하나로
+    J(pg,"openDoneSheet({a:C.actions.find(a=>a.id==='b1')})");pg.wait_for_timeout(200)
+    print('rows',J(pg,"[document.querySelectorAll('#sheetC .w70').length,document.querySelectorAll('#sheetC .d69').length,document.querySelectorAll('#sheetC .when').length]"))
+    pg.screenshot(path=SP+'t70_when.png')
+    pg.click('[data-w70="y1"]');pg.wait_for_timeout(150)
+    print('y1',J(pg,"[sheetCtx.d69,sheetCtx.at,document.querySelector('#sheetC .w70s').innerText,document.querySelectorAll('#sheetC .d69').length]"))
+    pg.click('[data-w70="pick"]');pg.wait_for_timeout(150)
+    J(pg,"(()=>{const i=document.querySelector('[data-w70t]');i.value='21:30';i.dispatchEvent(new Event('change',{bubbles:true}))})()");pg.wait_for_timeout(150)
+    print('pick',J(pg,"[sheetCtx.d69,sheetCtx.at,document.querySelector('#sheetC .w70s').innerText]"));pg.screenshot(path=SP+'t70_pick.png')
+    pg.click('#sheetC [data-sopt]');pg.wait_for_timeout(100)
+    pg.click('[data-sheet="ok"]');pg.wait_for_timeout(1200);closepops(pg)
+    print('saved',J(pg,"JSON.stringify(Object.keys(DAYS).map(k=>[k,DAYS[k].entries.filter(e=>e.aid==='b1').map(e=>e.t+'/'+(e.otb69||0))]).filter(x=>x[1].length))"))
+    # 2) 나쁜 행동 지금 기록 → 스낵바 안 🍬
+    J(pg,"location.hash='log'");pg.wait_for_timeout(500)
+    J(pg,"doAction(C.actions.find(a=>a.type==='bad'&&!a.opts),{direct:1})");pg.wait_for_timeout(1300)
+    print('snack',J(pg,"[!$('snack').hidden,$('snack').innerText.replace(/\\n/g,' | '),$('toast').classList.contains('on'),$('toast').innerText]"))
+    pg.screenshot(path=SP+'t70_snack.png')
+    J(pg,"toast('시험 알림')");pg.wait_for_timeout(100);print('lift',J(pg,"[$('toast').style.bottom,$('snack').getBoundingClientRect().top]"))
+    pg.click('#snack [data-snack70]');pg.wait_for_timeout(300);print('dopa open',J(pg,"!$('sheet').hidden"));J(pg,"closeSheet()")
+    # 3) 목록 색
+    print('lists',J(pg,"JSON.stringify(C.lists.map(l=>[l.name,l.color]))"),J(pg,"C.mig70col"))
+    J(pg,"""(()=>{C.lists.forEach((l,i)=>{for(let k=0;k<2;k++){const t=newTask({title:'일 '+l.name.slice(0,4)+k,due:addDays(dateKey(),k+i%3),list:l.id});saveTask(t)}});render()})()""")
+    J(pg,"location.hash='cal'");pg.wait_for_timeout(900);pg.screenshot(path=SP+'t70_cal.png')
+    J(pg,"C.ui.tasks.sel='next7';location.hash='tasks'");pg.wait_for_timeout(800);print('lt70',J(pg,"document.querySelectorAll('.lt70').length"));pg.screenshot(path=SP+'t70_tasks.png')
+    # 5) 목록 편집
+    pg.click('[data-ls70open]');pg.wait_for_timeout(300);pg.screenshot(path=SP+'t70_ls.png')
+    lid=J(pg,"C.lists.find(l=>/Atelier/.test(l.name)).id")
+    pg.click(f'[data-ls70c="{lid}"]');pg.wait_for_timeout(150);pg.click(f'[data-ls70col="{lid}|#82c91e"]');pg.wait_for_timeout(150)
+    pg.fill(f'[data-ls70n="{lid}"]','✒아틀리에');pg.press(f'[data-ls70n="{lid}"]','Enter');pg.wait_for_timeout(200)
+    pg.fill('#ls70New','🧪 시험');pg.press('#ls70New','Enter');pg.wait_for_timeout(300)
+    print('after edit',J(pg,"JSON.stringify(C.lists.map(l=>[l.name,l.color]))"))
+    nid=J(pg,"C.lists.find(l=>l.name==='🧪 시험').id");pg.click(f'[data-ls70op="up:{nid}"]');pg.wait_for_timeout(150);pg.click(f'[data-ls70op="del:{nid}"]');pg.wait_for_timeout(200)
+    print('del',J(pg,"C.lists.some(l=>l.name==='🧪 시험')"));pg.screenshot(path=SP+'t70_ls2.png');J(pg,"closeSheet()")
+    J(pg,"(()=>{const s=$('tListSel');s.value='__ls70';s.dispatchEvent(new Event('change',{bubbles:true}))})()");pg.wait_for_timeout(200);print('via select',J(pg,"!!$('ls70box')"));J(pg,"closeSheet()")
+    b.close()
+    print('\n'.join(e for e in errs if 'TUNNEL' not in e)[:3000])

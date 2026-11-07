@@ -1,11 +1,11 @@
-# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v6.9 베타 기준, 2026-11-07)
+# 해비티카틱 (옛 습관 퀘스트) — 이어서 작업하기 (v7.0 본 앱·베타 같음, 2026-11-07)
 
 > **새 채팅에서 할 일 (Claude에게)**: 먼저 `add_repo`로 `movienghome/habit-quest`를 붙이고 `git clone --depth 1`. 이 파일은 저장소의 `dev/HANDOFF.md`에도 있음 — 저장소 쪽이 최신이면 그걸 따름. 릴리스할 때마다 이 파일도 같이 고쳐서 커밋.
 
 ## 저장소·주소
 - 저장소: github.com/movienghome/habit-quest (GitHub Pages + Firebase)
-- 본 앱: https://movienghome.github.io/habit-quest/ → **v6.8** (v6.8에서 승격. 데이터: habit)
-- 베타: https://movienghome.github.io/habit-quest/beta/ → **v6.9** (데이터: habit-beta. 승격 뒤엔 시험용) — **v6.9는 저장 버그 고침이라 본 앱 승격이 급함**
+- 본 앱: https://movienghome.github.io/habit-quest/ → **v7.0** (2026-11-07 v6.9 저장 고침과 같이 승격. 데이터: habit)
+- 베타: https://movienghome.github.io/habit-quest/beta/ → **v7.0** (데이터: habit-beta. 시험용)
 - 작업 방식: 고친 건 베타에 먼저 → 사용자가 "반영해" 하면 본 앱에 옮김
 - **승격 방법(v6.8부터)**: 빌드는 베타와 같은 파일. `cp beta/index.html beta/backend.js beta/sw.js .` (index.html·backend.js·sw.js가 경로 `/beta/`로 베타/본 앱을 스스로 구분 — β 띠·데이터 폴더·캐시 이름). manifest만 따로(이름).
 - **빌드 원본**: patch.py의 SRC = `dev/v5/base44.html`(옛 본 앱 v4.4). 루트 index.html은 이제 빌드 결과라 원본으로 쓰면 안 됨.
@@ -21,12 +21,12 @@
 - `beta/index.html`은 **생성 파일**. 직접 고치지 말고 `dev/v5/`의 모듈을 고친 뒤 빌드.
 - 빌드: `ln -sfn <저장소>/dev/v5 /home/claude/v5` 후 `cd dev/v5 && python3 patch.py`
   (patch.py의 SRC/DST/V는 /home/claude/habit-quest, /home/claude/v5 기준. 중간 파일은 임시 폴더에 씀)
-  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → patch12(v6.0) → patch13(v6.1) → patch14(v6.2) → patch15(v6.3) → patch16(v6.4) → patch17(v6.5) → patch18(v6.6) → patch19(v6.7) → patch20(v6.8) → **patch21(v6.9)**
-  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + v5q(v6.0) + v5r(v6.1) + v5s(v6.2, CSS는 v62.css) + v5t(v6.3, CSS는 v63.css) + v5u(v6.4, CSS는 v64.css) + v5v(v6.5, CSS는 v65.css) + v5w(v6.6, CSS는 v66.css) + v5x(v6.7, CSS는 v67.css) + v5y(v6.8, v68.css) + **v5z(v6.9, v69.css)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
+  - 순서: patch.py → patch2 → patch3(v5.1) → patch4(v5.2) → patch5(v5.3) → patch6(v5.4) → patch7(v5.5) → patch8(v5.6) → patch9(v5.7) → patch10(v5.8) → patch11(v5.9) → patch12(v6.0) → patch13(v6.1) → patch14(v6.2) → patch15(v6.3) → patch16(v6.4) → patch17(v6.5) → patch18(v6.6) → patch19(v6.7) → patch20(v6.8) → patch21(v6.9) → **patch22(v7.0)**
+  - JS 모듈: v5a~v5j + v5k(v5.4: 카드 통일·점수·용기·프리셋) + v5l(v5.5) + v5m(v5.6) + v5n(v5.7) + v5o(v5.8) + v5p(v5.9) + v5q(v6.0) + v5r(v6.1) + v5s(v6.2, CSS는 v62.css) + v5t(v6.3, CSS는 v63.css) + v5u(v6.4, CSS는 v64.css) + v5v(v6.5, CSS는 v65.css) + v5w(v6.6, CSS는 v66.css) + v5x(v6.7, CSS는 v67.css) + v5y(v6.8, v68.css) + v5z(v6.9, v69.css) + **w70.js(v7.0, v70.css — 이름 규칙 바뀜: 다음은 w71.js·v71.css)** — v5k는 mig53 앞, **v5l·v5m은 스크립트 맨 끝**(같은 이름 함수를 덮어씀: actionsEditHTML). openActionEditor·openTaskSheet·closeSheet는 v5l에서 감싸서 다시 대입.
   - 주의: **첫 render는 스크립트 중간(route())에서 돌아서 맨 끝 모듈의 const/let은 물론 var도 아직 비어 있음.** 함수 선언(호이스팅)이 첫 render에서 쓰는 상수는 함수 안에(v5w의 `K66()` 식).
   - 클래스 이름 `.mc`는 월 캘린더 칸이 씀 → 칩은 `.mx`.
-- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-07-v69`). 베타 띠에 버전 표시(`β 베타 v6.9`) — 같이 올리기.
-- **v6.9부터 `route();boot();`는 스크립트 맨 끝(v5z 뒤)에서 불러요.** 첫 render 때 모든 모듈·감싸기가 준비돼 있음. (위 '첫 render는 스크립트 중간' 주의는 이제 옛 얘기)
+- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 `2026-11-07-v70`). 베타 띠에 버전 표시(`β 베타 v7.0`) — 같이 올리기.
+- **v6.9부터 `route();boot();`는 스크립트 맨 끝에서 불러요(patch22는 w70.js를 그 바로 앞에 넣음 — 다음 모듈도 `\nroute();boot();\n` 앞에).** 첫 render 때 모든 모듈·감싸기가 준비돼 있음. (위 '첫 render는 스크립트 중간' 주의는 이제 옛 얘기)
 - **patch10은 빌드 결과 전체에서 글자 치환을 함**: `💰`→`₩`, `🪙`→`💰`, `🔁`→`↻`, `리듬`→`반복`. 그러니 **v5o 이후 모듈에서 🪙·🔁·'리듬'을 비교 문자열로 쓰면 바뀌어 버림** → `\u{1F501}`처럼 이스케이프로 쓰기.
 - `normConfig`는 `C.ui`의 정해진 키만 남김(새 키는 사라짐) → 새 ui 설정은 기존 키 안(예: `C.ui.cal._t`)이나 `C` 최상위에.
 - `route()`는 journey 같은 화면 전환 때 render를 안 부름 → 새 화면 내용은 hashchange에서 따로 그림(renderBlog).
@@ -251,6 +251,16 @@
 - **빠르게**: daysSince·neglectList 기억(그리기마다·기록마다 비움), toUTC·addDays 기억(patch21이 const 정의를 바꿈), homeTwo는 홈일 때만 폭 잼, applyTheme은 바뀔 때만 getComputedStyle, renderStats는 통계·여정 화면일 때만(나중에 hashchange에서). 120일·할 일 200개로 그리기 87ms → 25~40ms.
 - 테스트: `dev/v5/t69.py` — Python이 '서버'(CAS)인 두 기기 시험(설정 저장·다시 열기·카드 지우기/더하기 동시·같은 날 기록 동시·XP 더하기·지운 할 일 안 되살아남·렌더 횟수) + 날짜·보너스·옮기기·루틴 어제·몸무게·한글 조합·처음 고친 버전 복구. 기준 비교는 `git worktree`로 옛 빌드를 8766에서 돌려 t64~t68 출력 diff(차이 = 보너스 점수만).
 
+## v7.0에서 한 것 (w70.js · v70.css · patch22.py) — 본 앱 승격(v6.9 저장 고침 포함)
+- **📅 언제? 하나로**: whenHTML 새로 선언(마지막 선언이 이김). 칩 = (⏱ 시작) 방금·1시간 전·아침에·어제·그저께·📅 직접(date+time 칸). S.d69(날짜)·S.at(시각)·S.w70(고른 칩). drawDoneSheet 감싸 v6.9 `.d69` 날짜 줄은 새 기록 창에서 지움(기록 고치기 창은 '📅 날짜' 줄 + 시각 칸 그대로). data-w70 / data-w70d / data-w70t. t69.py 선택자도 바꿈(FAILS 0).
+- **알림 겹침**: toast·toastAct 감싸 lift70(스낵바 보이면 그 위로). 나쁜 행동 뒤 '다음에 당길 땐 대신할 것' toastAct(v5n)은 스낵바 안 `🍬 대신할 것`(data-snack70) 버튼으로 바꿔 넣음. 폰(≤640px)에서 스낵바 = 글 한 줄 + 버튼 줄(꽉 찬 폭).
+- **목록 색**: LCOL61 내용을 LCOL70으로 바꿈(빨강·주황·노랑·연두·초록·보라·분홍·갈색·먹색·회색, 파랑 없음, 밝기 차이 크게). lcolPlan68 새로 선언(Fixed 빨강·Atelier 노랑·Project 보라·Personal 먹색·Limen 주황·습관 초록·루틴 분홍·기본함 회색). mig70col(한 번): 예전 팔레트 색(LMAP70)인 목록만 새 색, 백업 `C.lcolBak70` → 알림 '예전 색으로'. 캘린더 '표시: 목록' = 34% 칠 + 4px 띠 + 이모지(v5o). 할 일 줄 5px 띠 + 목록 이름 칩(.lt70). rowCols68 새로 선언.
+- **🌊 몰입 타이머** tmode 'flow': 목표 = 최소 시간. speedOf 감쌈(flow: 채우면 ✨base×.25, 그 뒤 10분마다 base×.1, 50분까지). **고친 버그: finishSingle이 speedOf에 mode를 안 넘겨서 '⚡ 빠를수록'이 끝낼 때 안 먹었음** → endRun 감싸 LM70로 넘김. 사냥 화면: 삐삐 대신 chime70 한 번 + toast, over(빨강) 없음. 루틴 단계: routineStep62 감싸 FS70 → completeTask ctx.spd, 넘긴 시간 RUN.flowX70은 루틴 완주 빠르기에서 뺌(FX70). 켜는 곳: 할 일 상세 ⏱ 칸 🌊 버튼, 루틴 단계 줄 🌊(data-fl70, stRow62 감쌈), 사냥 화면 방식 칩, 단계 우클릭. flowMig70(한 번, C.mig70flow): 루틴 단계 중 '독서·책 읽·읽기' 할 일 → flow(되돌리기 알림). 카드(a.tmode) 편집 UI는 아직 없음.
+- **📂 목록 편집 창** listSheet70: 할 일 화면 #tListSel 옆 ✎(data-ls70open) · 고르기 맨 아래 '✎ 목록 편집…'. 이름(바로 저장)·색(이름 같이 보임)·폴더·↗ 열기·↑↓·🗑(기본함·습관·루틴 목록은 못 지움, 할 일은 기본함으로, 되돌리기)·새 목록(남은 색 자동).
+- **규칙 바로 고치기** editSheet70(tab,title): #editBody를 창으로 잠깐 옮겨 renderEdit, 닫으면 제자리. 들어가는 곳: LV·XP 정보 창(⚙ 레벨·하루·기록 규칙 / 🗺 레벨 보상), 유리병 '⚙ 병 규칙', 병 우클릭. 규칙 탭에 '기록 · 날짜' 칸(rules70HTML): ✍ 보너스 켜기·XP·하루 최대(C.otb69), 할 일 '오늘' 바뀌는 때(자정/점수와 같이 = C.taskMid68).
+- 우클릭 더: 루틴 단계 줄(.st62: 열기·🌊·↑↓·카드·빼기, r62op70이 숨은 버튼 클릭으로 기존 핸들러 씀) · 유리병([data-viewjar]).
+- 테스트: t70.py(언제·스낵바·색·목록 편집) · t70b.py(몰입 단일/루틴·빠를수록 고침·규칙 창·단계 우클릭). t64·t67은 v6.9 빌드에서도 같은 곳에서 멈춤(옛 선택자, 이번 변경과 무관).
+
 ## 사용자가 거듭 말하는 것 (매번 확인)
 - **연결·통합이 매끄러운가**: 같은 것이 화면마다 다르게 보이면(개수·거르기·이름) 바로 맞출 것. 어디서 연 것이든 거기서 고치고 돌아올 수 있게(칩·우클릭·뒤로).
 - 목록이 '텍스트만 쭉'이면 막막해함 → 찾기·묶음·자주 쓰는 것 먼저(고르기 창).
@@ -258,13 +268,11 @@
 - 화면 배치는 홈처럼 지도 끌기로.
 
 ## 아직 안 한 요청 (사용자 요청 기준, 매 릴리스마다 갱신해서 답변에 붙이기)
-- **v6.9 본 앱 승격("반영해")**: 실제 기록(habit)도 같은 저장 버그라 급함. 승격 = `cp beta/index.html beta/backend.js beta/sw.js .` (backend.js 꼭 같이).
-- 사용자 확인 받기: v6.9 — 폰↔PC 바로 맞는지 · 지운 루틴 단계(운동·일기)가 한 번 지우면 안 돌아오는지(**처음 고친 버전은 마지막으로 고친 기기에서 먼저 열기**) · 빨간 띠가 뜨는지 · 📅 날짜·✍ 보너스 크기(✨2, 하루 20) · 한글 입력. v6.8 이전 확인 항목(목록 색·자정 🌙·영역 장비·보스 약점 등)은 그동안 설정이 저장 안 됐으니 v6.9 뒤에 다시 보기.
-- ✍ 보너스 점수를 사용자가 바꾸는 UI(지금은 C.otb69 기본값만) — 원하면.
+- 사용자 확인 받기(v7.0): 본 앱 첫 실행은 **본 앱을 마지막으로 쓴 기기에서 먼저**(v6.9 SNAP69 복구) · 폰↔PC 바로 맞는지 · 지운 루틴 단계 안 돌아오는지 · 빨간 띠 · 📅 언제? 한 줄 · 🍬 대신할 것 버튼 · 목록 색 구별 · 🌊 독서 단계 · 📂 목록 편집. v6.8 이전 확인 항목(자정 🌙·영역 장비·보스 약점 등)도 이제 설정이 저장되니 다시 보기.
 - **도파민 디저트 골드 스위치: 2026-11-20쯤 판단**(사용자가 '2주 뒤'로 정함. 기본 꺼짐 스위치로, 디저트 기록 2주치 보고).
-- 제안만 하고 안 한 것: HP '어제 이월' · 레벨 30 이후 여정(시즌 2) · 자정/5시 나누기 끄는 스위치 UI(지금은 C.taskMid68=false로만) · 설정 문서 쪼개기(지금 한 문서 — 1MB 한도 근처면 slim69가 백업부터 덞).
-- 우클릭 후보 남은 것: 루틴 단계 줄·도파민 코스 칸 머리·유리병. 편집 화면 거치는 것 남은 것: 병 규칙·일반 규칙(레벨 곡선 등).
-- 베타는 이제 시험용. 본 앱과 기록이 갈라짐 → 베타를 다시 본 앱 기록으로 맞추려면 베타 띠 '실제 기록 다시 복사'.
+- 제안만 하고 안 한 것(사용자가 원하면): HP '어제 이월' · 레벨 30 이후 여정(시즌 2) · 설정 문서 쪼개기(1MB 근처면 slim69가 백업부터 덞) · 행동 카드 편집 창에 🌊 몰입(a.tmode) 고르기.
+- 우클릭 후보 남은 것: 도파민 코스 칸 머리.
+- 베타는 시험용. 본 앱과 기록이 갈라짐 → 베타를 본 앱 기록으로 맞추려면 베타 띠 '실제 기록 다시 복사'.
 
 ## 1단계 마무리 (v5.7에서 끝남 — 기록용)
 - ~~루틴 통일~~ (v5.5 완료) 메모:: finishRoutine은 루틴 덩어리 XP 하나만 주고, aid로 이어진 단계(예: Lethe의 샤워)를 해도 그 습관 카드가 기록되지 않음 → 일퀘·방치 경보·통계에 안 잡힘. 단계 체크 시 연결 카드로 기록(카드 점수), 루틴 점수는 '완주 보너스'만 작게. aid 없는 단계는 점수 없는 체크 항목으로 두거나 카드로 만들기 버튼.
