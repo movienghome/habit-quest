@@ -1,0 +1,74 @@
+/* v7.1 */
+/* 할 일 줄: 목록 색 띠가 ○와 안 겹치게 (띠 + 띠만큼 안쪽 여백) */
+.trow.lc68{box-shadow:inset 4px 0 0 var(--lc68);padding-left:12px}
+.trow.tkid.lc68{padding-left:12px}
+@media (max-width:640px){.trow.lc68{padding-left:13px}}
+/* 묶음 접기·펴기 단추 크게 */
+.tfold{min-width:30px;min-height:30px;display:inline-grid;place-items:center;padding:0 2px;margin:-6px 2px -6px -4px;border-radius:8px;font-size:15px;color:var(--ink)}
+.tfold:hover{background:var(--panel2)}
+@media (pointer:coarse){.tfold{min-width:38px;min-height:38px;font-size:17px}}
+.tkids{min-height:8px}
+.f71{font-size:.85em;margin-right:2px}
+/* 찾기 칸 */
+.tq71b{display:flex;gap:6px;align-items:center;margin:8px 0 0}
+.tq71b input{flex:1;padding:7px 10px;border-radius:999px}
+.tq71b [data-tq71x]{visibility:hidden}.tq71b.on [data-tq71x]{visibility:visible}
+.tq71b.on input{border-color:var(--accent)}
+.h71{display:flex;gap:8px;align-items:flex-start;margin:8px 0;padding:8px 10px;border-radius:10px;background:var(--panel2)}
+.h71 .ib{margin-left:auto;flex:none}
+/* 입력칸 '⋯ 자세히' */
+form.tadd .in [data-tadd71]{flex:none;white-space:nowrap}
+/* 할 일 상세: 칸을 또렷하게 나누기 */
+#sheetC .ts71top{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:2px 0 6px}
+#sheetC.ts71 .tchips{padding:8px;border-radius:12px;background:var(--panel2);border:1px solid var(--line)}
+#sheetC.ts71 .tpanels:not(:empty){margin-top:2px}
+#sheetC.ts71 .sec71{font-size:12.5px;font-weight:700;color:var(--muted);margin:12px 0 4px}
+#sheetC.ts71 #tsNote{min-height:56px}
+#sheetC.ts71 .box71{margin-top:12px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+#sheetC.ts71 .kids56.box71{border-left:4px solid color-mix(in srgb,var(--accent) 55%,transparent)}
+#sheetC.ts71 .ck71{border-left:4px solid color-mix(in srgb,var(--muted) 45%,transparent)}
+#sheetC.ts71 .av65row{margin-top:12px}
+#sheetC.ts71 .foot71{margin-top:14px;padding-top:10px;border-top:1px solid var(--line)}
+#sheetC.ts71 .g71{margin:8px 0 0}
+#sheetC.ts71 .e71 small{font-weight:400}
+.tch.off{opacity:.75}
+.m71{padding:8px;border-radius:10px;background:var(--panel2);margin-bottom:8px}
+.tg71{margin-bottom:6px}
+.tagx71{display:inline-flex;align-items:center;gap:2px;padding:2px 4px 2px 9px;border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,transparent);font-size:13px;font-weight:600}
+.tagx71 button{border:0;background:none;color:inherit;cursor:pointer;font:inherit;padding:0 5px;border-radius:999px}
+.tagx71 button:hover{background:var(--panel2)}
+.tg71r{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) auto auto;gap:6px;align-items:center;margin:4px 0}
+.tg71r select,.tg71r input{padding:5px 6px;font-size:13px}
+@media (max-width:560px){.tg71r{grid-template-columns:minmax(0,1fr) auto auto}.tg71r select{grid-column:1/-1}}
+.tg71s button{display:flex;width:100%}
+#tSide .fold.f71{border:0;background:none;text-align:left;cursor:pointer;font:inherit;width:100%}
+#tSide .fold.f71[aria-pressed="true"]{color:var(--accent)}
+/* 루틴 단계 줄: 이름 · 점수 / 분·🌊·🔀◌↑↓× / 카드 — 칸이 겹치지 않게 */
+.st62:has(>.ctl71){grid-template-areas:"no nm pt ctl" ". why why why"!important;grid-template-columns:24px minmax(0,1fr) auto auto!important}
+.st62>.no{grid-area:no!important}.st62>.st62n{grid-area:nm!important}.st62>.pt62{grid-area:pt!important;white-space:nowrap}
+.st62>.ctl71{grid-area:ctl!important;display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.st62>.why{grid-area:why!important;min-width:0}
+.ctl71 .ops{display:flex;gap:3px}
+.rt64p .st62:has(>.ctl71),.rt62p .st62:has(>.ctl71){grid-template-areas:"no nm pt" ". ctl ctl" ". why why"!important;grid-template-columns:24px minmax(0,1fr) auto!important}
+.rt64p .st62>.ctl71,.rt62p .st62>.ctl71{justify-content:flex-start}
+@media (max-width:640px){.st62:has(>.ctl71){grid-template-areas:"no nm pt" ". ctl ctl" ". why why"!important;grid-template-columns:24px minmax(0,1fr) auto!important}.st62>.ctl71{justify-content:flex-start}}
+.st62 .ops{flex-wrap:wrap}
+.st62 .ib.t71{opacity:.55}.st62 .ib.t71[aria-pressed="true"]{opacity:1;background:color-mix(in srgb,var(--accent) 18%,transparent)}
+.st62.g71{border-left:4px solid color-mix(in srgb,var(--accent) 60%,transparent)}
+.st62.g71n{margin-top:-4px;border-top-style:dashed}
+.st62.g71n::before{content:'또는';position:absolute;transform:translate(-2px,-20px);font-size:10.5px;color:var(--accent);font-weight:700}
+.st62{position:relative}
+.o71{color:var(--muted);font-weight:400}
+.g71box{border:1px dashed color-mix(in srgb,var(--accent) 55%,var(--line));border-radius:12px;padding:6px;margin:4px 0;display:flex;flex-direction:column;gap:4px}
+.g71h{font-size:12.5px;font-weight:700;color:var(--accent);padding:0 4px}
+.when71{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.when71 input{width:auto;padding:4px 8px}
+/* 도파민 코스 설명 */
+.dd71one{display:block;margin-top:3px}
+.dd71{margin-top:4px}.dd71 summary{cursor:pointer;color:var(--accent)}
+.dd71r{font-size:12.5px;margin:3px 0}
+/* 보드 카드: 칸 어디를 눌러도 편집 */
+.bchip{cursor:pointer}
+form.tadd .in [data-tadd71] .l71{margin-left:2px}
+@media (max-width:640px){form.tadd .in [data-tadd71] .l71{display:none}form.tadd .in [data-tadd71]{padding:4px 10px}}
+.trow>.tx{max-width:42%;white-space:normal;text-align:right;line-height:1.25}

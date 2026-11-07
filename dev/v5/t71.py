@@ -1,0 +1,117 @@
+# v7.1 시험: 자연어·정렬·찾기·카드 잇기(PC 고르기 창)·루틴 골라 하기·자동 완주·점수·기간 일정·여러 개 날짜·주 시작·상점
+exec(open('h61.py').read())
+J=lambda pg,x:pg.evaluate(x)
+SP='/tmp/claude-0/sp/'
+FAILS=[]
+def ok(c,msg,extra=''):
+    print(('PASS ' if c else 'FAIL ')+msg+(' · '+str(extra) if extra!='' else ''))
+    if not c:FAILS.append(msg)
+with sync_playwright() as pw:
+    b,pg=run(pw,W=1300,H=900);closepops(pg);pg.wait_for_timeout(300)
+    td=J(pg,"dateKey()")
+    P=lambda q:json.loads(J(pg,"JSON.stringify(parseQuick("+json.dumps(q)+"))"))
+    p=P('17~20일 촬영');ok(p.get('end71') and p['due'][-2:]=='17' and p['end71'][-2:]=='20' and p['title']=='촬영','17~20일',p)
+    p=P('다음주 토요일부터 xx 하기');ok(p.get('due') and J(pg,f"dowOf('{p['due']}')")==6 and p['due']>J(pg,"addDays(dateKey(),6)") and p['title']=='xx 하기','다음주 토요일부터',p)
+    p=P('21일 민수 미팅 11시부터 2시간동안');ok(p.get('time')=='11:00' and p.get('dur')==120 and p['title']=='민수 미팅' and p['due'][-2:]=='21','11시부터 2시간동안',p)
+    p=P('9일 마감, 3일부터 9일까지 기획서 30분 미만 주에 3번');ok(p.get('deadline','')[-2:]=='09' and p.get('dur')==30 and p.get('rep',{}).get('f')=='x' and p['title']=='기획서','마감·기간·30분 미만·주에 3번',p)
+    p=P('독서 *영상 @성장');ok(p.get('area')=='grow' and p.get('marble') and p['title']=='독서','*구슬 @영역',p)
+    p=P('#집중 공부');ok(p['tags']==['집중'] and p['title']=='공부','#집중',p)
+    # 기본 목록 Personal
+    J(pg,"location.hash='tasks'");pg.wait_for_timeout(400)
+    t=json.loads(J(pg,"JSON.stringify(addTaskFrom('손톱깎기',{}))"));ok(J(pg,f"listName(TASKS['{t['id']}'].list)").find('Personal')>=0,'기본 목록 Personal',J(pg,f"listName(TASKS['{t['id']}'].list)"))
+    ok(J(pg,f"taskBase(TASKS['{t['id']}']).gold")==0,'카드 없는 할 일 골드 0',J(pg,f"JSON.stringify(taskBase(TASKS['{t['id']}']))"))
+    ok(J(pg,"!!document.querySelector('#snack:not([hidden]),#toast.on')"),'추가 알림')
+    # 경제 영역은 골드
+    J(pg,f"TASKS['{t['id']}'].area='money'");ok(J(pg,f"taskBase(TASKS['{t['id']}']).gold")>0,'경제 영역 할 일은 골드')
+    # 용기 따로
+    J(pg,f"(()=>{{const x=TASKS['{t['id']}'];delete x.area;x.brave=1;x.bsz71='l';x.effort='quick'}})()");ok(J(pg,f"taskBase(TASKS['{t['id']}']).xp")==J(pg,"C.courageSizes.find(z=>z.id==='l').xp"),'용기 크기는 시간과 따로')
+    # 정렬: 루틴 머리 시각
+    J(pg,"""(()=>{const hs=Object.values(TASKS).filter(t=>t.rid&&!t.rstep);const tm={'r-eos':'06:30','r-vesper':'17:30','r-lethe':'22:30','r-morning':'08:00'};hs.forEach(t=>{t.due=dateKey();t.time=tm[t.rid]||null;saveTask(t)});C.ui.tasks.sel='today';render()})()""");pg.wait_for_timeout(400)
+    order=J(pg,"[...document.querySelectorAll('#tList .trow .tt')].map(e=>e.innerText).filter(x=>/루틴|Eos|Vesper|Lethe/.test(x)).join(' | ')")
+    ok(order.find('Eos')<order.find('아침 루틴')<order.find('Vesper')<order.find('Lethe'),'시간 순서',order)
+    # 기다리기 띠는 루틴엔 안 뜸
+    ok(J(pg,"wait65()")=='','밤 루틴엔 기다리기 띠 없음')
+    # 날짜 없음에 루틴 단계 없음
+    J(pg,"C.ui.tasks.sel='nodate';render()");pg.wait_for_timeout(300)
+    ok(J(pg,"[...document.querySelectorAll('#tList .trow[data-task]')].filter(r=>TASKS[r.dataset.task]&&TASKS[r.dataset.task].rstep).length")==0,'날짜 없음에 단계 없음')
+    # 찾기
+    J(pg,"(()=>{const i=$('tq71');i.value='손톱';i.dispatchEvent(new Event('input',{bubbles:true}))})()");pg.wait_for_timeout(400)
+    ok(J(pg,"[...document.querySelectorAll('#tList .trow .tt')].map(e=>e.innerText).join('|')").find('손톱')>=0,'찾기',J(pg,"$('tTitle').textContent"))
+    J(pg,"(()=>{ui.tq71='';$('tq71').value='';C.ui.tasks.sel='today';render()})()")
+    # PC: 상세 옆에 띄운 채 카드 찾아 고르기
+    J(pg,"""(()=>{C.actions.unshift({id:'ah1',name:'몸위생관리',type:'good',area:'body',xp:5,gold:0,cond:2});save('config')})()""")
+    J(pg,f"openTaskSheet('{t['id']}')");pg.wait_for_timeout(400)
+    J(pg,"(()=>{const b=[...document.querySelectorAll('#sheetC .tchips button')].find(b=>b.dataset.x56panel==='card');b.click()})()");pg.wait_for_timeout(300)
+    pg.click('#aidPk68');pg.wait_for_timeout(300)
+    J(pg,"(()=>{const i=$('pk61q');i.value='몸위';i.dispatchEvent(new Event('input',{bubbles:true}))})()");pg.wait_for_timeout(200)
+    pg.locator('#pk61 [data-pk61="ah1"]').click();pg.wait_for_timeout(500)
+    ok(J(pg,f"TASKS['{t['id']}'].aid")=='ah1','PC 카드 찾아 고르기',J(pg,f"TASKS['{t['id']}'].aid"))
+    pg.screenshot(path=SP+'t71_card.png')
+    # 배수
+    J(pg,"tsRedraw()");pg.wait_for_timeout(200)
+    has=J(pg,"!!document.querySelector('[data-t71mul=\"2\"]')");ok(has,'배수 단추')
+    if has:pg.click('[data-t71mul="2"]');pg.wait_for_timeout(200)
+    ok(J(pg,f"taskBase(TASKS['{t['id']}']).xp")==10,'카드 ×2 점수',J(pg,f"taskBase(TASKS['{t['id']}']).xp"))
+    J(pg,"closeSheet()")
+    # 카드 편집 창에 루틴 단계 표시
+    J(pg,"openActionEditor('g4')");pg.wait_for_timeout(300)
+    ok('단계' in J(pg,"(document.querySelector('.ae71rt')||{}).innerText||''"),'카드 편집에 루틴 단계',J(pg,"(document.querySelector('.ae71rt')||{}).innerText||''"))
+    J(pg,"closeSheet()")
+    # 루틴 골라 하기: Lethe 스트레칭/독서/음악 묶기 + 명상 선택
+    J(pg,"""(()=>{const r=C.routines.find(x=>x.id==='r-lethe');const nm=s=>stName61(s);r.steps.forEach(s=>{if(/스트레칭|독서|음악/.test(nm(s)))s.g71='gA';if(/명상/.test(nm(s)))s.opt71=1});save('config')})()""")
+    J(pg,"rtDone64(C.routines.find(x=>x.id==='r-lethe'))");pg.wait_for_timeout(300)
+    pg.screenshot(path=SP+'t71_rtdone.png')
+    ok(J(pg,"document.querySelectorAll('#sheetC .g71box [data-d64]').length")==3,'묶음 3개')
+    # 독서 하나만 체크 (나머지 그룹은 기본 해제)
+    J(pg,"(()=>{const c=[...document.querySelectorAll('#sheetC .g71box .d64r')].find(l=>/독서/.test(l.innerText)).querySelector('input');c.checked=true;c.dispatchEvent(new Event('change',{bubbles:true}))})()")
+    J(pg,"(()=>{const w=document.querySelector('#sheetC .w64');if(w)w.value='72'})()")
+    pg.click('[data-d64go]');pg.wait_for_timeout(800);closepops(pg)
+    ok(J(pg,"(today().entries||[]).some(e=>e.kind==='routine'&&e.rid==='r-lethe'&&e.full)"),'하나만 골라도 완주')
+    # 단계 하나씩 체크해도 완주 → 일퀘
+    J(pg,"""(()=>{const r=C.routines.find(x=>x.id==='r-morning');setRt60(r,[0,1,2,3,4,5,6],true);render()})()""");pg.wait_for_timeout(300)
+    J(pg,"""(()=>{const r=C.routines.find(x=>x.id==='r-morning');J71=r.steps.map(s=>s.tid);for(const s of r.steps){const t=TASKS[s.tid];if(s.aid==='@weigh'){wSave63('71.5');t.last=dateKey();saveTask(t);continue}completeTask(t,{direct:true});if(t.status===2){t.status=0;delete t.doneAt}t.last=dateKey();saveTask(t)}render()})()""");pg.wait_for_timeout(900);closepops(pg)
+    ok(J(pg,"(today().entries||[]).some(e=>e.kind==='routine'&&e.rid==='r-morning'&&e.full)"),'단계만 체크해도 완주')
+    ok(J(pg,"(()=>{const h=rtH62(C.routines.find(x=>x.id==='r-morning'),false);const q=C.dailies.find(q=>q.action==='@t:'+h.id);return !!q&&questDone(today(),q)})()"),'아침 루틴 일퀘 체크')
+    J(pg,"render()");pg.wait_for_timeout(300)
+    ok(J(pg,"(today().entries||[]).filter(e=>e.kind==='routine'&&e.rid==='r-morning').length")==1,'완주 한 번만')
+    # 기간 일정
+    J(pg,"(()=>{const x=addTaskFrom('어제부터 모레까지 촬영',{});window.SP71=x.id})()")
+    ok(J(pg,"(()=>{const t=TASKS[SP71];return [t.due,t.end71].join('~')})()")==J(pg,"addDays(dateKey(),-1)+'~'+addDays(dateKey(),2)"),'어제부터 모레까지',J(pg,"(()=>{const t=TASKS[SP71];return [t.due,t.end71].join('~')})()"))
+    ok(J(pg,"taskMatches(TASKS[SP71],'today')") and not J(pg,"taskMatches(TASKS[SP71],'overdue')"),'진행 중 = 오늘, 지난 것 아님')
+    J(pg,"C.ui.cal.mode='month';location.hash='cal'");pg.wait_for_timeout(700)
+    n=J(pg,"document.querySelectorAll('#calPane [data-ctask=\"'+SP71+'\"]').length");ok(n>=3,'월 보기에 여러 날',n)
+    # 주 시작 일요일
+    J(pg,"C.wk71=0;render()");pg.wait_for_timeout(400)
+    ok(J(pg,"(document.querySelector('#calPane .wh')||{}).textContent")=='일','일요일 시작 머리',J(pg,"(document.querySelector('#calPane .wh')||{}).textContent"))
+    ok(J(pg,"dowOf(weekStart(dateKey()))")==0,'weekStart 일요일')
+    pg.screenshot(path=SP+'t71_month.png')
+    J(pg,"C.wk71=1;render()")
+    # 여러 개 고르기 → 다음 주
+    J(pg,"location.hash='tasks'");pg.wait_for_timeout(400)
+    J(pg,"(()=>{ui.mselOn=true;ui.msel=new Set([SP71]);render()})()");pg.wait_for_timeout(300)
+    ok(J(pg,"!!$('mb71d')"),'날짜 고르기 칸')
+    J(pg,"(()=>{const s=$('mb71d');s.value='nw';s.dispatchEvent(new Event('change',{bubbles:true}))})()");pg.wait_for_timeout(300)
+    ok(J(pg,"TASKS[SP71].due")==J(pg,"addDays(weekStart(addDays(dateKey(),7)),0)"),'다음 주 월요일',J(pg,"TASKS[SP71].due"))
+    J(pg,"(()=>{ui.mselOn=false;ui.msel=new Set();render()})()")
+    # 상점 정렬
+    J(pg,"C.shop71='desc';location.hash='shop'");pg.wait_for_timeout(500)
+    pr=J(pg,"[...document.querySelectorAll('#shopList .price')].map(e=>+e.textContent.replace(/[^\\d]/g,''))")
+    ok(pr==sorted(pr,reverse=True) and len(pr)>0,'상점 비싼 순',pr)
+    b.close()
+    # 폰 화면
+    b,pg=run(pw,W=390,H=844);closepops(pg);pg.wait_for_timeout(300)
+    J(pg,"""(()=>{const l=C.lists.find(l=>/Personal/.test(l.name));const p=newTask({title:'욕실 청소',due:dateKey(),list:l.id});saveTask(p);['변기','배수구','곰팡이'].forEach((n,i)=>{const k=newTask({title:n,list:l.id});k.parent=p.id;k.order=i;saveTask(k)});C.ui.tasks.sel='today';location.hash='tasks';render()})()""");pg.wait_for_timeout(700)
+    pg.screenshot(path=SP+'t71_m_tasks.png')
+    J(pg,"openTaskSheet(Object.values(TASKS).find(t=>t.title==='욕실 청소').id)");pg.wait_for_timeout(500)
+    pg.screenshot(path=SP+'t71_m_detail.png')
+    J(pg,"(()=>{const sc=$('sheetC');sc.scrollTop=sc.scrollHeight})()");pg.wait_for_timeout(200);pg.screenshot(path=SP+'t71_m_detail2.png')
+    J(pg,"closeSheet();openRt61('r-lethe')");pg.wait_for_timeout(500)
+    J(pg,"""(()=>{const r=C.routines.find(x=>x.id==='r-lethe');r.steps.forEach(s=>{if(/스트레칭|독서|음악/.test(stName61(s)))s.g71='gA'});save('config');redrawRt61()})()""");pg.wait_for_timeout(300)
+    pg.screenshot(path=SP+'t71_m_rt.png')
+    b.close()
+    b,pg=run(pw,W=1300,H=900);closepops(pg);pg.wait_for_timeout(300)
+    J(pg,"(()=>{const h=rtH62(C.routines.find(x=>x.id==='r-morning'),false);location.hash='tasks';render();setTimeout(()=>openTaskSheet(h.id),300)})()");pg.wait_for_timeout(1200)
+    pg.screenshot(path=SP+'t71_pc_rt.png')
+    b.close()
+    print('\n'.join(e for e in errs if 'TUNNEL' not in e and 'favicon' not in e)[:3000])
+    print('FAILS',len(FAILS),FAILS)

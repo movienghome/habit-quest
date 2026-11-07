@@ -1,0 +1,62 @@
+# v7.1 시험 2: 카드 보드 기본·칸 눌러 편집·타이머 안 씀·🍬 설명 · 묶인 할 일 끌기 · 태그 관리·하위 태그 · 폴더 · ⋯ 자세히·만들기 취소 · 복사
+exec(open('h61.py').read())
+J=lambda pg,x:pg.evaluate(x)
+SP='/tmp/claude-0/sp/'
+FAILS=[]
+def ok(c,msg,extra=''):
+    print(('PASS ' if c else 'FAIL ')+msg+(' · '+str(extra) if extra!='' else ''))
+    if not c:FAILS.append(msg)
+with sync_playwright() as pw:
+    b,pg=run(pw,W=1300,H=900);closepops(pg);pg.wait_for_timeout(300)
+    J(pg,"location.hash='edit';ui.edit='actions';render()");pg.wait_for_timeout(600)
+    ok(J(pg,"!!ui.aeBoard&&!!document.querySelector('.bchip')"),'편집 → 행동 = 보드가 기본')
+    nm=J(pg,"document.querySelector('.bchip [data-aedit]').dataset.aedit")
+    pg.locator('.bchip').first.scroll_into_view_if_needed();pg.wait_for_timeout(200);bb=pg.locator('.bchip').first.bounding_box();pg.mouse.click(bb['x']+bb['width']-8,bb['y']+bb['height']-6);pg.wait_for_timeout(400)
+    ok(J(pg,"(sheetCtx||{}).aedit")==nm,'카드 칸 눌러 편집',J(pg,"(sheetCtx||{}).aedit"))
+    ok(J(pg,"!!document.querySelector('[data-ae=\"tmode\"] option[value=\"none\"]')"),'타이머 안 씀 옵션')
+    ok(J(pg,"!!document.querySelector('.dd71one')&&!!document.querySelector('.dd71')"),'🍬 코스 설명',J(pg,"(document.querySelector('.dd71one')||{}).textContent"))
+    pg.screenshot(path=SP+'t71b_ae.png')
+    J(pg,"closeSheet()")
+    # 새 카드는 맨 위
+    J(pg,"ui.aeBoard=false;renderEdit()");pg.wait_for_timeout(300)
+    J(pg,"document.querySelector('[data-addrow=\"actions\"][data-type=\"good\"]').click()");pg.wait_for_timeout(400)
+    ok(J(pg,"C.actions[0].name")=='새 좋은 행동' and J(pg,"C.actions[0].gold")==0,'새 카드 맨 위',J(pg,"C.actions[0].name"))
+    J(pg,"closeSheet()")
+    # 묶인 할 일 끌기
+    J(pg,"""(()=>{const p=newTask({title:'욕실 청소',due:dateKey()});saveTask(p);['변기','배수구','곰팡이'].forEach((n,i)=>{const k=newTask({title:n});k.parent=p.id;k.order=i+1;saveTask(k)});C.ui.tasks.sel='today';location.hash='tasks';render()})()""");pg.wait_for_timeout(700)
+    ids=J(pg,"[...document.querySelectorAll('#tList .tkids .trow')].map(r=>TASKS[r.dataset.task].title)");print('kids',ids)
+    pg.locator('#tList .tkids .trow:has-text("곰팡이")').scroll_into_view_if_needed();a=pg.locator('#tList .tkids .trow:has-text("곰팡이")').bounding_box()
+    x0,y0=ctr(a);pg.mouse.move(x0,y0);pg.mouse.down();pg.mouse.move(x0+8,y0+8,steps=3);pg.wait_for_timeout(150)
+    t=pg.locator('#tList .tkids .trow:has-text("변기")').bounding_box();pg.mouse.move(*ctr(t,0.5,0.2),steps=12);pg.wait_for_timeout(100);t=pg.locator('#tList .tkids .trow:has-text("변기")').bounding_box();pg.mouse.move(*ctr(t,0.5,0.2),steps=4);pg.wait_for_timeout(100);pg.mouse.up();pg.wait_for_timeout(500)
+    ids2=J(pg,"[...document.querySelectorAll('#tList .tkids .trow')].map(r=>TASKS[r.dataset.task].title)")
+    ok(ids2[0]=='곰팡이','묶인 할 일 끌어서 순서',ids2)
+    # 태그·하위 태그·폴더
+    J(pg,"""(()=>{['집안일/청소','집안일/빨래','잡헌팅'].forEach((g,i)=>{const t=newTask({title:'태그 '+i,tags:[g],due:dateKey()});saveTask(t)});const l=C.lists.find(l=>/Project/.test(l.name));l.folder='작업';const l2=C.lists.find(l=>/Atelier/.test(l.name));l2.folder='작업';save('config');render()})()""");pg.wait_for_timeout(500)
+    ok(J(pg,"!!document.querySelector('#tSide [data-tsel=\"#집안일/청소\"]')"),'하위 태그 옆 목록')
+    J(pg,"C.ui.tasks.sel='#집안일';render()");pg.wait_for_timeout(300)
+    ok(J(pg,"document.querySelectorAll('#tList .trow').length")>=2,'상위 태그로 하위까지',J(pg,"document.querySelectorAll('#tList .trow').length"))
+    ok(J(pg,"!!document.querySelector('#tSide .fold.f71[data-tsel=\"f:작업\"]')"),'폴더 단추')
+    pg.screenshot(path=SP+'t71b_side.png')
+    J(pg,"tagSheet71()");pg.wait_for_timeout(300)
+    J(pg,"(()=>{const s=document.querySelector('[data-tg71l=\"잡헌팅\"]');s.value=C.lists.find(l=>/Project/.test(l.name)).id;s.dispatchEvent(new Event('change',{bubbles:true}));const a=document.querySelector('[data-tg71a=\"잡헌팅\"]');a.value='money';a.dispatchEvent(new Event('change',{bubbles:true}))})()");pg.wait_for_timeout(200)
+    pg.screenshot(path=SP+'t71b_tags.png')
+    J(pg,"closeSheet()")
+    t=json.loads(J(pg,"JSON.stringify(addTaskFrom('이력서 고치기 #잡헌팅',{}))"))
+    ok(J(pg,f"listName(TASKS['{t['id']}'].list)").find('Project')>=0 and J(pg,f"areaOfTask(TASKS['{t['id']}'])")=='money','태그 → 기본 목록·영역')
+    # 이름 바꾸기 (하위까지)
+    J(pg,"tg71Rename('집안일','집')");ok(J(pg,"Object.values(TASKS).some(t=>(t.tags||[]).includes('집/청소'))"),'상위 이름 바꾸면 하위도')
+    # ⋯ 자세히 → 만들기 취소
+    J(pg,"C.ui.tasks.sel='today';render()");pg.wait_for_timeout(300)
+    pg.fill('#tAdd','지울 할 일 내일');pg.click('form[data-taddform="tasks"] [data-tadd71]');pg.wait_for_timeout(700)
+    tid=J(pg,"(sheetCtx||{}).task");ok(tid and J(pg,f"TASKS['{tid}'].title")=='지울 할 일','자세히로 만들고 열기')
+    ok(J(pg,"!!document.querySelector('[data-t71=\"cancel\"]')"),'만들기 취소 단추')
+    pg.screenshot(path=SP+'t71b_new.png')
+    pg.click('[data-t71="cancel"]');pg.wait_for_timeout(300);ok(not J(pg,f"!!TASKS['{tid}']"),'만들기 취소')
+    # 복사
+    J(pg,"(()=>{const p=Object.values(TASKS).find(t=>t.title==='욕실 청소');copyTask71(p,false)})()");pg.wait_for_timeout(200)
+    ok(J(pg,"(()=>{const c=Object.values(TASKS).find(t=>t.title==='욕실 청소 (복사)');return c&&kidsOf(c.id).length})()")==3,'복사 (묶인 할 일까지)')
+    # 집중 우클릭
+    tt=J(pg,"Object.values(TASKS).find(t=>t.title==='변기').id");J(pg,f"focusToggle71(TASKS['{tt}'])");ok(J(pg,f"TASKS['{tt}'].tags.includes('집중')"),'집중 넣기')
+    b.close()
+    print('\n'.join(e for e in errs if 'TUNNEL' not in e and 'favicon' not in e)[:3000])
+    print('FAILS',len(FAILS),FAILS)
