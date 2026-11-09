@@ -62,7 +62,7 @@ addEventListener('click',e=>{const b=e.target.closest('[data-sk72]');if(!b)retur
 dndEnd=(function(prev){return function(x,y){KT72=null;try{const kind=DND.kind,id=DND.id,drop=DND.drop,el=DND.el,t=TASKS[id];
     if((kind==='task'||kind==='block')&&drop&&drop.date&&t){const gk=el&&el.dataset&&el.dataset.k72;
       if(span71(t)&&gk&&gk!==t.due&&gk>=t.due&&gk<=t.end71)drop.date=addDays(drop.date,-diffDays(gk,t.due));   // 잡은 날이 놓은 날에 오게 통째로
-      if(drop.type==='allday'&&t.time&&drop.date!==t.due)KT72={id,time:t.time,dur:t.dur}}   // 다른 날 종일 칸으로 옮겨도 시각은 그대로
+      /* v7.4: 종일 칸 = 시간표에서 빼기(다른 날 종일 칸이어도 시각 지움). 날짜만 바꾸는 'day' 놓기·월 칸은 시각 그대로 */}
   }catch(e){console.error(e)}
   const r=prev.apply(this,arguments);
   try{if(KT72){const t=TASKS[KT72.id];if(t&&!t.time){t.time=KT72.time;if(KT72.dur)t.dur=KT72.dur;saveTask(t);ui.calKeepScroll=true;render()}}}catch(e){}KT72=null;return r}})(dndEnd);

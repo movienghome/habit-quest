@@ -51,7 +51,13 @@ with sync_playwright() as pw:
     tt=J(pg,"(()=>{const t=newTask({title:'시각 72',due:dateKey(),time:'10:00',dur:90});saveTask(t);render();return t.id})()");pg.wait_for_timeout(300)
     J(pg,f"(()=>{{DND.kind='block';DND.id='{tt}';DND.el=document.querySelector('.blk[data-ctask=\"{tt}\"]');DND.drop={{type:'allday',date:addDays(dateKey(),1)}};dndEnd(0,0)}})()");pg.wait_for_timeout(300)
     r=json.loads(J(pg,f"JSON.stringify(TASKS['{tt}'])"))
-    ok(r['due']==J(pg,"addDays(dateKey(),1)") and r.get('time')=='10:00' and r.get('dur')==90,'다른 날 옮겨도 시각·소요 그대로',r)
+    # v7.4: 종일 칸 = 시간표에서 빼기 → 날짜는 옮겨지고 시각은 지워짐(소요는 그대로)
+    ok(r['due']==J(pg,"addDays(dateKey(),1)") and not r.get('time') and r.get('dur')==90,'다른 날 종일 칸에 올리면 시각만 지워짐(v7.4)',r)
+    # A10: 날짜만 바꾸는 놓기('day': 날짜 머리·월 칸)는 시각·소요 그대로
+    J(pg,f"(()=>{{const t=TASKS['{tt}'];t.due=dateKey();t.time='10:00';saveTask(t);render()}})()");pg.wait_for_timeout(300)
+    J(pg,f"(()=>{{DND.kind='block';DND.id='{tt}';DND.el=document.querySelector('.blk[data-ctask=\"{tt}\"]');DND.drop={{type:'day',date:addDays(dateKey(),1)}};dndEnd(0,0)}})()");pg.wait_for_timeout(300)
+    r=json.loads(J(pg,f"JSON.stringify(TASKS['{tt}'])"))
+    ok(r['due']==J(pg,"addDays(dateKey(),1)") and r.get('time')=='10:00' and r.get('dur')==90,'날짜만 옮기면 시각·소요 그대로',r)
     # A11: 방금 정한 날짜 고친 건 ☠ 아님 / 오래된 건 ☠ + 알림 단추
     f1=J(pg,"(()=>{const t=addTaskFrom('오늘 할 72',{});t.due=dateKey();saveTask(t);render();postpone(t,addDays(dateKey(),3));return t.id})()")
     ok(not J(pg,f"TASKS['{f1}'].skull"),'방금 정한 날짜 고침 → ☠ 없음',J(pg,f"TASKS['{f1}'].skull"))

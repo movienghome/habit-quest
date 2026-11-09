@@ -1,0 +1,12 @@
+/* v7.4 */
+.d64r.ok{opacity:1}
+.d64r.ok .no,.d64r.ok .nm,.d64r.ok .pt{opacity:.6}
+.d64r .u74{white-space:nowrap;padding:3px 10px}
+.rt74{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 6px;margin-left:4px;white-space:nowrap}
+.u74h{font:inherit;font-size:inherit;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline dotted}
+.sd62.u74s{background:none;border:0;padding:0;cursor:pointer;font:inherit;font-size:11px;font-weight:700;color:var(--good)}
+.tgall{max-height:var(--allh,118px)}
+.tgall.open{max-height:none}
+.alltog .n74{display:block;font-size:11px;font-weight:700;color:var(--accent);line-height:1.1}
+.tgall>div:first-child{align-self:start;position:sticky;top:0;padding-top:4px;place-items:start center}
+.alltog{line-height:1.25}
