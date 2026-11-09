@@ -19,7 +19,9 @@ def run(pw,W=1400,H=900,seed=None,store=None,pre=''):
     pg=ctx.new_page()
     pg.on('pageerror',lambda e:errs.append('PAGEERR '+str(e)+' '+(e.stack or '')[:600]))
     pg.on('console',lambda m:errs.append('CON '+m.text) if m.type=='error' else None)
-    pg.goto(URL);pg.wait_for_timeout(1500)
+    pg.goto(URL);pg.wait_for_timeout(2300)
+    # v7.3: 목업엔 기본 카드 '새벽 3시 넘어 잠'이 있어서 시작 2초 뒤 '늦게 잠' 고침 알림이 10초 떠요 → 시험이 가리지 않게 닫기
+    pg.evaluate("()=>{const t=document.getElementById('toast');if(t&&/늦게 잠/.test(t.innerText)){t.classList.remove('on');t.style.pointerEvents=''}}")
     return b,pg
 def closepops(pg):
     for i in range(6):

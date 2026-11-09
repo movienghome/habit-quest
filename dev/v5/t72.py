@@ -76,7 +76,7 @@ with sync_playwright() as pw:
     J(pg,"""(()=>{const a=C.actions.find(x=>x.type==='good');const d=today();const e1=actEntry(a,{}),e2=actEntry(a,{});e1.t='09:00';e2.t='09:01';commit(()=>{applyEntry(d,e1);applyEntry(d,e2)})})()""");pg.wait_for_timeout(300)
     nd=J(pg,"dups72(1).length");ok(nd>=1,'겹친 기록 찾음',nd)
     J(pg,"dupSheet72()");pg.wait_for_timeout(300);pg.screenshot(path=SP+'t72_dup.png')
-    pg.locator('#sheetC [data-dp72x]').first.click();pg.wait_for_timeout(400)
+    pg.locator('#sheetC [data-dp72x],#sheetC [data-dp73]').first.click();pg.wait_for_timeout(400)
     ok(J(pg,"dups72(1).length")==nd-1,'하나 지우기')
     J(pg,"closeSheet()")
     # A6: 루틴 단계 오늘 한 것은 목록에서 빠짐
@@ -109,7 +109,7 @@ with sync_playwright() as pw:
     if J(pg,"!!document.querySelector('[data-buy72]')"):pg.click('[data-buy72]');pg.wait_for_timeout(400)
     ok(J(pg,"P.gold")==g0,'골드 돌려받음',(g0,J(pg,"P.gold")))
     # A13: 늦게 잠
-    J(pg,"""(()=>{hr72=()=>9;C.actions.push({id:'bz72',name:'늦게 잠',type:'bad',area:'body',cond:-18,gold:0,xp:0});delete C.mig72sleep;render()})()""");pg.wait_for_timeout(400)
+    J(pg,"""(()=>{hr72=()=>9;C.actions=C.actions.filter(a=>a.id!=='b2');C.actions.push({id:'bz72',name:'늦게 잠',type:'bad',area:'body',cond:-18,gold:0,xp:0});delete C.mig72sleep;render()})()""");pg.wait_for_timeout(400)
     a=json.loads(J(pg,"JSON.stringify(C.actions.find(x=>x.id==='bz72'))"))
     ok(len(a.get('opts',[]))==5 and a.get('morn72')==1,'늦게 잠 카드 고침',a.get('opts'))
     J(pg,"(()=>{location.hash='log';render();const a=C.actions.find(x=>x.id==='bz72');openDoneSheet({a})})()");pg.wait_for_timeout(500)
