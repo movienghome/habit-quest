@@ -1,0 +1,7 @@
+/* v7.2 */
+.h72{margin-left:6px;font-size:12px;padding:2px 8px;white-space:nowrap}
+.cf72{margin:6px 0 2px;padding:6px 8px;border-radius:10px;background:var(--bad-soft,rgba(200,80,60,.1));display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.dp72{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.dp72 .row{flex-wrap:wrap;justify-content:flex-end}
+.hunt label.w72{margin:2px 0 4px;font-size:16px;gap:8px}
+.hunt label.w72 input{font-size:18px;padding:8px 10px}
