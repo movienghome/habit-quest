@@ -108,8 +108,9 @@ with sync_playwright() as pw:
     b,pg=run(pw,W=390,H=844);closepops(pg);pg.wait_for_timeout(300)
     J(pg,"(()=>{location.hash='tasks';C.ui.tasks.sel='today';render()})()");pg.wait_for_timeout(400)
     qt=J(pg,"(Object.values(TASKS).find(t=>t.title==='몸무게 재기'&&t.status===0)||{}).id")
-    if qt and pg.locator(f'.trow[data-task="{qt}"]').locator('visible=true').count():
-        vis(pg,f'.trow[data-task="{qt}"] [data-tdone]').click();pg.wait_for_timeout(400)
+    QS=f'.trow[data-task="{qt}"] [data-tdone],.care76 [data-tdone="{qt}"]'   # v7.6: 일퀘 할 일은 목록 줄 대신 관리 줄 칩
+    if qt and pg.locator(QS).locator('visible=true').count():
+        vis(pg,QS).click();pg.wait_for_timeout(400)
         ok(J(pg,"!!$('w73in')") and J(pg,"location.hash")=='#tasks','몸무게 재기 일퀘 → 작은 창(화면 안 옮김)')
         pg.screenshot(path=SP+'t73_wsheet.png')
         pg.fill('#w73in','70.8');pg.press('#w73in','Enter');pg.wait_for_timeout(500);closepops(pg)

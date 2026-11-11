@@ -1,0 +1,34 @@
+/* v7.6 */
+.care76{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px;padding-top:7px;border-top:1px dashed var(--line)}
+.care76 .c76h{border:0;background:transparent;color:var(--ink);font:inherit;font-size:13px;font-weight:700;padding:3px 4px;cursor:pointer;border-radius:8px}
+.care76 .c76h small{font-weight:400}
+.care76 .c76h:hover,.care76 .c76h:focus-visible{background:var(--panel2)}
+.c76c{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:2px 9px 2px 3px;font-size:13px;max-width:100%;background:var(--panel)}
+.c76c .tchk{width:19px;height:19px;border-width:2px}
+.c76c .c76n{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:11em}
+.c76c .c76n small{color:var(--muted);font-size:11px}
+.c76c.late{border-style:dashed;border-color:var(--gold)}
+.c76c.q{background:transparent}
+.care76.hint,.care76.bar{font-size:13px;gap:8px}
+.care76.hint span,.care76.bar span{flex:1 1 180px}
+.care76.bar{border-top:0;border-bottom:1px dashed var(--line);margin:0 0 8px;padding:0 0 8px}
+.care76 .x{border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px}
+.c76l{display:flex;flex-direction:column;gap:2px}
+.c76r{display:flex;align-items:center;gap:8px;padding:6px 2px;border-bottom:1px solid var(--line)}
+.c76r .c76t{flex:1;min-width:0;cursor:pointer;display:flex;flex-direction:column}
+.c76r .c76t b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c76r .c76t small{color:var(--muted);font-size:12px}
+.c76r.late .c76t small{color:var(--ink);font-weight:600}
+.c76d{margin-top:8px}.c76d summary{cursor:pointer;font-size:13px;font-weight:700;padding:4px 0}
+.c76o{gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.st76{display:inline-flex;align-items:center;gap:6px}.st76 b{min-width:64px;text-align:center}
+.bud76{display:block;margin:1px auto 0;border:0;background:transparent;color:var(--muted);font:inherit;font-family:var(--mono);font-size:11.5px;line-height:1.15;padding:1px 3px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.bud76 small{font-size:9.5px;opacity:.8}
+.bud76.over{color:var(--bad);font-weight:800;outline:1px dashed var(--bad)}
+.bud76:hover,.bud76:focus-visible{background:var(--panel2)}
+.cchip.cb76{text-align:center}
+.n76{font-family:var(--mono)}
+#t76cal[hidden],#c76tasks[hidden]{display:none}
+.c76g{font-size:13px;font-weight:700;margin:10px 0 2px}
+#t76cal.chipbtn{border-style:dashed;color:var(--ink)}
+@media(max-width:600px){.c76c .c76n{max-width:8em}}

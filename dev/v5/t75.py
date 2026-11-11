@@ -222,7 +222,7 @@ with sync_playwright() as pw:
 
     # ================= 5) 폰 캘린더 길이 손잡이 =================
     b,pg=run(pw,W=400,H=820,pre="window.__coarse75=1;");closepops(pg);pg.wait_for_timeout(300)
-    tid=J(pg,"(()=>{const t=newTask({title:'블록 시험',list:'inbox'});t.due=dateKey();t.time='10:00';t.dur=60;saveTask(t);location.hash='cal';render();return t.id})()");pg.wait_for_timeout(700)
+    tid=J(pg,"(()=>{const t=newTask({title:'블록 시험',list:'inbox'});t.due=midKey68();t.time='10:00';t.dur=60;saveTask(t);location.hash='cal';render();return t.id})()");pg.wait_for_timeout(700)
     if not cnt(pg,'[data-calmode="1day"]'):pg.locator('button',has_text='▾').locator('visible=true').first.click();pg.wait_for_timeout(300)
     clk(pg,'[data-calmode="1day"]',800) or clk(pg,'#m61 [data-m61="0"],[role=menuitem][data-m61="0"]',800)
     J(pg,f"(()=>{{const b=document.querySelector('.blk[data-ctask=\"{tid}\"]');if(b)b.scrollIntoView({{block:'center'}})}})()");pg.wait_for_timeout(300)
