@@ -191,9 +191,39 @@ def t_b5(pg,T=''):
     vis(pg,'#tAdd').fill('새 할 일 하나');vis(pg,'#tAdd').press('Enter');pg.wait_for_timeout(600)
     ok(J(pg,"Object.values(TASKS).some(t=>t.title==='새 할 일 하나')"),T+'Enter = 할 일 추가 그대로')
 
+def t_b6(pg,T=''):
+    if T:
+        ok(True,T+'B6은 PC 전용(폰은 사이드바가 없음)');return
+    closesheet(pg);gotasks(pg)
+    ok(cnt(pg,'#sb79')==1 and cnt(pg,'#tSide')==1,T+'할 일 화면에 사이드바 접기 단추')
+    x0=J(pg,"document.getElementById('tList').getBoundingClientRect().x")
+    clk(pg,'#sb79',300)
+    ok(J(pg,"!!C.sbOff79") and cnt(pg,'#tSide')==0 and cnt(pg,'#tChips')==1,T+'접으면 사이드바 숨고 위쪽 칩 줄이 보임')
+    x1=J(pg,"document.getElementById('tList').getBoundingClientRect().x")
+    ok(x1<x0-100,T+'목록이 왼쪽으로 넓어짐',[x0,x1])
+    ok(cnt(pg,'#tChips [data-tsel]')>=5,T+'칩으로 목록 바꿀 수 있음')
+    clk(pg,'#tChips [data-tsel="tomorrow"]',500)
+    ok(J(pg,"C.ui.tasks.sel")=='tomorrow',T+'접은 채 내일 목록으로 바꿈')
+    J(pg,"location.hash='home'");pg.wait_for_timeout(300);gotasks(pg)
+    ok(cnt(pg,'#tSide')==0,T+'다른 화면 갔다 와도 접힌 채(저장)')
+    clk(pg,'#sb79',300)
+    ok(not J(pg,"!!C.sbOff79") and cnt(pg,'#tSide')==1,T+'다시 누르면 펴짐')
+    # 왼쪽 메뉴(레일) 끌어서 순서
+    keys=lambda:J(pg,"[...document.querySelectorAll('#side>a[href^=\"#\"]')].filter(a=>a.offsetParent&&a.getAttribute('href')!=='#more').map(a=>a.getAttribute('href').slice(1))")
+    k0=keys();ok(len(k0)>=4,T+'레일 메뉴',k0[:6])
+    def bx(i):return J(pg,"(()=>{const a=[...document.querySelectorAll('#side>a[href^=\"#\"]')].filter(a=>a.offsetParent&&a.getAttribute('href')!=='#more')["+str(i)+"].getBoundingClientRect();return [a.x+a.width/2,a.y+a.height/2]})()")
+    a=bx(1);b3=bx(3);h0=J(pg,"location.hash")
+    pg.mouse.move(*a);pg.mouse.down();pg.mouse.move(a[0],a[1]+8,steps=3);pg.mouse.move(b3[0],b3[1]+4,steps=12);pg.wait_for_timeout(100);pg.mouse.up();pg.wait_for_timeout(500)
+    k1=keys()
+    ok(k1[0]==k0[0] and k1.index(k0[1])>1 and k1!=k0,T+'메뉴를 끌어 순서 바꿈',k1[:6])
+    ok(J(pg,"location.hash")==h0,T+'끈 뒤에 그 화면으로 이동하지 않음')
+    ok(J(pg,"C.navOrd79&&C.navOrd79.join()")==','.join(k1),T+'순서 저장(C.navOrd79)')
+    J(pg,"render()");pg.wait_for_timeout(400)
+    ok(keys()==k1,T+'다시 그려도 그 순서 그대로')
+
 def body(pg,phone=False):
     T='폰: ' if phone else ''
-    for f in (t_j10,t_b18,t_b19,t_b17,t_b12,t_b13,t_b5):
+    for f in (t_j10,t_b18,t_b19,t_b17,t_b12,t_b13,t_b5,t_b6):
         safe(lambda f=f:f(pg,T),T+f.__name__)
 
 with sync_playwright() as pw:

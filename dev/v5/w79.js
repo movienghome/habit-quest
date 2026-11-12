@@ -141,3 +141,29 @@ render=(function(prev){return function(){const x=prev.apply(this,arguments);try{
 addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-fin79]');if(!b)return;e.preventDefault();e.stopPropagation();const i=b.closest('form.tadd');const inp=i&&i.querySelector('input');if(inp)fin79(inp)},true);
 addEventListener('keydown',e=>{const T=e.target;if(!T||e.isComposing||e.keyCode===229||e.key!=='Enter'||!(e.ctrlKey||e.metaKey)||!T.id||!/^(htAdd|tAdd)$/.test(T.id))return;e.preventDefault();e.stopPropagation();fin79(T)},true);
 render=(function(prev){return function(){try{if(!C.mig79q){C.mig79q=1;C.ui.collapsed=C.ui.collapsed||{};C.ui.collapsed.quick=true;save('config')}}catch(e){console.error(e)}return prev.apply(this,arguments)}})(render);
+
+/* ---- B6: 사이드바 — 할 일 목록 사이드바 접기/펴기(C.sbOff79) · 왼쪽 메뉴(PC 레일) 끌어서 순서(C.navOrd79) ----
+   접으면 위쪽 칩 줄(#tChips: 스마트 목록 칩 + 목록 고르기)이 대신 보여요. 할 일 사이드바의 스마트 목록·목록은 이미 꾹 눌러 끌기로 순서가 바뀜(v5). */
+function sb79ui(){const lay=document.querySelector('[data-view="tasks"] .tlayout');if(!lay)return;
+  if(!$('sb79')){const h=$('tTitle');if(h)h.insertAdjacentHTML('beforebegin','<button type="button" class="ib sb79" id="sb79" aria-label="목록 사이드바 접기·펴기"></button>')}
+  lay.classList.toggle('sb79off',!!C.sbOff79);const b=$('sb79');if(b){b.textContent=C.sbOff79?'☰':'«';b.setAttribute('aria-pressed',String(!C.sbOff79));b.title=C.sbOff79?'목록 사이드바 펴기':'목록 사이드바 접기 (위쪽 칩·목록 고르기로 바꿔요)'}
+  document.querySelectorAll('#tSide [data-tsel][data-drag^="row:"]').forEach(x=>{if(!x.title&&!/^(l:|#)/.test(x.dataset.tsel))x.title='꾹 눌러 끌면 순서를 바꿀 수 있어요'})}
+render=(function(prev){return function(){const x=prev.apply(this,arguments);try{sb79ui()}catch(e){console.error(e)}return x}})(render);
+addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('#sb79');if(!b)return;e.preventDefault();e.stopPropagation();C.sbOff79=C.sbOff79?0:1;save('config');sb79ui()},true);
+function navKey79(a){return (a.getAttribute('href')||'').slice(1)}
+function navAs79(sd){return [...sd.querySelectorAll(':scope>a[href^="#"]')].filter(a=>navKey79(a)!=='more')}
+function navSort79(){const sd=$('side');if(!sd)return;const o=Array.isArray(C.navOrd79)?C.navOrd79:[],sep=sd.querySelector(':scope>.sep');if(!o.length||!sep)return;
+  const as=navAs79(sd),idx=a=>{const i=o.indexOf(navKey79(a));return i<0?1e6:i},pos=new Map(as.map((a,i)=>[a,i]));
+  as.slice().sort((a,b)=>(idx(a)-idx(b))||(pos.get(a)-pos.get(b))).forEach(a=>sep.before(a))}
+renderNav=(function(prev){return function(){const r=prev.apply(this,arguments);try{navSort79()}catch(e){console.error(e)}return r}})(renderNav);
+var ND79=null;
+addEventListener('dragstart',e=>{if(e.target&&e.target.closest&&e.target.closest('#side>a'))e.preventDefault()},true);
+addEventListener('pointerdown',e=>{const a=e.target&&e.target.closest&&e.target.closest('#side>a[href^="#"]');if(!a||e.pointerType!=='mouse'||e.button>0||navKey79(a)==='more')return;ND79={a,y:e.clientY,id:e.pointerId,on:false,last:null,sup:false}},true);
+addEventListener('pointermove',e=>{const d=ND79;if(!d||e.pointerId!==d.id)return;
+  if(!d.on){if(Math.abs(e.clientY-d.y)<6)return;d.on=true;d.a.classList.add('drag79')}
+  e.preventDefault();if(d.last!=null&&Math.abs(e.clientY-d.last)<8)return;
+  const sd=$('side'),o=navAs79(sd).find(a=>a!==d.a&&e.clientY>=a.getBoundingClientRect().top&&e.clientY<=a.getBoundingClientRect().bottom);if(!o)return;
+  if(d.a.compareDocumentPosition(o)&Node.DOCUMENT_POSITION_PRECEDING)o.before(d.a);else o.after(d.a);d.last=e.clientY},true);
+function ndEnd79(){const d=ND79;if(!d)return;d.a.classList.remove('drag79');if(!d.on){ND79=null;return}d.sup=true;const sd=$('side');if(sd){C.navOrd79=navAs79(sd).map(navKey79);save('config')}setTimeout(()=>{if(ND79===d)ND79=null},300)}
+addEventListener('pointerup',ndEnd79,true);addEventListener('pointercancel',ndEnd79,true);
+addEventListener('click',e=>{if(ND79&&ND79.sup&&e.target&&e.target.closest&&e.target.closest('#side')){e.preventDefault();e.stopPropagation();ND79=null}},true);

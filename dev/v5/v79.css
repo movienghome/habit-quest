@@ -40,3 +40,10 @@
 /* B5 한 일 단추 */
 form.tadd .in:has(>.fin79){grid-template-columns:minmax(0,1fr) auto auto auto}
 form.tadd .in .fin79{flex:none;white-space:nowrap;padding-left:9px;padding-right:9px}
+/* B6 사이드바 */
+.sb79{flex:none;width:auto;min-width:28px;padding:2px 8px;font-size:15px;line-height:1.2}
+@media (max-width:959px){.sb79{display:none}}
+.tlayout.sb79off>#tSide{display:none}
+@media (min-width:960px){.tlayout.sb79off{grid-template-columns:minmax(0,1fr)}.tlayout.sb79off .tchips.mob{display:flex}}
+body.split .tlayout.sb79off{grid-template-columns:var(--listw,minmax(360px,1fr)) 10px minmax(440px,1.4fr)}
+#side>a.drag79{outline:2px dashed var(--accent);opacity:.85;border-radius:8px}
