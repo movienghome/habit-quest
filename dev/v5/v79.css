@@ -37,3 +37,6 @@
 #sheetC .gr79{all:unset;cursor:grab;touch-action:none;color:var(--muted);font-size:11px;letter-spacing:-2px;text-align:center;user-select:none;padding:4px 0}
 #sheetC .gr79:focus-visible{outline:2px solid var(--accent);border-radius:4px}
 #sheetC .krow.drag79{outline:2px dashed var(--accent);opacity:.85;border-radius:6px}
+/* B5 한 일 단추 */
+form.tadd .in:has(>.fin79){grid-template-columns:minmax(0,1fr) auto auto auto}
+form.tadd .in .fin79{flex:none;white-space:nowrap;padding-left:9px;padding-right:9px}

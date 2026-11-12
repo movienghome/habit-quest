@@ -123,3 +123,21 @@ function kdEnd79(){const d=KD79;KD79=null;if(!d)return;d.row.classList.remove('d
   const kb=d.row.parentElement;if(!kb)return;[...kb.querySelectorAll('.krow.g79')].forEach((r,i)=>{const b=r.querySelector('[data-x56open]'),k=b&&TASKS[b.dataset.x56open];if(k&&k.ord79!==i){k.ord79=i;saveTask(k)}});
   try{render()}catch(x){}}
 addEventListener('pointerup',kdEnd79,true);addEventListener('pointercancel',kdEnd79,true);
+
+/* ---- B5: 할 일 추가 + '한 일' 기록 = 한 입력칸(홈 오늘·할 일 화면) ----
+   입력칸 옆 ✓ 한 일 단추 / Ctrl+Enter = 빠른 기록의 '✓ 했어요'와 같은 길(습관 이름이면 그 습관, 아니면 그냥 한 일). 기호(#태그 !! 등)는 떼고 이름만.
+   종류(용기·나쁜·행복)·크기를 바꾸려면 알림의 ✎ 또는 접어 둔 '빠른 기록' 칸. 빠른 기록 칸은 한 번만 접어 줌(C.mig79q). */
+function fin79(inp){const v=(inp.value||'').trim();if(!v){inp.focus();toast('무엇을 했는지 적어주세요');return}
+  let name=v;try{const p=parseQuick(v);if(p&&p.title&&p.title.trim())name=p.title.trim()}catch(e){}
+  const q=$('qName'),f=$('quickForm'),dn=f&&f.querySelector('button[value="done"]');if(!q||!f||!dn)return;
+  q.value=name;try{$('qType').value='good';$('qSize').value='m'}catch(e){}
+  f.requestSubmit(dn);
+  inp.value='';const pid={htAdd:'htParse',tAdd:'tParse'}[inp.id];if(pid&&$(pid))$(pid).innerHTML='';inp.focus()}
+function fin79ui(){document.querySelectorAll('form.tadd .in').forEach(w=>{const i=w.querySelector('input#htAdd,input#tAdd');if(!i||w.querySelector('[data-fin79]'))return;
+  const b=document.createElement('button');b.type='button';b.className='btn ghost sm fin79';b.dataset.fin79='1';b.textContent='✓';b.title='✓ 이미 한 일로 기록 (Ctrl+Enter) — 할 일 목록에는 안 남아요';b.setAttribute('aria-label','이미 한 일로 기록');
+  const sub=w.querySelector('button[type=submit]');sub?sub.before(b):w.appendChild(b);
+  if(!/Ctrl\+Enter/.test(i.title||''))i.title=(i.title?i.title+' · ':'')+'Ctrl+Enter = 이미 한 일로 기록'})}
+render=(function(prev){return function(){const x=prev.apply(this,arguments);try{fin79ui()}catch(e){console.error(e)}return x}})(render);
+addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-fin79]');if(!b)return;e.preventDefault();e.stopPropagation();const i=b.closest('form.tadd');const inp=i&&i.querySelector('input');if(inp)fin79(inp)},true);
+addEventListener('keydown',e=>{const T=e.target;if(!T||e.isComposing||e.keyCode===229||e.key!=='Enter'||!(e.ctrlKey||e.metaKey)||!T.id||!/^(htAdd|tAdd)$/.test(T.id))return;e.preventDefault();e.stopPropagation();fin79(T)},true);
+render=(function(prev){return function(){try{if(!C.mig79q){C.mig79q=1;C.ui.collapsed=C.ui.collapsed||{};C.ui.collapsed.quick=true;save('config')}}catch(e){console.error(e)}return prev.apply(this,arguments)}})(render);

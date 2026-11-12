@@ -139,6 +139,7 @@ with sync_playwright() as pw:
     ok(J(pg,"(()=>{const t=Object.values(TASKS).find(t=>t.title==='손톱 깎기');return !!t&&t.care76===1&&t.rep&&t.rep.f==='d'&&t.rep.i===10&&!!t.due})()"),'"손톱 깎기 %10" = 관리 · 10일마다(제목에서 %10 빠짐)',J(pg,"JSON.stringify(Object.values(TASKS).filter(t=>/손톱/.test(t.title)).map(t=>[t.title,t.rep,t.care76]))"))
     # 상세 칩 줄 🧽
     clk(pg,ROW(ids['plan'])+' .tt',600)
+    clk(pg,'#sheetC .more79',300)   # v7.9: 안 쓴 칩은 ＋ 더 안에
     ok(cnt(pg,f'#sheetC [data-c77t="{ids["plan"]}"]')==1,'할 일 상세 칩 줄에 🧽 관리')
     clk(pg,f'#sheetC [data-c77t="{ids["plan"]}"]',400)
     safe(lambda:(pg.locator('#m61 button',has_text='3일마다').first.click(),pg.wait_for_timeout(600)),'상세 → 3일 고르기')

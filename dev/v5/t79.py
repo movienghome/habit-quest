@@ -170,9 +170,30 @@ def t_b13(pg,T=''):
     # 목록(할 일 화면)의 묶음 아래 줄 순서도
     pg.screenshot(path=SP+('t79_b13_p.png' if T else 't79_b13.png'))
 
+def ents(pg):return J(pg,"(curDay().entries||[]).map(e=>e.name+'|'+e.kind)")
+def t_b5(pg,T=''):
+    closesheet(pg)
+    J(pg,"location.hash='home'");pg.wait_for_timeout(800);closepops(pg);notoast(pg)
+    ok(J(pg,"!!(C.ui.collapsed&&C.ui.collapsed.quick)") and J(pg,"document.querySelector('.hblock[data-hid=quick]').classList.contains('collapsed')"),T+'빠른 기록 칸은 접힘(한 곳으로)')
+    ok(cnt(pg,'#htAdd')==1 and cnt(pg,'form.tadd [data-fin79]')>=1,T+'홈 오늘 입력칸에 ✓ 한 일 단추')
+    n0=J(pg,"Object.keys(TASKS).length")
+    vis(pg,'#htAdd').fill('어항 청소');vis(pg,'form.tadd [data-fin79] >> nth=0').click() if False else J(pg,"document.querySelector('#htAdd').closest('form').querySelector('[data-fin79]').click()");pg.wait_for_timeout(700);closepops(pg)
+    e=ents(pg)
+    ok(any(x.startswith('어항 청소|') for x in e),T+'✓ 한 일 → 오늘 한 일 기록',e[-3:])
+    ok(J(pg,"Object.keys(TASKS).length")==n0 and J(pg,"document.getElementById('htAdd').value")=='',T+'…할 일은 안 생기고 입력칸은 비워짐')
+    notoast(pg)
+    # 할 일 화면: Ctrl+Enter, 기호는 떼고 이름만
+    gotasks(pg)
+    vis(pg,'#tAdd').fill('산책 #퀵 !!');vis(pg,'#tAdd').press('Control+Enter');pg.wait_for_timeout(700);closepops(pg)
+    e=ents(pg);ok(any(x.startswith('산책|') for x in e),T+'할 일 화면 Ctrl+Enter → 한 일(기호 뗀 이름)',e[-3:])
+    ok(not J(pg,"Object.values(TASKS).some(t=>/산책/.test(t.title)&&t.title.indexOf('#')>=0)"),T+'…할 일로는 안 들어감')
+    # 그냥 Enter는 할 일 추가 그대로
+    vis(pg,'#tAdd').fill('새 할 일 하나');vis(pg,'#tAdd').press('Enter');pg.wait_for_timeout(600)
+    ok(J(pg,"Object.values(TASKS).some(t=>t.title==='새 할 일 하나')"),T+'Enter = 할 일 추가 그대로')
+
 def body(pg,phone=False):
     T='폰: ' if phone else ''
-    for f in (t_j10,t_b18,t_b19,t_b17,t_b12,t_b13):
+    for f in (t_j10,t_b18,t_b19,t_b17,t_b12,t_b13,t_b5):
         safe(lambda f=f:f(pg,T),T+f.__name__)
 
 with sync_playwright() as pw:
