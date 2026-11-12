@@ -71,7 +71,7 @@ function renderCal(){
   if($('tgScroll')){$('tgScroll').scrollTop=keepY!=null&&ui.calKeepScroll?keepY:Math.max(0,yOf(Math.max(0,Math.min(nowMinutes(),20*60)-90))-(foldH()?FOLDB:0));ui.calKeepScroll=true}
   // 고른 날
   if(mode==='month'){const k=ui.calSel;const ts=tasksOn(k).sort(taskSorter('due'));const dn=doneOn(k);
-    $('calDay').innerHTML=`<div class="panel dayp"><div class="ptitle"><h2>${fmtD(k)} (${wdOf(k)}) · ${esc(dueLabel(k))}</h2><span class="small muted">${ts.length}개 남음${dn.length?' · '+dn.length+'개 끝':''}</span></div>
+    $('calDay').innerHTML=`<div class="panel dayp"><div class="ptitle"><h2>${fmtD(k)} (${wdOf(k)}) · ${esc(dueLabel(k))}</h2><span class="small muted">${ts.length}개 남음${dn.length?' · '+dn.length+'개 끝':''}</span><button class="ib add83" type="button" data-add83="${k}" title="이 날에 할 일 추가 (팝업)">＋ 추가</button></div>
       <form class="tadd" data-taddform="cal"><div class="in"><input id="calAdd" maxlength="160" placeholder="${fmtD(k)}에 할 일 추가 (3시 30분 #퀵…)" enterkeyhint="done" autocomplete="off"><button class="btn sm" type="submit">추가</button></div><div class="parse" id="calParse"></div></form>
       <div data-drop="day:${k}">${ts.map(t=>taskRow(t,{compact:true})).join('')||''}${dn.map(e=>`<div class="trow done"><span class="tchk">✓</span><span class="tb"><span class="tt">${esc(e.name)}</span><span class="tm"><span>${esc(e.t)}</span></span></span><span class="tx">+${e.xp||0}</span><span></span></div>`).join('')}${!ts.length&&!dn.length?'<div class="empty">이 날은 비어 있어요. 오른쪽(아래) 서랍에서 끌어다 놓아도 돼요.</div>':''}</div></div>`}
   else $('calDay').innerHTML='';

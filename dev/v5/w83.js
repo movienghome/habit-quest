@@ -68,3 +68,23 @@ addEventListener('wheel',e=>{const m=(C.ui.cal||{}).mode;if((m!=='1day'&&m!=='3d
     if(e.target.closest('.rz,.rz75,.allrz,.foldband'))return;const t=e.touches[0];sx=t.clientX;sy=t.clientY;st=Date.now()},{passive:true});
   addEventListener('touchend',e=>{if(!st)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy,ok=Date.now()-st<500&&Math.abs(dx)>50&&Math.abs(dy)<40&&Math.abs(dx)>Math.abs(dy)*1.6;st=0;
     if(!ok||(typeof DND!=='undefined'&&DND&&(DND.on||DND.pending)))return;calStep83(dx<0?1:-1)},{passive:true})}
+
+/* ---- C3) 캘린더 아래 큰 입력칸 → 작은 '＋ 추가' (팝업) · 빈 곳에 ＋ 힌트 ----
+   날짜 패널(월 보기 아래·dp64)의 입력 줄(form[data-taddform=cal])은 CSS로 접고, 제목 줄 '＋ 추가'가 날짜 추가 팝업(calAddDay)을 엶.
+   시간표 빈 칸·월 칸 누르기는 그대로 팝업(v5n·v5o). 마우스를 올리면 빈 곳에 ＋ 힌트(시간표: 30분 칸, 월: 칸 모서리).
+   N 키(캘린더 화면)도 팝업. 입력칸 #calAdd는 DOM에 남김(저장/복원·옛 코드 호환). */
+addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-add83]');if(!b)return;
+  e.preventDefault();e.stopPropagation();lastPt={x:e.clientX,y:e.clientY};calAddDay(b.dataset.add83||ui.calSel||dateKey())},true);
+addEventListener('keydown',e=>{if(e.key.toLowerCase()!=='n'||e.ctrlKey||e.metaKey||e.altKey||e.shiftKey||curView()!=='cal')return;
+  const t=e.target,typing=t&&(/^(input|textarea|select)$/i.test(t.tagName)||t.isContentEditable);if(typing)return;
+  if(document.getElementById('sheet')&&!document.getElementById('sheet').hidden&&sheetCtx)return;
+  setTimeout(()=>{if(!document.getElementById('cal58Add'))calAddDay(ui.calSel||dateKey())},10)});
+// 시간표 빈 곳 ＋ 힌트(마우스만)
+var PL83=null;
+addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;
+  const col=e.target.closest&&e.target.closest('.tgcol[data-drop^="col:"]');
+  if(!col||e.target.closest('.blk,.cchip,button,a,input')||(typeof DND!=='undefined'&&DND.on)||CAL57){if(PL83)PL83.hidden=true;return}
+  const r=col.getBoundingClientRect(),m=clamp(Math.floor(mOf(e.clientY-r.top)/30)*30,0,1410);
+  if(!PL83||!PL83.isConnected){PL83=document.createElement('div');PL83.className='plus83';PL83.setAttribute('aria-hidden','true')}
+  if(PL83.parentElement!==col)col.appendChild(PL83);PL83.hidden=false;PL83.style.top=yOf(m)+'px';PL83.style.height=Math.max(14,yOf(m+30)-yOf(m)-2)+'px';PL83.textContent='＋ '+hm(m)},{passive:true});
+document.addEventListener('pointerleave',()=>{if(PL83)PL83.hidden=true},true);

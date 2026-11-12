@@ -9,3 +9,9 @@
 .bar83[hidden]{display:none!important}
 body.dragging .bar83{pointer-events:none}
 @media (max-width:600px){.bar83{font-size:10px;padding:0 3px}}
+/* C3 — 날짜 패널 아래 큰 입력칸 접기 + 빈 곳 ＋ 힌트 */
+.tadd[data-taddform="cal"]{display:none!important}
+.ib.add83{font-size:12px;padding:2px 8px;white-space:nowrap}
+.plus83{position:absolute;left:1px;right:1px;z-index:1;pointer-events:none;border:1px dashed var(--line);border-radius:5px;color:var(--muted);font-size:11px;line-height:1.2;padding:1px 4px;background:color-mix(in srgb,var(--accent) 7%,transparent);overflow:hidden}
+.plus83[hidden]{display:none}
+@media (hover:hover){.mc:not(.open63):hover::before{content:"＋";position:absolute;right:3px;top:3px;font-size:11px;line-height:1;color:var(--muted);opacity:.7;pointer-events:none}}

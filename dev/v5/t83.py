@@ -94,11 +94,46 @@ def t_c2(pg,W):
         J(pg,sw+"([-90,50])");pg.wait_for_timeout(300)
         ok(J(pg,"ui.calAnchor")==a0,f'[{W}] {mode} 비스듬히 밀어도 안 움직임')
 
+def t_c3(pg,W):
+    gocal(pg,'month')
+    td=J(pg,"midKey68()")
+    # 날짜 눌러 패널 열기
+    c=J(pg,"""(k=>{const c=document.querySelector('#calMain .mc[data-calday="'+k+'"] .dn');const r=c.getBoundingClientRect();return [r.x+4,r.y+4]})(%s)"""%json.dumps(td))
+    pg.mouse.click(*c);pg.wait_for_timeout(250)
+    # 단일 클릭이 팝업(280ms 뒤)을 띄우므로 닫고 시작
+    pg.wait_for_timeout(500);J(pg,"(()=>{try{closeSheet()}catch(e){}})()");pg.wait_for_timeout(300)
+    J(pg,"(k=>{ui.cal63=true;ui.calSel=k;renderCal()})(%s)"%json.dumps(td));pg.wait_for_timeout(500)
+    ok(J(pg,"!!document.querySelector('#calMain .add83')"),f'[{W}] 날짜 패널에 작은 ＋ 추가가 있음')
+    ok(J(pg,"(()=>{const i=document.getElementById('calAdd');return !i||i.offsetParent===null||getComputedStyle(i.closest('form')).display==='none'})()"),f'[{W}] 아래 큰 입력칸은 접힘')
+    btn=pg.locator('#calMain .add83').first
+    btn.scroll_into_view_if_needed();btn.click();pg.wait_for_timeout(500)
+    ok(J(pg,"!!document.getElementById('cal58Add')"),f'[{W}] ＋ 추가 → 추가 팝업이 뜸')
+    pg.fill('#cal58Add','팝업으로 추가');pg.press('#cal58Add','Enter');pg.wait_for_timeout(600)
+    r=J(pg,"(k=>{const t=Object.values(TASKS).find(x=>x.title==='팝업으로 추가');return t?t.due:null})(%s)"%json.dumps(td))
+    ok(r==td,f'[{W}] 팝업에서 적은 일이 그 날짜로 들어감',r)
+    J(pg,"(()=>{try{closeSheet()}catch(e){}})()")
+    # N 키
+    J(pg,"document.activeElement&&document.activeElement.blur()");pg.keyboard.press('n');pg.wait_for_timeout(500)
+    ok(J(pg,"!!document.getElementById('cal58Add')"),f'[{W}] N 키 → 추가 팝업')
+    J(pg,"(()=>{try{closeSheet()}catch(e){}})()");pg.wait_for_timeout(300)
+    # 시간표 빈 곳
+    gocal(pg,'3day');vw=pg.viewport_size
+    if W>800:
+        x,y=vw['width']*0.5,vw['height']*0.55
+        pg.mouse.move(x-3,y-3);pg.mouse.move(x,y);pg.wait_for_timeout(200)
+        ok(J(pg,"(()=>{const p=document.querySelector('.plus83');return !!p&&!p.hidden})()"),f'[{W}] 시간표 빈 곳에 마우스를 올리면 ＋ 힌트')
+        pg.mouse.click(x,y);pg.wait_for_timeout(600)
+        ok(J(pg,"!!document.getElementById('cal57Add')"),f'[{W}] 시간표 빈 곳 누르면 추가 팝업')
+        J(pg,"(()=>{try{closeSheet()}catch(e){}})()");pg.wait_for_timeout(300)
+        # 블록 위에선 힌트 없음
+    errs_before=len(errs)
+
 with sync_playwright() as pw:
     for W,H in ((1400,900),(390,780)):
         b,pg=run(pw,W,H)
         safe(lambda:t_c1(pg,W),f'C1 {W}')
         safe(lambda:t_c2(pg,W),f'C2 {W}')
+        safe(lambda:t_c3(pg,W),f'C3 {W}')
         b.close()
 print('ERRS',[e for e in errs if 'favicon' not in e][:6])
 print('FAILS',len(FAILS),FAILS)

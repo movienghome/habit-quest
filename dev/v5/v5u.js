@@ -152,7 +152,7 @@ dp63=function(){
   const it=dItems64(k);
   const box=document.createElement('div');box.className='dp63 dp64';box.dataset.w=w;box.style.gridColumn='1/-1';box.style.setProperty('--col',i%7);
   box.innerHTML=`<div class="dp64c" data-drop="day:${k}"><div class="dp64h"><b>${+k.slice(5,7)}월 ${+k.slice(8)}일 ${wdOf(k)}</b><span class="tiny muted">${esc(dueLabel(k))}${it.n?` · ${it.n}개`:''}${it.dn?` · ${it.dn}개 끝`:''}</span><span style="flex:1"></span>
-      <button class="ib" type="button" data-x58day="${k}" title="하루 보기">하루 보기 ›</button><button class="ib x64" type="button" data-dp63x="1" aria-label="닫기" title="닫기">×</button></div>
+      <button class="ib add83" type="button" data-add83="${k}" title="이 날에 할 일 추가 (팝업)">＋ 추가</button><button class="ib" type="button" data-x58day="${k}" title="하루 보기">하루 보기 ›</button><button class="ib x64" type="button" data-dp63x="1" aria-label="닫기" title="닫기">×</button></div>
     <div class="dp64l">${it.html||'<div class="d64e">비어 있어요 · 아래에 적어서 추가해요</div>'}</div>
     <form class="tadd d64add" data-taddform="cal"><div class="in"><input id="calAdd" maxlength="160" placeholder="＋ 이 날에 추가 (3시 30분 #번개…)" enterkeyhint="done" autocomplete="off"></div><div class="parse" id="calParse"></div></form></div>`;
   after.after(box)};
