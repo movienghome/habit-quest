@@ -107,7 +107,7 @@ function calFilterSheet(){
   const f=C.ui.cal.filter||{};const tags={};openTasks().forEach(t=>(t.tags||[]).forEach(x=>tags[x]=(tags[x]||0)+1));
   const ch=(k,v,l)=>`<button class="chipbtn" data-cff="${k}" data-v="${esc(v)}" aria-pressed="${(f[k]||[]).includes(v)}">${l}</button>`;
   sheetCtx={cff:1};
-  openSheet(`<div class="sh"><h3>캘린더 거르기</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div><p class="help" style="margin:0">아무것도 안 고르면 전부 보여요. 고른 것만 캘린더에 나와요.</p>
+  openSheet(`<div class="sh"><h3>캘린더 보이기·숨기기</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div><p class="help" style="margin:0">아무것도 안 고르면 전부 보여요. 고른 것만 캘린더에 나와요.</p>
     <div><div class="small muted">영역</div><div class="row" style="gap:4px">${C.areas.map(a=>ch('areas',a.id,esc(a.name))).join('')}</div></div>
     <div><div class="small muted">목록</div><div class="row" style="gap:4px">${[{id:'inbox',name:'📥 받은함'},...C.lists.filter(l=>l.id!=='inbox')].map(l=>ch('lists',l.id,esc(l.name))).join('')}</div></div>
     ${Object.keys(tags).length?`<div><div class="small muted">태그</div><div class="row" style="gap:4px">${Object.keys(tags).sort().map(t=>ch('tags',t,'#'+esc(t))).join('')}</div></div>`:''}

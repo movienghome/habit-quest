@@ -12,7 +12,7 @@ function fName79(){const f=flt77(),n=[];
   f.tags.forEach(t=>n.push('#'+t));return n}
 function fMode79(){if(!fOn77())return '';const n=fName79(),s=n.length>3?n.slice(0,3).join('·')+' 외 '+(n.length-3):n.join('·');return flt77().inv?s+' 숨기는 중':s+'만 보는 중'}
 calFilterSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{const n=$('f77n'),m=fMode79();if(n&&m)n.innerHTML='<b>'+esc(m)+'</b> · '+n.innerHTML}catch(e){console.error(e)}return r}})(calFilterSheet);
-renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);try{const b=$('calFilterBtn');if(b){const m=fMode79(),t=m?'거르기 — '+m:'거르기 (캘린더에 보일 일 고르기)';b.title=t;b.setAttribute('aria-label',t)}}catch(e){console.error(e)}return r}})(renderCal);
+renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);try{const b=$('calFilterBtn');if(b){const m=fMode79(),t=m?'보이기·숨기기 — '+m:'보이기·숨기기 (캘린더에 보일 일 고르기)';b.title=t;b.setAttribute('aria-label',t)}}catch(e){console.error(e)}return r}})(renderCal);
 
 /* ---- B19: 열린 묶인 할 일·체크리스트 접기 ---- */
 function ts79(){const sc=$('sheetC'),t=TASKS[(sheetCtx||{}).task];if(!sc||!t||!$('tsTitle'))return;const op=o78(t);
@@ -194,7 +194,7 @@ dndEnd=(function(prev){return function(){const d=DND.drop,kind=DND.kind,id=DND.i
   toastAct(`${names}를 '${head.title}' 묶음에 넣었어요`,'되돌리기',()=>{snap.forEach(([i,p])=>{const k=TASKS[i];if(!k)return;if(p)k.parent=p;else delete k.parent;saveTask(k)});if(hp)head.parent=hp;saveTask(head);render()})}})(dndEnd);
 
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['거르기','캘린더 ⚲','캘린더에서 보일 일·숨길 일을 거르는 곳. 위에 어떤 모드인지 글로 떠요',()=>{location.hash='cal'},'캘린더 거르기 필터 숨기기 보이기 보일 숨길'],
+  ['보이기·숨기기','캘린더 ⚲','캘린더에서 고른 것을 보이거나 숨기는 곳. 위에 어떤 모드인지 글로 떠요',()=>{location.hash='cal'},'캘린더 거르기 필터 숨기기 보이기 보일 숨길'],
   ['상세 칩 늘리기·끌기','할 일 상세 칩 줄','＋ 더를 누르면 숨은 칩이 나오고, 펼친 채 끌면 순서가 바뀌어요',()=>{location.hash='tasks'},'칩 순서 더 접기 상세 관리'],
   ['메모 목록 줄','할 일 상세 메모','- [ ] 줄은 체크, - 줄은 점. ↑↓로 순서, ↗로 묶인 할 일로 빼기',()=>{location.hash='tasks'},'메모 체크리스트 목록 체크박스'],
   ['끌어서 묶기','할 일 목록','다른 할 일 줄 가운데에 놓으면 그 밑으로 묶임(되돌리기 있음)',()=>{location.hash='tasks'},'묶기 하위 끌기 드래그 묶음 아래'],

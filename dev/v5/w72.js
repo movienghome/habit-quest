@@ -32,15 +32,15 @@ renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);t
   if(ks.size)openTasks().forEach(t=>{if(!t.due||calPass(t))return;if(spanDays71(t).some(k=>ks.has(k)))hid.push(t)});
   const bar=document.querySelector('#calPane .calbar2');if(bar){let b=bar.querySelector('.h72');
     if(!hid.length){if(b)b.remove()}else{if(!b){b=document.createElement('button');b.type='button';b.className='chipbtn h72';$('calTitle').insertAdjacentElement('afterend',b)}
-      b.textContent=`🙈 ${hid.length}개 숨김`;b.title='거르기 설정 때문에 안 보이는 일정: '+hid.slice(0,8).map(t=>t.title).join(', ')+(hid.length>8?' …':'')+' · 눌러서 보기'}}
+      b.textContent=`🙈 ${hid.length}개 숨김`;b.title='보이기·숨기기 설정 때문에 안 보이는 일정: '+hid.slice(0,8).map(t=>t.title).join(', ')+(hid.length>8?' …':'')+' · 눌러서 보기'}}
   }catch(e){console.error(e)}return r}})(renderCal);
 addEventListener('click',e=>{const b=e.target.closest('.h72');if(!b)return;e.preventDefault();e.stopPropagation();calFilterSheet()},true);
 // 할 일 상세: 캘린더에 안 보이면 왜 그런지 + 바로 보이게
 drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{
   const sc=$('sheetC'),t=TASKS[(sheetCtx||{}).task];if(!sc||!t||!$('tsTitle')||sc.querySelector('.cf72'))return r;
-  if(t.due&&t.status===0&&calBases72().some(c=>!passWith72(c,t))){const ch=sc.querySelector('.tchips');if(ch)ch.insertAdjacentHTML('afterend',`<div class="cf72 small">🙈 캘린더 '거르기' 설정 때문에 안 보여요 <button type="button" class="chipbtn" data-cf72="${t.id}">보이게 하기</button></div>`)}
+  if(t.due&&t.status===0&&calBases72().some(c=>!passWith72(c,t))){const ch=sc.querySelector('.tchips');if(ch)ch.insertAdjacentHTML('afterend',`<div class="cf72 small">🙈 캘린더 '보이기·숨기기' 설정 때문에 안 보여요 <button type="button" class="chipbtn" data-cf72="${t.id}">보이게 하기</button></div>`)}
   }catch(e){console.error(e)}return r}})(drawTaskSheet);
-addEventListener('click',e=>{const b=e.target.closest('[data-cf72]');if(!b)return;e.preventDefault();e.stopPropagation();const t=TASKS[b.dataset.cf72];if(!t)return;calUnhide72(t);b.closest('.cf72').remove();ui.calKeepScroll=true;render();toast('캘린더 거르기를 고쳐서 이제 보여요')},true);
+addEventListener('click',e=>{const b=e.target.closest('[data-cf72]');if(!b)return;e.preventDefault();e.stopPropagation();const t=TASKS[b.dataset.cf72];if(!t)return;calUnhide72(t);b.closest('.cf72').remove();ui.calKeepScroll=true;render();toast('캘린더 보이기·숨기기 설정을 고쳐서 이제 보여요')},true);
 
 /* ---- 2) 날짜를 옮겨도 시각·소요·여러 날 길이 그대로 (A3·A10) · 고친 날짜는 ☠ 아님 (A11) ----
    saveTask 직전 값(SN72)과 비교: 시작일이 바뀌고 끝나는 날은 그대로면 끝나는 날도 같이 옮겨요. */
@@ -170,4 +170,4 @@ applyEntry=(function(prev){return function(day,e){let fix=false;
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['🧹 겹친 기록 찾기','기능 지도 · (겹친 게 있으면 시작할 때 알림)','같은 할 일이 같은 날 두 번 · 같은 카드가 3분 안에 두 번 → 하나 지우기',()=>dupSheet72(),'중복 두번 겹침 기록 정리'],
   ['📝 여기까지 기록','타이머 → 그만 → 여기까지 한 만큼 기록','다 못 했어도 한 시간만큼 점수(절반 비율) · 할 일은 남아요',()=>{},'타이머 부분 중간 그만'],
-  ['🙈 캘린더 숨김','캘린더 제목 옆 🙈 · 할 일 상세','거르기 설정 때문에 안 보이는 일정 알려 주기 · 바로 보이게',()=>{location.hash='cal'},'캘린더 안보임 거르기 필터']])}})(F67);
+  ['🙈 캘린더 숨김','캘린더 제목 옆 🙈 · 할 일 상세','보이기·숨기기 설정 때문에 안 보이는 일정 알려 주기 · 바로 보이게',()=>{location.hash='cal'},'캘린더 안보임 거르기 필터']])}})(F67);

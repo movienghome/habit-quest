@@ -33,10 +33,10 @@ def t_a3(pg,T=''):
     mk(pg,'거르기 일',{'due':J(pg,"midKey68()")})
     J(pg,"location.hash='cal'");pg.wait_for_timeout(800);closepops(pg);notoast(pg)
     ttl=J(pg,"document.getElementById('calFilterBtn').title")
-    ok('거르기' in ttl and '보일 것' not in ttl and '숨길 것' not in ttl,T+'⚲ 단추 설명 = 거르기',ttl)
+    ok('보이기·숨기기' in ttl and '보일 것' not in ttl and '숨길 것' not in ttl,T+'⚲ 단추 설명 = 보이기·숨기기(v8.2)',ttl)
     clk(pg,'#calFilterBtn',500)
     h=vis(pg,'#sheetC h3').inner_text() if cnt(pg,'#sheetC h3') else ''
-    ok('거르기' in h and '보일 것' not in h,T+'거르기 창 제목',h)
+    ok('보이기·숨기기' in h and '보일 것' not in h,T+'창 제목 = 보이기·숨기기(v8.2)',h)
     closesheet(pg)
     # 빌드 안 모든 글자에 '보일 것 / 숨길 것'이 남지 않았나(도움말 이전 버전 카드 제외)
     left=J(pg,"(()=>{const s=document.documentElement.outerHTML;const m=s.match(/.{20}(보일 것 ?\\/ ?숨길 것).{20}/g)||[];return m.filter(x=>!/이름만 바꿨어요|거르기가 하나로|라고 부르던 걸|J10[)]/.test(x)).slice(0,5)})()")

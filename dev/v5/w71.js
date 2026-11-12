@@ -202,7 +202,8 @@ drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,argument
     sz.innerHTML=t.px?'✎ 직접 정한 점수':effSet71(t)?esc(ef[1]):'📏 크기';sz.classList.toggle('off',!effSet71(t)&&!t.px);sz.title='크기 = 점수(✨XP·🔋컨디션). 안 정하면 기본 점수 ✨'+b.xp}
   else if(sz&&t.aid){sz.innerHTML=`✨ 카드 점수${(+t.mul71||1)!==1?' ×'+t.mul71:''}`;sz.title='카드 점수 · 이 할 일만 배수로 더 줄 수 있어요'}
   // 칩: 용기 따로
-  if(!sc.querySelector('[data-t71="brave"]')&&!t.aid&&!t.rid&&sz){const z=t.brave?(C.courageSizes.find(x=>x.id===(t.bsz71||({quick:'s',mid:'m',heavy:'l'})[effortOf(t)]))||C.courageSizes[1]):null;
+  // v8.2: 카드로 이어진 할 일도 카드에 용기가 없으면 이 칩(용기는 해 보고 나서 생기기도 함 — 끝낸 뒤에 골라도 방금 기록에 붙음, w82)
+  if(!sc.querySelector('[data-t71="brave"]')&&!t.rid&&!(t.aid&&((C.actions.find(x=>x.id===t.aid)||{}).brave))&&sz){const z=t.brave?(C.courageSizes.find(x=>x.id===(t.bsz71||({quick:'s',mid:'m',heavy:'l'})[effortOf(t)]))||C.courageSizes[1]):null;
     sz.insertAdjacentHTML('afterend',`<button type="button" class="tch ${t.brave?'':'off'}" data-t71="brave" title="용기가 드는 일이면 용기 점수 (크기와 따로)">⚔️ ${t.brave?esc((z&&z.name)||'용기'):'용기'}</button>`)}
   // v8.1: 카드로 이어진 할 일은 용기가 카드(a.brave)에 있음 → 칩이 없어서 어떤 할 일엔 보이고 어떤 건 안 보이던 것. 읽기 칩(누르면 카드 편집)
   if(!sc.querySelector('[data-k79="brave"],[data-t71="brave"]')&&t.aid&&sz){const ca=C.actions.find(x=>x.id===t.aid);if(ca&&ca.brave){const z=(typeof braveSize==='function')?braveSize(ca):null;
