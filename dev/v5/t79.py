@@ -22,6 +22,7 @@ def menu(pg,txt,w=500):
     m.first.click();pg.wait_for_timeout(w);return True
 def mk(pg,title,o=None):
     return J(pg,"((title,o)=>{const t=newTask({title,list:(o||{}).list});Object.assign(t,o||{});saveTask(t);return t.id})("+json.dumps(title)+","+json.dumps(o or {})+")")
+def closesheet(pg):J(pg,"(()=>{try{closeSheet()}catch(e){}})()");pg.wait_for_timeout(300)
 def gotasks(pg):
     J(pg,"(()=>{location.hash='tasks';C.ui.tasks.sel='all';save('config');render()})()");pg.wait_for_timeout(700);closepops(pg);notoast(pg)
 def opensheet(pg,tid):
@@ -85,9 +86,46 @@ def t_b19(pg,T=''):
     ok(cnt(pg,'#sheetC [data-k78]')==1,T+'묶인 할 일 있으면 v7.8 접힘 토글 그대로')
     ok(cnt(pg,'#sheetC [data-c79="kids"]')==0,T+'…이때는 접기 단추 중복 없음')
 
+def vkeys(pg):return J(pg,"[...document.querySelectorAll('#sheetC .tchips [data-k79]')].filter(e=>!e.classList.contains('hid78')).map(e=>e.dataset.k79)")
+def t_b17(pg,T=''):
+    closesheet(pg);tid=mk(pg,'칩 시험',{'due':J(pg,"midKey68()")});gotasks(pg);opensheet(pg,tid)
+    k=vkeys(pg)
+    ok(k==['when','list','prio','area'],T+'새 할 일: 날짜·목록·중요도·영역만 보임',k)
+    ok(cnt(pg,'#sheetC .more79')==1 and '＋ 더' in vis(pg,'#sheetC .more79').inner_text(),T+'＋ 더 단추',vis(pg,'#sheetC .more79').inner_text() if cnt(pg,'#sheetC .more79') else '')
+    ok(J(pg,"(()=>{const c=document.querySelector('#sheetC .tchips');return c.scrollWidth<=c.clientWidth+2})()"),T+'접힌 칩 줄은 옆으로 안 넘침')
+    clk(pg,'#sheetC .more79',300)
+    k=vkeys(pg);ok(len(k)>=9 and cnt(pg,'#sheetC .div79')==1,T+'＋ 더 → 전부 + 구분선',k)
+    ok('－ 접기' in vis(pg,'#sheetC .more79').inner_text(),T+'단추가 접기로')
+    # 태그 칩을 구분선 앞(영역 칩 뒤)으로 끌기 = 고정
+    def box(sel):return J(pg,"(()=>{const r=document.querySelector('"+sel+"').getBoundingClientRect();return [r.x,r.y,r.width,r.height]})()")
+    a=box('#sheetC .tchips [data-k79="tags"]');z=box('#sheetC .tchips [data-k79="area"]')
+    pg.mouse.move(a[0]+a[2]/2,a[1]+a[3]/2);pg.mouse.down();pg.mouse.move(a[0]+a[2]/2+8,a[1]+a[3]/2+3,steps=3)
+    pg.mouse.move(z[0]+z[2]*0.85,z[1]+z[3]/2,steps=10);pg.wait_for_timeout(100);pg.mouse.up();pg.wait_for_timeout(450)
+    o=J(pg,"C.chipOrd79")
+    ok(o and o.index('tags')<o.index('|'),T+'태그 칩을 구분선 앞으로 끌면 고정(저장)',o)
+    ok(cnt(pg,'#sheetC .tpanel[data-p="tags"]:not([hidden])')==0,T+'끈 뒤 태그 칸이 열리지 않음(클릭 막힘)')
+    clk(pg,'#sheetC .more79',300)
+    ok('tags' in vkeys(pg) and 'card' not in vkeys(pg),T+'접으면 고정한 태그는 보이고 카드는 숨음',vkeys(pg))
+    # 다른 새 할 일에서도 그대로
+    closesheet(pg);tid2=mk(pg,'칩 시험 둘',{'due':J(pg,"midKey68()")});gotasks(pg);opensheet(pg,tid2)
+    ok('tags' in vkeys(pg),T+'다른 할 일 상세에서도 태그 칩 고정')
+    # 값이 있으면 숨김 구역이어도 보임: 타이머 목표 넣기
+    closesheet(pg);J(pg,f"(()=>{{const t=TASKS['{tid2}'];t.dur=30;saveTask(t);render()}})()");pg.wait_for_timeout(400);opensheet(pg,tid2)
+    ok('timer' in vkeys(pg),T+'값이 있는 칩(타이머)은 숨김 구역이어도 보임',vkeys(pg))
+    # 다시 숨김 구역으로
+    clk(pg,'#sheetC .more79',300)
+    a=box('#sheetC .tchips [data-k79="tags"]');z=box('#sheetC .tchips .div79')
+    pg.mouse.move(a[0]+a[2]/2,a[1]+a[3]/2);pg.mouse.down();pg.mouse.move(a[0]+a[2]/2+8,a[1]+a[3]/2+3,steps=3)
+    pg.mouse.move(z[0]+z[2]*0.8,z[1]+z[3]/2,steps=10);pg.wait_for_timeout(100);pg.mouse.up();pg.wait_for_timeout(450)
+    o=J(pg,"C.chipOrd79");ok(o and o.index('tags')>o.index('|'),T+'구분선 뒤로 끌면 다시 숨김 구역',o)
+    # 칩 눌러 칸 열기는 그대로 (날짜)
+    clk(pg,'#sheetC .more79',300)
+    clk(pg,'#sheetC .tchips [data-x56panel="when"]',300)
+    ok(cnt(pg,'#sheetC #tsDue')==1,T+'날짜 칩 눌러 칸 열기 그대로')
+
 def body(pg,phone=False):
     T='폰: ' if phone else ''
-    for f in (t_j10,t_b18,t_b19):
+    for f in (t_j10,t_b18,t_b19,t_b17):
         safe(lambda f=f:f(pg,T),T+f.__name__)
 
 with sync_playwright() as pw:

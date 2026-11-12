@@ -9,3 +9,9 @@
 #sheetC .cl79:hover,#sheetC .cl79:focus-visible{color:var(--ink);outline:1px solid var(--line)}
 #sheetC .box71.ck71.fold78>*:not(.kh78){display:none!important}
 #sheetC .box71.ck71.fold78{padding:6px 10px}
+/* B17·B11 칩 줄 */
+#sheetC .tchips.e79{flex-wrap:wrap;overflow:visible}
+#sheetC .tchips.e79 [data-k79]{cursor:grab;touch-action:none;user-select:none}
+#sheetC .tchips .drag79{outline:2px dashed var(--accent);opacity:.85}
+#sheetC .tchips .div79{align-self:center;font-size:11px;color:var(--muted);white-space:nowrap;padding:0 2px}
+#sheetC .tchips .more79{flex:none;border-style:dashed;background:transparent;color:var(--muted)}
