@@ -1,0 +1,11 @@
+/* v7.9: B 둘째 조각 */
+/* B18 타임테이블 날짜 칸 한 줄 */
+.tghead>div{padding:2px 2px}
+.tghead .dh{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:0 5px}
+.tghead .dh b{display:inline;font-size:14px}
+.tghead .dh .bud76{display:inline-block;margin:0;font-size:10.5px;padding:0 3px}
+/* B19 접기 단추 */
+#sheetC .cl79{all:unset;cursor:pointer;float:right;font-size:12px;color:var(--muted);padding:0 4px;border-radius:6px}
+#sheetC .cl79:hover,#sheetC .cl79:focus-visible{color:var(--ink);outline:1px solid var(--line)}
+#sheetC .box71.ck71.fold78>*:not(.kh78){display:none!important}
+#sheetC .box71.ck71.fold78{padding:6px 10px}

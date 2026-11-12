@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v7.8</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v7.9</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -1815,6 +1815,18 @@ body:not(.split):not(.wideview) .wrap{width:100%;box-sizing:border-box}
 #sheetC .tpanel.w78 .duedl>label{min-width:0}
 #sheetC .tpanel.w78 .duedl .inx{min-width:0}
 #sheetC .tpanel.w78 .duedl input[type=date]{min-width:0;width:100%}
+
+/* v7.9: B 둘째 조각 */
+/* B18 타임테이블 날짜 칸 한 줄 */
+.tghead>div{padding:2px 2px}
+.tghead .dh{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:0 5px}
+.tghead .dh b{display:inline;font-size:14px}
+.tghead .dh .bud76{display:inline-block;margin:0;font-size:10.5px;padding:0 3px}
+/* B19 접기 단추 */
+#sheetC .cl79{all:unset;cursor:pointer;float:right;font-size:12px;color:var(--muted);padding:0 4px;border-radius:6px}
+#sheetC .cl79:hover,#sheetC .cl79:focus-visible{color:var(--ink);outline:1px solid var(--line)}
+#sheetC .box71.ck71.fold78>*:not(.kh78){display:none!important}
+#sheetC .box71.ck71.fold78{padding:6px 10px}
 </style>
 
 <header class="hud" id="hud">
@@ -7881,7 +7893,7 @@ addEventListener('click',e=>{const b=e.target.closest('#cal62v,#cal62m');if(!b)r
   const col=v=>()=>{const s=$('cal57Color');if(s){s.value=v;s.dispatchEvent(new Event('change',{bubbles:true}))}};
   menu61(x,y,'캘린더 설정',[{l:(!cs.color?'● ':'○ ')+'색: 중요도',f:col('')},{l:(cs.color==='area'?'● ':'○ ')+'색: 영역',f:col('area')},{l:(cs.color==='list'?'● ':'○ ')+'표시: 목록',f:col('list')},'-',
     {l:(cs.actual!==false?'☑':'☐')+' 한 일 기록 겹쳐 보기 (주·일)',f:()=>{const c=$('calActual');c.checked=!c.checked;c.dispatchEvent(new Event('change',{bubbles:true}))}},
-    {l:'📥 서랍 (끌어 쓰기)',f:()=>$('calTrayBtn').click()},{l:'⚲ 거르기',f:()=>$('calFilterBtn').click()},{l:'? 도움말',f:()=>{const h=document.querySelector('[data-calhelp]');h&&h.click()}},'-',{l:'🏠 홈 (캐릭터)',f:()=>{location.hash='home'}}])},true);
+    {l:'📥 서랍 (끌어 쓰기)',f:()=>$('calTrayBtn').click()},{l:'⚲ 보일 것 / 숨길 것',f:()=>$('calFilterBtn').click()},{l:'? 도움말',f:()=>{const h=document.querySelector('[data-calhelp]');h&&h.click()}},'-',{l:'🏠 홈 (캐릭터)',f:()=>{location.hash='home'}}])},true);
 // 폰 월 보기: 옆으로 밀어 달 넘기기
 {let sx=0,sy=0,st=0;addEventListener('touchstart',e=>{if(!document.body.classList.contains('cal62')||!e.target.closest('#calMain .mgrid'))return;const t=e.touches[0];sx=t.clientX;sy=t.clientY;st=Date.now()},{passive:true});
   addEventListener('touchend',e=>{if(!st||!document.body.classList.contains('cal62'))return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;const ok=Date.now()-st<600&&Math.abs(dx)>60&&Math.abs(dy)<45;st=0;if(!ok||(typeof dragS!=='undefined'&&dragS))return;const b=document.querySelector(`[data-calnav="${dx<0?1:-1}"]`);b&&b.click()},{passive:true})}
@@ -10545,15 +10557,15 @@ renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);t
   if(ks.size)openTasks().forEach(t=>{if(!t.due||calPass(t))return;if(spanDays71(t).some(k=>ks.has(k)))hid.push(t)});
   const bar=document.querySelector('#calPane .calbar2');if(bar){let b=bar.querySelector('.h72');
     if(!hid.length){if(b)b.remove()}else{if(!b){b=document.createElement('button');b.type='button';b.className='chipbtn h72';$('calTitle').insertAdjacentElement('afterend',b)}
-      b.textContent=`🙈 ${hid.length}개 숨김`;b.title='캘린더 거르기 때문에 안 보이는 일정: '+hid.slice(0,8).map(t=>t.title).join(', ')+(hid.length>8?' …':'')+' · 눌러서 거르기 보기'}}
+      b.textContent=`🙈 ${hid.length}개 숨김`;b.title='보일 것/숨길 것 설정 때문에 안 보이는 일정: '+hid.slice(0,8).map(t=>t.title).join(', ')+(hid.length>8?' …':'')+' · 눌러서 보기'}}
   }catch(e){console.error(e)}return r}})(renderCal);
 addEventListener('click',e=>{const b=e.target.closest('.h72');if(!b)return;e.preventDefault();e.stopPropagation();calFilterSheet()},true);
 // 할 일 상세: 캘린더에 안 보이면 왜 그런지 + 바로 보이게
 drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{
   const sc=$('sheetC'),t=TASKS[(sheetCtx||{}).task];if(!sc||!t||!$('tsTitle')||sc.querySelector('.cf72'))return r;
-  if(t.due&&t.status===0&&calBases72().some(c=>!passWith72(c,t))){const ch=sc.querySelector('.tchips');if(ch)ch.insertAdjacentHTML('afterend',`<div class="cf72 small">🙈 캘린더 거르기 때문에 캘린더에 안 보여요 <button type="button" class="chipbtn" data-cf72="${t.id}">보이게 하기</button></div>`)}
+  if(t.due&&t.status===0&&calBases72().some(c=>!passWith72(c,t))){const ch=sc.querySelector('.tchips');if(ch)ch.insertAdjacentHTML('afterend',`<div class="cf72 small">🙈 캘린더 '보일 것/숨길 것' 설정 때문에 안 보여요 <button type="button" class="chipbtn" data-cf72="${t.id}">보이게 하기</button></div>`)}
   }catch(e){console.error(e)}return r}})(drawTaskSheet);
-addEventListener('click',e=>{const b=e.target.closest('[data-cf72]');if(!b)return;e.preventDefault();e.stopPropagation();const t=TASKS[b.dataset.cf72];if(!t)return;calUnhide72(t);b.closest('.cf72').remove();ui.calKeepScroll=true;render();toast('캘린더 거르기를 고쳐서 이제 보여요')},true);
+addEventListener('click',e=>{const b=e.target.closest('[data-cf72]');if(!b)return;e.preventDefault();e.stopPropagation();const t=TASKS[b.dataset.cf72];if(!t)return;calUnhide72(t);b.closest('.cf72').remove();ui.calKeepScroll=true;render();toast('캘린더 보일 것/숨길 것을 고쳐서 이제 보여요')},true);
 
 /* ---- 2) 날짜를 옮겨도 시각·소요·여러 날 길이 그대로 (A3·A10) · 고친 날짜는 ☠ 아님 (A11) ----
    saveTask 직전 값(SN72)과 비교: 시작일이 바뀌고 끝나는 날은 그대로면 끝나는 날도 같이 옮겨요. */
@@ -10683,7 +10695,7 @@ applyEntry=(function(prev){return function(day,e){let fix=false;
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['🧹 겹친 기록 찾기','기능 지도 · (겹친 게 있으면 시작할 때 알림)','같은 할 일이 같은 날 두 번 · 같은 카드가 3분 안에 두 번 → 하나 지우기',()=>dupSheet72(),'중복 두번 겹침 기록 정리'],
   ['📝 여기까지 기록','타이머 → 그만 → 여기까지 한 만큼 기록','다 못 했어도 한 시간만큼 점수(절반 비율) · 할 일은 남아요',()=>{},'타이머 부분 중간 그만'],
-  ['🙈 캘린더 숨김','캘린더 제목 옆 🙈 · 할 일 상세','캘린더 거르기 때문에 안 보이는 일정 알려 주기 · 바로 보이게',()=>{location.hash='cal'},'캘린더 안보임 거르기 필터']])}})(F67);
+  ['🙈 캘린더 숨김','캘린더 제목 옆 🙈 · 할 일 상세','보일 것/숨길 것 설정 때문에 안 보이는 일정 알려 주기 · 바로 보이게',()=>{location.hash='cal'},'캘린더 안보임 거르기 필터']])}})(F67);
 
 /* ================= v7.3: A′ 묶음 — v7.2 확인 결과 다시 고치기 (루틴 일부·몸무게 칸·겹친 기록·여기까지 기록·늦게 잠·한글 찾기) ================= */
 
@@ -11400,8 +11412,8 @@ function calFilterSheet(){const f=flt77(),tags={};Object.values(TASKS).forEach(t
   const dated=openTasks().filter(t=>t.due&&!t.cb76),hid=dated.filter(t=>!calPass(t)).length,on=fOn77(f);
   const sec=(t,h)=>`<div class="f77s"><span class="small muted">${t}</span><div class="row" style="gap:4px">${h}</div></div>`;
   sheetCtx={cff:1};
-  openSheet(`<div class="sh"><h3>캘린더에 보일 것</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
-    <div class="row" style="gap:6px"><span class="seg3 sm"><button type="button" data-f77m="0" aria-pressed="${!f.inv}">고른 것만 보기</button><button type="button" data-f77m="1" aria-pressed="${!!f.inv}">고른 것 숨기기</button></span>
+  openSheet(`<div class="sh"><h3>캘린더 보일 것 / 숨길 것</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <div class="row" style="gap:6px"><span class="seg3 sm"><button type="button" data-f77m="0" aria-pressed="${!f.inv}">고른 것만 보임</button><button type="button" data-f77m="1" aria-pressed="${!!f.inv}">고른 것은 숨김</button></span>
       <span class="small ${on&&hid?'':'muted'}" id="f77n">${on?`날짜 있는 할 일 ${dated.length}개 중 <b>${dated.length-hid}개 보임</b>${hid?` · 🙈 ${hid}개 숨김`:''}`:'아무것도 안 골라서 전부 보여요'}</span></div>
     ${sec('종류',KIND77.map(([k,l])=>ch('kinds',k,l)).join(''))}
     ${sec('목록',[{id:'inbox',name:listName('inbox')},...C.lists.filter(l=>l.id!=='inbox')].map(l=>ch('lists',l.id,esc(l.name),l.color)).join(''))}
@@ -11617,7 +11629,7 @@ function stDoneHide72(k){return !!(k&&isRtKid71(k)&&k.status===0&&k.last===gk76(
 render=(function(prev){return function(){try{dopaMig77();flt77()}catch(e){console.error(e)}const x=prev.apply(this,arguments);
   try{if(NEED77&&ready72()){NEED77=0;save('config')}}catch(e){console.error(e)}return x}})(render);
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['⚲ 캘린더에 보일 것 (거르기)','캘린더 위 깔때기 단추','목록·영역·태그·종류(루틴·일퀘·반복·한 번·관리)로 고른 것만 보기 / 고른 것 숨기기. 두 캘린더가 같이 쓰고 끝낸 일·지난 날에도 적용',()=>{calFilterSheet()},'캘린더 거르기 필터 목록 루틴 일퀘 태그 숨기기 보일 것'],
+  ['⚲ 캘린더 보일 것 / 숨길 것','캘린더 위 깔때기 단추','목록·영역·태그·종류(루틴·일퀘·반복·한 번·관리)로 고른 것만 보기 / 고른 것 숨기기. 두 캘린더가 같이 쓰고 끝낸 일·지난 날에도 적용',()=>{calFilterSheet()},'캘린더 거르기 필터 목록 루틴 일퀘 태그 숨기기 보일 것'],
   ['✓ 끝낸 블록에 목록 색','캘린더 시간표','끝낸 할 일이 목록 색·이모지 그대로 ✓와 함께 남아요(반복 할 일도 한 날에). 짧은 블록도 제목이 보여요',()=>{location.hash='cal'},'캘린더 끝낸 완료 체크 목록 색 짧은 블록 제목'],
   ['🧽 관리로 등록하기','입력칸에 % · 할 일 상세 칩 줄 🧽 · 우클릭 → 관리로 · 🧽 관리 목록에서 적기','변기청소 %14 = 14일마다 관리. 반복 없는 할 일도 옮길 수 있고(주기를 물어요), 관리는 제 목록에서도 🧽 표시로 보여요',()=>{C.ui.tasks.sel='care';save('config');location.hash='tasks';render()},'관리 등록 추가 주기 며칠마다 청소 변기'],
   ['🪄 도파민 코스 다시 추천','편집 → 도파민 → 🪄 코스 다시 추천','카드 이름·시간으로 코스를 다시 나눠요. 바꾼 것 보기·하나씩 고치기·모두 되돌리기',()=>{dopaRecSheet77()},'도파민 코스 추천 다시 세팅 식사 친구'],
@@ -11736,6 +11748,37 @@ render=(function(prev){return function(){const x=prev.apply(this,arguments);try{
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['할 일 상세 줄이기','할 일을 눌러 연 상세 화면','날짜 칸은 날짜만(시간·반복·마감은 ＋), 목록·중요도 칩은 바로 고르기, 묶인 할 일·체크리스트는 ＋ 칩, 아래 버튼은 😶 막힐 때 · 미루기 · ⋯',()=>{location.hash='tasks'},'상세 미니멀 간단 날짜 마감 반복 목록 드롭다운 막힐 때 삭제 복사 집중'],
   ['Shift+Enter = 자세히','할 일 입력칸','적고 Shift+Enter를 누르면 추가하면서 상세가 열려요(마우스 없이)',()=>{location.hash='tasks'},'단축키 쉬프트 엔터 자세히 상세']])}})(F67);
+
+/* ================= v7.9: B 둘째 조각 + J10 =================
+   맨 끝 모듈(w78 뒤, route();boot(); 앞).
+   J10) 캘린더 거르기 이름 → '보일 것 / 숨길 것'(창 제목·단추 설명에 지금 모드를 글자로).
+   B18) 타임테이블 날짜 칸을 한 줄로.
+   B19) 상세에서 연 '묶인 할 일'·'체크리스트'를 다시 접기. */
+
+/* ---- J10 ---- */
+function fName79(){const f=flt77(),n=[];
+  f.kinds.forEach(k=>{const e=(typeof KIND77!=='undefined'?KIND77:[]).find(x=>x[0]===k);n.push(e?e[1]:k)});
+  f.lists.forEach(i=>n.push(listName(i)));
+  f.areas.forEach(i=>{const a=C.areas.find(x=>x.id===i);n.push(a?a.name:i)});
+  f.tags.forEach(t=>n.push('#'+t));return n}
+function fMode79(){if(!fOn77())return '';const n=fName79(),s=n.length>3?n.slice(0,3).join('·')+' 외 '+(n.length-3):n.join('·');return flt77().inv?s+' 숨기는 중':s+'만 보는 중'}
+calFilterSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{const n=$('f77n'),m=fMode79();if(n&&m)n.innerHTML='<b>'+esc(m)+'</b> · '+n.innerHTML}catch(e){console.error(e)}return r}})(calFilterSheet);
+renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);try{const b=$('calFilterBtn');if(b){const m=fMode79(),t=m?'보일 것 / 숨길 것 — '+m:'보일 것 / 숨길 것 (캘린더에 보일 일 고르기)';b.title=t;b.setAttribute('aria-label',t)}}catch(e){console.error(e)}return r}})(renderCal);
+
+/* ---- B19: 열린 묶인 할 일·체크리스트 접기 ---- */
+function ts79(){const sc=$('sheetC'),t=TASKS[(sheetCtx||{}).task];if(!sc||!t||!$('tsTitle'))return;const op=o78(t);
+  const kb=sc.querySelector('.kids56.box71');
+  if(kb&&!kb.classList.contains('hid78')&&!kb.querySelector('.kt78,.cl79')){const hd=kb.firstElementChild;if(hd)hd.insertAdjacentHTML('beforeend',' <button type="button" class="cl79" data-c79="kids" title="접기 (＋ 칩으로 돌아가요)">▴ 접기</button>')}
+  const cb=sc.querySelector('.box71.ck71');
+  if(cb&&!cb.classList.contains('hid78')&&!cb.querySelector('.kt78,.cl79')){const hd=cb.firstElementChild,subs=t.subs||[];
+    if(hd&&!subs.length)hd.insertAdjacentHTML('beforeend',' <button type="button" class="cl79" data-c79="ck" title="접기 (＋ 칩으로 돌아가요)">▴ 접기</button>');
+    else if(hd){const fold=!!op.ckf,dn=subs.filter(s=>s.d).length;cb.classList.toggle('fold78',fold);hd.classList.add('kh78');
+      hd.innerHTML='<button type="button" class="kt78" data-c79="ckt" aria-expanded="'+!fold+'">☑ 체크리스트 <b>'+dn+'/'+subs.length+'</b> <span class="tiny muted">'+(fold?'▸ 펼치기':'▾ 접기')+'</span></button>'}}}
+drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{ts79()}catch(e){console.error(e)}return r}})(drawTaskSheet);
+addEventListener('click',e=>{const T=e.target;if(T&&T.closest&&T.closest('[data-a78]'))setTimeout(()=>{try{ts79()}catch(x){console.error(x)}},0);   // ＋ 칩으로 연 직후엔 접기 단추를 달아 줌(w78 핸들러 뒤)
+  const b=T&&T.closest&&T.closest('[data-c79]');if(!b)return;e.preventDefault();e.stopPropagation();const t=TASKS[(sheetCtx||{}).task];if(!t)return;
+  const op=o78(t),k=b.dataset.c79;if(k==='kids')op.kids=0;else if(k==='ck')op.ck=0;else if(k==='ckt')op.ckf=op.ckf?0:1;
+  const sc=$('sheetC'),y=sc.scrollTop;try{tsRead()}catch(x){}drawTaskSheet();sc.scrollTop=y},true);
 
 route();boot();
 </script>
