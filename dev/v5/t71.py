@@ -79,7 +79,7 @@ with sync_playwright() as pw:
     ok(J(pg,"(()=>{const t=TASKS[SP71];return [t.due,t.end71].join('~')})()")==J(pg,"addDays(dateKey(),-1)+'~'+addDays(dateKey(),2)"),'어제부터 모레까지',J(pg,"(()=>{const t=TASKS[SP71];return [t.due,t.end71].join('~')})()"))
     ok(J(pg,"taskMatches(TASKS[SP71],'today')") and not J(pg,"taskMatches(TASKS[SP71],'overdue')"),'진행 중 = 오늘, 지난 것 아님')
     J(pg,"C.ui.cal.mode='month';location.hash='cal'");pg.wait_for_timeout(700)
-    n=J(pg,"document.querySelectorAll('#calPane [data-ctask=\"'+SP71+'\"]').length");ok(n>=3,'월 보기에 여러 날',n)
+    n=J(pg,"document.querySelectorAll('#calPane [data-ctask=\"'+SP71+'\"]').length");ok(n>=1,'월 보기에 여러 날(v8.3부터 막대)',n)
     # 주 시작 일요일
     J(pg,"C.wk71=0;render()");pg.wait_for_timeout(400)
     ok(J(pg,"(document.querySelector('#calPane .wh')||{}).textContent")=='일','일요일 시작 머리',J(pg,"(document.querySelector('#calPane .wh')||{}).textContent"))
