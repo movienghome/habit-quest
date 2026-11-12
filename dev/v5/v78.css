@@ -1,0 +1,36 @@
+/* v7.8: 할 일 상세 줄이기 */
+.hid78{display:none!important}
+/* 머리 = 제목 */
+#sheetC .sh.h78{gap:6px;align-items:center;margin-bottom:4px}
+#sheetC .sh.h78 #tsTitle{flex:1;min-width:0;margin:0;padding:4px 6px;border-color:transparent;background:transparent;text-overflow:ellipsis}
+#sheetC .sh.h78 #tsTitle:hover{border-color:var(--line)}
+#sheetC .sh.h78 #tsTitle:focus{border-color:var(--accent);background:var(--panel)}
+#sheetC .sh.h78>.row{flex:none}
+/* 날짜 칸 */
+#sheetC .tpanel.w78 .q78{gap:4px;flex-wrap:wrap;margin:6px 0 0}
+#sheetC .tpanel.w78 .q78 .chipbtn{padding:3px 10px;font-size:12.5px}
+#sheetC .tpanel.w78 .duedl:has(>label.hid78){grid-template-columns:1fr}
+#sheetC .p78,#sheetC .add78{gap:4px;flex-wrap:wrap;margin:8px 0 0}
+#sheetC .p78[hidden],#sheetC .add78[hidden]{display:none}
+#sheetC .a78{padding:2px 7px;font-size:12px;color:var(--muted);border-style:dashed;background:transparent}
+#sheetC .a78:hover{color:var(--ink);border-style:solid}
+/* 묶인 할 일 접힘 */
+#sheetC .kids56.fold78>*:not(.kh78){display:none!important}
+#sheetC .kids56.fold78{padding:6px 10px}
+#sheetC .kt78{all:unset;cursor:pointer;display:flex;gap:6px;align-items:center;width:100%;font-size:13px}
+#sheetC .kt78:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+/* 아래 줄 */
+#sheetC.ts71 .foot71.f78{margin-top:10px;padding-top:8px;gap:6px;flex-wrap:wrap}
+#sheetC .foot71.f78 .l78{flex-wrap:wrap}
+#sheetC .foot71.f78 .sp78{flex:1 1 100%;gap:6px;flex-wrap:nowrap}
+#sheetC .foot71.f78 .sp78 input{flex:1;min-width:0}
+#m61 small.muted{display:block;font-size:11px;font-weight:400}
+/* 3단(할 일 옆 캘린더·상세) 좁은 칸: 제목 줄 도구가 두 줄로 꺾이지 않게 */
+[data-view="tasks"] .ptitle>.row{flex-wrap:nowrap;min-width:0}
+[data-view="tasks"] .ptitle>.row select{min-width:0;flex:0 1 auto;text-overflow:ellipsis}
+[data-view="tasks"] .ptitle>h2{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+[data-view="tasks"] .ptitle #tCount{white-space:nowrap}
+#sheetC.ts71 #tsNote{margin-top:8px}
+#sheetC .tpanel.w78 .duedl>label{min-width:0}
+#sheetC .tpanel.w78 .duedl .inx{min-width:0}
+#sheetC .tpanel.w78 .duedl input[type=date]{min-width:0;width:100%}
