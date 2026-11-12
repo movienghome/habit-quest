@@ -128,12 +128,48 @@ def t_c3(pg,W):
         # 블록 위에선 힌트 없음
     errs_before=len(errs)
 
+def t_c4(pg,W):
+    td=J(pg,"midKey68()")
+    info=J(pg,"""(()=>{const r=C.routines.find(x=>x.id==='r-morning');const h=rtH62(r,true);h.due=midKey68();h.rep={f:'d',i:1};h.time='07:30';delete h.dur;saveTask(h);
+      return {id:h.id,tot:rtMin83(r),n:r.steps.length}})()""")
+    ok(info['tot']>0,f'[{W}] 루틴 단계 분 합이 셈',info)
+    gocal(pg,'1day')
+    J(pg,"(()=>{ui.calAnchor=midKey68();renderCal()})()");pg.wait_for_timeout(300)
+    r=J(pg,"""(id=>{const b=document.querySelector('.blk[data-ctask="'+id+'"]');if(!b)return null;const m=b.querySelector('.bm').textContent;return {h:Math.round(b.getBoundingClientRect().height),txt:m,rz:!!b.querySelector('.rz'),title:b.querySelector('.bt').textContent}})(%s)"""%json.dumps(info['id']))
+    ok(r is not None and ('시간' in r['txt'] or '분' in r['txt']) and str(info['tot']) in r['txt'].replace('시간 ','').replace('시간','')+str(info['tot']) ,f'[{W}] 루틴 블록이 단계 합 길이로 그려짐',r)
+    ok(r is not None and not r['rz'],f'[{W}] 루틴 블록엔 길이 손잡이가 없음')
+    ok(J(pg,"TASKS[%s].dur==null"%json.dumps(info['id'])),f'[{W}] 할 일 자체 dur은 안 바뀜')
+    # 시각 옮기기 → 창
+    def dragblk(dy):
+        src=J(pg,"""(id=>{const b=document.querySelector('.blk[data-ctask="'+id+'"]');b.scrollIntoView({block:'center'});const r=b.getBoundingClientRect();return [r.x,r.y,r.width,r.height]})(%s)"""%json.dumps(info['id']))
+        pg.mouse.move(src[0]+src[2]/2,src[1]+6);pg.mouse.down();pg.wait_for_timeout(520)
+        pg.mouse.move(src[0]+src[2]/2+4,src[1]+12,steps=3);pg.mouse.move(src[0]+src[2]/2,src[1]+6+dy,steps=10);pg.wait_for_timeout(150);pg.mouse.up();pg.wait_for_timeout(500)
+    dragblk(120)
+    ok(J(pg,"!!document.querySelector('[data-m83=\"day\"]')"),f'[{W}] 시각을 옮기면 이 날만/앞으로 창')
+    ok(J(pg,"TASKS[%s].time==='07:30'"%json.dumps(info['id'])),f'[{W}] 창을 고르기 전엔 시작 시각이 그대로')
+    pg.locator('[data-m83="day"]').first.click();pg.wait_for_timeout(500)
+    t=J(pg,"(id=>({time:TASKS[id].time,tx:TASKS[id].tx83||null,due:TASKS[id].due}))(%s)"%json.dumps(info['id']))
+    ok(t['time']=='07:30' and t['tx'] and t['tx']['m']!='07:30' and t['tx']['d']==td,f'[{W}] 이 날만 → 루틴 시각은 그대로, 그날 블록만',t)
+    bm=J(pg,"""(id=>document.querySelector('.blk[data-ctask="'+id+'"] .bm').textContent)(%s)"""%json.dumps(info['id']))
+    ok(t['tx'] and t['tx']['m'] in bm,f'[{W}] 블록이 옮긴 시각으로 보임',bm)
+    ok(J(pg,"rtH62(C.routines.find(x=>x.id==='r-morning'),false).time==='07:30'"),f'[{W}] 루틴 ⏰ 몇 시쯤 값은 07:30 그대로')
+    dragblk(-60)
+    pg.locator('[data-m83="fwd"]').first.click();pg.wait_for_timeout(500)
+    t=J(pg,"(id=>({time:TASKS[id].time,tx:TASKS[id].tx83||null}))(%s)"%json.dumps(info['id']))
+    ok(t['time']!='07:30' and not t['tx'],f'[{W}] 앞으로 이 시간 → 머리 시각이 바뀌고 이 날만 표시는 지워짐',t)
+    # 취소
+    before=J(pg,"TASKS[%s].time"%json.dumps(info['id']))
+    dragblk(90)
+    pg.locator('.sh [data-sheet="close"]').last.click();pg.wait_for_timeout(400)
+    ok(J(pg,"TASKS[%s].time"%json.dumps(info['id']))==before,f'[{W}] 취소하면 그대로')
+
 with sync_playwright() as pw:
     for W,H in ((1400,900),(390,780)):
         b,pg=run(pw,W,H)
         safe(lambda:t_c1(pg,W),f'C1 {W}')
         safe(lambda:t_c2(pg,W),f'C2 {W}')
         safe(lambda:t_c3(pg,W),f'C3 {W}')
+        safe(lambda:t_c4(pg,W),f'C4 {W}')
         b.close()
 print('ERRS',[e for e in errs if 'favicon' not in e][:6])
 print('FAILS',len(FAILS),FAILS)

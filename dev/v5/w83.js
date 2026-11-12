@@ -88,3 +88,45 @@ addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;
   if(!PL83||!PL83.isConnected){PL83=document.createElement('div');PL83.className='plus83';PL83.setAttribute('aria-hidden','true')}
   if(PL83.parentElement!==col)col.appendChild(PL83);PL83.hidden=false;PL83.style.top=yOf(m)+'px';PL83.style.height=Math.max(14,yOf(m+30)-yOf(m)-2)+'px';PL83.textContent='＋ '+hm(m)},{passive:true});
 document.addEventListener('pointerleave',()=>{if(PL83)PL83.hidden=true},true);
+
+/* ---- C4) 루틴 = 단계 시간 합만큼의 블록 · 시간표에서 옮기면 '이 날만 / 앞으로' 묻기 ----
+   루틴 머리 할 일(t.rid)은 캘린더에서 단계 분(r.steps[].min 합, 🔀 묶음은 가장 긴 것 하나)만큼 길게 그림(tasksOn 결과의 사본 — 할 일 자체의 dur은 안 바꿈).
+   시간표에서 시각을 옮겨 놓으면(dndEnd) 바로 안 바꾸고 창을 띄움: 이 날만(= t.tx83 {d:날짜,m:시각}, 그 날 블록만 옮겨 그림, 루틴 ⏰ 몇 시쯤은 그대로)
+   · 앞으로 이 시간(= 머리 t.time 바꿈 = 루틴 편집의 ⏰와 같은 값) · 취소. tx83은 t.due가 다른 날이 되면 저절로 안 쓰임.
+   루틴 블록의 길이 손잡이(.rz)는 뺌(길이 = 단계 합. 바꾸려면 루틴 편집). */
+function rtMin83(r){if(!r||!r.steps)return 0;const g={};let n=0;
+  r.steps.forEach(s=>{const m=+s.min||0;if(s.g71)g[s.g71]=Math.max(g[s.g71]||0,m);else n+=m});
+  return n+Object.values(g).reduce((a,b)=>a+b,0)}
+function view83(t,k){if(!t||!t.rid)return t;const r=(C.routines||[]).find(x=>x.id===t.rid),tot=rtMin83(r),x=t.tx83&&t.tx83.d===k&&t.due===k?t.tx83.m:null;
+  if(!tot&&!x)return t;if(t.dur===tot&&!x)return t;const c=Object.assign({},t);if(tot)c.dur=tot;if(x)c.time=x;return c}
+tasksOn=(function(prev){return function(k){return prev.apply(this,arguments).map(t=>view83(t,k))}})(tasksOn);
+function rtMove83(t,date,min){
+  sheetCtx={rm83:{id:t.id,date,min}};const tm=hm(min),cur=(t.tx83&&t.tx83.d===t.due?t.tx83.m:t.time)||'',same=date===t.due;
+  openSheet(`<div class="sh"><h3>⏱ ${esc(t.title)} 옮기기</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <p class="small" style="margin:4px 0 8px">${esc(fmtD(date))} (${wdOf(date)}) <b>${tm}</b> 으로 옮길까요?${cur?` <span class="muted">(지금 ${esc(cur)})</span>`:''}</p>
+    <div class="col" style="gap:6px"><button class="btn" type="button" data-m83="day">이 날만 <small class="muted">· 루틴 ⏰ 몇 시쯤은 그대로</small></button>
+    <button class="btn ghost" type="button" data-m83="fwd">앞으로 이 시간 <small class="muted">· 루틴 ⏰ 몇 시쯤도 ${tm}으로</small></button>
+    <button class="btn ghost" type="button" data-sheet="close">취소</button></div>`)}
+addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-m83]');if(!b)return;e.preventDefault();e.stopPropagation();
+  const c=(sheetCtx||{}).rm83,t=c&&TASKS[c.id];if(!t){closeSheet();return}const td=dateKey(),old=t.due,tm=hm(c.min);
+  if(old&&old<=td&&c.date>old)t.skull=(t.skull||0)+1;
+  t.due=c.date;if(!t.dur)t.dur=30;
+  if(b.dataset.m83==='day'){t.tx83={d:c.date,m:tm}}else{t.time=tm;delete t.tx83}
+  if(t.rep&&t.rep.f==='w'&&t.rep.wd&&t.rep.wd.length===1&&old!==c.date)t.rep.wd=[dowOf(c.date)];
+  saveTask(t);closeSheet();ui.calSel=c.date;ui.calKeepScroll=true;render();
+  toast(b.dataset.m83==='day'?`${t.title} · ${dueLabel(c.date)} ${tm} (이 날만)`:`${t.title} · 앞으로 ${tm}`)},true);
+dndEnd=(function(prev){return function(x,y){
+  try{const kind=DND.kind,id=DND.id,drop=DND.drop,t=TASKS[id];
+    if(kind==='resize'&&t&&t.rid){DND.newDur=null}
+    else if((kind==='block'||kind==='task')&&t&&t.rid&&t.rep&&drop&&drop.type==='time'&&!(ui.msel&&ui.msel.size>1)){
+      const cur=(t.tx83&&t.tx83.d===t.due?t.tx83.m:t.time)||'';
+      if(!(drop.date===t.due&&hm(drop.min)===cur)){DND.drop=null;const r=prev.apply(this,arguments);rtMove83(t,drop.date,drop.min);return r}}}catch(e){console.error(e)}
+  return prev.apply(this,arguments)}})(dndEnd);
+renderCal=(function(prev){return function(){const x=prev.apply(this,arguments);
+  try{const m=$('calMain');if(m)m.querySelectorAll('.blk[data-ctask]').forEach(b=>{const t=TASKS[b.dataset.ctask];if(t&&t.rid){b.querySelectorAll('.rz,.rz75').forEach(z=>z.remove());b.classList.add('rt83');const bt=b.querySelector('.bt');if(bt&&!bt.dataset.i83){bt.dataset.i83=1;bt.textContent='⏱ '+bt.textContent}}})}catch(e){console.error(e)}return x}})(renderCal);
+
+F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
+  ['📆 월 보기 여러 날 막대','캘린더 월 보기','여러 날 일정은 칸마다 칩이 아니라 한 줄 막대로 이어져요(‹ › = 앞뒤로 이어짐, 눌러서 열기, 끌면 길이 그대로 통째로 옮김).'],
+  ['↔ 1일·3일 보기 하루씩','캘린더 1일·3일 보기','옆으로 휠·Shift+휠·폰 옆으로 밀기로 하루씩 넘어가요.'],
+  ['＋ 날짜에 추가','캘린더 날짜 패널 ＋ 추가 · N 키','큰 입력칸 대신 작은 ＋ 추가가 팝업을 띄워요. 시간표 빈 곳·월 칸 빈 곳 누르기도 같아요.'],
+  ['⏱ 루틴 블록','캘린더 시간표','루틴은 단계 시간 합만큼 길게 보이고, 시각을 옮기면 이 날만/앞으로를 물어요.']])}})(F67);
