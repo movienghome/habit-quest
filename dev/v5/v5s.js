@@ -289,7 +289,7 @@ addEventListener('click',e=>{const b=e.target.closest('#cal62v,#cal62m');if(!b)r
   const col=v=>()=>{const s=$('cal57Color');if(s){s.value=v;s.dispatchEvent(new Event('change',{bubbles:true}))}};
   menu61(x,y,'캘린더 설정',[{l:(!cs.color?'● ':'○ ')+'색: 중요도',f:col('')},{l:(cs.color==='area'?'● ':'○ ')+'색: 영역',f:col('area')},{l:(cs.color==='list'?'● ':'○ ')+'표시: 목록',f:col('list')},'-',
     {l:(cs.actual!==false?'☑':'☐')+' 한 일 기록 겹쳐 보기 (주·일)',f:()=>{const c=$('calActual');c.checked=!c.checked;c.dispatchEvent(new Event('change',{bubbles:true}))}},
-    {l:'📥 서랍 (끌어 쓰기)',f:()=>$('calTrayBtn').click()},{l:'⚲ 보일 것 / 숨길 것',f:()=>$('calFilterBtn').click()},{l:'? 도움말',f:()=>{const h=document.querySelector('[data-calhelp]');h&&h.click()}},'-',{l:'🏠 홈 (캐릭터)',f:()=>{location.hash='home'}}])},true);
+    {l:'📥 서랍 (끌어 쓰기)',f:()=>$('calTrayBtn').click()},{l:'⚲ 거르기',f:()=>$('calFilterBtn').click()},{l:'? 도움말',f:()=>{const h=document.querySelector('[data-calhelp]');h&&h.click()}},'-',{l:'🏠 홈 (캐릭터)',f:()=>{location.hash='home'}}])},true);
 // 폰 월 보기: 옆으로 밀어 달 넘기기
 {let sx=0,sy=0,st=0;addEventListener('touchstart',e=>{if(!document.body.classList.contains('cal62')||!e.target.closest('#calMain .mgrid'))return;const t=e.touches[0];sx=t.clientX;sy=t.clientY;st=Date.now()},{passive:true});
   addEventListener('touchend',e=>{if(!st||!document.body.classList.contains('cal62'))return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;const ok=Date.now()-st<600&&Math.abs(dx)>60&&Math.abs(dy)<45;st=0;if(!ok||(typeof dragS!=='undefined'&&dragS))return;const b=document.querySelector(`[data-calnav="${dx<0?1:-1}"]`);b&&b.click()},{passive:true})}

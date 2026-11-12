@@ -204,6 +204,9 @@ drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,argument
   // 칩: 용기 따로
   if(!sc.querySelector('[data-t71="brave"]')&&!t.aid&&!t.rid&&sz){const z=t.brave?(C.courageSizes.find(x=>x.id===(t.bsz71||({quick:'s',mid:'m',heavy:'l'})[effortOf(t)]))||C.courageSizes[1]):null;
     sz.insertAdjacentHTML('afterend',`<button type="button" class="tch ${t.brave?'':'off'}" data-t71="brave" title="용기가 드는 일이면 용기 점수 (크기와 따로)">⚔️ ${t.brave?esc((z&&z.name)||'용기'):'용기'}</button>`)}
+  // v8.1: 카드로 이어진 할 일은 용기가 카드(a.brave)에 있음 → 칩이 없어서 어떤 할 일엔 보이고 어떤 건 안 보이던 것. 읽기 칩(누르면 카드 편집)
+  if(!sc.querySelector('[data-k79="brave"],[data-t71="brave"]')&&t.aid&&sz){const ca=C.actions.find(x=>x.id===t.aid);if(ca&&ca.brave){const z=(typeof braveSize==='function')?braveSize(ca):null;
+    sz.insertAdjacentHTML('afterend',`<button type="button" class="tch" data-k79="brave" data-aedit="${ca.id}" title="카드에서 정한 용기예요 · 누르면 카드 편집">⚔️ ${esc((z&&z.name)||'용기')}</button>`)}}
   // 칩: 영역 + 구슬
   const ar=sc.querySelector('.tchips [data-x56panel="area"]');if(ar&&t.marble&&!/🔮/.test(ar.innerHTML)){const o=jarSelOpts().find(z=>z[0]===t.marble);if(o)ar.insertAdjacentHTML('beforeend',` · 🔮 ${esc(String(o[1]).split('·').pop().trim())}`)}
   else if(ar&&!/구슬/.test(ar.title))ar.title='영역 · 🔮 끝내면 넣을 구슬';

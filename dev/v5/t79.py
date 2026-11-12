@@ -34,7 +34,7 @@ def t_j10(pg,T=''):
     if T:
         J(pg,"location.hash='cal'");pg.wait_for_timeout(800);closepops(pg);notoast(pg)
     clk(pg,'#calFilterBtn',500)
-    ok(cnt(pg,'#sheetC h3')>=1 and '보일 것 / 숨길 것' in vis(pg,'#sheetC h3').inner_text(),T+'거르기 창 이름 = 보일 것 / 숨길 것',vis(pg,'#sheetC h3').inner_text() if cnt(pg,'#sheetC h3') else '')
+    ok(cnt(pg,'#sheetC h3')>=1 and '거르기' in vis(pg,'#sheetC h3').inner_text(),T+'거르기 창 이름 = 거르기',vis(pg,'#sheetC h3').inner_text() if cnt(pg,'#sheetC h3') else '')
     ok('고른 것만 보임' in J(pg,"document.querySelector('#sheetC').innerText") and '고른 것은 숨김' in J(pg,"document.querySelector('#sheetC').innerText"),T+'두 모드 이름')
     ok('아무것도 안 골라서' in J(pg,"document.getElementById('f77n').innerText"),T+'안 골랐으면 전부 보임')
     lid=J(pg,"(()=>{const l=C.lists.find(x=>x.id!=='inbox');return l&&l.id})()")
@@ -47,8 +47,8 @@ def t_j10(pg,T=''):
     n=J(pg,"document.getElementById('f77n').innerText")
     ok('숨기는 중' in n and '숨기는 중' in J(pg,"document.getElementById('calFilterBtn').title"),T+'숨김 모드 → "○○ 숨기는 중"',n)
     clk(pg,'#sheetC [data-f77x]',400);clk(pg,'#sheetC [data-sheet="close"]',300)
-    ok(J(pg,"fOn77()")==0 and '보일 것 / 숨길 것' in J(pg,"document.getElementById('calFilterBtn').title"),T+'모두 풀기 → 설명 원래대로')
-    ok('거르기' not in J(pg,"document.getElementById('calFilterBtn').title"),T+"단추 설명에 '거르기' 글자 없음")
+    ok(J(pg,"fOn77()")==0 and '거르기' in J(pg,"document.getElementById('calFilterBtn').title"),T+'모두 풀기 → 설명 원래대로')
+    ok('거르기' in J(pg,"document.getElementById('calFilterBtn').title"),T+"단추 설명에 '거르기' 글자 있음(v8.1에서 이름 되돌림)")
 
 def t_b18(pg,T=''):
     mk(pg,'예산 시험',{'due':J(pg,"midKey68()"),'time':'10:00','dur':120})

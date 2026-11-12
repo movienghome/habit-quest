@@ -42,7 +42,7 @@ function calFilterSheet(){const f=flt77(),tags={};Object.values(TASKS).forEach(t
   const dated=openTasks().filter(t=>t.due&&!t.cb76),hid=dated.filter(t=>!calPass(t)).length,on=fOn77(f);
   const sec=(t,h)=>`<div class="f77s"><span class="small muted">${t}</span><div class="row" style="gap:4px">${h}</div></div>`;
   sheetCtx={cff:1};
-  openSheet(`<div class="sh"><h3>캘린더 보일 것 / 숨길 것</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+  openSheet(`<div class="sh"><h3>캘린더 거르기</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
     <div class="row" style="gap:6px"><span class="seg3 sm"><button type="button" data-f77m="0" aria-pressed="${!f.inv}">고른 것만 보임</button><button type="button" data-f77m="1" aria-pressed="${!!f.inv}">고른 것은 숨김</button></span>
       <span class="small ${on&&hid?'':'muted'}" id="f77n">${on?`날짜 있는 할 일 ${dated.length}개 중 <b>${dated.length-hid}개 보임</b>${hid?` · 🙈 ${hid}개 숨김`:''}`:'아무것도 안 골라서 전부 보여요'}</span></div>
     ${sec('종류',KIND77.map(([k,l])=>ch('kinds',k,l)).join(''))}
@@ -259,7 +259,7 @@ function stDoneHide72(k){return !!(k&&isRtKid71(k)&&k.status===0&&k.last===gk76(
 render=(function(prev){return function(){try{dopaMig77();flt77()}catch(e){console.error(e)}const x=prev.apply(this,arguments);
   try{if(NEED77&&ready72()){NEED77=0;save('config')}}catch(e){console.error(e)}return x}})(render);
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['⚲ 캘린더 보일 것 / 숨길 것','캘린더 위 깔때기 단추','목록·영역·태그·종류(루틴·일퀘·반복·한 번·관리)로 고른 것만 보기 / 고른 것 숨기기. 두 캘린더가 같이 쓰고 끝낸 일·지난 날에도 적용',()=>{calFilterSheet()},'캘린더 거르기 필터 목록 루틴 일퀘 태그 숨기기 보일 것'],
+  ['⚲ 캘린더 거르기','캘린더 위 깔때기 단추','목록·영역·태그·종류(루틴·일퀘·반복·한 번·관리)로 고른 것만 보기 / 고른 것 숨기기. 두 캘린더가 같이 쓰고 끝낸 일·지난 날에도 적용',()=>{calFilterSheet()},'캘린더 거르기 필터 목록 루틴 일퀘 태그 숨기기 보일 것'],
   ['✓ 끝낸 블록에 목록 색','캘린더 시간표','끝낸 할 일이 목록 색·이모지 그대로 ✓와 함께 남아요(반복 할 일도 한 날에). 짧은 블록도 제목이 보여요',()=>{location.hash='cal'},'캘린더 끝낸 완료 체크 목록 색 짧은 블록 제목'],
   ['🧽 관리로 등록하기','입력칸에 % · 할 일 상세 칩 줄 🧽 · 우클릭 → 관리로 · 🧽 관리 목록에서 적기','변기청소 %14 = 14일마다 관리. 반복 없는 할 일도 옮길 수 있고(주기를 물어요), 관리는 제 목록에서도 🧽 표시로 보여요',()=>{C.ui.tasks.sel='care';save('config');location.hash='tasks';render()},'관리 등록 추가 주기 며칠마다 청소 변기'],
   ['🪄 도파민 코스 다시 추천','편집 → 도파민 → 🪄 코스 다시 추천','카드 이름·시간으로 코스를 다시 나눠요. 바꾼 것 보기·하나씩 고치기·모두 되돌리기',()=>{dopaRecSheet77()},'도파민 코스 추천 다시 세팅 식사 친구'],

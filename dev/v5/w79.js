@@ -12,7 +12,7 @@ function fName79(){const f=flt77(),n=[];
   f.tags.forEach(t=>n.push('#'+t));return n}
 function fMode79(){if(!fOn77())return '';const n=fName79(),s=n.length>3?n.slice(0,3).join('·')+' 외 '+(n.length-3):n.join('·');return flt77().inv?s+' 숨기는 중':s+'만 보는 중'}
 calFilterSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{const n=$('f77n'),m=fMode79();if(n&&m)n.innerHTML='<b>'+esc(m)+'</b> · '+n.innerHTML}catch(e){console.error(e)}return r}})(calFilterSheet);
-renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);try{const b=$('calFilterBtn');if(b){const m=fMode79(),t=m?'보일 것 / 숨길 것 — '+m:'보일 것 / 숨길 것 (캘린더에 보일 일 고르기)';b.title=t;b.setAttribute('aria-label',t)}}catch(e){console.error(e)}return r}})(renderCal);
+renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);try{const b=$('calFilterBtn');if(b){const m=fMode79(),t=m?'거르기 — '+m:'거르기 (캘린더에 보일 일 고르기)';b.title=t;b.setAttribute('aria-label',t)}}catch(e){console.error(e)}return r}})(renderCal);
 
 /* ---- B19: 열린 묶인 할 일·체크리스트 접기 ---- */
 function ts79(){const sc=$('sheetC'),t=TASKS[(sheetCtx||{}).task];if(!sc||!t||!$('tsTitle'))return;const op=o78(t);
@@ -50,10 +50,14 @@ function vis79(sc,t){const ch=sc.querySelector('.tchips.c79');if(!ch)return;cons
     const show=open||!past||ch79valued(e,k)||(k!=='care'&&e.getAttribute('aria-pressed')==='true');hide78(e,!show);if(!show)n++});
   ch.classList.toggle('e79',open);
   const mb=ch.querySelector('.more79');if(mb){mb.textContent=open?'－ 접기':'＋ 더 '+n;mb.title=open?'접기 (칩을 끌어서 순서·고정을 바꿀 수 있어요)':'안 쓴 칩 '+n+'개 보기 · 펼쳐서 끌면 순서·고정을 바꿀 수 있어요';mb.setAttribute('aria-expanded',String(open));hide78(mb,!open&&!n)}}
-function chSave79(ch){C.chipOrd79=[...ch.children].map(e=>e.classList.contains('div79')?'|':e.dataset.k79).filter(Boolean);save('config')}
+function chSave79(ch){const dom=[...ch.children].map(e=>e.classList.contains('div79')?'|':e.dataset.k79).filter(Boolean);
+  // v8.1: 이 할 일에 없는 칩(용기·관리·타이머 …)이 순서에서 빠지면 다른 할 일에서 맨 뒤 숨김 구역으로 밀림 → 옛 자리(앞 칩 바로 뒤)를 그대로 둠
+  const prev=ch79ord(),out=dom.slice();
+  prev.forEach((k,i)=>{if(dom.includes(k))return;let j=-1;for(let x=i-1;x>=0;x--){const p=out.indexOf(prev[x]);if(p>=0){j=p;break}}out.splice(j+1,0,k)});
+  C.chipOrd79=out;save('config')}
 drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{const sc=$('sheetC'),t=TASKS[(sheetCtx||{}).task];if(sc&&t&&$('tsTitle'))chips79(sc,t)}catch(e){console.error(e)}return r}})(drawTaskSheet);
 var DR79=null;
-addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-ch79]');if(DR79&&DR79.sup&&e.target&&e.target.closest&&e.target.closest('#sheetC .tchips')){e.preventDefault();e.stopPropagation();DR79=null;return}
+addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-ch79]');if(DR79&&DR79.sup&&e.target&&e.target.closest&&e.target.closest('#sheetC .tchips')){e.preventDefault();e.stopImmediatePropagation();DR79=null;return}
   if(!b)return;e.preventDefault();e.stopPropagation();const t=TASKS[(sheetCtx||{}).task],sc=$('sheetC');if(!t||!sc)return;const op=o78(t);op.chips=op.chips?0:1;vis79(sc,t)},true);
 addEventListener('pointerdown',e=>{const c=e.target&&e.target.closest&&e.target.closest('#sheetC .tchips.e79 [data-k79]');if(!c||(e.button&&e.button>0))return;
   DR79={c,x:e.clientX,y:e.clientY,on:false,id:e.pointerId,sup:false}},true);
@@ -190,7 +194,7 @@ dndEnd=(function(prev){return function(){const d=DND.drop,kind=DND.kind,id=DND.i
   toastAct(`${names}를 '${head.title}' 묶음에 넣었어요`,'되돌리기',()=>{snap.forEach(([i,p])=>{const k=TASKS[i];if(!k)return;if(p)k.parent=p;else delete k.parent;saveTask(k)});if(hp)head.parent=hp;saveTask(head);render()})}})(dndEnd);
 
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['보일 것 / 숨길 것','캘린더 ⚲','캘린더에 보일 것·숨길 것을 고르는 곳(예전 이름 거르기). 위에 어떤 모드인지 글로 떠요',()=>{location.hash='cal'},'캘린더 거르기 필터 숨기기 보이기 보일 숨길'],
+  ['거르기','캘린더 ⚲','캘린더에서 보일 일·숨길 일을 거르는 곳. 위에 어떤 모드인지 글로 떠요',()=>{location.hash='cal'},'캘린더 거르기 필터 숨기기 보이기 보일 숨길'],
   ['상세 칩 늘리기·끌기','할 일 상세 칩 줄','＋ 더를 누르면 숨은 칩이 나오고, 펼친 채 끌면 순서가 바뀌어요',()=>{location.hash='tasks'},'칩 순서 더 접기 상세 관리'],
   ['메모 목록 줄','할 일 상세 메모','- [ ] 줄은 체크, - 줄은 점. ↑↓로 순서, ↗로 묶인 할 일로 빼기',()=>{location.hash='tasks'},'메모 체크리스트 목록 체크박스'],
   ['끌어서 묶기','할 일 목록','다른 할 일 줄 가운데에 놓으면 그 밑으로 묶임(되돌리기 있음)',()=>{location.hash='tasks'},'묶기 하위 끌기 드래그 묶음 아래'],
