@@ -1,0 +1,38 @@
+/* v8.0: 식단표 · 내일 짜기 */
+/* 식단표 주간 표 */
+.m80n{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 6px}
+.m80wk{font-weight:600;font-size:14px;text-align:center;flex:1}
+.m80g{display:flex;flex-direction:column;gap:4px}
+.m80r{display:grid;grid-template-columns:76px 1fr 1fr;gap:6px;align-items:center}
+.m80r input{min-width:0;width:100%;box-sizing:border-box}
+.m80r .m80d{font-weight:600;font-size:13px;line-height:1.1}
+.m80r .m80d small{display:block;font-weight:600;font-size:11px;color:var(--ink)}
+.m80r.past{opacity:.55}
+.m80r.today{border-left:3px solid var(--ink);padding-left:5px;margin-left:-8px}
+.m80b{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 2px}
+.m80s{margin-top:8px}
+.m80s summary{cursor:pointer;font-size:13px}
+.m80t{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.m80t input[type=time]{width:auto}
+.m80t input[type=number]{width:72px}
+.m80l{display:block}
+.m80l input{display:block;width:100%;box-sizing:border-box;margin-top:2px}
+#sheetC .m80b2{margin-left:8px;font-size:12px}
+/* 캘린더 식사 블록: 끝낸 것과 구분되게 점선 */
+[data-ctask^="ml80_"]{border-style:dashed}
+/* 시간표 짜기 */
+.p80b{margin:6px 0;padding:6px 8px;border:1px solid var(--line);border-radius:10px;font-size:13px}
+.p80b.over{border-style:dashed;border-color:var(--ink);font-weight:600}
+.p80g{margin:10px 0 4px;font-weight:600;font-size:13px}
+.p80g small{font-weight:400;color:var(--muted)}
+.p80f{display:flex;gap:8px;align-items:baseline;padding:5px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.p80f b{font-variant-numeric:tabular-nums;font-size:13px;white-space:nowrap}
+.p80f span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.p80l{display:flex;gap:6px;align-items:center;padding:4px 2px;border-bottom:1px solid var(--line)}
+.p80l .p80t{flex:1;min-width:0;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.p80l.ex .p80t{color:var(--muted);text-decoration:line-through}
+.p80l select{width:auto;padding:2px 4px;font-size:12.5px}
+.p80l .p80at{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:13px}
+.p80l.pv{background:var(--panel)}
+.p80l .p80n{width:18px;text-align:center;color:var(--muted)}
+.p80a{margin-top:10px}
