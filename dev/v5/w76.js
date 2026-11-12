@@ -38,7 +38,7 @@ function carePick76(){const c=careCand76();if(!c.length){toast('옮길 반복 �
 // 우클릭 메뉴
 menu61=(function(prev){return function(x,y,title,items){try{const t=MT65;if(t&&t.status===0&&!t.rid&&!t.cb76&&!isStep62(t)&&Array.isArray(items)){items=items.slice();
     const i=items.findIndex(it=>it&&typeof it.l==='string'&&/^☑ 일퀘/.test(it.l));
-    items.splice(i<0?items.length:i+1,0,{l:t.care76?'🧽 관리에서 빼기 (할 일 목록으로)':'🧽 관리로 (목록·캘린더에서 빼기)',dis:!t.care76&&!(t.rep&&t.rep.f),f:()=>careToggle76(t)})}}catch(e){console.error(e)}
+    items.splice(i<0?items.length:i+1,0,{l:t.care76?'🧽 관리에서 빼기 (할 일 목록으로)':'🧽 관리로 (오늘 목록·캘린더에서 빼기)',f:(ev)=>{try{if(typeof LP77==='object'&&LP77)lastPt=LP77}catch(e){}careToggle76(t)}})}}catch(e){console.error(e)}
   return prev.call(this,x,y,title,items)}})(menu61);
 
 /* ---- 2) 거르기: 목록 · 홈 오늘 · 서랍 · 캘린더 ---- */
