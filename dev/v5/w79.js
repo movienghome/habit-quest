@@ -188,3 +188,11 @@ dndEnd=(function(prev){return function(){const d=DND.drop,kind=DND.kind,id=DND.i
   nestUnder(head,ids);try{mselClear()}catch(e){}render();
   const names=ids.length>1?ids.length+'개':"'"+TASKS[ids[0]].title+"'";
   toastAct(`${names}를 '${head.title}' 묶음에 넣었어요`,'되돌리기',()=>{snap.forEach(([i,p])=>{const k=TASKS[i];if(!k)return;if(p)k.parent=p;else delete k.parent;saveTask(k)});if(hp)head.parent=hp;saveTask(head);render()})}})(dndEnd);
+
+F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
+  ['보일 것 / 숨길 것','캘린더 ⚲','캘린더에 보일 것·숨길 것을 고르는 곳(예전 이름 거르기). 위에 어떤 모드인지 글로 떠요',()=>{location.hash='cal'},'캘린더 거르기 필터 숨기기 보이기 보일 숨길'],
+  ['상세 칩 늘리기·끌기','할 일 상세 칩 줄','＋ 더를 누르면 숨은 칩이 나오고, 펼친 채 끌면 순서가 바뀌어요',()=>{location.hash='tasks'},'칩 순서 더 접기 상세 관리'],
+  ['메모 목록 줄','할 일 상세 메모','- [ ] 줄은 체크, - 줄은 점. ↑↓로 순서, ↗로 묶인 할 일로 빼기',()=>{location.hash='tasks'},'메모 체크리스트 목록 체크박스'],
+  ['끌어서 묶기','할 일 목록','다른 할 일 줄 가운데에 놓으면 그 밑으로 묶임(되돌리기 있음)',()=>{location.hash='tasks'},'묶기 하위 끌기 드래그 묶음 아래'],
+  ['✓ 이미 한 일 · Ctrl+Enter','할 일 입력칸','적고 ✓나 Ctrl+Enter = 이미 한 일로 바로 기록',()=>{location.hash='tasks'},'한 일 기록 단축키 컨트롤 엔터 완료'],
+  ['사이드바 접기 · 메뉴 순서','할 일 화면 «·왼쪽 메뉴','« 로 목록 사이드바 접기, PC 왼쪽 메뉴는 끌어서 순서 바꾸기',()=>{location.hash='tasks'},'사이드바 접기 메뉴 순서 레일']])}})(F67);
