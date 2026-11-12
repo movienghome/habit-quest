@@ -67,3 +67,59 @@ addEventListener('pointermove',e=>{const d=DR79;if(!d||e.pointerId!==d.id)return
   if(d.c.compareDocumentPosition(o)&Node.DOCUMENT_POSITION_PRECEDING)o.before(d.c);else o.after(d.c);d.last=[e.clientX,e.clientY]},true);
 function drEnd79(){const d=DR79;if(!d)return;d.c.classList.remove('drag79');if(d.on){d.sup=true;const ch=d.c.parentElement;if(ch)chSave79(ch);setTimeout(()=>{if(DR79===d)DR79=null},250)}else DR79=null}
 addEventListener('pointerup',drEnd79,true);addEventListener('pointercancel',drEnd79,true);
+
+/* ---- B12: 메모 안의 목록 — `- [ ]` 체크박스 · `-`·`+` 점 목록 · ↗ 묶인 할 일로 · 순서 바꾸기 ----
+   메모 글(t.note)이 그대로 원본. 목록 줄이 있으면 평소엔 보기 모습(.nv79), 눌러서 고치면 글 칸. */
+var LI79=/^(\s*)([-+*])\s+(?:\[([ xX])\]\s*)?(.*)$/;
+function nLines79(v){return String(v||'').split('\n')}
+function nHas79(v){return nLines79(v).some(l=>LI79.test(l))}
+function nHtml79(v){return nLines79(v).map((l,i)=>{const m=LI79.exec(l);
+  if(m){const ind=Math.min(4,Math.floor(m[1].replace(/\t/g,'  ').length/2)),cb=m[3]!=null,dn=cb&&m[3]!==' ';
+    return `<div class="ni79${dn?' dn':''}" style="margin-left:${ind*14}px" data-i="${i}">${cb?`<button type="button" class="nc79" data-n79="tog" aria-pressed="${dn}" aria-label="${dn?'체크 풀기':'체크하기'}">${dn?'☑':'☐'}</button>`:'<span class="nb79" aria-hidden="true">•</span>'}<span class="nt79">${esc(m[4])||'&nbsp;'}</span><span class="na79"><button type="button" data-n79="up" aria-label="위로" title="위로">↑</button><button type="button" data-n79="dn" aria-label="아래로" title="아래로">↓</button>${cb?'<button type="button" data-n79="pro" aria-label="묶인 할 일로" title="묶인 할 일로 (점수 따로)">↗</button>':''}</span></div>`}
+  return l.trim()?`<div class="np79" data-i="${i}">${esc(l)}</div>`:'<div class="ns79"></div>'}).join('')}
+function note79(sc,t){const ta=$('tsNote');if(!ta)return;let pv=sc.querySelector('.nv79');const show=nHas79(ta.value)&&!o78(t).nedit;
+  if(!pv){ta.insertAdjacentHTML('afterend','<div class="nv79" tabindex="0" role="group" aria-label="메모 — 눌러서 고치기"></div>');pv=ta.nextElementSibling}
+  hide78(ta,show);hide78(pv,!show);if(show)pv.innerHTML=nHtml79(ta.value)}
+drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{const sc=$('sheetC'),t=TASKS[(sheetCtx||{}).task];if(sc&&t&&$('tsTitle'))note79(sc,t)}catch(e){console.error(e)}return r}})(drawTaskSheet);
+addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;const pv=T.closest('#sheetC .nv79');if(!pv)return;const t=TASKS[(sheetCtx||{}).task],ta=$('tsNote'),sc=$('sheetC');if(!t||!ta)return;
+  const b=T.closest('[data-n79]');
+  if(!b){e.preventDefault();e.stopPropagation();o78(t).nedit=1;note79(sc,t);ta.focus();const n=ta.value.length;try{ta.setSelectionRange(n,n)}catch(x){}return}
+  e.preventDefault();e.stopPropagation();const row=b.closest('[data-i]'),i=row?+row.dataset.i:-1,act=b.dataset.n79,L=nLines79(ta.value);if(i<0||i>=L.length)return;
+  if(act==='tog')L[i]=L[i].replace(/\[( |x|X)\]/,(m,c)=>c===' '?'[x]':'[ ]');
+  else if(act==='up'||act==='dn'){const j=i+(act==='up'?-1:1);if(j<0||j>=L.length||!LI79.test(L[j]))return;[L[i],L[j]]=[L[j],L[i]]}
+  else if(act==='pro'){const m=LI79.exec(L[i]),ti=m&&m[4].trim();if(!ti)return;L.splice(i,1);ta.value=L.join('\n');const tt=tsRead();if(!tt)return;
+    const k=newTask({title:ti,list:tt.list,tags:[...(tt.tags||[])]});k.parent=tt.id;if(m[3]&&m[3]!==' '){k.status=2;k.doneAt=dateKey()}saveTask(k);o78(tt).kids=1;tsCommit(true,false);render();toast(`'${ti}'를 묶인 할 일로 바꿨어요`);return}
+  ta.value=L.join('\n');try{tsCommit(false)}catch(x){console.error(x)}pv.innerHTML=nHtml79(ta.value)},true);
+addEventListener('focusout',e=>{const ta=e.target;if(!ta||ta.id!=='tsNote')return;const t=TASKS[(sheetCtx||{}).task];if(!t)return;
+  setTimeout(()=>{const sc=$('sheetC'),n=$('tsNote');if(!sc||!n||document.activeElement===n)return;o78(t).nedit=0;note79(sc,t)},0)},true);
+addEventListener('keydown',e=>{const ta=e.target;if(!ta||ta.id!=='tsNote'||e.key!=='Enter'||e.isComposing||e.keyCode===229||e.shiftKey||e.ctrlKey||e.metaKey||e.altKey)return;
+  const v=ta.value,p=ta.selectionStart;if(p!==ta.selectionEnd)return;const ls=v.lastIndexOf('\n',p-1)+1;let le=v.indexOf('\n',p);if(le<0)le=v.length;if(p!==le)return;   // 줄 끝에서만
+  const m=LI79.exec(v.slice(ls,le));if(!m)return;e.preventDefault();e.stopPropagation();
+  if(!m[4].trim()){ta.value=v.slice(0,ls)+v.slice(le);ta.setSelectionRange(ls,ls);return}   // 빈 항목에서 Enter = 목록 끝내기
+  const ins='\n'+m[1]+m[2]+' '+(m[3]!=null?'[ ] ':'');ta.value=v.slice(0,p)+ins+v.slice(p);const q=p+ins.length;ta.setSelectionRange(q,q);ta.dispatchEvent(new Event('input',{bubbles:true}))},true);
+
+/* ---- B13: 묶인 할 일 순서 끌기 (k.ord79 — 목록의 묶음 줄·상세가 같은 순서) ---- */
+kidsOf=(function(prev){return function(id){const a=prev.apply(this,arguments);if(a.some(k=>k.ord79!=null))a.sort((x,y)=>(x.ord79==null?1e6:x.ord79)-(y.ord79==null?1e6:y.ord79));return a}})(kidsOf);
+function kids79(sc,t){const kb=sc.querySelector('.kids56.box71');if(!kb||kb.classList.contains('hid78')||kb.classList.contains('fold78')||kb.dataset.g79)return;
+  const form=kb.querySelector('form.krow');if(!form)return;kb.dataset.g79='1';
+  let rows=[...kb.querySelectorAll('.krow:not(form)')];if(!rows.length)return;
+  const idOf=r=>{const b=r.querySelector('[data-x56open]');return b?b.dataset.x56open:''};
+  const ix=new Map(rows.map((r,i)=>[r,i])),ord=r=>{const k=TASKS[idOf(r)];return k&&k.ord79!=null?k.ord79:1e6};
+  rows.sort((a,b)=>((a.classList.contains('on')?1:0)-(b.classList.contains('on')?1:0))||(ord(a)-ord(b))||(ix.get(a)-ix.get(b)));rows.forEach(r=>form.before(r));
+  rows.forEach(r=>{r.classList.add('g79');r.insertAdjacentHTML('afterbegin','<button type="button" class="gr79" data-g79="1" aria-label="순서 바꾸기 (끌기)" title="끌어서 순서 바꾸기">⋮⋮</button>')});
+  kb.classList.add('g79')}
+drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{const sc=$('sheetC'),t=TASKS[(sheetCtx||{}).task];if(sc&&t&&$('tsTitle'))kids79(sc,t)}catch(e){console.error(e)}return r}})(drawTaskSheet);
+var KD79=null;
+addEventListener('pointerdown',e=>{const g=e.target&&e.target.closest&&e.target.closest('#sheetC .kids56 .gr79');if(!g||(e.button&&e.button>0))return;e.preventDefault();
+  KD79={row:g.closest('.krow'),y:e.clientY,id:e.pointerId,on:false,last:null};try{g.setPointerCapture(e.pointerId)}catch(x){}},true);
+addEventListener('pointermove',e=>{const d=KD79;if(!d||e.pointerId!==d.id)return;
+  if(!d.on){if(Math.abs(e.clientY-d.y)<5)return;d.on=true;d.row.classList.add('drag79')}
+  e.preventDefault();const kb=d.row.parentElement;if(!kb)return;
+  if(d.last!=null&&Math.abs(e.clientY-d.last)<10)return;
+  const rows=[...kb.querySelectorAll('.krow.g79')];const o=rows.find(r=>r!==d.row&&e.clientY>=r.getBoundingClientRect().top&&e.clientY<=r.getBoundingClientRect().bottom);
+  if(!o||(o.classList.contains('on')!==d.row.classList.contains('on')))return;   // 끝낸 것과 안 끝낸 것은 서로 안 넘나듦
+  if(d.row.compareDocumentPosition(o)&Node.DOCUMENT_POSITION_PRECEDING)o.before(d.row);else o.after(d.row);d.last=e.clientY},true);
+function kdEnd79(){const d=KD79;KD79=null;if(!d)return;d.row.classList.remove('drag79');if(!d.on)return;
+  const kb=d.row.parentElement;if(!kb)return;[...kb.querySelectorAll('.krow.g79')].forEach((r,i)=>{const b=r.querySelector('[data-x56open]'),k=b&&TASKS[b.dataset.x56open];if(k&&k.ord79!==i){k.ord79=i;saveTask(k)}});
+  try{render()}catch(x){}}
+addEventListener('pointerup',kdEnd79,true);addEventListener('pointercancel',kdEnd79,true);

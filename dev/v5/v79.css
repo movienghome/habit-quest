@@ -15,3 +15,25 @@
 #sheetC .tchips .drag79{outline:2px dashed var(--accent);opacity:.85}
 #sheetC .tchips .div79{align-self:center;font-size:11px;color:var(--muted);white-space:nowrap;padding:0 2px}
 #sheetC .tchips .more79{flex:none;border-style:dashed;background:transparent;color:var(--muted)}
+/* B12 메모 목록 */
+#sheetC .nv79{margin-top:8px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:text;min-height:34px}
+#sheetC .nv79:focus-visible{outline:2px solid var(--accent)}
+#sheetC .nv79 .np79{padding:2px 0;white-space:pre-wrap;word-break:break-word}
+#sheetC .nv79 .ns79{height:6px}
+#sheetC .ni79{display:flex;align-items:flex-start;gap:6px;padding:1px 0}
+#sheetC .ni79 .nt79{flex:1;min-width:0;word-break:break-word;padding-top:2px}
+#sheetC .ni79.dn .nt79{text-decoration:line-through;color:var(--muted)}
+#sheetC .ni79 .nb79{width:22px;text-align:center;color:var(--muted);padding-top:2px}
+#sheetC .ni79 .nc79{all:unset;cursor:pointer;width:22px;text-align:center;font-size:16px;line-height:24px;border-radius:6px}
+#sheetC .ni79 .nc79:focus-visible{outline:2px solid var(--accent)}
+#sheetC .ni79 .na79{display:flex;gap:2px;opacity:0;transition:opacity .12s}
+#sheetC .ni79:hover .na79,#sheetC .ni79:focus-within .na79{opacity:1}
+@media (hover:none){#sheetC .ni79 .na79{opacity:.7}}
+#sheetC .ni79 .na79 button{all:unset;cursor:pointer;font-size:12px;color:var(--muted);padding:2px 5px;border-radius:6px}
+#sheetC .ni79 .na79 button:hover,#sheetC .ni79 .na79 button:focus-visible{color:var(--ink);outline:1px solid var(--line)}
+/* B13 묶인 할 일 순서 */
+#sheetC .krow.g79{grid-template-columns:16px 28px minmax(0,1fr) auto auto}
+#sheetC .kids56.g79 form.krow{margin-left:22px}
+#sheetC .gr79{all:unset;cursor:grab;touch-action:none;color:var(--muted);font-size:11px;letter-spacing:-2px;text-align:center;user-select:none;padding:4px 0}
+#sheetC .gr79:focus-visible{outline:2px solid var(--accent);border-radius:4px}
+#sheetC .krow.drag79{outline:2px dashed var(--accent);opacity:.85;border-radius:6px}

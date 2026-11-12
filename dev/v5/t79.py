@@ -123,9 +123,56 @@ def t_b17(pg,T=''):
     clk(pg,'#sheetC .tchips [data-x56panel="when"]',300)
     ok(cnt(pg,'#sheetC #tsDue')==1,T+'날짜 칩 눌러 칸 열기 그대로')
 
+def t_b12(pg,T=''):
+    closesheet(pg);tid=mk(pg,'메모 시험',{'due':J(pg,"midKey68()")});gotasks(pg);opensheet(pg,tid)
+    ok(cnt(pg,'#sheetC #tsNote')==1 and cnt(pg,'#sheetC .nv79')==0,T+'목록 없는 메모 = 글 칸만')
+    vis(pg,'#sheetC #tsNote').click();pg.keyboard.type('- [ ] 하나');pg.keyboard.press('Enter')
+    ok(J(pg,"document.getElementById('tsNote').value")=='- [ ] 하나\n- [ ] ',T+'Enter = 다음 체크 항목 자동',J(pg,"document.getElementById('tsNote').value"))
+    pg.keyboard.type('둘');pg.keyboard.press('Enter');pg.keyboard.press('Enter')
+    ok(J(pg,"document.getElementById('tsNote').value")=='- [ ] 하나\n- [ ] 둘\n',T+'빈 항목에서 Enter = 목록 끝내기',J(pg,"document.getElementById('tsNote').value"))
+    pg.keyboard.type('+ 점 하나');pg.keyboard.press('Enter');pg.keyboard.press('Enter');pg.keyboard.type('아무 글')
+    vis(pg,'#sheetC #tsTitle').click();pg.wait_for_timeout(500)
+    ok(cnt(pg,'#sheetC .nv79')==1 and cnt(pg,'#sheetC #tsNote')==0,T+'목록이 있으면 보기 모습(글 칸 숨김)')
+    ok(cnt(pg,'#sheetC .nv79 .nc79')==2 and cnt(pg,'#sheetC .nv79 .nb79')==1,T+'체크박스 2 · 점 1',cnt(pg,'#sheetC .nv79 .nc79'))
+    ok('아무 글' in vis(pg,'#sheetC .nv79').inner_text(),T+'일반 줄도 그대로 보임')
+    ok(J(pg,f"TASKS['{tid}'].note")=='- [ ] 하나\n- [ ] 둘\n+ 점 하나\n아무 글',T+'글 원본 저장',J(pg,f"TASKS['{tid}'].note"))
+    vis(pg,'#sheetC .nv79 .nc79').click();pg.wait_for_timeout(400)
+    ok(J(pg,f"TASKS['{tid}'].note").startswith('- [x] 하나'),T+'체크 누르면 [x]로 저장',J(pg,f"TASKS['{tid}'].note"))
+    ok('☑' in vis(pg,'#sheetC .nv79 .nc79').inner_text() and cnt(pg,'#sheetC .nv79 .ni79.dn')==1,T+'끝낸 항목은 ☑ + 취소선(색만 아님)')
+    # 순서: 둘째 ↑
+    J(pg,"document.querySelectorAll('#sheetC .nv79 .ni79')[1].querySelector('[data-n79=up]').click()");pg.wait_for_timeout(400)
+    ok(J(pg,f"TASKS['{tid}'].note").startswith('- [ ] 둘\n- [x] 하나'),T+'↑ 순서 바꾸기',J(pg,f"TASKS['{tid}'].note"))
+    # ↗ 묶인 할 일로
+    J(pg,"document.querySelectorAll('#sheetC .nv79 .ni79')[0].querySelector('[data-n79=pro]').click()");pg.wait_for_timeout(700)
+    ks=J(pg,f"kidsOf('{tid}').map(k=>k.title+':'+k.status)")
+    ok(ks==['둘:0'],T+'↗ 묶인 할 일로(점수 따로)',ks)
+    ok('둘' not in J(pg,f"TASKS['{tid}'].note"),T+'…메모에서는 그 줄이 빠짐',J(pg,f"TASKS['{tid}'].note"))
+    # 눌러서 고치기
+    vis(pg,'#sheetC .nv79 .nt79').click();pg.wait_for_timeout(300)
+    ok(cnt(pg,'#sheetC #tsNote')==1 and J(pg,"document.activeElement.id")=='tsNote',T+'보기 모습을 누르면 글 칸으로(포커스)')
+
+def t_b13(pg,T=''):
+    closesheet(pg);tid=J(pg,"(()=>{const h=newTask({title:'묶음 머리',list:'inbox'});h.due=midKey68();saveTask(h);['가','나','다'].forEach(n=>{const k=newTask({title:n,list:'inbox'});k.parent=h.id;saveTask(k)});return h.id})()")
+    gotasks(pg);opensheet(pg,tid)
+    clk(pg,'#sheetC [data-k78]',400)
+    ok(cnt(pg,'#sheetC .krow.g79')==3 and cnt(pg,'#sheetC .gr79')==3,T+'묶인 할 일 줄마다 끌 손잡이')
+    def box(sel):return J(pg,"(()=>{const r=document.querySelectorAll('#sheetC .krow.g79')["+str(sel)+"].getBoundingClientRect();return [r.x,r.y,r.width,r.height]})()")
+    g=J(pg,"(()=>{const r=document.querySelectorAll('#sheetC .gr79')[2].getBoundingClientRect();return [r.x+r.width/2,r.y+r.height/2]})()");t0=box(0)
+    pg.mouse.move(*g);pg.mouse.down();pg.mouse.move(g[0],g[1]-8,steps=3);pg.mouse.move(g[0]+10,t0[1]+4,steps=12);pg.wait_for_timeout(100);pg.mouse.up();pg.wait_for_timeout(500)
+    names=J(pg,"[...document.querySelectorAll('#sheetC .krow.g79 .kt')].map(x=>x.textContent.trim())")
+    ok(names[0]=='다',T+'손잡이를 끌어 맨 위로',names)
+    ok(J(pg,f"kidsOf('{tid}').map(k=>k.title).join('')")=='다가나',T+'묶음 순서가 저장되고 다른 곳(kidsOf)도 같음',J(pg,f"kidsOf('{tid}').map(k=>k.title).join('')"))
+    # 다시 열어도 유지
+    closesheet(pg);gotasks(pg);opensheet(pg,tid)
+    if not cnt(pg,'#sheetC .krow.g79'):clk(pg,'#sheetC [data-k78]',400)
+    names=J(pg,"[...document.querySelectorAll('#sheetC .krow.g79 .kt')].map(x=>x.textContent.trim())")
+    ok(names==['다','가','나'],T+'다시 열어도 순서 그대로',names)
+    # 목록(할 일 화면)의 묶음 아래 줄 순서도
+    pg.screenshot(path=SP+('t79_b13_p.png' if T else 't79_b13.png'))
+
 def body(pg,phone=False):
     T='폰: ' if phone else ''
-    for f in (t_j10,t_b18,t_b19,t_b17):
+    for f in (t_j10,t_b18,t_b19,t_b17,t_b12,t_b13):
         safe(lambda f=f:f(pg,T),T+f.__name__)
 
 with sync_playwright() as pw:
