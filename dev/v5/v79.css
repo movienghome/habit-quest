@@ -47,3 +47,8 @@ form.tadd .in .fin79{flex:none;white-space:nowrap;padding-left:9px;padding-right
 @media (min-width:960px){.tlayout.sb79off{grid-template-columns:minmax(0,1fr)}.tlayout.sb79off .tchips.mob{display:flex}}
 body.split .tlayout.sb79off{grid-template-columns:var(--listw,minmax(360px,1fr)) 10px minmax(440px,1.4fr)}
 #side>a.drag79{outline:2px dashed var(--accent);opacity:.85;border-radius:8px}
+/* B8 끌어 묶기 */
+.trow.nest79{position:relative}
+.trow.nest79::after{content:'📦 여기에 묶기';position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--accent);background:var(--panel);padding:1px 6px;border-radius:999px;pointer-events:none}
+/* B6: « 버튼이 생겨도 제목 줄 도구가 두 줄로 꺾이지 않게 — 목록 고르기(select)가 먼저 줄어듦 */
+@media (min-width:960px){[data-view="tasks"] .ptitle{flex-wrap:nowrap;gap:6px}[data-view="tasks"] .ptitle>h2{flex:0 0 auto;max-width:45%}[data-view="tasks"] .ptitle>.row{flex:0 1 auto}}

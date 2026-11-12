@@ -221,9 +221,40 @@ def t_b6(pg,T=''):
     J(pg,"render()");pg.wait_for_timeout(400)
     ok(keys()==k1,T+'다시 그려도 그 순서 그대로')
 
+def t_b8(pg,T=''):
+    if T:
+        ok(True,T+'B8은 마우스 끌기 시험(PC)만');return
+    closesheet(pg)
+    ids=J(pg,"(()=>{const d=midKey68();const r=['끌 일 A','받는 일 B','옆 일 C'].map(n=>{const t=newTask({title:n,list:'inbox'});t.due=d;saveTask(t);return t.id});return r})()")
+    A,B,Cc=ids;gotasks(pg)
+    J(pg,f"document.querySelector('#tList .trow[data-task=\\\"{B}\\\"]').scrollIntoView({{block:'center'}})");pg.wait_for_timeout(300)
+    def rc(i):return J(pg,f"(()=>{{const r=document.querySelector('#tList .trow[data-task=\"{i}\"]').getBoundingClientRect();return [r.x,r.y,r.width,r.height]}})()")
+    a=rc(A);b=rc(B)
+    pg.mouse.move(a[0]+a[2]*0.5,a[1]+a[3]/2);pg.mouse.down();pg.mouse.move(a[0]+a[2]*0.5+8,a[1]+a[3]/2+8,steps=3)
+    # 가장자리(윗부분)에선 순서 바꾸기
+    pg.mouse.move(b[0]+b[2]*0.5,b[1]+3,steps=10);pg.wait_for_timeout(120)
+    ok(cnt(pg,'#tList .trow.nest79')==0 and cnt(pg,'#tList .insline')>=1,T+'줄 가장자리 = 줄 사이 끼워넣기(묶기 아님)')
+    pg.mouse.move(b[0]+b[2]*0.5,b[1]+b[3]/2,steps=8);pg.wait_for_timeout(120)
+    ok(cnt(pg,'#tList .trow.nest79')==1,T+'줄 가운데 = 📦 묶기 표시')
+    pg.mouse.up();pg.wait_for_timeout(600)
+    ok(J(pg,f"TASKS['{A}'].parent")==B,T+'가운데에 놓으면 그 밑으로 묶임',J(pg,f"TASKS['{A}'].parent"))
+    ok('묶음에 넣었어요' in J(pg,"document.getElementById('toast').innerText"),T+'알림')
+    ok(cnt(pg,f'#tList .trow[data-task="{A}"]')>=1,T+'목록에 그 묶음 아래로 보임')
+    # 되돌리기
+    clk(pg,'#toast button',500)
+    ok(not J(pg,f"TASKS['{A}'].parent"),T+'되돌리기 → 다시 따로')
+    # 묶인 줄 위에 놓으면 그 묶음 머리 밑으로
+    J(pg,f"(()=>{{const k=TASKS['{A}'];k.parent='{B}';saveTask(k);render()}})()");pg.wait_for_timeout(500)
+    if not cnt(pg,f'#tList .trow[data-task="{A}"]'):J(pg,f"(()=>{{C.ui.tfold=C.ui.tfold||{{}};delete C.ui.tfold['{B}'];render()}})()");pg.wait_for_timeout(400)
+    c=rc(Cc);a=rc(A)
+    pg.mouse.move(c[0]+c[2]*0.5,c[1]+c[3]/2);pg.mouse.down();pg.mouse.move(c[0]+c[2]*0.5+8,c[1]+c[3]/2-8,steps=3);pg.mouse.move(a[0]+a[2]*0.5,a[1]+a[3]/2,steps=10);pg.wait_for_timeout(120);pg.mouse.up();pg.wait_for_timeout(600)
+    ok(J(pg,f"TASKS['{Cc}'].parent")==B,T+'묶인 줄 위에 놓으면 같은 묶음(머리 밑)으로',J(pg,f"TASKS['{Cc}'].parent"))
+    # 자기 자신·루틴은 안 묶임
+    ok(J(pg,f"kidsOf('{B}').length")==2,T+'묶음 B 밑에 둘')
+
 def body(pg,phone=False):
     T='폰: ' if phone else ''
-    for f in (t_j10,t_b18,t_b19,t_b17,t_b12,t_b13,t_b5,t_b6):
+    for f in (t_j10,t_b18,t_b19,t_b17,t_b12,t_b13,t_b5,t_b6,t_b8):
         safe(lambda f=f:f(pg,T),T+f.__name__)
 
 with sync_playwright() as pw:

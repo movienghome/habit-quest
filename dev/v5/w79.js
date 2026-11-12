@@ -167,3 +167,24 @@ addEventListener('pointermove',e=>{const d=ND79;if(!d||e.pointerId!==d.id)return
 function ndEnd79(){const d=ND79;if(!d)return;d.a.classList.remove('drag79');if(!d.on){ND79=null;return}d.sup=true;const sd=$('side');if(sd){C.navOrd79=navAs79(sd).map(navKey79);save('config')}setTimeout(()=>{if(ND79===d)ND79=null},300)}
 addEventListener('pointerup',ndEnd79,true);addEventListener('pointercancel',ndEnd79,true);
 addEventListener('click',e=>{if(ND79&&ND79.sup&&e.target&&e.target.closest&&e.target.closest('#side')){e.preventDefault();e.stopPropagation();ND79=null}},true);
+
+/* ---- B8: 할 일을 다른 할 일 가운데 위에 끌어 놓으면 그 밑으로 묶임 ----
+   기존 끌기 엔진(DND) 위에: 목록의 할 일 줄 '가운데 띠'(높이 ±20%)에 놓으면 줄 사이 순서 바꾸기 대신 묶기. 묶인 줄 위에 놓으면 그 묶음의 머리 밑으로.
+   루틴 머리·단계는 제외(묶기가 루틴 구조를 깨므로). 되돌리기 알림. 여러 개 고르기(msel) 중이면 같이 묶음. */
+function nestHi79(x,y){if(!DND.on||DND.kind!=='task'||!DND.drop||DND.drop.type!=='reorder'||DND.drop.col!=='tasks')return;
+  DND.ghost&&(DND.ghost.style.display='none');const un=document.elementFromPoint(x,y);DND.ghost&&(DND.ghost.style.display='');
+  const row=un&&un.closest&&un.closest('[data-drop="reorder:tasks"] .trow[data-task]');if(!row)return;
+  const h0=TASKS[row.dataset.task],k=TASKS[DND.id];if(!h0||!k||h0.id===k.id)return;
+  const r=row.getBoundingClientRect();if(Math.abs(y-(r.top+r.height/2))>r.height*0.2)return;
+  const head=h0.parent&&TASKS[h0.parent]?TASKS[h0.parent]:h0;
+  if(head.id===k.id||k.rid||k.rstep||head.rid||head.rstep||h0.rstep||k.cb76||head.cb76)return;
+  clearHi();row.classList.add('drop-hi','nest79');DND.drop={type:'nest',head:head.id}}
+dndMove=(function(prev){return function(){prev.apply(this,arguments);try{nestHi79(arguments[0],arguments[1])}catch(e){console.error(e)}}})(dndMove);
+dndEnd=(function(prev){return function(){const d=DND.drop,kind=DND.kind,id=DND.id;
+  if(!(d&&d.type==='nest'&&kind==='task'))return prev.apply(this,arguments);
+  dndAbort();const head=TASKS[d.head];if(!head)return;
+  const ids=(ui.msel&&ui.msel.has(id)&&ui.msel.size>1?[...ui.msel]:[id]).filter(i=>{const k=TASKS[i];return k&&k.id!==head.id&&!k.rid&&!k.rstep&&head.parent!==k.id});if(!ids.length)return;
+  const snap=[];ids.forEach(i=>{snap.push([i,TASKS[i].parent]);kidsOf(i).forEach(g=>snap.push([g.id,g.parent]))});const hp=head.parent;
+  nestUnder(head,ids);try{mselClear()}catch(e){}render();
+  const names=ids.length>1?ids.length+'개':"'"+TASKS[ids[0]].title+"'";
+  toastAct(`${names}를 '${head.title}' 묶음에 넣었어요`,'되돌리기',()=>{snap.forEach(([i,p])=>{const k=TASKS[i];if(!k)return;if(p)k.parent=p;else delete k.parent;saveTask(k)});if(hp)head.parent=hp;saveTask(head);render()})}})(dndEnd);
