@@ -63,10 +63,42 @@ def t_c1(pg,W):
     al=J(pg,"""(()=>{const g=document.querySelector('#calMain .mgrid');const mcs=[...g.querySelectorAll('.mc[data-calday]')];return [...g.querySelectorAll('.bar83')].every(b=>{const [a,z]=b.dataset.c83.split('-').map(Number);const ra=mcs[a].getBoundingClientRect(),rb=b.getBoundingClientRect(),sp=mcs[a].querySelector('.sp83').getBoundingClientRect();return Math.abs(rb.left-ra.left-1)<2&&rb.top>=sp.top-1&&rb.bottom<=sp.bottom+16})})()""")
     ok(al,f'[{W}] 날짜 목록을 열어도 막대가 칸을 따라감')
 
+def t_c2(pg,W):
+    for mode in ('3day','1day'):
+        gocal(pg,mode)
+        J(pg,"(()=>{ui.calAnchor=midKey68();renderCal()})()");pg.wait_for_timeout(300)
+        a0=J(pg,"ui.calAnchor");vw=pg.viewport_size
+        pg.mouse.move(vw['width']*0.6,vw['height']*0.6)
+        ok(J(pg,"!!document.elementFromPoint(%d,%d).closest('#calMain .tgwrap')"%(vw['width']*0.6,vw['height']*0.6)),f'[{W}] {mode} 시험 위치가 시간표 위')
+        pg.mouse.wheel(120,0);pg.wait_for_timeout(500)
+        a1=J(pg,"ui.calAnchor")
+        ok(a1==J(pg,"(k=>addDays(k,1))(%s)"%json.dumps(a0)),f'[{W}] {mode} 옆으로 휠 → 하루 뒤',(a0,a1))
+        pg.mouse.wheel(-120,0);pg.wait_for_timeout(500)
+        a2=J(pg,"ui.calAnchor");ok(a2==a0,f'[{W}] {mode} 반대로 휠 → 하루 앞',(a0,a2))
+        pg.mouse.wheel(0,300);pg.wait_for_timeout(400)
+        ok(J(pg,"ui.calAnchor")==a0,f'[{W}] {mode} 세로 휠은 날짜를 안 바꿈(세로 스크롤)')
+        pg.keyboard.down('Shift');pg.mouse.wheel(0,120);pg.keyboard.up('Shift');pg.wait_for_timeout(500)
+        ok(J(pg,"ui.calAnchor")!=a0,f'[{W}] {mode} Shift+휠 → 이동',J(pg,"ui.calAnchor"))
+        J(pg,"(k=>{ui.calAnchor=k;renderCal()})(%s)"%json.dumps(a0));pg.wait_for_timeout(300)
+        # 폰 밀기 흉내
+        sw="""(([dx,dy])=>{const el=document.querySelector('#calMain .tgbody');const r=el.getBoundingClientRect();const x=r.x+r.width/2,y=r.y+160;
+          const mk=(t,cx,cy)=>new Touch({identifier:1,target:el,clientX:cx,clientY:cy});
+          el.dispatchEvent(new TouchEvent('touchstart',{bubbles:true,cancelable:true,touches:[mk(0,x,y)],changedTouches:[mk(0,x,y)]}));
+          el.dispatchEvent(new TouchEvent('touchend',{bubbles:true,cancelable:true,touches:[],changedTouches:[mk(0,x+dx,y+dy)]}))})"""
+        J(pg,sw+"([-90,5])");pg.wait_for_timeout(400)
+        b1=J(pg,"ui.calAnchor");ok(b1==J(pg,"(k=>addDays(k,1))(%s)"%json.dumps(a0)),f'[{W}] {mode} 왼쪽으로 밀기 → 하루 뒤',(a0,b1))
+        J(pg,sw+"([90,5])");pg.wait_for_timeout(400)
+        ok(J(pg,"ui.calAnchor")==a0,f'[{W}] {mode} 오른쪽으로 밀기 → 하루 앞')
+        J(pg,sw+"([20,90])");pg.wait_for_timeout(300)
+        ok(J(pg,"ui.calAnchor")==a0,f'[{W}] {mode} 세로로 밀면 안 움직임')
+        J(pg,sw+"([-90,50])");pg.wait_for_timeout(300)
+        ok(J(pg,"ui.calAnchor")==a0,f'[{W}] {mode} 비스듬히 밀어도 안 움직임')
+
 with sync_playwright() as pw:
     for W,H in ((1400,900),(390,780)):
         b,pg=run(pw,W,H)
         safe(lambda:t_c1(pg,W),f'C1 {W}')
+        safe(lambda:t_c2(pg,W),f'C2 {W}')
         b.close()
 print('ERRS',[e for e in errs if 'favicon' not in e][:6])
 print('FAILS',len(FAILS),FAILS)

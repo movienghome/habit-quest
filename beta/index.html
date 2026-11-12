@@ -12381,6 +12381,21 @@ addEventListener('pointerdown',e=>{const b=e.target&&e.target.closest&&e.target.
   for(let i=a;i<=z&&cells[i];i++){const r=cells[i].getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<r.right){k=cells[i].dataset.calday;break}}
   b.dataset.k72=k||(cells[a]&&cells[a].dataset.calday)||''},true);
 
+/* ---- C2) 1일·3일 보기: 가로 휠(Shift+휠·트랙패드 옆으로)·폰 옆으로 밀기 = 하루씩 이동 ----
+   ◀ ▶ 단추는 그대로(1일 보기 하루씩·3일 보기 3일씩, patch24). */
+var W83={acc:0,t:0,lock:0};
+function calStep83(n){const m=(C.ui.cal||{}).mode;if(m!=='1day'&&m!=='3day')return false;ui.calAnchor=addDays(ui.calAnchor||dateKey(),n);ui.calKeepScroll=true;renderCal();return true}
+function inGrid83(el){return !!(el&&el.closest&&el.closest('#calMain .tgwrap'))}
+addEventListener('wheel',e=>{const m=(C.ui.cal||{}).mode;if((m!=='1day'&&m!=='3day')||!inGrid83(e.target)||curView()!=='cal')return;
+  const dx=e.deltaX||(e.shiftKey?e.deltaY:0);if(!dx||(!e.shiftKey&&Math.abs(e.deltaX)<Math.abs(e.deltaY)))return;
+  e.preventDefault();const now=Date.now();if(now-W83.t>350)W83.acc=0;W83.t=now;
+  if(now<W83.lock)return;W83.acc+=dx;if(Math.abs(W83.acc)>=40){const s=W83.acc>0?1:-1;W83.acc=0;W83.lock=now+220;calStep83(s)}},{passive:false});
+{let sx=0,sy=0,st=0;
+  addEventListener('touchstart',e=>{st=0;const m=(C.ui.cal||{}).mode;if((m!=='1day'&&m!=='3day')||!inGrid83(e.target)||e.touches.length!==1)return;
+    if(e.target.closest('.rz,.rz75,.allrz,.foldband'))return;const t=e.touches[0];sx=t.clientX;sy=t.clientY;st=Date.now()},{passive:true});
+  addEventListener('touchend',e=>{if(!st)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy,ok=Date.now()-st<500&&Math.abs(dx)>50&&Math.abs(dy)<40&&Math.abs(dx)>Math.abs(dy)*1.6;st=0;
+    if(!ok||(typeof DND!=='undefined'&&DND&&(DND.on||DND.pending)))return;calStep83(dx<0?1:-1)},{passive:true})}
+
 route();boot();
 </script>
 <script type="module" src="backend.js"></script>
