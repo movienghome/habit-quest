@@ -172,6 +172,7 @@ function planSheet80(k){const td=midKey68();k=k||addDays(td,1);if(!P80||P80.k!==
     ${lsRows||'<div class="empty small">시각 안 정한 할 일이 없어요 ✓</div>'}
     ${miss.length?`<div class="p80b over">⚠ 시간이 모자라 못 넣은 것 ${miss.length}개 — ${miss.map(t=>esc(t.title)).join(' · ')}<br><small>길이를 줄이거나 ⇥로 다음 날로 보내거나 하루 끝 시각을 늦춰요</small></div>`:''}
     <div class="row p80a">${pl?`<button type="button" class="btn" data-p80go="1">이대로 넣기 (${pl.items.length}개)</button><button type="button" class="btn ghost" data-p80x="1">취소</button>`:`<button type="button" class="btn" data-p80pv="1"${ls.some(autoOk80)?'':' disabled'}>빈 시간에 넣어 보기</button>`}</div>
+    ${P80.undo?`<div class="row"><button type="button" class="btn ghost sm" data-p80u="1">↶ ${esc(P80.undo.l)} 되돌리기</button></div>`:''}
     ${cn?`<div class="p80g">🧽 관리 <small>${cn}</small> <button type="button" class="linkbtn" data-p80care="${esc(k)}">차례 보기</button></div>`:''}
     <details class="m80s"><summary>⚙ 하루 시작·끝</summary><div class="row small m80t">${esc(k===td?'오늘은 지금 이후부터 · ':'')}시작 <input type="time" data-p80s="s" value="${esc(pcfg80().s)}"> 끝 <input type="time" data-p80s="e" value="${esc(pcfg80().e)}"></div></details>
     <p class="help" style="margin:6px 0 0">길이를 적어 두면 빈 시간에 중요도 순으로 차례로 넣어 봐요(5분 쉼). 미리보기에서 마음에 들면 '이대로 넣기' — 되돌리기 있어요. 반복·묶음 할 일은 시간표에서 직접 놓아요.</p>`)}
@@ -181,8 +182,10 @@ addEventListener('click',e=>{const T=e.target;if(!T||!T.closest||!(sheetCtx&&she
   if((b=T.closest('[data-p80pv]'))){stop();const items=loose80(P80.k).filter(t=>autoOk80(t)&&!P80.exc.has(t.id));P80.plan=fit80(P80.k,items);planSheet80(P80.k);return}
   if((b=T.closest('[data-p80x]'))){stop();P80.plan=null;planSheet80(P80.k);return}
   if((b=T.closest('[data-p80go]'))){stop();applyPlan80();return}
-  if((b=T.closest('[data-p80mv]'))){stop();const t=TASKS[b.dataset.p80mv];if(!t)return;const k=P80.k,nd=addDays(k,1),id=t.id,od=t.due;t.due=nd;saveTask(t);P80.plan=null;render();planSheet80(k);
-    toastAct(`'${t.title}' → ${dayName68(nd)}`,'되돌리기',()=>{const u=TASKS[id];if(u){u.due=od;saveTask(u);render()}},8000);return}
+  if((b=T.closest('[data-p80mv]'))){stop();const t=TASKS[b.dataset.p80mv];if(!t)return;const k=P80.k,nd=addDays(k,1),id=t.id,od=t.due;t.due=nd;saveTask(t);render();
+    const un=()=>{const u=TASKS[id];if(u){u.due=od;saveTask(u);render()}};planSheet80(k);P80.undo={l:`'${t.title.length>12?t.title.slice(0,12)+'…':t.title}' 옮김`,fn:un};planSheet80(k);
+    toastAct(`'${t.title}' → ${dayName68(nd)}`,'되돌리기',()=>{un();if(sheetCtx&&sheetCtx.p80){P80.undo=null;planSheet80(k)}},8000);return}
+  if((b=T.closest('[data-p80u]'))){stop();const u=P80.undo;P80.undo=null;if(u)u.fn();planSheet80(P80.k);return}
   if((b=T.closest('[data-p80t]'))){stop();const id=b.dataset.p80t;closeSheet();openTaskSheet(id);return}
   if((b=T.closest('[data-p80care]'))){stop();closeSheet();careSheet76(b.dataset.p80care);return}
 },true);
@@ -193,8 +196,9 @@ addEventListener('change',e=>{const T=e.target;if(!T||!T.matches||!(sheetCtx&&sh
 },true);
 function applyPlan80(){const pl=P80&&P80.plan;if(!pl||!pl.items.length)return;const k=P80.k,prev=[];
   pl.items.forEach(x=>{const t=TASKS[x.id];if(!t)return;prev.push({id:t.id,time:t.time||null,dur:t.dur||null});t.time=fmt80(x.time);t.dur=x.dur;saveTask(t)});
-  P80.plan=null;render();planSheet80(k);
-  toastAct(`🌙 ${prev.length}개를 ${dayName68(k)} 시간표에 넣었어요`,'되돌리기',()=>{prev.forEach(p=>{const t=TASKS[p.id];if(t){t.time=p.time;t.dur=p.dur;saveTask(t)}});render();if(sheetCtx&&sheetCtx.p80)planSheet80(k)},10000)}
+  const un=()=>{prev.forEach(p=>{const t=TASKS[p.id];if(t){t.time=p.time;t.dur=p.dur;saveTask(t)}});render()};
+  P80.plan=null;render();planSheet80(k);P80.undo={l:`방금 넣은 ${prev.length}개`,fn:un};planSheet80(k);
+  toastAct(`🌙 ${prev.length}개를 ${dayName68(k)} 시간표에 넣었어요`,'되돌리기',()=>{un();if(sheetCtx&&sheetCtx.p80){P80.undo=null;planSheet80(k)}},10000)}
 // 진입: 폰은 캘린더 ⋯ 설정 메뉴, 데스크톱은 캘린더 줄 🌙 단추
 menu61=(function(prev){return function(x,y,title,items){try{if(title==='캘린더 설정'&&Array.isArray(items)&&!items.some(it=>it&&/^🌙 시간표 짜기/.test(it.l||''))){
     const i=items.findIndex(it=>it&&typeof it.l==='string'&&/^🍱 식단표/.test(it.l));

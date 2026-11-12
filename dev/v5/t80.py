@@ -117,9 +117,79 @@ def t_meal(pg,T=''):
     ok(J(pg,"C.meal80.on")==1 and len(ml(pg))>=10,T+'다시 켜면 생김',len(ml(pg)))
     ok(J(pg,f"!TASKS['ml80_{k2}_l']"),T+'건너뛴 끼니는 켜도 안 생김')
 
+def t_plan(pg,T=''):
+    k=tom(pg)
+    J(pg,"(()=>{C.meal80=null;Object.values(TASKS).filter(t=>t.ml80).forEach(t=>deleteTask(t.id))})()")
+    fx=mk(pg,'촬영',{'due':k,'time':'10:00','dur':180})
+    A=mk(pg,'대본 정리',{'due':k,'prio':5,'dur':60})
+    B=mk(pg,'장보기',{'due':k,'dur':30})
+    Cc=mk(pg,'엄마 연락',{'due':k})
+    R=mk(pg,'스트레칭 반복',{'due':k,'rep':{'f':'d','i':1}})
+    gocal(pg)
+    if T:
+        clk(pg,'#cal62m',400)
+        ok(menu(pg,'시간표 짜기',700),T+'캘린더 ⋯ 설정에 🌙 시간표 짜기')
+    else:
+        ok(cnt(pg,'#calPlanBtn')==1,T+'캘린더 줄에 🌙 단추(데스크톱)')
+        clk(pg,'#calPlanBtn',700)
+    ok('시간표 짜기' in vis(pg,'#sheetC h3').inner_text(),T+'창이 열림(기본 내일)',vis(pg,'#sheetC h3').inner_text())
+    ok(cnt(pg,'#sheetC .p80f')==1 and cnt(pg,'#sheetC .p80l')==4,T+'정해진 것 1 · 시간 안 정한 일 4',(cnt(pg,'#sheetC .p80f'),cnt(pg,'#sheetC .p80l')))
+    ok(cnt(pg,'#sheetC .p80l .p80n')==1 and cnt(pg,'#sheetC .p80l input[type=checkbox]')==3,T+'반복 할 일은 자동 배치에서 빠짐(↻ 표시)')
+    clk(pg,'#sheetC [data-p80pv]',500)
+    ok(cnt(pg,'#sheetC .p80l.pv')==3 and cnt(pg,'#sheetC [data-p80go]')==1,T+'미리보기: 3개에 시각이 붙음',cnt(pg,'#sheetC .p80l.pv'))
+    pv=J(pg,"P80.plan.items.map(x=>[TASKS[x.id].title,fmt80(x.time)])")
+    ok(pv[0]==['대본 정리','09:00'],T+'중요도 높은 것이 가장 먼저(촬영 전 빈 1시간)',pv)
+    bad=J(pg,"P80.plan.items.some(x=>x.time<780&&x.time+x.dur>600&&TASKS[x.id].title!=='대본 정리')")
+    ok(not bad,T+'촬영 10:00–13:00과 겹치는 게 없음',pv)
+    ok(J(pg,f"!TASKS['{A}'].time"),T+'미리보기만으로는 아직 안 바뀜')
+    ne0=J(pg,"curDay().entries.length")
+    clk(pg,'#sheetC [data-p80go]',600)
+    ok(J(pg,f"TASKS['{A}'].time")=='09:00' and J(pg,f"TASKS['{A}'].dur")==60,T+'이대로 넣기 → 시각·길이 저장')
+    ok(J(pg,f"TASKS['{Cc}'].dur")==30 and J(pg,f"!!TASKS['{Cc}'].time"),T+'길이 안 적은 건 30분으로 넣음')
+    ok(J(pg,f"!TASKS['{R}'].time"),T+'반복 할 일은 그대로')
+    ok(J(pg,"curDay().entries.length")==ne0,T+'점수 기록은 안 생김')
+    ok(cnt(pg,'#sheetC [data-p80u]')==1,T+'창 안에 ↶ 되돌리기 단추(폰은 알림이 창에 가려져서)')
+    clk(pg,'#sheetC [data-p80u]',500)
+    ok(J(pg,f"!TASKS['{A}'].time && !TASKS['{B}'].time"),T+'되돌리기 → 시각 원래대로(없음)')
+    # 시간 모자람
+    pg.locator('#sheetC details.m80s summary').click();pg.wait_for_timeout(150)
+    e=pg.locator('#sheetC [data-p80s="e"]').first;e.fill('10:30');e.press('Tab');pg.wait_for_timeout(500)
+    clk(pg,'#sheetC [data-p80pv]',500)
+    ok('못 넣은 것' in J(pg,"document.getElementById('sheetC').innerText"),T+'시간이 모자라면 ⚠ 못 넣은 것을 알려 줌')
+    clk(pg,'#sheetC [data-p80x]',400)
+    pg.locator('#sheetC details.m80s summary').click();pg.wait_for_timeout(150)
+    e=pg.locator('#sheetC [data-p80s="e"]').first;e.fill('22:00');e.press('Tab');pg.wait_for_timeout(400)
+    # 체크 끄면 빠짐
+    pg.locator(f'#sheetC [data-p80c="{B}"]').uncheck();pg.wait_for_timeout(400)
+    clk(pg,'#sheetC [data-p80pv]',500)
+    ok(J(pg,f"!P80.plan.items.some(x=>x.id==='{B}')"),T+'체크를 끈 일은 안 넣음')
+    clk(pg,'#sheetC [data-p80x]',300)
+    # 길이 고르기
+    pg.locator(f'#sheetC [data-p80d="{B}"]').select_option('45');pg.wait_for_timeout(400)
+    ok(J(pg,f"TASKS['{B}'].dur")==45,T+'줄에서 길이 고르면 바로 저장')
+    # 다음 날로
+    clk(pg,f'#sheetC [data-p80mv="{B}"]',500)
+    ok(J(pg,f"TASKS['{B}'].due")==J(pg,f"addDays('{k}',1)"),T+'⇥ 다음 날로 옮김')
+    clk(pg,'#sheetC [data-p80u]',500)
+    ok(J(pg,f"TASKS['{B}'].due")==k,T+'⇥ 되돌리기')
+    # 날 넘기기 · 정해진 것에 🍱
+    J(pg,"C.meal80={on:1};ml80cfg();mealEnsure80();render()");pg.wait_for_timeout(300)
+    J(pg,f"planSheet80('{k}')");pg.wait_for_timeout(400)
+    ok(cnt(pg,'#sheetC .p80f.ml')==2,T+'식단표를 켜 두면 정해진 것에 🍱 점심·저녁이 같이 보임',cnt(pg,'#sheetC .p80f.ml'))
+    ok(cnt(pg,'#sheetC .p80l')==4,T+'🍱는 시간 안 정한 일에 안 섞임')
+    clk(pg,'#sheetC [data-p80pv]',500)
+    ok(J(pg,"P80.plan.items.every(x=>{const b=ml80cfg();return !((x.time<hm80(b.l.t)+b.l.m&&x.time+x.dur>hm80(b.l.t))||(x.time<hm80(b.d.t)+b.d.m&&x.time+x.dur>hm80(b.d.t)))})"),T+'넣어 보기가 식사 시간을 피함')
+    clk(pg,'#sheetC [data-p80nav="1"]',400)
+    ok(J(pg,"P80.k")==J(pg,f"addDays('{k}',1)"),T+'› 다음 날로 넘어감')
+    # 오늘: 지금 이후
+    J(pg,"planSheet80(midKey68())");pg.wait_for_timeout(300)
+    J(pg,"(()=>{const t=newTask({title:'오늘 일',due:midKey68(),dur:15});saveTask(t);window.__tdy=t.id})()")
+    r=J(pg,"(()=>{const n=new Date(),nm=n.getHours()*60+n.getMinutes();const p=fit80(midKey68(),loose80(midKey68()).filter(autoOk80));return p.items.every(x=>x.time>=nm)||p.items.length===0})()")
+    ok(r,T+'오늘은 지금 이후에만 넣음')
+
 def body(pg,phone=False):
     T='폰: ' if phone else ''
-    for f in (t_meal,):
+    for f in (t_meal,t_plan):
         safe(lambda f=f:f(pg,T),T+f.__name__)
 
 with sync_playwright() as pw:
