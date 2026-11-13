@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v9.4</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v9.7</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2091,6 +2091,107 @@ body.m90 #battleBox>p.tiny.muted{display:none}
 .r93w select{width:auto;padding:2px 4px;font-size:12.5px}
 .n93{display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:6px;border-top:1px dashed var(--line)}
 .n93 .ib{margin-left:auto}
+
+/* v9.5: D2 카드 편집 창 */
+.sh.ae94sh{display:flex;align-items:center;gap:8px}
+.sh.ae94sh .x{flex:none}
+input.ae94n{flex:1;min-width:0;font-size:20px;font-weight:700;padding:8px 10px}
+.ae94id{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ae94sc{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
+.ae94sc label.s94{font-size:12.5px;font-weight:600;color:var(--ink)}
+.ae94sc label.s94 input{font-size:24px;font-weight:700;text-align:center;padding:8px 4px;min-height:54px;font-variant-numeric:tabular-nums}
+.ae94pre{flex-wrap:nowrap!important;overflow-x:auto;gap:4px;padding-bottom:2px}
+.ae94pre>*{flex:none;white-space:nowrap}
+.ae94i summary{font-size:12px;color:var(--muted);cursor:pointer}
+.ae94i p{margin:4px 0 0}
+details.ae94d{border:1.5px solid var(--line);border-radius:12px;background:var(--panel2)}
+details.ae94d>summary{cursor:pointer;padding:10px 12px;min-height:44px;display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px;list-style:none}
+details.ae94d>summary::-webkit-details-marker{display:none}
+details.ae94d>summary::after{content:'▾';margin-left:auto;color:var(--muted)}
+details.ae94d[open]>summary::after{content:'▴'}
+details.ae94d>summary small{font-weight:400}
+.ae94b{padding:2px 12px 12px;display:grid;gap:10px}
+.sc.ae94 .ae94f{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom,0px));background:var(--panel);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));margin-bottom:-6px;border-top:1px solid var(--line);z-index:2}
+/* v9.5: 내일 짜기 시간표 */
+.tray93{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
+.chipbtn.t93{min-height:36px}
+.chipbtn.t93.on{border-color:var(--ink);border-width:2px;font-weight:700}
+.sel93{border:2px solid var(--ink);border-radius:12px;padding:8px 10px;margin:6px 0;display:grid;gap:6px;background:var(--panel2)}
+.sel93 .s2{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.sel93 input[type=time],.sel93 select{width:auto}
+.tt93s{height:min(46vh,380px);overflow-y:auto;border:1.5px solid var(--line);border-radius:12px;background:var(--panel);margin:6px 0;-webkit-overflow-scrolling:touch}
+@media (min-width:700px){.tt93s{height:min(52vh,460px)}}
+.tt93g{position:relative;margin:10px 6px 8px 34px;cursor:pointer}
+.hl93{position:absolute;left:0;right:0;border-top:1px solid var(--line);height:0;pointer-events:none}
+.hl93.half{border-top-style:dotted;opacity:.6}
+.hl93 span{position:absolute;left:-32px;top:-8px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.b93{position:absolute;box-sizing:border-box;overflow:hidden;border:1.5px dashed var(--edge);border-radius:8px;background:var(--panel2);padding:2px 6px;font-size:12.5px;line-height:1.25;color:var(--muted);cursor:pointer}
+.b93.mv{cursor:grab}
+.b93 b{font-variant-numeric:tabular-nums}
+.b93.cur{border:2px solid var(--ink);background:var(--panel);color:var(--ink);font-weight:600}
+.b93.sel{border:3px solid var(--ink);box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--ink);z-index:3}
+.gh93{position:absolute;left:0;right:0;border:2px dashed var(--ink);border-radius:8px;background:color-mix(in srgb,var(--ink) 8%,transparent);font-size:12px;padding:2px 6px;pointer-events:none;z-index:4;overflow:hidden}
+
+/* v9.6: 카드 편집 창 더 줄이기 */
+.sc.ae95{gap:10px}
+.sc.ae95 .sh.ae94sh{margin-bottom:0}
+.sc.ae95 input.ae94n{font-size:18px;padding:6px 8px;min-height:40px}
+.r95{display:flex;flex-wrap:wrap;gap:6px}
+.r95 .c95{width:auto;max-width:100%;min-height:34px;height:34px;padding:0 10px;border:1.5px solid var(--line);border-radius:999px;background:var(--panel2);color:var(--ink);font-size:13.5px;font-weight:600;line-height:31px;box-sizing:border-box}
+.r95 select.c95{field-sizing:content;width:auto!important;min-width:0;-webkit-appearance:none;appearance:none;padding-right:10px;text-overflow:ellipsis;cursor:pointer}
+.r95 .c95.k95{border-color:var(--ink)}
+.r95 .c95.def95{border-style:dashed;color:var(--muted);font-weight:500;background:transparent}
+.r95 .du95{display:inline-flex;align-items:center;gap:3px}
+.r95 .du95 input{width:3.2ch;min-width:0;border:0;background:transparent;padding:0;font:inherit;color:inherit;text-align:center;height:28px;-moz-appearance:textfield}
+.r95 .du95 input::-webkit-inner-spin-button,.r95 .du95 input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.ae94sc.sc95{grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px}
+.ae94sc.sc95 label.s94{display:flex;flex-direction:row;align-items:center;gap:4px;border:1.5px solid var(--line);border-radius:12px;padding:0 2px 0 8px;background:var(--panel2);font-size:12px;letter-spacing:-.2px;white-space:nowrap;margin:0}
+.ae94sc.sc95 label.s94 input{flex:0 0 2.4em;min-width:0;width:2.4em;margin-left:auto;font-size:20px;min-height:42px;height:42px;padding:0 4px;border:0;background:transparent;text-align:right}
+.ae94sc.sc95 label.s94:focus-within{border-color:var(--ink)}
+.pre95{align-items:center}
+.pre95>span,.pre95>small{font-size:12px;color:var(--muted)}
+.pre95 .chipbtn,.pre95 button{min-height:30px;padding:2px 10px;font-size:12.5px}
+.pre95 details.i95{flex:none;position:relative}
+.pre95 details.i95>summary{list-style:none;cursor:pointer;font-size:14px;padding:4px 6px;color:var(--muted)}
+.pre95 details.i95>summary::-webkit-details-marker{display:none}
+.pre95 details.i95[open]{flex-basis:100%;white-space:normal}
+.pre95:has(details.i95[open]){flex-wrap:wrap!important}
+.t95{display:flex;flex-wrap:wrap;gap:6px;padding-top:2px;border-top:1px solid var(--line);padding-top:10px}
+.t95 .chipbtn{min-height:34px;font-size:13px}
+.t95 .chipbtn small{font-weight:400;color:var(--muted)}
+.t95 .chipbtn[aria-pressed=true]{border-color:var(--ink);border-width:2px;font-weight:700}
+.p95>.ae94b{border:1.5px solid var(--line);border-radius:12px;background:var(--panel2);padding:10px 12px}
+.p95>.ae94b[hidden]{display:none}
+.t95 .chipbtn[aria-pressed=true] small{color:inherit;opacity:.8}
+
+/* v9.7 (w96.js): D11 — 점수 글자 한 줄 · 타일 격자 · 지금 맞는 카드 */
+.mxs:has(.s96,.g96){gap:2px 8px;align-items:baseline}
+.s96{font-size:12px;font-family:var(--mono);white-space:nowrap;color:var(--ink);opacity:.85;letter-spacing:-.2px}
+.s96 b{font-weight:700}
+.s96 .neg96{color:var(--bad);font-weight:700}
+.g96{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.g96.bv{color:var(--brave);font-weight:700}
+.g96.rh{font-weight:600}
+.g96.ln{white-space:normal}
+/* 타일 */
+#actGroups.t96 .acts,#braveActs.t96{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;padding:4px 0 8px}
+.t96 .act{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"c n p" "s s m";gap:3px 6px;align-items:start;border:1px solid var(--line);border-radius:12px;padding:6px 7px 5px;min-height:0;background:var(--panel)}
+.t96 .act:last-child{border-bottom:1px solid var(--line)}
+.t96 .act.bad{border-style:dashed}
+.t96 .act.brave{border-color:color-mix(in srgb,var(--brave) 45%,var(--line))}
+.t96 .act .chk{grid-area:c}
+.t96 .act .ab{display:contents}
+.t96 .act .n{grid-area:n;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.3;align-self:center;word-break:keep-all;overflow-wrap:anywhere}
+.t96 .act .mxs{grid-area:s;margin:0;align-self:end}
+.t96 .act .pinb{grid-area:p;align-self:start}
+.t96 .act .meta{grid-area:m;justify-self:end;align-self:end;gap:4px}
+.t96 .act:has(.mxs) .meta .xp{display:none}
+.t96 .act:not(:has(.mxs)) .meta{grid-area:s;justify-self:start}
+.tg96{margin-left:auto}
+/* 지금 맞는 카드 */
+.now96w .ghead{color:var(--accent)}
+.acts.now96 .act{background:color-mix(in srgb,var(--accent) 7%,var(--panel))}
+.why96{font-size:11px;color:var(--accent);font-weight:700;white-space:nowrap}
 </style>
 
 <header class="hud" id="hud">
@@ -13477,6 +13578,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
    순서(기본, C.tm93ord로 바꿈): 📌 정해진 일정 → 🔁 주 N회 자리 → 🗓 종일 칸 일 → 🧽 관리 → 마무리(놓은 시간/하루 예산 한 줄 · '내일 짜기 끝').
    · 정해진 일정 = 'fixed' 목록 전부(사용자 확정 11/13). 시각 없는 것은 시각부터 정하게 맨 먼저 보여 줌(하그둘 만남도 이 목록).
    · 열기: 밤에 정해 둔 시각(C.tm93at, 기본 21:00)이 지나면 홈 오늘 칸에 한 줄 + 캘린더 줄 🌙 / ⋯ 설정 메뉴. 끝내면 C.tm93done[날짜]=1 → 그날 밤 다시 안 뜸.
+   · v9.5: 모든 단계에 같은 **내일 시간표**(블록으로 보임)를 붙임 — 일을 눌러 고르고(트레이·블록) → 시간표 빈 곳을 눌러 놓기/옮기기, 길이 ±15분·시각 입력은 선택 줄에서. 이미 정해진 일정도 같은 방식으로 시각을 바꿈. 마우스는 블록 끌기·올려 보기 지원. 되돌리기 한 단계.
    · 저장: C.tm93at · C.tm93ord · C.tm93done (모두 C 최상위 — normConfig가 보존). 예전 시간표 짜기 창(planSheet80)은 인자 없이 부르면 이 화면으로 감, 인자(날짜)가 있으면 그대로. */
 {
   const KEY=()=>addDays(midKey68(),1);
@@ -13518,37 +13620,86 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
     return `<select data-w93d="${t.id}" aria-label="${esc(t.title)} 길이">${v?'':'<option value="" selected>길이?</option>'}${o.map(m=>`<option value="${m}"${m===v?' selected':''}>${m>=60&&m%60===0?m/60+'시간':m+'분'}</option>`).join('')}</select>`};
   const nm93=t=>`<span class="w93n" data-w93t="${t.id}" role="button" tabindex="0">${(t.prio||0)>=3?'<b>!</b> ':''}${esc(t.title)}</span>`;
 
+
+  /* ---- 시간표(v9.5): 1분 = 1px, 15분 단위로 놓기 ---- */
+  const PX93=1;
+  const isWk=t=>!!(t&&typeof wx91==='function'&&wx91(t));
+  const mvOk93=t=>!!t&&!t.rid&&!t.ml80&&!t.cb76&&!t.rstep;
+  const mem93=k=>({fx:new Set(fx93(k).nt.map(t=>t.id).concat(tasksOn(k).filter(t=>t.list==='fixed'&&t.status===0&&t.time).map(t=>t.id))),
+    wk:new Set(wk93(k).map(x=>x.t.id)),ad:new Set(ad93(k).map(t=>t.id)),care:new Set(care93(k).map(t=>t.id))});
+  function bl93(k){   // 내일 시간표에 그릴 블록(시각 있는 일 + 주 N회 자리)
+    const by={};
+    tasksOn(k).forEach(x=>{if(x.status!==0||!x.time||hm80(x.time)==null)return;by[x.id]={id:x.id,t:TASKS[x.id]||x,s:hm80(x.time),d:Math.max(10,+x.dur||30)}});
+    wk93(k).forEach(x=>{const sl=x.on&&x.t.sl91[k];if(sl&&hm80(sl)!=null)by[x.t.id]={id:x.t.id,t:x.t,s:hm80(sl),d:Math.max(10,+x.t.dur||30)}});
+    return Object.values(by);
+  }
+  function lane93(L){   // 겹치는 블록은 나란히
+    L.sort((a,b)=>a.s-b.s||b.d-a.d);let cl=[],ends=[],cend=-1;
+    const fin=()=>{cl.forEach(b=>b.n=Math.max(1,ends.length));cl=[];ends=[];cend=-1};
+    L.forEach(b=>{if(cl.length&&b.s>=cend)fin();const e=b.s+Math.max(b.d,20);let i=ends.findIndex(x=>x<=b.s);if(i<0){i=ends.length;ends.push(0)}ends[i]=e;b.l=i;cl.push(b);cend=Math.max(cend,e)});
+    fin();return L}
+  function tt93(k){
+    const p=pcfg80();let s0=Math.floor(hm80(p.s)/60)*60,e0=Math.ceil(hm80(p.e)/60)*60;
+    const L=bl93(k);L.forEach(b=>{s0=Math.min(s0,Math.floor(b.s/60)*60);e0=Math.max(e0,Math.ceil((b.s+b.d)/60)*60)});
+    e0=Math.min(Math.max(e0,s0+120),24*60);W.s0=s0;W.e0=e0;
+    const cur=(W.mem&&W.mem[W.step])||new Set();lane93(L);
+    let h='';for(let m=s0;m<e0;m+=60)h+=`<div class="hl93" style="top:${(m-s0)*PX93}px"><span>${String(Math.floor(m/60)).padStart(2,'0')}</span></div><div class="hl93 half" style="top:${(m-s0+30)*PX93}px"></div>`;
+    const bs=L.map(b=>{const t=b.t,mv=mvOk93(t),isC=cur.has(b.id),sel=W.sel===b.id;
+      return `<div class="b93${isC?' cur':''}${sel?' sel':''}${mv?' mv':''}" data-w93b="${b.id}" role="button" tabindex="0" aria-pressed="${sel}" title="${esc(t.title)} ${fmt80(b.s)}–${fmt80(b.s+b.d)}" style="top:${(b.s-s0)*PX93}px;height:${Math.max(20,b.d*PX93)-2}px;left:calc(${b.l/b.n*100}% + 1px);width:calc(${100/b.n}% - 3px)"><b>${fmt80(b.s)}</b> ${t.ml80?'🍱 ':''}${esc(t.title)}${t.rep&&t.rep.f&&!isWk(t)?' ↻':''}</div>`}).join('');
+    return `<div class="tt93s" data-w93sc="1"><div class="tt93g" data-w93g="1" data-s0="${s0}" style="height:${(e0-s0)*PX93}px">${h}${bs}</div></div>`;
+  }
+  function sel93(k){
+    const t=W.sel&&TASKS[W.sel];if(!t)return '';
+    const wk=isWk(t),sl=wk?(t.sl91&&t.sl91[k]):t.time,placed=!!sl&&hm80(sl)!=null,d=+t.dur||30,rep=t.rep&&t.rep.f&&!wk;
+    return `<div class="sel93"><div class="s1"><b>${esc(t.title)}</b> <span class="tiny muted">${placed?fmt80(hm80(sl))+'–'+fmt80(hm80(sl)+d):'아직 시간 안 정함 — 아래 시간표를 눌러 놓아요'}</span></div>
+      <div class="s2">${durOpt(t)}${placed?`<button type="button" class="chipbtn" data-w93len="-15" aria-label="15분 줄이기">−15분</button><button type="button" class="chipbtn" data-w93len="15" aria-label="15분 늘리기">＋15분</button><input type="time" data-w93seltm="1" aria-label="시각" value="${esc(fmt80(hm80(sl)))}"><button type="button" class="chipbtn" data-w93off="1">${wk?'종일 칸으로':'시간 빼기'}</button>`:`<button type="button" class="chipbtn" data-w93q="1">빈 시간에 놓기</button>`}${wk&&t.sl91&&t.sl91[k]!==undefined?'<button type="button" class="chipbtn" data-w93del="1">자리 빼기</button>':''}<button type="button" class="chipbtn" data-w93det="1">상세</button><button type="button" class="ib" data-w93desel="1" aria-label="선택 끝">×</button></div>
+      ${rep?'<div class="tiny muted">↻ 반복 할 일이라 시각을 바꾸면 앞으로의 시각도 바뀌어요</div>':''}</div>`;
+  }
+  function tray93(id,k){
+    let L=[];
+    if(id==='fx')L=fx93(k).nt;
+    else if(id==='wk')L=wk93(k).filter(x=>!(x.on&&hm80(x.t.sl91[k])!=null)).map(x=>x.t);
+    else if(id==='ad')L=ad93(k);
+    const lab={fx:'시각을 정해야 해요',wk:'이번 주 남은 횟수',ad:'시각 안 정한 일'}[id];
+    const chip=t=>{const on=W.sel===t.id,x=id==='wk'?wk93(k).find(z=>z.t.id===t.id):null;
+      return `<button type="button" class="chipbtn t93${on?' on':''}" data-w93s="${t.id}" aria-pressed="${on}">${(t.prio||0)>=3?'<b>!</b> ':''}${esc(t.title)}${x?` <small>${x.n}/${x.N}${x.on?' · 종일':''}</small>`:''}${t.dur?` <small>${t.dur}분</small>`:''}${t.rep&&t.rep.f&&id!=='wk'?' ↻':''}</button>`};
+    const auto=L.filter(autoOk80).length;
+    return `<div class="p80g">${lab} <small>${L.length}</small></div>`+(L.length?`<div class="tray93">${L.map(chip).join('')}</div>`:'<p class="help" style="margin:2px 0">시각을 정할 일이 없어요.</p>')
+      +(W.sel?'':`<p class="help" style="margin:2px 0 4px">일을 누르고 → 시간표 빈 곳을 눌러 놓아요. 놓인 일도 눌러서 옮겨요.</p>`)
+      +(id==='ad'?`<div class="row" style="gap:8px;margin-bottom:4px"><button type="button" class="btn sm" data-w93auto="1"${auto?'':' disabled'}>빈 시간에 알아서 넣기 (${auto}개)</button></div>`:'');
+  }
+  const snapS93=t=>({time:t.time===undefined?null:t.time,dur:t.dur,sl:t.sl91?JSON.parse(JSON.stringify(t.sl91)):undefined});
+  function restore93(t,s){t.time=s.time;if(s.dur===undefined)delete t.dur;else t.dur=s.dur;if(s.sl===undefined)delete t.sl91;else t.sl91=s.sl;saveTask(t)}
+  function mut93(t,label,fn){const b=snapS93(t);fn();saveTask(t);W.undo={l:label,fn:()=>restore93(t,b)};redo93()}
+  function put93(t,m){   // m=분(null이면 시간 빼기)
+    const k=W.k;mut93(t,`'${t.title}' ${m==null?'시간 뺌':'옮김'}`,()=>{
+      if(isWk(t)){t.sl91=t.sl91||{};t.sl91[k]=m==null?'':fmt80(m)}else t.time=m==null?null:fmt80(m);
+      if(m!=null&&!t.dur)t.dur=30})}
+  const placed93=(t,k)=>{const v=isWk(t)?(t.sl91&&t.sl91[k]):t.time;return !!v&&hm80(v)!=null};
+  const min93=(g,y)=>{const r=g.getBoundingClientRect();return Math.max(0,Math.min(24*60-5,(+g.dataset.s0)+Math.floor((y-r.top)/PX93/15)*15))};
+
   /* ---- 화면 ---- */
   function seq93(k){return ord93().filter(id=>cnt93(id,k)>0)}
   function body93(id,k){
-    if(id==='fx'){const {nt,timed}=fx93(k);
-      const a=nt.map(t=>`<div class="r93w">${nm93(t)}${t.rep&&t.rep.f?`<button type="button" class="chipbtn" data-w93t="${t.id}" title="반복 할 일은 시각을 바꾸면 앞으로 전부 바뀌어서 상세에서 정해요">↻ 상세에서</button>`:`<input type="time" data-w93tm="${t.id}" aria-label="${esc(t.title)} 시각" value=""> ${durOpt(t)}`}</div>`).join('');
-      const b=timed.map(t=>{const s=hm80(t.time),d=+t.dur||30;return `<div class="r93w tm" data-w93t="${t.id}" role="button" tabindex="0"><b>${fmt80(s)}–${fmt80(s+d)}</b><span>${esc(t.title)}${t.ml80?' 🍱':''}</span></div>`}).join('');
-      return (nt.length?`<div class="p80g">시각을 정해야 해요 <small>${nt.length}</small></div>${a}`:'')+(timed.length?`<div class="p80g">이미 깔린 일정 <small>${timed.length}</small></div>${b}`:'')}
-    if(id==='wk'){const L=wk93(k);
-      return `<div class="p80g">이번 주 남은 횟수 <small>${L.length}</small></div>`+L.map(x=>{const {t}=x,sl=x.on?t.sl91[k]:null;
-        return `<div class="r93w">${nm93(t)}<small class="muted">${x.n}/${x.N}${x.ks.length?' · 자리 '+x.ks.map(d=>wdOf(d)).join(''):''}</small>${x.on?`<input type="time" data-w93st="${t.id}" aria-label="${esc(t.title)} 내일 시각" value="${esc(sl||'')}">${durOpt(t)}<button type="button" class="ib" data-w93del="${t.id}" title="내일 자리 빼기" aria-label="${esc(t.title)} 내일 자리 빼기">×</button>`:`<button type="button" class="chipbtn" data-w93add="${t.id}">＋ 내일 놓기</button>`}</div>`}).join('')}
-    if(id==='ad'){const L=ad93(k),auto=L.filter(autoOk80).length;
-      return `<div class="p80g">시각 안 정한 일 <small>${L.length}</small></div>`+L.map(t=>`<div class="r93w">${nm93(t)}${t.rep&&t.rep.f?'<small class="muted">↻</small>':`<input type="time" data-w93tm="${t.id}" aria-label="${esc(t.title)} 시각" value="">`} ${durOpt(t)}</div>`).join('')+
-        `<div class="row" style="gap:8px;margin-top:6px"><button type="button" class="btn sm" data-w93auto="1"${auto?'':' disabled'}>빈 시간에 알아서 넣기 (${auto}개)</button>${W.undo?`<button type="button" class="btn ghost sm" data-w93u="1">↶ ${esc(W.undo.l)} 되돌리기</button>`:''}</div><p class="help" style="margin:4px 0 0">반복·묶음 할 일은 자동으로 안 넣어요(앞으로 전부 바뀌어서). 시각 칸에 직접 적거나 캘린더에서 끌어요.</p>`}
     if(id==='care'){const L=care93(k),m=L.reduce((s,t)=>s+(+t.dur||0),0);
       return `<div class="p80g">관리 차례 <small>${L.length}${m?' · '+hmK76(m):''}</small></div><p class="help" style="margin:0 0 4px">미뤄도 괜찮은 일이라 마지막에, 남는 틈에 해요.</p>`+L.slice(0,8).map(t=>`<div class="r93w">${nm93(t)}<small class="muted">${esc(when76(t,k))}</small></div>`).join('')+(L.length>8?`<div class="tiny muted">…외 ${L.length-8}개</div>`:'')+
         `<div class="row" style="margin-top:6px"><button type="button" class="btn ghost sm" data-w93care="1">🧽 차례 정하기 열기</button></div>`}
-    return '';
+    return tray93(id,k);
   }
   function wiz93(){
     const k=W.k,td=midKey68(),seq=W.seq,steps=seq.concat(['end']);
     if(W.i>=steps.length)W.i=steps.length-1;if(W.i<0)W.i=0;
-    const cur=steps[W.i],lab=k===addDays(td,1)?'내일':dayName68(k);
+    const cur=steps[W.i];W.step=cur;const lab=k===addDays(td,1)?'내일':dayName68(k);
     const m=placed76(k),B=budOf76(k)*60,over=m>B;
-    const dots=steps.map((id,i)=>{const nmx=id==='end'?'✓ 마무리':ALL.find(a=>a[0]===id)[1];return `<button type="button" class="w93d${i===W.i?' on':''}${i<W.i?' pass':''}" data-w93go="${i}" aria-current="${i===W.i}" aria-label="${nmx}">${i<W.i?'✓ ':''}${nmx}</button>`}).join('');
+    const dots=steps.map((id,i)=>{const nmx=id==='end'?'✓ 마무리':ALL.find(a=>a[0]===id)[1],sh={fx:'📌 일정',wk:'🔁 주N회',ad:'🗓 종일',care:'🧽 관리',end:'✓ 마무리'}[id];return `<button type="button" class="w93d${i===W.i?' on':''}${i<W.i?' pass':''}" data-w93go="${i}" aria-current="${i===W.i}" aria-label="${nmx}" title="${nmx}">${i<W.i?'✓ ':''}${sh}</button>`}).join('');
     const line=`<div class="p80b${over?' over':''}">${over?'⚠ ':''}놓은 시간 ${hmK76(m)} / 하루 예산 ${hmK76(B)}${over?' — '+hmK76(m-B)+' 넘쳐요':''}</div>`;
+    const und=W.undo?`<div class="row" style="margin-top:6px"><button type="button" class="btn ghost sm" data-w93u="1">↶ ${esc(W.undo.l)} 되돌리기</button></div>`:'';
     let main;
     if(cur==='end'){
       const n=tasksOn(k).filter(t=>t.status===0&&!t.cb76&&!t.ml80).length,untimed=ad93(k).length,fxn=fx93(k).nt.length;
-      main=`${line}<p class="small" style="margin:6px 0">${esc(lab)} 할 일 ${n}개${fxn?` · ⚠ 시각 안 정한 정해진 일정 ${fxn}개`:''}${untimed?` · 종일 칸 ${untimed}개`:''}</p>
+      main=`${sel93(k)}${tt93(k)}${line}${und}<p class="small" style="margin:6px 0">${esc(lab)} 할 일 ${n}개${fxn?` · ⚠ 시각 안 정한 정해진 일정 ${fxn}개`:''}${untimed?` · 종일 칸 ${untimed}개`:''}</p>
         <div class="row" style="gap:8px;flex-wrap:wrap">${done93()[k]?'<span class="small">✓ 내일 짜기 끝냈어요</span>':'<button type="button" class="btn" data-w93fin="1">내일 짜기 끝</button>'}<button type="button" class="btn ghost" data-sheet="close">닫기</button></div>`}
-    else main=body93(cur,k)+line;
+    else main=body93(cur,k)+sel93(k)+tt93(k)+line+und;
     const nav=`<div class="row w93nav" style="gap:8px;margin-top:8px">${W.i>0?'<button type="button" class="btn ghost sm" data-w93nav="-1">‹ 이전</button>':''}${cur==='end'?'':`<button type="button" class="btn sm" data-w93nav="1">${W.i===steps.length-2?'마무리 ›':'다음 ›'}</button>`}</div>`;
     const ord=ord93();
     sheetCtx={w93:k};
@@ -13561,9 +13712,12 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
         <div class="small" style="margin-top:6px">단계 순서 <small class="muted">(위가 먼저)</small></div>
         ${ord.map((id,i)=>`<div class="row small" style="gap:6px"><span style="flex:1">${ALL.find(a=>a[0]===id)[1]}</span><button type="button" class="ib" data-w93o="${id}:-1"${i===0?' disabled':''} aria-label="위로">▲</button><button type="button" class="ib" data-w93o="${id}:1"${i===ord.length-1?' disabled':''} aria-label="아래로">▼</button></div>`).join('')}
         <div style="margin-top:6px"><button type="button" class="linkbtn" data-w93old="1">예전 시간표 짜기 화면 열기</button></div></details>`);
+    const sc=document.querySelector('#sheetC .tt93s');
+    if(sc){if(W.scTop==null){const c=W.mem&&W.mem[cur],L=bl93(k).filter(b=>c&&c.has(b.id)).map(b=>b.s),f=L.length?Math.min(...L):hm80(pcfg80().s);sc.scrollTop=Math.max(0,f-(W.s0||0)-60);W.scTop=sc.scrollTop}else sc.scrollTop=W.scTop}
+    if(W.y!=null){const e=$('sheetC');if(e)e.scrollTop=W.y;W.y=null}
   }
-  function open93(k){const nk=k||KEY();W={k:nk,i:0,undo:null,seq:seq93(nk)};wiz93()}   // 단계 목록은 열 때 한 번만 정함(알아서 넣기로 비어도 단계가 사라져 화면이 밀리지 않게)
-  const redo93=()=>{render();wiz93()};
+  function open93(k){const nk=k||KEY();W={k:nk,i:0,undo:null,seq:seq93(nk),mem:mem93(nk),sel:null,scTop:null,step:null};wiz93()}   // 단계 목록은 열 때 한 번만 정함(알아서 넣기로 비어도 단계가 사라져 화면이 밀리지 않게)
+  const redo93=()=>{const e=$('sheetC');W.y=e?e.scrollTop:null;render();wiz93()};
 
   /* ---- 동작 ---- */
   addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;
@@ -13571,13 +13725,22 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
     const x=T.closest('[data-w93x]');if(x){e.preventDefault();e.stopPropagation();ui.n93x=midKey68();line93();return}
     if(!(sheetCtx&&sheetCtx.w93&&W))return;let b;
     const stop=()=>{e.preventDefault();e.stopPropagation()};
-    if((b=T.closest('[data-w93go]'))){stop();W.i=+b.dataset.w93go;wiz93();return}
-    if((b=T.closest('[data-w93nav]'))){stop();W.i+=+b.dataset.w93nav;wiz93();return}
+    if((b=T.closest('[data-w93go]'))){stop();W.i=+b.dataset.w93go;W.sel=null;W.scTop=null;wiz93();return}
+    if((b=T.closest('[data-w93nav]'))){stop();W.i+=+b.dataset.w93nav;W.sel=null;W.scTop=null;wiz93();return}
     if((b=T.closest('[data-w93t]'))){stop();const id=b.dataset.w93t;closeSheet();openTaskSheet(id);return}
-    if((b=T.closest('[data-w93add]'))){stop();const t=TASKS[b.dataset.w93add];if(!t)return;const k=W.k,d=+t.dur||30,p=free93(k,d,busy93(k,[t.id]));
-      t.sl91=t.sl91||{};t.sl91[k]=p==null?'':fmt80(p);if(!t.dur)t.dur=d;saveTask(t);redo93();
-      toast(p==null?`${t.title} → 종일 칸에 놓았어요 (빈 시간이 없어요)`:`${t.title} → ${fmt80(p)}에 놓았어요`);return}
-    if((b=T.closest('[data-w93del]'))){stop();const t=TASKS[b.dataset.w93del];if(!t||!t.sl91)return;delete t.sl91[W.k];if(!Object.keys(t.sl91).length)delete t.sl91;saveTask(t);redo93();return}
+    if((b=T.closest('[data-w93s]'))){stop();const id=b.dataset.w93s;W.sel=W.sel===id?null:id;wiz93();return}
+    if((b=T.closest('[data-w93b]'))){stop();if(Date.now()-(W.drg||0)<350)return;const id=b.dataset.w93b,t=TASKS[id];if(!t)return;
+      const sl=W.sel&&TASKS[W.sel];   // 아직 시간 없는 일을 골라 둔 채 블록 위를 누르면 그 자리에 놓기(겹쳐도 됨 — 나란히 그려짐)
+      if(sl&&sl.id!==id&&!placed93(sl,W.k)){const g=T.closest('[data-w93g]');if(g){put93(sl,min93(g,e.clientY));return}}
+      if(!mvOk93(t)){closeSheet();openTaskSheet(id);return}
+      W.sel=W.sel===id?null:id;wiz93();return}
+    if((b=T.closest('[data-w93g]'))&&W.sel&&TASKS[W.sel]){stop();if(Date.now()-(W.drg||0)<350)return;put93(TASKS[W.sel],min93(b,e.clientY));return}
+    if((b=T.closest('[data-w93len]'))){stop();const t=TASKS[W.sel];if(t)mut93(t,`'${t.title}' 길이`,()=>{t.dur=Math.max(10,(+t.dur||30)+(+b.dataset.w93len))});return}
+    if((b=T.closest('[data-w93off]'))){stop();const t=TASKS[W.sel];if(t)put93(t,null);return}
+    if((b=T.closest('[data-w93del]'))){stop();const t=TASKS[W.sel];if(!t||!t.sl91)return;mut93(t,`'${t.title}' 자리 뺌`,()=>{delete t.sl91[W.k];if(!Object.keys(t.sl91).length)delete t.sl91});W.sel=null;return}
+    if((b=T.closest('[data-w93det]'))){stop();const id=W.sel;if(id){closeSheet();openTaskSheet(id)}return}
+    if((b=T.closest('[data-w93desel]'))){stop();W.sel=null;wiz93();return}
+    if((b=T.closest('[data-w93q]'))){stop();const t=TASKS[W.sel];if(!t)return;const p=free93(W.k,+t.dur||30,busy93(W.k,[t.id]));if(p==null){toast('빈 시간이 없어요 — 시간표를 눌러 직접 놓아요');return}put93(t,p);return}
     if((b=T.closest('[data-w93auto]'))){stop();const k=W.k,items=ad93(k).filter(autoOk80),busy=busy93(k),prev=[];let n=0,miss=0;
       items.forEach(t=>{const d=Math.max(10,+t.dur||30),p=free93(k,d,busy);if(p==null){miss++;return}
         prev.push({id:t.id,time:t.time||null,dur:t.dur||null});t.time=fmt80(p);t.dur=d;saveTask(t);busy.push([p,p+d+5]);n++});
@@ -13591,12 +13754,32 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
       [o[i],o[j]]=[o[j],o[i]];C.tm93ord=o;save('config');wiz93();return}
   },true);
   addEventListener('change',e=>{const T=e.target;if(!T||!T.matches||!(sheetCtx&&sheetCtx.w93&&W))return;
-    if(T.matches('[data-w93tm]')){e.stopPropagation();const t=TASKS[T.dataset.w93tm];if(t&&hm80(T.value)!=null){t.time=T.value;if(!t.dur)t.dur=30;saveTask(t)}redo93();return}
-    if(T.matches('[data-w93st]')){e.stopPropagation();const t=TASKS[T.dataset.w93st];if(t&&t.sl91){t.sl91[W.k]=hm80(T.value)!=null?T.value:'';if(!t.dur)t.dur=30;saveTask(t)}redo93();return}
+    if(T.matches('[data-w93seltm]')){e.stopPropagation();const t=TASKS[W.sel];if(t&&hm80(T.value)!=null)put93(t,hm80(T.value));return}
     if(T.matches('[data-w93d]')){e.stopPropagation();const t=TASKS[T.dataset.w93d],v=+T.value;if(t&&v){t.dur=v;saveTask(t)}redo93();return}
     if(T.matches('[data-w93at]')){e.stopPropagation();if(hm80(T.value)!=null){C.tm93at=T.value;save('config');line93()}return}
   },true);
-  addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.matches&&e.target.matches('.w93n,.r93w.tm')){e.preventDefault();const id=e.target.dataset.w93t;closeSheet();openTaskSheet(id)}});
+  addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.matches&&e.target.matches('.w93n')){e.preventDefault();const id=e.target.dataset.w93t;closeSheet();openTaskSheet(id)}
+    else if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.matches&&e.target.matches('.b93')&&W&&sheetCtx&&sheetCtx.w93){e.preventDefault();e.target.click()}});
+
+  /* ---- 시간표 위 마우스: 올려 보기(고른 일이 놓일 자리) · 블록 끌기 ---- */
+  let G=null;
+  const inW=()=>!!(W&&sheetCtx&&sheetCtx.w93);
+  function ghost93(g,m,d,txt){let h=g.querySelector('.gh93');if(!h){h=document.createElement('div');h.className='gh93';g.appendChild(h)}
+    h.style.top=(m-(+g.dataset.s0))*PX93+'px';h.style.height=Math.max(20,d*PX93)-2+'px';h.textContent=fmt80(m)+' '+txt}
+  const noGhost93=()=>document.querySelectorAll('.gh93').forEach(x=>x.remove());
+  addEventListener('pointerdown',e=>{if(!inW()||e.pointerType!=='mouse'||e.button!==0)return;const b=e.target.closest&&e.target.closest('.b93.mv');if(!b)return;
+    G={id:b.dataset.w93b,x:e.clientX,y:e.clientY,on:false}},true);
+  addEventListener('pointermove',e=>{if(!inW()||e.pointerType!=='mouse')return;
+    const g=document.querySelector('#sheetC [data-w93g]');if(!g)return;
+    if(G){const t=TASKS[G.id];if(!t){G=null;return}
+      if(!G.on&&Math.hypot(e.clientX-G.x,e.clientY-G.y)>6)G.on=true;
+      if(G.on){e.preventDefault();const r=g.getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<=r.right)ghost93(g,min93(g,e.clientY),+t.dur||30,t.title);else noGhost93()}return}
+    if(W.sel&&TASKS[W.sel]&&e.target.closest&&e.target.closest('[data-w93g]')&&!e.target.closest('.b93')){const t=TASKS[W.sel];ghost93(g,min93(g,e.clientY),+t.dur||30,t.title)}
+    else noGhost93()},true);
+  addEventListener('pointerup',e=>{if(!G)return;const d=G;G=null;noGhost93();if(!d.on||!inW())return;
+    W.drg=Date.now();const g=document.querySelector('#sheetC [data-w93g]'),t=TASKS[d.id];if(!g||!t)return;
+    const r=g.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)return;
+    W.sel=d.id;put93(t,min93(g,e.clientY))},true);
 
   /* ---- 홈 오늘 칸 한 줄 (밤 시각 이후 · 내일 짜기를 안 끝냈을 때만 · 오늘 밤은 × 로 닫기) ---- */
   function line93(){
@@ -13621,7 +13804,223 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);try{const b=$('calPlanBtn');if(b){b.title='내일 짜기 (시간표 짜기)';b.setAttribute('aria-label','내일 짜기')}}catch(e){console.error(e)}return r}})(renderCal);
 
   F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-    ['🌙 내일 짜기','홈 오늘 칸(밤) · 캘린더 줄 🌙 (폰은 ⋯ 설정)','전날 밤 한 화면에서 내일 시간표를 짜요: 📌 정해진 일정(시각 먼저) → 🔁 주 N회 자리 → 🗓 종일 칸 일(빈 시간에 넣기) → 🧽 관리 → 마지막 줄에 놓은 시간/하루 예산. "내일 짜기 끝"을 누르면 그날 밤엔 다시 안 떠요. 뜨는 시각과 단계 순서는 ⚙ 설정에서 바꿔요.',()=>{open93()},'내일 짜기 시간표 전날 밤 정해진 일정 주 N회 종일 칸 관리 하루 예산']])}})(F67);
+    ['🌙 내일 짜기','홈 오늘 칸(밤) · 캘린더 줄 🌙 (폰은 ⋯ 설정)','전날 밤 한 화면에서 내일 시간표를 짜요: 📌 정해진 일정(시각 먼저) → 🔁 주 N회 자리 → 🗓 종일 칸 일 → 🧽 관리. 모든 단계에 내일 시간표가 같이 보여요 — 일을 누르고 시간표 빈 곳을 눌러 놓고, 놓인 일(이미 정해진 일정도)을 눌러 옮기고, 길이는 ±15분. 마지막 줄에 놓은 시간/하루 예산. "내일 짜기 끝"을 누르면 그날 밤엔 다시 안 떠요. 뜨는 시각과 단계 순서는 ⚙ 설정에서 바꿔요.',()=>{open93()},'내일 짜기 시간표 전날 밤 정해진 일정 주 N회 종일 칸 관리 하루 예산']])}})(F67);
+}
+
+/* ---- v9.5 (w94.js): D2 카드 편집 창 새로 · D3 점수 큰 순에서 ✨XP·💰골드·🔋컨디션 고르기 ----
+   D3: SORTS의 '점수 큰 순'(xp) 한 칸을 셋으로 나눔(xp·gold·cond). 정렬 고르는 select가 한 곳이라 단계가 늘지 않음.
+       기존 저장값 'xp'는 그대로 ✨XP 큰 순. 나쁜 카드는 XP가 없어서 ✨XP 순에선 맨 뒤(원래 순서 유지).
+   D2: openActionEditor를 맨 바깥에서 감싸 **그린 뒤 DOM을 옮김**(ts78과 같은 방식 — 이벤트는 모두 data-속성 위임이라 옮겨도 그대로 먹음).
+       위 → 아래: 이름(머리줄) · 종류·영역 · 점수 큰 칸 셋 · 빠르게 채우기 · (접힘) 더 설정 / 세부 옵션 / 설명·문구 / 반복 / 이어진 곳 · 아래 고정 단추 줄.
+       펼침 상태는 O94(카드가 바뀌면 초기화, 저장 안 함). */
+{
+  /* ---- D3 ---- */
+  {const i=SORTS.findIndex(s=>s[0]==='xp');
+   if(i>=0&&!SORTS.some(s=>s[0]==='gold'))SORTS.splice(i,1,['xp','✨ XP 큰 순'],['gold','💰 골드 큰 순'],['cond','🔋 컨디션 큰 순'])}
+  sortList=(function(prev){return function(list,st,by){
+    if(by==='xp'||by==='gold'||by==='cond'){
+      const sc=x=>by==='xp'?(x.type==='bad'?-1:(+x.xp||0)):by==='gold'?Math.abs(+x.gold||0):Math.abs(+x.cond||0);
+      return [...list].sort((x,y)=>sc(y)-sc(x))}
+    return prev.apply(this,arguments)}})(sortList);
+
+  /* ---- D2 ---- */
+  const O94={id:null,o:{}};
+  const q1=(r,s)=>r.querySelector(s);
+  const lbOf=(r,s)=>{const e=q1(r,s);return e?e.closest('label'):null};
+  const setLbl=(lb,txt)=>{if(lb&&lb.firstChild&&lb.firstChild.nodeType===3)lb.firstChild.nodeValue=txt};
+  function det94(key,sum,nodes,openDef){
+    const d=document.createElement('details');d.className='ae94d';d.dataset.k94=key;
+    const s=document.createElement('summary');s.innerHTML=sum;d.appendChild(s);
+    const b=document.createElement('div');b.className='ae94b';nodes.filter(Boolean).forEach(n=>b.appendChild(n));d.appendChild(b);
+    const o=O94.o[key];d.open=o==null?!!openDef:!!o;return d}
+  function ae94(id){
+    const sc=$('sheetC');if(!sc||!(sheetCtx&&sheetCtx.aedit===id)||q1(sc,'.ae94id'))return;
+    const a=C.actions.find(x=>x.id===id);if(!a)return;
+    if(O94.id!==id){O94.id=id;O94.o={}}
+    const good=a.type==='good',sh=q1(sc,'.sh'),h3=sh&&q1(sh,'h3'),nameIn=q1(sc,'[data-ae="name"]');
+    if(!sh||!nameIn)return;
+    // 위쪽에서 모을 조각(옮기기 전에 먼저 찾아 둠)
+    const typeLb=lbOf(sc,'[data-ae="type"]'),areaLb=lbOf(sc,'[data-ae="area"]'),nameLb=nameIn.closest('label'),
+      condLb=lbOf(sc,'[data-ae="cond"]'),goldLb=lbOf(sc,'[data-ae="gold"]'),xpLb=lbOf(sc,'[data-ae="xp"]'),
+      braveLb=lbOf(sc,'[data-aebrave]'),marbleLb=lbOf(sc,'[data-ae="marble"]'),durLb=lbOf(sc,'[data-ae="dur"]'),tmodeLb=lbOf(sc,'[data-ae="tmode"]'),
+      effLb=lbOf(sc,'[data-ae="effort"]'),monLb=lbOf(sc,'[data-ae="money"]'),
+      preRow=(q1(sc,'[data-aepre]')||{}).parentElement,whyLb=lbOf(sc,'[data-x60why]'),reLb=lbOf(sc,'[data-ae="reframe"]'),
+      info=[...sc.children].find(c=>c.tagName==='P'&&/골드/.test(c.textContent)&&/컨디션/.test(c.textContent)),
+      conn=q1(sc,':scope > .conn60'),optBox=(q1(sc,'[data-aeoadd]')||{}).parentElement,
+      rh=q1(sc,':scope > .links.rh57'),links=[...sc.querySelectorAll(':scope > .links')].find(x=>!x.classList.contains('rh57')),
+      foot=[...sc.children].find(c=>q1(c,'[data-aedone]'));
+    const f2=q1(sc,':scope > .f2');
+    // 머리줄 = 이름 입력(제목 h3 자리)
+    nameIn.classList.add('ae94n');nameIn.setAttribute('aria-label','이름');nameIn.placeholder='행동 이름';
+    sh.insertBefore(nameIn,h3||sh.firstChild);if(h3)h3.remove();if(nameLb&&!nameLb.querySelector('input,select,textarea'))nameLb.remove();
+    sh.classList.add('ae94sh');
+    // 종류·영역
+    const idr=document.createElement('div');idr.className='ae94id';[typeLb,areaLb].forEach(n=>n&&idr.appendChild(n));
+    // 점수 큰 칸 셋
+    const trio=document.createElement('div');trio.className='ae94sc';
+    setLbl(xpLb,'✨ XP');setLbl(condLb,'🔋 컨디션 '+(good?'+':'−'));setLbl(goldLb,'💰 골드 '+(good?'+':'−'));
+    [xpLb,condLb,goldLb].forEach(n=>{if(n){n.classList.add('s94');trio.appendChild(n)}});
+    if(preRow)preRow.classList.add('ae94pre');
+    const infoD=info?(()=>{const d=document.createElement('details');d.className='ae94i';const s=document.createElement('summary');s.textContent='ⓘ 점수가 뭐예요?';d.appendChild(s);d.appendChild(info);return d})():null;
+    // 접힘 칸들
+    const more=document.createElement('div');more.className='f2';[braveLb,marbleLb,durLb,tmodeLb,effLb,monLb].forEach(n=>n&&more.appendChild(n));
+    const chips=[a.brave?'⚔ 용기':'',a.dur?'⏱ '+a.dur+'분':'',a.marble?'🔮 구슬':'',a.money?'💰 금액':'',a.effort?'크기':''].filter(Boolean);
+    const dMore=more.children.length?det94('more','⚙ 더 설정'+(chips.length?` <small class="muted">${chips.join(' · ')}</small>`:''),[more],false):null;
+    if(optBox){const t=q1(optBox,':scope > h3');if(t)t.remove()}
+    const nOpt=(a.opts||[]).length;
+    const dOpt=optBox?det94('opts','세부 옵션'+(nOpt?` <small>${nOpt}</small>`:' <small class="muted">＋ 추가</small>'),[optBox],false):null;
+    const whyV=whyLb&&q1(whyLb,'input')?q1(whyLb,'input').value.trim():'';
+    const dTxt=(whyLb||reLb)?det94('txt','📝 설명·문구'+((a.reframe||whyV)?' <small>있음</small>':''),[whyLb,reLb],false):null;
+    let dRep=null;
+    if(rh){const t=q1(rh,':scope > h3');if(t)t.remove();const on=q1(rh,'[data-x57rh][aria-pressed="true"]');
+      dRep=det94('rep','↻ 반복 <small class="muted">'+esc(on?on.textContent.trim():'없음')+'</small>',[rh],false)}
+    const nConn=conn?conn.querySelectorAll('.x60c').length:0;
+    if(links){const t=q1(links,':scope > h3');if(t)t.remove()}
+    const dLink=(conn||links)?det94('link','🔗 이어진 곳'+(nConn?` <small>${nConn}</small>`:''),[conn,links],false):null;
+    // 다시 쌓기: .sh 다음부터 새 순서로
+    [...sc.children].forEach(c=>{if(c!==sh&&!c.classList.contains('grab')&&c!==foot&&c!==f2)c.remove()});
+    if(f2)f2.remove();
+    const frag=document.createDocumentFragment();
+    [idr,trio,preRow,infoD,dMore,dOpt,dTxt,dRep,dLink].filter(Boolean).forEach(n=>frag.appendChild(n));
+    sc.insertBefore(frag,foot||null);
+    if(foot)foot.classList.add('ae94f');
+    sc.classList.add('ae94');
+  }
+  openActionEditor=(function(prev){return function(id){const r=prev.apply(this,arguments);try{ae94(id)}catch(e){console.error(e)}return r}})(openActionEditor);
+  // 펼침 상태 기억(toggle은 버블링 안 함 → 캡처)
+  document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.matches&&d.matches('details.ae94d')&&d.dataset.k94)O94.o[d.dataset.k94]=d.open},true);
+  // 점수 칸을 누르면 숫자 전체 선택(폰에서 지우고 다시 치는 수고 줄이기)
+  document.addEventListener('focusin',e=>{const t=e.target;if(t&&t.matches&&t.matches('.ae94sc input')){try{t.select()}catch(x){}}});
+}
+
+/* ---- v9.6 (w95.js): 카드 편집 창 더 줄이기 (사용자 11/13 밤: 칸이 값에 비해 너무 크고, '더 설정'은 한 단계 낭비) ----
+   ae94(w94)가 만든 DOM을 한 번 더 다듬음(openActionEditor 맨 바깥 감싸개). 이벤트는 그대로 data-ae 위임.
+   ① 종류·영역·용기·구슬·타이머·크기·금액 = **한 줄 칩**(select 자체를 칩 모양으로 — 누르면 바로 고름, '⚙ 더 설정' 접힘 없앰)
+      값이 기본(없음·자동·안 적음)인 칩은 흐리게+점선. 타이머 방식 칩은 목표 시간이 있을 때만.
+   ② 점수 칸 셋 = 낮은 한 줄(이모지·이름·숫자 한 칸 안)
+   ③ 세부 옵션·설명·반복·이어진 곳 = 큰 상자 넷 대신 **칩 한 줄 → 누른 것 하나만 아래에 펼침**(O95, 카드가 바뀌면 초기화) */
+{
+  const O95={id:null,k:null};
+  const q1=(r,s)=>r.querySelector(s);
+  const pre95=(sel,f)=>{if(!sel)return;[...sel.options].forEach(o=>{const t=f(o.value,o.textContent.trim());if(t!=null)o.textContent=t})};
+  function chipSel(sel,cls,isDef,f){
+    if(!sel)return null;pre95(sel,f);
+    sel.classList.add('c95');if(cls)sel.classList.add(cls);
+    sel.classList.toggle('def95',isDef(sel.value));
+    const lb=sel.closest('label');if(lb){sel.setAttribute('aria-label',(lb.firstChild&&lb.firstChild.nodeType===3?lb.firstChild.nodeValue:'').trim())}
+    return sel}
+  function ae95(id){
+    const sc=$('sheetC');if(!sc||!sc.classList.contains('ae94')||q1(sc,'.r95'))return;
+    const a=C.actions.find(x=>x.id===id);if(!a)return;
+    if(O95.id!==id){O95.id=id;O95.k=null}
+    const idr=q1(sc,'.ae94id'),dMore=q1(sc,'details.ae94d[data-k94="more"]');
+    // ① 칩 줄
+    const row=document.createElement('div');row.className='r95';
+    const tp=chipSel(q1(sc,'[data-ae="type"]'),'k95',()=>false,(v,t)=>v==='good'?'▲ 좋은 행동':v==='bad'?'▼ 나쁜 행동':null);
+    const ar=chipSel(q1(sc,'[data-ae="area"]'),'',()=>false,(v,t)=>/^🧭/.test(t)?null:'🧭 '+t);
+    const br=chipSel(q1(sc,'[data-aebrave]'),'',v=>!v,(v,t)=>v?'⚔️ '+t.replace(/\s*·\s*용기\s*/,' +'):'⚔️ 용기');
+    const mb=chipSel(q1(sc,'[data-ae="marble"]'),'',v=>!v,(v,t)=>v?'🔮 '+t.replace(/^.*?·\s*/,''):'🔮 구슬');
+    const du=q1(sc,'[data-ae="dur"]');let duC=null;
+    if(du){duC=document.createElement('label');duC.className='c95 du95'+(+du.value?'':' def95');
+      duC.appendChild(document.createTextNode('⏱'));du.placeholder='—';du.setAttribute('aria-label','목표 시간(분)');du.inputMode='numeric';
+      duC.appendChild(du);duC.appendChild(document.createTextNode('분'))}
+    const tm=+(du&&du.value)?chipSel(q1(sc,'[data-ae="tmode"]'),'',()=>false,(v,t)=>t.replace(/\s*\(.*\)\s*$/,'')):null;
+    const ef=chipSel(q1(sc,'[data-ae="effort"]'),'',v=>!v,(v,t)=>v?t:'📦 크기 자동');
+    const mo=chipSel(q1(sc,'[data-ae="money"]'),'',v=>!v,(v,t)=>v?'₩ '+t:'₩ 금액 안 적음');
+    [tp,ar,br,mb,duC,tm,ef,mo].filter(Boolean).forEach(n=>row.appendChild(n));
+    if(idr)idr.replaceWith(row);else sc.querySelector('.sh').after(row);
+    if(dMore)dMore.remove();
+    // ② 점수 칸
+    const trio=q1(sc,'.ae94sc');
+    if(trio){trio.classList.add('sc95');
+      trio.querySelectorAll('label.s94').forEach(lb=>{const t=lb.firstChild;if(t&&t.nodeType===3)t.nodeValue=t.nodeValue.replace(/\s*\+\s*$/,'').replace(/\s*−\s*$/,' −')});
+      const pr=q1(sc,'.ae94pre'),inf=q1(sc,'details.ae94i');
+      if(pr){const t=pr.firstChild;if(t&&t.nodeType===3&&/빠르게/.test(t.nodeValue))t.nodeValue='';
+        const s=[...pr.children].find(c=>!c.matches('button')&&/빠르게/.test(c.textContent));if(s)s.textContent='채우기';pr.classList.add('pre95');
+        if(inf){inf.classList.add('i95');inf.querySelector('summary').textContent='ⓘ';pr.appendChild(inf)}}}
+    // ③ 아래 칸들 = 칩 한 줄 + 하나만 펼침
+    const ds=[...sc.querySelectorAll(':scope > details.ae94d')];
+    if(ds.length){
+      const tabs=document.createElement('div');tabs.className='t95';tabs.setAttribute('role','tablist');
+      const box=document.createElement('div');box.className='p95';
+      ds.forEach(d=>{const k=d.dataset.k94,s=d.querySelector(':scope > summary');
+        const b=document.createElement('button');b.type='button';b.className='chipbtn';b.dataset.t95=k;b.innerHTML=s.innerHTML;
+        b.setAttribute('aria-pressed',O95.k===k?'true':'false');tabs.appendChild(b);
+        const body=d.querySelector(':scope > .ae94b');body.dataset.p95=k;body.hidden=O95.k!==k;box.appendChild(body)});
+      ds[0].before(tabs);tabs.after(box);ds.forEach(d=>d.remove())}
+    sc.classList.add('ae95');
+  }
+  openActionEditor=(function(prev){return function(id){const r=prev.apply(this,arguments);try{ae95(id)}catch(e){console.error(e)}return r}})(openActionEditor);
+  document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#sheetC [data-t95]');if(!b)return;
+    const k=b.dataset.t95;O95.k=O95.k===k?null:k;const sc=$('sheetC');
+    sc.querySelectorAll('[data-t95]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.t95===O95.k?'true':'false'));
+    sc.querySelectorAll('[data-p95]').forEach(x=>x.hidden=x.dataset.p95!==O95.k);
+    const open=O95.k&&sc.querySelector(`[data-p95="${O95.k}"]`);if(open)setTimeout(()=>{try{open.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(x){}},30)});
+  // 칩 select는 고르는 즉시 기본값 흐림 표시 갱신(창이 다시 그려지지 않는 칸 대비)
+  document.addEventListener('change',e=>{const t=e.target;if(t&&t.matches&&t.matches('#sheetC .r95 select.c95')&&!t.classList.contains('k95'))t.classList.toggle('def95',!t.value);
+    if(t&&t.matches&&t.matches('#sheetC .du95 input'))t.parentElement.classList.toggle('def95',!+t.value)},true);
+}
+
+/* ---- v9.7 (w96.js): D11 카드 화면 1·2·4 — 타일 격자 · ⏰ 지금 맞는 카드 먼저 · 점수를 글자 한 줄로 ----
+   ④ 점수 글자: metaChips(맨 바깥 감쌈)가 알약 칩 대신 글자 한 줄을 냄 — 기록하기·편집 목록·편집 보드 모두 metaChips를 쓰므로 같이 바뀜.
+      점수 = `.s96`(✨10 💰+4 🔋+6, 나쁜 카드는 − 부호), 그 밖(영역·🔗 연결·반복·⚔️·옵션·⏱·30일)은 `.g96` 작은 글자. 보일 칸 고르기(aeShow)는 그대로 따름.
+   ① 타일: 기록하기의 행동/습관(#actGroups .acts)·용기(#braveActs)에 `.t96` → CSS 격자(v96.css). 마크업·이벤트는 그대로(□ = 기록, 나머지 = 설명·편집).
+      타일에선 점수 글자와 겹치는 오른쪽 `+n`을 숨김. 목록/타일 바꾸기 = 도구 줄 끝 `[data-t96]`(C.tile96, C 최상위 — 0이면 목록).
+   ② 지금 맞는 카드: 오늘(ui.off===0)·나쁜 거르기 아닐 때, 지금 목록에 보이는 카드 중
+      '오늘 차례인 습관(이어진 반복 할 일이 오늘까지 열려 있음)' +5 · '최근 28일 지금 ±90분에 한 횟수' ×1 — 2점 이상, 오늘 아직 안 한 것만, 폰 4개·PC 6개.
+      맨 위 묶음 `.now96`(접기 키 'now96' — 기존 data-gcollapse 그대로). 행은 아래 묶음의 행을 cloneNode로 복사(위임 이벤트라 그대로 먹음). 이유 글자 `.why96`. */
+{
+  /* ---- ④ 점수 글자 ---- */
+  metaChips=function(a,st,show){
+    show=show||aeShow();const ar=C.areas.find(x=>x.id===a.area),good=a.type==='good',has=k=>show.includes(k),out=[];
+    const sg=v=>(v>0?'+':'−')+Math.abs(v);
+    const g=(cls,txt,tip)=>{if(txt)out.push(`<span class="g96 ${cls}" title="${esc(tip)}">${txt}</span>`)};
+    if(has('area')&&ar)g('ar',esc(ar.name),'영역');
+    if(a.link)g('ln','🔗 자동','연결 카드 — '+linkName(a.link));
+    else{const sc=[has('xp')&&good&&a.xp?`<b>✨${a.xp}</b>`:'',has('gold')&&a.gold?'💰'+sg(a.gold):'',has('cond')&&a.cond?`<span class="${a.cond<0?'neg96':''}">🔋${sg(a.cond)}</span>`:''].filter(Boolean);
+      if(sc.length)out.unshift(`<span class="s96" title="✨ XP(성장) · 💰 골드(돈·자원) · 🔋 컨디션(몸과 마음)">${sc.join(' ')}</span>`)}
+    if(has('rhythm')){const r=rhythmOf(a);if(r)g('rh',esc(r),'반복')}
+    if(has('brave')&&a.brave)g('bv','⚔️','용기 표시');
+    if(has('opts')&&a.opts&&a.opts.length)g('op','옵션 '+a.opts.length,'세부 옵션');
+    if(has('dur')&&a.dur)g('du','⏱'+a.dur+'분','목표 시간');
+    if(st&&has('n30'))g('n','30일 '+(st.n30||0)+'번','최근 30일에 한 횟수');
+    return out.join('')};
+
+  /* ---- ② 지금 맞는 카드 ---- */
+  function nowPicks96(ids){
+    const day=curDay(),done=new Set(day.entries.filter(e=>e.kind==='act').map(e=>e.aid));
+    const nm=nowMinutes(),from=addDays(gk76(),-28),hit={};
+    Object.keys(DAYS).forEach(k=>{if(k<from)return;(DAYS[k].entries||[]).forEach(e=>{if(e.kind!=='act'||!e.aid||!e.t)return;
+      let d=Math.abs(toMin(e.t)-nm);d=Math.min(d,1440-d);if(d<=90)hit[e.aid]=(hit[e.aid]||0)+1})});
+    const td=midKey68(),due=new Set(openTasks().filter(t=>t.aid&&t.rep&&t.due&&t.due<=td).map(t=>t.aid));
+    return ids.map(id=>{const a=C.actions.find(x=>x.id===id);if(!a||a.type!=='good'||a.link||done.has(id))return null;
+        const h=hit[id]||0,s=(due.has(id)?3:0)+(h>=2?h:0);if(s<2)return null;
+        return {id,s,why:due.has(id)?'오늘 차례':'요즘 이 시간'+(h>2?' ×'+h:'')}})
+      .filter(Boolean).sort((x,y)=>y.s-x.s).slice(0,innerWidth<760?4:6)}
+  function now96(){
+    const box=$('actGroups');if(!box)return;
+    const old=box.querySelector(':scope > .now96w');if(old)old.remove();
+    const LS=C.ui.list||{};if(ui.off||LS.filter==='bad')return;
+    const rows=[...box.querySelectorAll('.acts .act[data-info^="act:"]')],seen=new Set(),ids=[];
+    rows.forEach(r=>{const id=r.dataset.info.slice(4);if(!seen.has(id)){seen.add(id);ids.push(id)}});
+    const pk=nowPicks96(ids);if(!pk.length)return;
+    const shut=!!C.ui.collapsed.gnow96,w=document.createElement('div');w.className='now96w';
+    w.innerHTML=`<button class="ghead ${shut?'shut':''}" data-gcollapse="now96">${ic('chev')}⏰ 지금 맞는 카드 <span class="c">${pk.length}</span></button>`;
+    if(!shut){const g=document.createElement('div');g.className='acts now96';
+      pk.forEach(p=>{const r=rows.find(x=>x.dataset.info==='act:'+p.id);if(!r)return;const c=r.cloneNode(true);
+        const m=c.querySelector('.meta');if(m)m.insertAdjacentHTML('afterbegin',`<span class="why96">${esc(p.why)}</span>`);g.appendChild(c)});
+      w.appendChild(g)}
+    box.insertBefore(w,box.firstChild)}
+
+  /* ---- ① 타일 + 바꾸기 단추 ---- */
+  function tile96(){
+    const on=C.tile96!==0;['actGroups','braveActs'].forEach(i=>{const e=$(i);if(e)e.classList.toggle('t96',on)});
+    const tl=$('actTools');if(tl&&!tl.querySelector('[data-t96]'))tl.insertAdjacentHTML('beforeend',
+      `<button type="button" class="chipbtn tg96" data-t96 title="${on?'목록으로 보기':'타일로 보기'}" aria-label="${on?'목록으로 보기':'타일로 보기'}">${on?'☰ 목록':'▦ 타일'}</button>`)}
+  renderLog=(function(prev){return function(){const r=prev.apply(this,arguments);
+    try{tile96();now96();if(typeof logChips==='function')logChips()}catch(e){console.error(e)}return r}})(renderLog);
+  document.addEventListener('click',ev=>{const b=ev.target.closest&&ev.target.closest('[data-t96]');if(!b)return;
+    ev.preventDefault();ev.stopImmediatePropagation();C.tile96=C.tile96===0?1:0;save('config');renderLog()},true);
 }
 
 route();boot();
