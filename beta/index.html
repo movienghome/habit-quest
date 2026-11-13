@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v9.6</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v9.7</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2163,6 +2163,35 @@ details.ae94d>summary small{font-weight:400}
 .p95>.ae94b{border:1.5px solid var(--line);border-radius:12px;background:var(--panel2);padding:10px 12px}
 .p95>.ae94b[hidden]{display:none}
 .t95 .chipbtn[aria-pressed=true] small{color:inherit;opacity:.8}
+
+/* v9.7 (w96.js): D11 — 점수 글자 한 줄 · 타일 격자 · 지금 맞는 카드 */
+.mxs:has(.s96,.g96){gap:2px 8px;align-items:baseline}
+.s96{font-size:12px;font-family:var(--mono);white-space:nowrap;color:var(--ink);opacity:.85;letter-spacing:-.2px}
+.s96 b{font-weight:700}
+.s96 .neg96{color:var(--bad);font-weight:700}
+.g96{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.g96.bv{color:var(--brave);font-weight:700}
+.g96.rh{font-weight:600}
+.g96.ln{white-space:normal}
+/* 타일 */
+#actGroups.t96 .acts,#braveActs.t96{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;padding:4px 0 8px}
+.t96 .act{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"c n p" "s s m";gap:3px 6px;align-items:start;border:1px solid var(--line);border-radius:12px;padding:6px 7px 5px;min-height:0;background:var(--panel)}
+.t96 .act:last-child{border-bottom:1px solid var(--line)}
+.t96 .act.bad{border-style:dashed}
+.t96 .act.brave{border-color:color-mix(in srgb,var(--brave) 45%,var(--line))}
+.t96 .act .chk{grid-area:c}
+.t96 .act .ab{display:contents}
+.t96 .act .n{grid-area:n;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.3;align-self:center;word-break:keep-all;overflow-wrap:anywhere}
+.t96 .act .mxs{grid-area:s;margin:0;align-self:end}
+.t96 .act .pinb{grid-area:p;align-self:start}
+.t96 .act .meta{grid-area:m;justify-self:end;align-self:end;gap:4px}
+.t96 .act:has(.mxs) .meta .xp{display:none}
+.t96 .act:not(:has(.mxs)) .meta{grid-area:s;justify-self:start}
+.tg96{margin-left:auto}
+/* 지금 맞는 카드 */
+.now96w .ghead{color:var(--accent)}
+.acts.now96 .act{background:color-mix(in srgb,var(--accent) 7%,var(--panel))}
+.why96{font-size:11px;color:var(--accent);font-weight:700;white-space:nowrap}
 </style>
 
 <header class="hud" id="hud">
@@ -13930,6 +13959,68 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   // 칩 select는 고르는 즉시 기본값 흐림 표시 갱신(창이 다시 그려지지 않는 칸 대비)
   document.addEventListener('change',e=>{const t=e.target;if(t&&t.matches&&t.matches('#sheetC .r95 select.c95')&&!t.classList.contains('k95'))t.classList.toggle('def95',!t.value);
     if(t&&t.matches&&t.matches('#sheetC .du95 input'))t.parentElement.classList.toggle('def95',!+t.value)},true);
+}
+
+/* ---- v9.7 (w96.js): D11 카드 화면 1·2·4 — 타일 격자 · ⏰ 지금 맞는 카드 먼저 · 점수를 글자 한 줄로 ----
+   ④ 점수 글자: metaChips(맨 바깥 감쌈)가 알약 칩 대신 글자 한 줄을 냄 — 기록하기·편집 목록·편집 보드 모두 metaChips를 쓰므로 같이 바뀜.
+      점수 = `.s96`(✨10 💰+4 🔋+6, 나쁜 카드는 − 부호), 그 밖(영역·🔗 연결·반복·⚔️·옵션·⏱·30일)은 `.g96` 작은 글자. 보일 칸 고르기(aeShow)는 그대로 따름.
+   ① 타일: 기록하기의 행동/습관(#actGroups .acts)·용기(#braveActs)에 `.t96` → CSS 격자(v96.css). 마크업·이벤트는 그대로(□ = 기록, 나머지 = 설명·편집).
+      타일에선 점수 글자와 겹치는 오른쪽 `+n`을 숨김. 목록/타일 바꾸기 = 도구 줄 끝 `[data-t96]`(C.tile96, C 최상위 — 0이면 목록).
+   ② 지금 맞는 카드: 오늘(ui.off===0)·나쁜 거르기 아닐 때, 지금 목록에 보이는 카드 중
+      '오늘 차례인 습관(이어진 반복 할 일이 오늘까지 열려 있음)' +5 · '최근 28일 지금 ±90분에 한 횟수' ×1 — 2점 이상, 오늘 아직 안 한 것만, 폰 4개·PC 6개.
+      맨 위 묶음 `.now96`(접기 키 'now96' — 기존 data-gcollapse 그대로). 행은 아래 묶음의 행을 cloneNode로 복사(위임 이벤트라 그대로 먹음). 이유 글자 `.why96`. */
+{
+  /* ---- ④ 점수 글자 ---- */
+  metaChips=function(a,st,show){
+    show=show||aeShow();const ar=C.areas.find(x=>x.id===a.area),good=a.type==='good',has=k=>show.includes(k),out=[];
+    const sg=v=>(v>0?'+':'−')+Math.abs(v);
+    const g=(cls,txt,tip)=>{if(txt)out.push(`<span class="g96 ${cls}" title="${esc(tip)}">${txt}</span>`)};
+    if(has('area')&&ar)g('ar',esc(ar.name),'영역');
+    if(a.link)g('ln','🔗 자동','연결 카드 — '+linkName(a.link));
+    else{const sc=[has('xp')&&good&&a.xp?`<b>✨${a.xp}</b>`:'',has('gold')&&a.gold?'💰'+sg(a.gold):'',has('cond')&&a.cond?`<span class="${a.cond<0?'neg96':''}">🔋${sg(a.cond)}</span>`:''].filter(Boolean);
+      if(sc.length)out.unshift(`<span class="s96" title="✨ XP(성장) · 💰 골드(돈·자원) · 🔋 컨디션(몸과 마음)">${sc.join(' ')}</span>`)}
+    if(has('rhythm')){const r=rhythmOf(a);if(r)g('rh',esc(r),'반복')}
+    if(has('brave')&&a.brave)g('bv','⚔️','용기 표시');
+    if(has('opts')&&a.opts&&a.opts.length)g('op','옵션 '+a.opts.length,'세부 옵션');
+    if(has('dur')&&a.dur)g('du','⏱'+a.dur+'분','목표 시간');
+    if(st&&has('n30'))g('n','30일 '+(st.n30||0)+'번','최근 30일에 한 횟수');
+    return out.join('')};
+
+  /* ---- ② 지금 맞는 카드 ---- */
+  function nowPicks96(ids){
+    const day=curDay(),done=new Set(day.entries.filter(e=>e.kind==='act').map(e=>e.aid));
+    const nm=nowMinutes(),from=addDays(gk76(),-28),hit={};
+    Object.keys(DAYS).forEach(k=>{if(k<from)return;(DAYS[k].entries||[]).forEach(e=>{if(e.kind!=='act'||!e.aid||!e.t)return;
+      let d=Math.abs(toMin(e.t)-nm);d=Math.min(d,1440-d);if(d<=90)hit[e.aid]=(hit[e.aid]||0)+1})});
+    const td=midKey68(),due=new Set(openTasks().filter(t=>t.aid&&t.rep&&t.due&&t.due<=td).map(t=>t.aid));
+    return ids.map(id=>{const a=C.actions.find(x=>x.id===id);if(!a||a.type!=='good'||a.link||done.has(id))return null;
+        const h=hit[id]||0,s=(due.has(id)?3:0)+(h>=2?h:0);if(s<2)return null;
+        return {id,s,why:due.has(id)?'오늘 차례':'요즘 이 시간'+(h>2?' ×'+h:'')}})
+      .filter(Boolean).sort((x,y)=>y.s-x.s).slice(0,innerWidth<760?4:6)}
+  function now96(){
+    const box=$('actGroups');if(!box)return;
+    const old=box.querySelector(':scope > .now96w');if(old)old.remove();
+    const LS=C.ui.list||{};if(ui.off||LS.filter==='bad')return;
+    const rows=[...box.querySelectorAll('.acts .act[data-info^="act:"]')],seen=new Set(),ids=[];
+    rows.forEach(r=>{const id=r.dataset.info.slice(4);if(!seen.has(id)){seen.add(id);ids.push(id)}});
+    const pk=nowPicks96(ids);if(!pk.length)return;
+    const shut=!!C.ui.collapsed.gnow96,w=document.createElement('div');w.className='now96w';
+    w.innerHTML=`<button class="ghead ${shut?'shut':''}" data-gcollapse="now96">${ic('chev')}⏰ 지금 맞는 카드 <span class="c">${pk.length}</span></button>`;
+    if(!shut){const g=document.createElement('div');g.className='acts now96';
+      pk.forEach(p=>{const r=rows.find(x=>x.dataset.info==='act:'+p.id);if(!r)return;const c=r.cloneNode(true);
+        const m=c.querySelector('.meta');if(m)m.insertAdjacentHTML('afterbegin',`<span class="why96">${esc(p.why)}</span>`);g.appendChild(c)});
+      w.appendChild(g)}
+    box.insertBefore(w,box.firstChild)}
+
+  /* ---- ① 타일 + 바꾸기 단추 ---- */
+  function tile96(){
+    const on=C.tile96!==0;['actGroups','braveActs'].forEach(i=>{const e=$(i);if(e)e.classList.toggle('t96',on)});
+    const tl=$('actTools');if(tl&&!tl.querySelector('[data-t96]'))tl.insertAdjacentHTML('beforeend',
+      `<button type="button" class="chipbtn tg96" data-t96 title="${on?'목록으로 보기':'타일로 보기'}" aria-label="${on?'목록으로 보기':'타일로 보기'}">${on?'☰ 목록':'▦ 타일'}</button>`)}
+  renderLog=(function(prev){return function(){const r=prev.apply(this,arguments);
+    try{tile96();now96();if(typeof logChips==='function')logChips()}catch(e){console.error(e)}return r}})(renderLog);
+  document.addEventListener('click',ev=>{const b=ev.target.closest&&ev.target.closest('[data-t96]');if(!b)return;
+    ev.preventDefault();ev.stopImmediatePropagation();C.tile96=C.tile96===0?1:0;save('config');renderLog()},true);
 }
 
 route();boot();

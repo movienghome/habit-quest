@@ -1,0 +1,28 @@
+/* v9.7 (w96.js): D11 — 점수 글자 한 줄 · 타일 격자 · 지금 맞는 카드 */
+.mxs:has(.s96,.g96){gap:2px 8px;align-items:baseline}
+.s96{font-size:12px;font-family:var(--mono);white-space:nowrap;color:var(--ink);opacity:.85;letter-spacing:-.2px}
+.s96 b{font-weight:700}
+.s96 .neg96{color:var(--bad);font-weight:700}
+.g96{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.g96.bv{color:var(--brave);font-weight:700}
+.g96.rh{font-weight:600}
+.g96.ln{white-space:normal}
+/* 타일 */
+#actGroups.t96 .acts,#braveActs.t96{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;padding:4px 0 8px}
+.t96 .act{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"c n p" "s s m";gap:3px 6px;align-items:start;border:1px solid var(--line);border-radius:12px;padding:6px 7px 5px;min-height:0;background:var(--panel)}
+.t96 .act:last-child{border-bottom:1px solid var(--line)}
+.t96 .act.bad{border-style:dashed}
+.t96 .act.brave{border-color:color-mix(in srgb,var(--brave) 45%,var(--line))}
+.t96 .act .chk{grid-area:c}
+.t96 .act .ab{display:contents}
+.t96 .act .n{grid-area:n;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.3;align-self:center;word-break:keep-all;overflow-wrap:anywhere}
+.t96 .act .mxs{grid-area:s;margin:0;align-self:end}
+.t96 .act .pinb{grid-area:p;align-self:start}
+.t96 .act .meta{grid-area:m;justify-self:end;align-self:end;gap:4px}
+.t96 .act:has(.mxs) .meta .xp{display:none}
+.t96 .act:not(:has(.mxs)) .meta{grid-area:s;justify-self:start}
+.tg96{margin-left:auto}
+/* 지금 맞는 카드 */
+.now96w .ghead{color:var(--accent)}
+.acts.now96 .act{background:color-mix(in srgb,var(--accent) 7%,var(--panel))}
+.why96{font-size:11px;color:var(--accent);font-weight:700;white-space:nowrap}
