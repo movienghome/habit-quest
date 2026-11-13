@@ -1,7 +1,7 @@
 import json,sys,os
 from playwright.sync_api import sync_playwright
 SP='/tmp/'
-URL='http://localhost:8765/beta/index.html'
+URL=os.environ.get('HQURL','http://localhost:8765/beta/index.html')
 MOCK=open('/home/claude/habit-quest/dev/v5/mockdb.js').read()
 errs=[]
 def run(pw,W=1400,H=900,seed=None,store=None,pre=''):

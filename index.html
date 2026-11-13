@@ -1,13 +1,13 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><meta name="theme-color" content="#ffffff"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="해비티카틱"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-180.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><meta name="theme-color" content="#ffffff"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="씩씩"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-180.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <script src="config.js"></script>
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v8.9</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v9.2</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
-<title>해비티카틱</title>
+<title>씩씩</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&family=Silkscreen&display=swap">
 <style>
 /* Layout: 위쪽 작은 HUD(아바타·Lv·컨디션·골드·용기) + 아래 탭바(홈·유리병·＋기록·통계·더보기).
@@ -2001,6 +2001,67 @@ body.tt84.tt84f #tt84slot{height:34px;overflow:hidden}
 .fab88{position:fixed;right:10px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:70;border:2px solid var(--accent);background:var(--panel);color:var(--text);border-radius:999px;padding:6px 12px;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
 .fab88[hidden]{display:none}
 @media (max-width:759px){.fab88{bottom:calc(74px + env(safe-area-inset-bottom,0px))}}
+
+/* v8.9+ 미니멀 1: 맨 위 머리줄(#hud) 얇게 — 아바타 작게, 이름·칭호 줄 없애고 한 줄로 */
+.hud-in{padding:4px max(10px,env(safe-area-inset-right,0px)) 4px max(10px,env(safe-area-inset-left,0px));gap:8px}
+.hud-av{width:32px;height:32px;border-radius:8px;border-width:1px}
+.hud-av svg{width:28px;height:28px}
+.hud-main{display:flex;align-items:center;gap:10px;min-width:0}
+.hud-top{flex:none;gap:6px}
+.hud-name,.hud-title{display:none}
+.hud-pills{margin-left:0;gap:4px}
+.hud-pills .pill{font-size:11px;padding:1px 6px}
+.hud-bars{flex:1;min-width:0;gap:8px}
+.hud-bars .track{height:6px}
+.hud-bars .mbar{grid-template-columns:18px 1fr auto;gap:4px;font-size:10px}
+.hud-bars .mbar .v{min-width:0}
+@media (max-width:520px){
+  /* 폰: 칩(LV·골드·⚡)은 윗줄, HP·XP 막대는 그 밑에 나란히 — 아바타(32px) 높이 안에 두 줄이 들어감 */
+  .hud-main{display:grid;gap:3px;align-items:center}
+  .hud-top{min-width:0}
+  .hud-bars{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .hud-bars .mbar{grid-template-columns:16px 1fr;gap:3px;font-size:9px}
+  .hud-bars .mbar .k{display:block}
+  .hud-bars .mbar .v{display:none}
+  .hud-bars .track{height:5px}
+}
+
+/* v9.0 미니멀 2: 홈 '나' 카드를 전투 카드에 합침 */
+body.m90 #homeGrid .hblock[data-hid="profile"]{display:none}
+body.m90 #battleBox>p.tiny.muted{display:none}
+#battleBox .arena2{grid-template-columns:1.25fr auto 1fr}
+#battleBox .me90{justify-items:stretch;text-align:left;gap:4px}
+.me90 #heroAv{width:76px;height:80px;margin:0 auto}
+.me90 #heroAv svg{width:100%;height:100%}
+.me90 .mi90{display:grid;gap:3px;min-width:0}
+.me90 .mm90 .mood,.me90 #moodName{font-family:var(--display);font-size:14px;line-height:1.2;display:block}
+.me90 .hp90{height:8px}
+.me90 .ml90{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:center}
+.me90 .ml90 .items{display:inline-flex;gap:2px}
+.ft90{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.ft90 .areas{grid-template-columns:1fr 1fr;column-gap:14px;row-gap:4px;margin-top:0}
+.ft90 .area{grid-template-columns:30px 1fr 30px;gap:5px;font-size:12px}
+.ft90 .energy{margin-top:6px}
+.ft90 .energy button{padding:2px 0;font-size:11px}
+#battleBox .minions{margin-top:6px;padding-top:6px}
+#battleBox .mini{position:relative}
+.mini .mh90{position:absolute;left:50%;bottom:0;height:3px;transform:translateX(-50%);background:var(--bad);border-radius:2px;pointer-events:none}
+.ptitle #dayLabel{margin-right:4px}
+@media (max-width:430px){.ptitle #dayLabel{display:none}.me90 #heroAv{width:64px;height:68px}#battleBox .arena2{gap:6px}}
+
+/* v9.2: 쫄따구 HP 막대(칸+숫자) · 보스 바로 아래 배치 · 도전 보스 */
+#battleBox .minions{border-top:0;margin-top:6px;padding-top:0;gap:6px 4px}
+#battleBox .mini{width:42px;height:auto;display:flex;flex-direction:column;align-items:center;gap:2px;padding:2px 0 3px}
+#battleBox .mini>svg{width:38px;height:30px;flex:none}
+.hb91{display:grid;justify-items:center;gap:1px;width:100%}
+.hb91.none{visibility:hidden}
+.bar91{display:block;width:34px;height:7px;box-sizing:border-box;border:1.5px solid var(--ink);border-radius:4px;background:var(--track,transparent);overflow:hidden}
+.bar91>i{display:block;height:100%;background:var(--bad)}
+.num91{font-size:10px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+.cb91{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;justify-content:center;margin-top:8px}
+.chip91{font:inherit;font-size:12px;padding:3px 9px;border:1px dashed var(--line);border-radius:999px;background:none;color:var(--muted);cursor:pointer}
+.sum91{white-space:nowrap}
+.boss2.c91 .c91tag{border:1px solid currentColor;border-radius:6px;padding:0 6px;line-height:1.5}
 </style>
 
 <header class="hud" id="hud">
@@ -2238,7 +2299,7 @@ body.tt84.tt84f #tt84slot{height:34px;overflow:hidden}
     <div id="guideBody" class="stack"></div>
   </section>
 
-  <div class="spread status"><span id="syncState">불러오는 중…</span><span id="acctLbl">해비티카틱</span></div>
+  <div class="spread status"><span id="syncState">불러오는 중…</span><span id="acctLbl">씩씩</span></div>
 </main></div>
 
 <nav class="bnav" aria-label="화면"><div class="bnav-in" id="bnav"></div></nav>
@@ -2248,7 +2309,7 @@ body.tt84.tt84f #tt84slot{height:34px;overflow:hidden}
 
 <div class="gate" id="gate" hidden>
   <form id="login" autocomplete="on">
-    <h1><img src="icons/icon-192.png" alt="">해비티카틱</h1>
+    <h1><img src="icons/icon-192.png" alt="">씩씩</h1>
     <p id="gmsg">포켓 노트와 같은 이메일·비밀번호로 로그인하세요.</p>
     <input id="gemail" type="email" autocomplete="username" placeholder="이메일" required>
     <input id="gpw" type="password" autocomplete="current-password" placeholder="비밀번호 (6자 이상)" required minlength="6">
@@ -2257,7 +2318,7 @@ body.tt84.tt84f #tt84slot{height:34px;overflow:hidden}
     <div class="links"><button type="button" id="gmode">처음이면 계정 만들기</button><button type="button" id="greset">비밀번호를 잊었어요</button></div>
   </form>
   <div class="box" id="nocfg" hidden>
-    <h1><img src="icons/icon-192.png" alt="">해비티카틱</h1>
+    <h1><img src="icons/icon-192.png" alt="">씩씩</h1>
     <p>아직 Firebase 설정이 없습니다. 저장소의 <code>config.js</code>를 확인하고 1~2분 뒤 새로고침하세요.</p>
   </div>
 </div>
@@ -3401,7 +3462,7 @@ function renderGuide(){
   </div>`;
 }
 const TOUR=[
-  ['🎬','해비티카틱에 온 걸 환영해요','좋은 행동은 쌓이고, 나쁜 행동은 오늘을 깎는 생활 RPG예요. 목표는 점수가 아니라 <b>용기·실천·회복</b>이에요.'],
+  ['🎬','씩씩에 온 걸 환영해요','좋은 행동은 쌓이고, 나쁜 행동은 오늘을 깎는 생활 RPG예요. 목표는 점수가 아니라 <b>용기·실천·회복</b>이에요.'],
   ['🔋','HP는 오늘, XP는 영원히','HP(컨디션)는 매일 새로 시작하고 나쁜 행동에 크게 흔들려요. XP·레벨·구슬은 해낸 것만 쌓이고 <b>절대 줄지 않아요</b>.'],
   ['✅','할 일 · 캘린더 · 뽑기','틱틱처럼 할 일을 적고 캘린더로 끌어다 놓아요. 끝내면 XP. 뭘 할지 모르겠으면 <b>🎲 뽑기</b>, 시작이 어려우면 <b>⏳ 딱 5분만</b>.'],
   ['⚔️','용기가 가장 커요','두렵거나 망설여졌는데 해본 건 무엇이든 <b>⚔️ 용기</b>로 기록해요. 결과와 상관없이요. 가장 큰 XP와 칭호를 줘요.'],
@@ -3523,7 +3584,7 @@ const navStack=[];
 /* ================= 백업·계정 ================= */
 let ACCOUNT='',pendingRestore=null;
 const HQ={logout:async()=>{try{localStorage.removeItem('hq-snap'+(location.pathname.includes('/beta/')?'-b':''))}catch(e){}(await window.HQ_READY).logout()}};
-if(window.HQ_READY)window.HQ_READY.then(api=>{ACCOUNT=api&&api.account?api.account.email:'';const l=$('acctLbl');if(l)l.textContent=(location.pathname.includes('/beta/')?'해비티카틱 β · ':'해비티카틱 · ')+ACCOUNT;renderMore()});
+if(window.HQ_READY)window.HQ_READY.then(api=>{ACCOUNT=api&&api.account?api.account.email:'';const l=$('acctLbl');if(l)l.textContent=(location.pathname.includes('/beta/')?'씩씩 β · ':'씩씩 · ')+ACCOUNT;renderMore()});
 window.__hqStatus=t=>setSync(t);
 function acctBoxHTML(){
   if(ui.confirm==='restore'&&pendingRestore)return `<span class="small">'${esc(pendingRestore.fname)}' · 하루 기록 ${pendingRestore.n}개. 지금 기록을 이걸로 바꿀까요?</span><button class="btn sm" id="restoreYes">복원</button><button class="btn ghost sm" id="restoreNo">취소</button>`;
@@ -3534,7 +3595,7 @@ function acctBoxHTML(){
 async function backup(){
   try{const api=await window.HQ_READY;const data=await api.exportAll();
     const b=new Blob([JSON.stringify(data,null,1)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');
-    a.href=u;a.download='해비티카틱-백업-'+dateKey()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(u)},2000);toast('백업 파일을 저장했어요')}
+    a.href=u;a.download='씩씩-백업-'+dateKey()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(u)},2000);toast('백업 파일을 저장했어요')}
   catch(e){console.error(e);toast('백업하지 못했어요. 인터넷 연결을 확인해 주세요')}
 }
 async function doRestore(){
@@ -3652,7 +3713,7 @@ document.addEventListener('change',async e=>{
   if(d.hometoggle){const h=C.ui.home.find(x=>x[0]===d.hometoggle);if(h)h[1]=t.checked?1:0;t.blur();save('config');render();return}
   if(t.id==='restoreFile'){const f=t.files&&t.files[0];if(!f)return;
     try{const data=JSON.parse(await f.text());if(!data||!data.game)throw 0;pendingRestore=data;pendingRestore.fname=f.name;pendingRestore.n=Object.keys(data.days||{}).length;ui.confirm='restore';renderMore()}
-    catch(err){toast('해비티카틱 백업 파일이 아니에요')}
+    catch(err){toast('씩씩 백업 파일이 아니에요')}
     t.value='';return}
   if(d.col){
     const list=listOf(d.col),it=list&&list.find(x=>x.id===d.id);if(!it)return;
@@ -4630,7 +4691,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&RUN&&!$('
 function openHunt(){$('hunt').hidden=false;$('huntPill').hidden=true;document.body.style.overflow='hidden';drawHunt(true);clearInterval(runIv);runIv=setInterval(()=>drawHunt(false),500)}
 function minimizeHunt(){$('hunt').hidden=true;document.body.style.overflow='';releaseWake();clearInterval(runIv);runIv=setInterval(tickPill,1000);tickPill()}
 function tickPill(){if(!RUN){$('huntPill').hidden=true;clearInterval(runIv);document.title=docTitle();return}const el=Math.floor(runElapsed());$('huntPill').hidden=false;$('huntPill').textContent=`🏹 ${RUN.kind==='routine'?(RUN.steps[RUN.si]||{}).name||RUN.name:RUN.name} ${mmss(el)}${RUN.pauseAt?' ⏸':''}`;document.title=`🏹 ${mmss(el)} · ${RUN.name}`}
-const docTitle=()=>location.pathname.includes('/beta/')?'해비티카틱 β':'해비티카틱';
+const docTitle=()=>location.pathname.includes('/beta/')?'씩씩 β':'씩씩';
 const mmss=s=>{s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return (h?h+':'+pad(m):m)+':'+pad(s%60)};
 function speedOf(elapsed,targetMin,baseXP){const tgt=Math.max(1,targetMin)*60,r=elapsed/tgt;
   if(r<=.5)return{tier:'번개 처치',bonus:Math.max(2,Math.round(baseXP*.6)),r};if(r<=.8)return{tier:'빠른 처치',bonus:Math.max(1,Math.round(baseXP*.35)),r};if(r<=1)return{tier:'제시간 처치',bonus:Math.max(1,Math.round(baseXP*.15)),r};return{tier:'처치',bonus:0,r}}
@@ -7177,7 +7238,7 @@ function closeQA60(afterSave){
   setTimeout(tick,afterSave?250:0)}
 function qaPreview60(){const i=$('qa60i'),p=$('qa60p');if(!i||!p)return;const v=i.value.trim();p.innerHTML=v?parseChips(parseQuick(v)):''}
 function setupQA60(){
-  if(!QA60||$('qa60'))return;document.documentElement.classList.add('qa60');document.title='할 일 빠른 추가 · 해비티카틱';
+  if(!QA60||$('qa60'))return;document.documentElement.classList.add('qa60');document.title='할 일 빠른 추가 · 씩씩';
   const d=document.createElement('div');d.id='qa60';d.innerHTML=`<div class="qa60box"><div class="spread"><b>➕ 할 일 빠른 추가</b><button class="x" type="button" data-x60qaclose="1" aria-label="닫기">×</button></div>${qaHTML60(false)}</div>`;document.body.appendChild(d);
   setTimeout(()=>{const i=$('qa60i');if(i)i.focus()},30);
 }
@@ -12911,7 +12972,7 @@ function pBtn88(){const tools=document.querySelector('.hud-tools');if(!tools)ret
   if(PM88&&!hv){if(!f){f=document.createElement('button');f.type='button';f.id='pomoFab88';f.className='fab88';document.body.appendChild(f)}f.hidden=false;f.textContent=ic+' '+tx;f.title=ti}
   else if(f)f.hidden=true}
 function pTitle88(){if(PM88&&!PM88.hold){if(PTITLE88==null)PTITLE88=document.title;document.title=(PM88.run?(PM88.phase==='work'?'🍅 ':'☕ '):'⏸ ')+pFmt88(PM88.dur-pEl88())+' · '+(PM88.phase==='work'?PM88.kind:'쉬는 시간')}
-  else if(PM88&&PM88.hold){if(PTITLE88==null)PTITLE88=document.title;document.title='🔔 끝났어요 · 해비티카틱'}
+  else if(PM88&&PM88.hold){if(PTITLE88==null)PTITLE88=document.title;document.title='🔔 끝났어요 · 씩씩'}
   else if(PTITLE88!=null){document.title=PTITLE88;PTITLE88=null}}
 function pTick88(force){
   if(PM88&&PM88.run&&!PM88.hold&&pEl88()>=PM88.dur){pComplete88();return}
@@ -13006,6 +13067,215 @@ try{pBtn88();pTick88(true);if(PM88&&PM88.hold)pPop88()}catch(e){console.error(e)
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['🍅 뽀모도로','맨 위 🍅 단추','집중 시간(기본 25분)을 재고 끝나면 소리·팝업·알림으로 알려요. 일시정지, 쉬는 5분, 그만두기(여기까지 기록 / 기록 안 함)가 있고 채울 때마다 구슬이 들어가요. 통계는 패널 아래 📊.'],
   ['🗓 캘린더 첫 칸','설정 → 규칙','캘린더 첫 칸(일/월)은 보기만 바꿔요. 마감·주 N회 횟수·주간 보스는 한 주의 시작(월요일) 기준이에요.']])}})(F67);
+
+/* ---- v9.0 미니멀 2: 홈 '나' 카드(아바타·기분·영역 막대·아침 에너지)를 전투 카드에 합침 ---- */
+{
+  const IDS90=['heroAv','moodName','dayLabel','areaBars','energy','equipped'];
+  const PH90={};
+  // 원래 자리에 표지(주석)를 남겨 두고 노드를 옮김 → 합치기를 끄면 그대로 되돌릴 수 있음
+  const ph90=id=>{const n=$(id);if(!n)return null;if(!PH90[id]){const c=document.createComment('p90-'+id);n.before(c);PH90[id]=c}return PH90[id]};
+  const back90=()=>{IDS90.forEach(id=>{const p=PH90[id],n=$(id);if(p&&n&&p.nextSibling!==n)p.after(n)})};
+  const hp90=t=>{try{return Math.max(1,Math.round(taskBase(t).xp||0))}catch(e){return 1}};
+  function merge90(box){
+    const day=today(),ov=overallOf(day),L=levelOf(P.xp);
+    const me=box.querySelector('.hero2'),ar=box.querySelector('.arena2');
+    if(!me||!ar)return;
+    me.className='hero2 me90';me.innerHTML='';
+    me.appendChild($('heroAv'));
+    const info=document.createElement('div');info.className='mi90';
+    info.innerHTML=`<div class="mm90"></div><div class="track hp90" role="img" aria-label="HP ${ov}/100"><div class="fill hp ${ov<35?'low':''}" style="width:${ov}%"></div></div><div class="tiny num ml90"><span>HP ${ov}</span><span>💰${P.gold.toLocaleString()}</span><span>Lv.${L.lv}</span></div>`;
+    info.querySelector('.mm90').appendChild($('moodName'));
+    info.querySelector('.ml90').appendChild($('equipped'));
+    me.appendChild(info);
+    const ft=document.createElement('div');ft.className='ft90';
+    ft.appendChild($('areaBars'));ft.appendChild($('energy'));
+    ar.after(ft);
+    const row=box.parentElement.querySelector('.ptitle .row');
+    if(row&&$('dayLabel')&&$('dayLabel').parentElement!==row)row.prepend($('dayLabel'));
+    // 쫄따구 HP = 그 할 일을 끝냈을 때 보스에게 가는 XP
+    const ms=[...box.querySelectorAll('.mini[data-ctask]:not(.dead)')];
+    const xs=ms.map(m=>TASKS[m.dataset.ctask]?hp90(TASKS[m.dataset.ctask]):0),mx=Math.max(1,...xs);
+    ms.forEach((m,i)=>{if(!xs[i]||m.querySelector('.mh90'))return;
+      const b=document.createElement('i');b.className='mh90';b.style.width=Math.max(18,Math.round(xs[i]/mx*100))+'%';m.appendChild(b);
+      m.title=(m.title||'')+' · HP '+xs[i]});
+  }
+  const _rb=renderBattle;
+  renderBattle=function(){
+    const box=$('battleBox'),hb=box&&box.closest('.hblock');
+    IDS90.forEach(ph90);
+    if(!box||!hb||hb.hidden){document.body.classList.remove('m90');back90();return _rb.apply(this,arguments)}
+    back90(); // 다시 그리기 전에 노드를 창고로(박스를 비우면 같이 사라지므로)
+    const r=_rb.apply(this,arguments);
+    try{merge90(box);document.body.classList.add('m90')}catch(e){console.error(e);document.body.classList.remove('m90');back90()}
+    return r;
+  };
+}
+
+/* ---- v9.2 보스 마무리: ① 쫄따구 HP 막대(칸+숫자)·보스 바로 아래로 ② 도전 보스(다음 보스 불러내기) ③ 주간 보스 HP 자동 조정 ---- */
+{
+  const CHAL_MAX91=3;
+  const wk91=()=>weekStart(dateKey());
+
+  /* ③-1 주별 HP 고정: 자동 조정이 이미 지난 주의 처치·남은 HP를 바꾸지 않게(C.bhp91={주시작:HP}, 지난 주만 적용) */
+  const _ws91=weekState;
+  weekState=function(k){
+    const s=_ws91.apply(this,arguments);
+    try{
+      const w=weekStart(k),r=C.bhp91&&C.bhp91[w];
+      if(r>0&&w<wk91()&&r!==s.hp){s.hp=r;s.left=Math.max(0,r-(s.dmg-s.heal));s.dead=s.dmg-s.heal>=r}
+    }catch(e){console.error(e)}
+    return s;
+  };
+
+  /* ③-2 매주 첫 화면에서 한 번: 지난 4주(4일 넘게 기록한 주만) 평균 데미지의 80% → 주 후반(금·토)에 쓰러지는 HP.
+     한 번에 ±30%까지만, 5% 미만 차이는 그대로. C.bauto91off면 안 함. */
+  let ADJ91=0,TRY91='';
+  function adj91(){
+    if(ADJ91||C.bauto91off)return;
+    if(typeof ready==='undefined'||!ready||mode==='none')return;
+    const w=wk91();
+    const sig=w+':'+Object.keys(DAYS).length; // 기록이 모자라 건너뛴 뒤 날짜 기록이 더 들어오면(느린 연결) 다시 봄
+    if((C.bauto91&&C.bauto91.w===w)||TRY91===sig)return;
+    ADJ91=1;
+    try{
+      const cur=Math.max(50,+C.weekly.bossHp||400),xs=[];
+      for(let i=1;i<=4;i++){
+        const pw=addDays(w,-7*i),dd=weekKeys(pw).filter(k=>DAYS[k]&&hasData(DAYS[k])).length;
+        if(dd>=4){const s=weekState(pw);xs.push(Math.max(0,s.dmg-s.heal))}
+      }
+      if(xs.length<2){TRY91=sig;return}
+      const avg=xs.reduce((a,b)=>a+b,0)/xs.length;
+      let want=Math.round(avg*.8/10)*10;
+      want=clamp(want,Math.round(cur*.7),Math.round(cur*1.3));
+      want=clamp(want,150,5000);
+      if(!(avg>0)||Math.abs(want-cur)/cur<.05){C.bauto91={w,keep:1,avg:Math.round(avg),n:xs.length};save('config');return}
+      C.bhp91=C.bhp91||{};
+      for(let i=1;i<=26;i++){const pw=addDays(w,-7*i);if(C.bhp91[pw]==null)C.bhp91[pw]=cur}
+      C.weekly.bossHp=want;
+      C.bauto91={w,from:cur,to:want,avg:Math.round(avg),n:xs.length};
+      save('config');
+      setTimeout(()=>toastAct(`👾 이번 주 보스 HP를 ${cur} → ${want}로 맞췄어요 (지난 ${xs.length}주 평균 데미지 ${Math.round(avg)})`,'되돌리기',()=>{
+        C.weekly.bossHp=cur;C.bauto91={w,undo:1,avg:Math.round(avg),n:xs.length};save('config');render()},7000),600);
+    }catch(e){console.error(e)}finally{ADJ91=0}
+  }
+  render=(function(prev){return function(){try{adj91()}catch(e){console.error(e)}return prev.apply(this,arguments)}})(render);
+
+  /* ② 도전 보스: 주간 보스를 쓰러뜨린 뒤 '불러내기'를 누르면 시작 시점의 순데미지(base)부터 새로 셈.
+     C.chal91={w:주시작,list:[{n,c,base,hp}]} — 지난 주 것은 무시. 상태는 전부 순데미지에서 계산(되돌려도 맞음). 보상 없음. */
+  const CH91=()=>{const c=C.chal91,w=wk91();return c&&c.w===w&&Array.isArray(c.list)?c:{w,list:[]}};
+  function chalState91(){
+    const ws=weekState(dateKey()),net=ws.dmg-ws.heal;
+    const list=CH91().list.map(b=>{const d=Math.max(0,Math.min(b.hp,net-b.base));return {...b,dealt:d,left:b.hp-d,dead:net-b.base>=b.hp}});
+    return {ws,net,list,cur:list.length?list[list.length-1]:null};
+  }
+  const canSummon91=S=>S.ws.dead&&S.list.length<CHAL_MAX91&&(!S.cur||S.cur.dead);
+  function pick91(i){
+    const nm=bossOf(dateKey()).name;let idx=BOSSES.findIndex(b=>b[0]===nm);if(idx<0)idx=0;
+    return BOSSES[(idx+2+i)%BOSSES.length]; // 이번 주(+0)·다음 주(+1) 보스는 피함
+  }
+  function summon91(){
+    const S=chalState91();if(!canSummon91(S))return;
+    const i=S.list.length,b=pick91(i),hp=Math.max(100,Math.round(S.ws.hp*(.6+.2*i)/10)*10);
+    C.chal91={w:CH91().w,list:[...S.list.map(x=>({n:x.n,c:x.c,base:x.base,hp:x.hp})),{n:b[0],c:b[1],base:S.net,hp}]};
+    save('config');render();toast(`👾 ${b[0]} 등장! 지금부터 얻는 XP가 데미지예요 (HP ${hp})`);
+  }
+  // 처치 알림: 화면을 연 시점에 이미 쓰러진 건 알리지 않고, 그 뒤 새로 쓰러뜨릴 때만
+  const SEEN91=new Set();let INIT91=0;
+  function kill91(S){
+    const w=CH91().w;
+    S.list.forEach((b,i)=>{const key=w+':'+i;
+      if(!b.dead){SEEN91.delete(key);return}
+      if(SEEN91.has(key))return;SEEN91.add(key);
+      if(INIT91)setTimeout(()=>{try{popup('도전 보스','⚔️',`<b>${esc(b.n)}</b>을(를) 쓰러뜨렸어요<br>도전 ${i+1}번째 · 보상은 없지만 이번 주 기록에 남아요`,'도전 보스')}catch(e){}},500)});
+    INIT91=1;
+  }
+  function chalSheet91(S){
+    const b=S.cur;sheetCtx={boss91:1};
+    openSheet(`<div class="sh"><h3>👾 도전 보스</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <div class="mob65 boss"><div class="pic">${bossSVG(b.c,b.dead,b.n)}</div><div>
+      <p style="margin:0"><b>${esc(b.n)}</b> ${b.dead?'<span class="qtag">처치!</span>':''}</p>
+      <div class="track" style="margin:6px 0 2px"><div class="fill" style="width:${Math.round(b.left/b.hp*100)}%;background:var(--bad)"></div></div>
+      <span class="tiny num muted">HP ${b.left}/${b.hp} · 도전 ${S.list.length}/${CHAL_MAX91}</span>
+      <p class="small" style="margin:8px 0 2px">이번 주 보스를 쓰러뜨린 뒤 불러낸 보스예요. 불러낸 뒤에 얻은 XP가 그대로 데미지가 되고, 나쁜 행동은 보스를 회복시켜요.</p>
+      <p class="tiny" style="margin:0">보상은 없고, 이번 주 동안만 남아요.</p></div></div>
+    <p style="margin:10px 0 0"><button class="btn ghost sm" data-w91="weekly">이번 주 보스 보기</button></p>`);
+  }
+  const _bs91=bossSheet65;
+  bossSheet65=function(){
+    const S=chalState91();
+    if(S.cur){chalSheet91(S);return}
+    const r=_bs91.apply(this,arguments);
+    try{ // 보스 규칙 안에 자동 조정 켜기·끄기
+      const kv=document.querySelector('#sheetC details.br68 .kv');
+      if(kv&&!document.querySelector('#sheetC .a91')){
+        const a=C.bauto91||{};
+        const note=a.to?`이번 주 자동 조정: ${a.from} → ${a.to} (지난 ${a.n}주 평균 데미지 ${a.avg} 기준)`:a.undo?'이번 주 자동 조정은 되돌렸어요.':a.n?`이번 주는 그대로예요 (지난 ${a.n}주 평균 데미지 ${a.avg}).`:'4일 넘게 기록한 주가 2주 이상 쌓이면 맞춰요.';
+        kv.insertAdjacentHTML('afterend',`<label class="tiny a91" style="display:flex;gap:6px;align-items:center;margin:8px 0 0"><input type="checkbox" data-a91 ${C.bauto91off?'':'checked'}> 매주 첫날 지난 기록을 보고 HP를 자동으로 맞추기</label><p class="tiny muted" style="margin:2px 0 0">${note}</p>`);
+      }
+    }catch(e){console.error(e)}
+    return r;
+  };
+
+  /* ① 쫄따구: 막대(칸 + 테두리) + 숫자. 색에만 기대지 않게 길이·숫자·테두리 */
+  const hpOf91=t=>{try{return Math.max(1,Math.round(taskBase(t).xp||0))}catch(e){return 1}};
+  function minis91(box){
+    const ms=[...box.querySelectorAll('.mini')];
+    const hs=ms.map(m=>{const t=!m.classList.contains('dead')&&m.dataset.ctask&&TASKS[m.dataset.ctask];return t?hpOf91(t):0});
+    const mx=Math.max(1,...hs);
+    ms.forEach((m,i)=>{
+      m.querySelectorAll('.mh90,.hb91').forEach(n=>n.remove());
+      const h=hs[i],el=document.createElement('span');el.className='hb91'+(h?'':' none');
+      el.innerHTML=h?`<span class="bar91"><i style="width:${Math.max(18,Math.round(h/mx*100))}%"></i></span><span class="num91">${h}</span>`:'<span class="bar91"></span><span class="num91">0</span>';
+      m.appendChild(el);
+    });
+  }
+
+  /* 보스 칸·줄 배치: 아레나 → (도전 줄) → 쫄따구 → 영역 막대 */
+  function arena91(box,S){
+    const ar=box.querySelector('.arena2'),bo=box.querySelector('.boss2');
+    if(!ar||!bo)return;
+    box.querySelectorAll('.cb91').forEach(n=>n.remove());
+    const cur=S.cur;
+    if(cur){
+      bo.classList.toggle('dead',cur.dead);bo.classList.add('c91');bo.removeAttribute('data-info');
+      bo.innerHTML=`${bossSVG(cur.c,cur.dead,cur.n)}<b class="small">${esc(cur.n)}</b><span class="tiny c91tag">도전 ${S.list.length}${cur.dead?' · 처치!':''}</span><div class="track"><div class="fill" style="width:${Math.round(cur.left/cur.hp*100)}%;background:var(--bad)"></div></div><span class="tiny muted num">${cur.left}/${cur.hp}</span>`;
+    }
+    let row='';
+    if(S.ws.dead){
+      const chip=`<button type="button" class="chip91" data-info="boss">✓ 이번 주 보스 처치</button>`;
+      if(canSummon91(S))row=chip+`<button type="button" class="btn sm sum91" data-sum91="1">👾 다음 보스 불러내기</button>`;
+      else if(S.list.length>=CHAL_MAX91&&S.cur&&S.cur.dead)row=chip+`<span class="tiny muted">도전 보스 ${CHAL_MAX91}마리를 모두 쓰러뜨렸어요</span>`;
+      else row=chip;
+    }
+    let after=ar;
+    if(row){const d=document.createElement('div');d.className='cb91';d.innerHTML=row;ar.after(d);after=d}
+    const mn=box.querySelector('.minions'),ft=box.querySelector('.ft90');
+    if(mn){after.after(mn);after=mn}
+    if(ft)after.after(ft);
+  }
+
+  const _rb91=renderBattle;
+  renderBattle=function(){
+    const r=_rb91.apply(this,arguments);
+    try{
+      const box=$('battleBox');
+      if(box&&box.querySelector('.arena2')){const S=chalState91();kill91(S);arena91(box,S);minis91(box)}
+    }catch(e){console.error(e)}
+    return r;
+  };
+
+  window.addEventListener('click',e=>{
+    const t=e.target;if(!t||!t.closest)return;
+    const s=t.closest('[data-sum91]');
+    if(s){e.preventDefault();e.stopPropagation();summon91();return}
+    const w=t.closest('[data-w91]');
+    if(w){e.preventDefault();e.stopPropagation();closeSheet();_bs91()}
+  },true);
+  window.addEventListener('change',e=>{
+    const i=e.target&&e.target.closest&&e.target.closest('[data-a91]');if(!i)return;
+    e.stopPropagation();C.bauto91off=i.checked?0:1;save('config');toast(i.checked?'보스 HP를 매주 자동으로 맞춰요':'보스 HP 자동 조정을 껐어요');
+  },true);
+}
 
 route();boot();
 </script>
