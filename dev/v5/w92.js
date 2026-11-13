@@ -1,4 +1,4 @@
-/* ---- v9.3 다시 씩씩해지기: ① 🫠 오늘은 하나만(할 일 하나만 남기고 나머지는 내일로, ☠ 없이) ② 🌱 복귀 표시(못 한 날 뒤 첫 걸음) ③ 다시 오르는 길(홈 경보판 맨 위 한 줄) ----
+/* ---- v9.3 다시 씩씩해지기: ① ☝ 오늘은 하나만(할 일 하나만 남기고 나머지는 내일로, ☠ 없이) ② 🌱 복귀 표시(못 한 날 뒤 첫 걸음) ③ 다시 오르는 길(홈 경보판 맨 위 한 줄) ----
    저장: C.rest93={게임날짜:{keep,moved:[{id,from,sk,mv72,skip,sk61}],at,td,tom}} · C.back93={게임날짜:{n,from,e}} (둘 다 C 최상위 — normConfig가 보존)
    '내려간 날' = 쉬는 날(rest93) · 컨디션이 복귀 기준 아래(low, 기존 복귀 보너스와 같은 기준) · 기록이 빈 날(gap, 앞에 기록이 있을 때만). */
 {
@@ -32,7 +32,7 @@
   function sheet93(){
     const {mv,fx}=cand93(),td=TD();
     const rows=mv.map((t,i)=>`<label class="r93"><input type="radio" name="k93" value="${t.id}"${i===0?' checked':''}><span><b>${esc(t.title)}</b><small>${i===0?' · 추천':''}${(t.prio||0)>=3?' · 중요':''}${t.dur?' · '+t.dur+'분':''}${t.due<td?' · 밀려 있어요':''}${t.rep&&t.rep.f?' · ↻ 반복':''}</small></span></label>`).join('');
-    openSheet(`<div class="sh"><h3>🫠 오늘은 하나만</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    openSheet(`<div class="sh"><h3>☝ 오늘은 하나만</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
       <p class="small" style="margin:0">오늘 꼭 할 것 하나만 남기고 나머지는 내일로 옮겨요. 미룬 게 아니라서 ☠도 안 붙고, 언제든 되돌릴 수 있어요.</p>
       <div class="l93">${rows}<label class="r93"><input type="radio" name="k93" value=""${mv.length?'':' checked'}><span><b>하나도 안 남기기</b><small> · 오늘은 쉬어요</small></span></label></div>
       ${fx.length?`<p class="tiny muted" style="margin:0">시각이 있는 일정·루틴·주 N회 ${fx.length}개는 그대로 있어요: ${fx.slice(0,4).map(t=>esc(t.title)).join(' · ')}${fx.length>4?' …':''}</p>`:''}
@@ -59,13 +59,13 @@
     const k=keepId&&TASKS[keepId],n=rec.moved.length;
     toastAct(k?`오늘은 '${k.title}' 하나만 · 나머지 ${n}개는 내일로`:`오늘은 쉬어요${n?` · ${n}개는 내일로`:''}`,'되돌리기',()=>undoRest93(g),7000);
   }
-  function undoRest93(date){
+  function undoRest93(date,quiet){
     const r=R93()[date];if(!r)return;
     r.moved.forEach(m=>{const t=TASKS[m.id];if(!t)return;
       if(m.skip){t.skip61=m.sk61||[];if(!t.skip61.length)delete t.skip61;t.due=m.from;if(m.sk)t.skull=m.sk;else delete t.skull}
       else if(t.due===r.tom){t.due=m.from;if(m.mv72)t.moved72=m.mv72;else delete t.moved72}   // 그새 다른 날로 옮겼으면 그대로 둠
       saveTask(t)});
-    delete R93()[date];syncDailies(C);save('config');render();toast('되돌렸어요 · 할 일을 원래 날짜로');
+    delete R93()[date];syncDailies(C);save('config');render();if(!quiet)toast('되돌렸어요 · 할 일을 원래 날짜로');
   }
 
   /* ---- ② 복귀 표시: 내려간 날 다음 날, 오늘 처음 하는 좋은 기록 ---- */
@@ -100,8 +100,8 @@
     const path=dn?`<span class="p93" aria-label="다시 오르는 길"><i>✓ 어제 ${sh[dn]}</i><i>▸ 오늘 첫 걸음</i><i>🌱 복귀</i></span>`:'';
     const bonus=dn&&recoveryActive()?` · 복귀하면 경험치 ×${(C.recovery||{}).mult||1.5}`:'';
     if(rr){const k=rr.keep&&TASKS[rr.keep],n=rr.moved.length;
-      return `<li class="info b93"><span class="ic">🫠</span><span>${k?`오늘은 <b>${esc(k.title)}</b> 하나만`:'<b>오늘은 쉬는 날</b>'}${n?` · 나머지 ${n}개는 내일로`:''} <button type="button" class="chipbtn" data-undo93="${g}">되돌리기</button>${path?'<br>'+path:''}</span></li>`}
-    return `<li class="info b93"><span class="ic">🌱</span><span><b>다시 오르는 길</b> · 어제는 ${lab[dn]}. 오늘은 작은 걸음 하나면 돼요${bonus}<br>${path} <button type="button" class="chipbtn" data-open93="1">🫠 오늘은 하나만</button></span></li>`;
+      return `<li class="info b93"><span class="ic">☝</span><span>${k?`오늘은 <b>${esc(k.title)}</b> 하나만`:'<b>오늘은 쉬는 날</b>'}${n?` · 나머지 ${n}개는 내일로`:''} <button type="button" class="chipbtn" data-undo93="${g}">되돌리기</button>${path?'<br>'+path:''}</span></li>`}
+    return `<li class="info b93"><span class="ic">🌱</span><span><b>다시 오르는 길</b> · 어제는 ${lab[dn]}. 오늘은 작은 걸음 하나면 돼요${bonus}<br>${path} <button type="button" class="chipbtn" data-open93="1">☝ 오늘은 하나만</button></span></li>`;
   }
   function row93(){
     const ul=document.getElementById('alerts');if(!ul)return;
@@ -119,8 +119,8 @@
     const r=prev.apply(this,arguments);
     try{if(ui.dst==='both'||ui.dst==='body'){const sc=$('sheetC'),st=sc&&sc.querySelector('.stack');
       if(st&&!sc.querySelector('.b93d')){const g=GD(),rr=R93()[g];
-        st.insertAdjacentHTML('beforebegin',rr?`<div class="b93d small">🫠 오늘은 하나만 하는 날이에요 <button type="button" class="chipbtn" data-undo93="${g}">되돌리기</button></div>`
-          :`<div class="b93d"><button type="button" class="btn sm" data-open93="1">🫠 오늘은 하나만 남기기</button><span class="tiny muted"> 나머지는 내일로 (☠ 없이)</span></div>`)}}}catch(x){console.error(x)}
+        st.insertAdjacentHTML('beforebegin',rr?`<div class="b93d small">☝ 오늘은 하나만 하는 날이에요 <button type="button" class="chipbtn" data-undo93="${g}">되돌리기</button></div>`
+          :`<div class="b93d"><button type="button" class="btn sm" data-open93="1">☝ 오늘은 하나만 남기기 ›</button><span class="tiny muted"> 나머지는 내일로 (☠ 없이)</span></div>`)}}}catch(x){console.error(x)}
     return r}})(openDopaNow);
 
   addEventListener('click',e=>{
@@ -130,6 +130,36 @@
   },true);
   addEventListener('change',e=>{if(e.target&&e.target.matches&&e.target.matches('input[name=k93]'))e.stopPropagation()},true);
 
+  /* ---- 입구 늘리기(M3): 할 일 줄 ⋯·우클릭 메뉴 · 상세 ⋯ · 오늘 머리 칩(할 일 오늘·홈 오늘·캘린더 서랍 오늘) ---- */
+  const okKeep93=t=>{const rr=R93()[GD()];return cand93().mv.some(x=>x.id===t.id)||!!(rr&&rr.moved.some(m=>m.id===t.id))};
+  function keepOne93(id){const g=GD();if(R93()[g])undoRest93(g,true);doRest93(id)}   // 이미 정했으면 먼저 풀고 다시(되돌리기 기록이 덮여 사라지지 않게)
+  let MT93=null;
+  taskMenu61=(function(prev){return function(t){MT93=t;try{return prev.apply(this,arguments)}finally{MT93=null}}})(taskMenu61);
+  menu61=(function(prev){return function(x,y,title,items){
+    try{
+      let t=MT93,sheet=false;
+      if(!t&&sheetCtx&&sheetCtx.task&&Array.isArray(items)&&items.some(i=>i&&i.keep&&i.l==='🗑 삭제')){t=TASKS[sheetCtx.task];sheet=true}
+      if(t&&t.status===0&&Array.isArray(items)&&!items.some(i=>i&&i.k93)&&okKeep93(t)){
+        const it={k93:1,l:'☝ 오늘은 이것만 남기기 <small class="muted">나머지는 내일로 · ☠ 없이</small>',f:()=>{if(sheet){try{tsRead()}catch(e){}closeSheet()}keepOne93(t.id)}};
+        if(sheet)items=[it,'-'].concat(items);
+        else{let i=items.findIndex(x=>x&&/끝내기|루틴 시작/.test(x.l||''));i=i<0?items.length:i+1;items=items.slice();items.splice(i,0,it)}}
+    }catch(e){console.error(e)}
+    return prev.call(this,x,y,title,items)}})(menu61);
+  function chips93(){
+    document.querySelectorAll('.b93h').forEach(x=>x.remove());
+    if(typeof ready!=='undefined'&&!ready)return;
+    const g=GD(),rr=R93()[g];
+    if(!rr&&cand93().mv.length<2)return;   // 고를 게 둘 이상일 때만(공간 낭비 없게)
+    const h=rr?`<button type="button" class="chipbtn b93h" data-undo93="${g}" title="오늘은 하나만 하기를 되돌려요">↩ 하나만 되돌리기</button>`
+      :`<button type="button" class="chipbtn b93h" data-open93="1" title="오늘 꼭 할 것 하나만 남기고 나머지는 내일로 (☠ 없이)">☝ 하나만<span class="t93"> 남기기</span></button>`;
+    const put=(el,w)=>{if(el&&el.isConnected)el.insertAdjacentHTML(w,h)};
+    if((C.ui.tasks.sel||'today')==='today')put($('tCount'),'afterend');
+    put($('htCount'),'afterend');
+    document.querySelectorAll('.ad.today').forEach(a=>put(a,'beforeend'));
+  }
+  const aft93=f=>function(){const r=f.apply(this,arguments);try{chips93()}catch(x){console.error(x)}return r};
+  render=aft93(render);renderTasks=aft93(renderTasks);renderTray=aft93(renderTray);
+
   F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-    ['🌱 다시 씩씩해지기','🍬 지금 어때? · 홈 경보판','힘든 날엔 "🫠 오늘은 하나만 남기기"로 할 일 하나만 남기고 나머지를 내일로 옮겨요(☠ 없음, 되돌리기 가능, 시각 있는 일정·루틴은 그대로). 쉬거나 힘들었거나 기록이 빈 날 다음에 첫 걸음을 하면 🌱 복귀로 표시하고, 쉬어 간 다음 날도 복귀 보너스 경험치를 받아요.']])}})(F67);
+    ['🌱 다시 씩씩해지기','🍬 지금 어때? · 홈 경보판','힘든 날엔 "☝ 오늘은 하나만 남기기"(🍬 지쳤어요 · 홈 경보판 · 오늘 머리의 ☝ 하나만 남기기 칩 · 할 일 줄 ⋯ 메뉴 ☝ 이것만 남기기)로 할 일 하나만 남기고 나머지를 내일로 옮겨요(☠ 없음, 되돌리기 가능, 시각 있는 일정·루틴은 그대로). 쉬거나 힘들었거나 기록이 빈 날 다음에 첫 걸음을 하면 🌱 복귀로 표시하고, 쉬어 간 다음 날도 복귀 보너스 경험치를 받아요.']])}})(F67);
 }

@@ -80,7 +80,7 @@ with sync_playwright() as pw:
         pg.evaluate("()=>{C.recovery.threshold=C.__thr;delete C.__thr}")
         # ---- 6. 🍬 지쳤어요에서 같은 단추
         pg.evaluate("()=>{location.hash='#home';render();openDopaNow('both')}");pg.wait_for_timeout(600)
-        ok(pg.is_visible('#sheetC .b93d [data-open93]'),tag+'🫠 심신이 지쳤어요에 오늘은 하나만 단추')
+        ok(pg.is_visible('#sheetC .b93d [data-open93]'),tag+'😞 심신이 지쳤어요에 오늘은 하나만 단추')
         pg.click('#sheetC .b93d [data-open93]');pg.wait_for_timeout(400)
         ok(pg.evaluate("()=>document.querySelectorAll('#sheetC input[name=k93]').length")>=1,tag+'단추를 누르면 고르는 창이 열림')
         pg.click('#sheetC [data-sheet=close]');pg.wait_for_timeout(300)

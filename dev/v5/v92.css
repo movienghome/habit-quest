@@ -9,3 +9,6 @@
 .alerts li.b93 .p93 i{font-style:normal}
 .alerts li.b93 .p93 i+i::before{content:"─ ";opacity:.6}
 .alerts li.b93 .chipbtn{margin-left:4px}
+.b93h{margin-left:6px;white-space:nowrap;font-size:12.5px}
+.ad .b93h{float:right;margin-left:8px}
+@media(max-width:520px){.ptitle .b93h .t93{display:none}.ptitle .b93h{margin-left:2px;padding-left:8px;padding-right:8px}}
