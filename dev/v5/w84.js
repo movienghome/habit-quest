@@ -17,7 +17,7 @@ function doneTasks84(k){const p=CAL77;CAL77=1;let es=[];try{es=doneOn(k)}finally
   return {list:out,raw:es.length}}
 function chip84(t,once,cls){const cs=C.ui.cal||{},byList=cs.color==='list',l=byList?lcOf70(t):null;
   const em=byList?(listEmoji(t.list)||listName(listOk(t.list)?t.list:'inbox').replace(/^[^\p{L}\p{N}]+/u,'').slice(0,2)):'';
-  return `<div class="cchip done d84 ${cls||''}${l?' lc70':''}" style="${l?`--lc70:${l.color};border-left:3px solid ${l.color};background:color-mix(in srgb,${l.color} 13%,var(--panel))`:''}"${once?` data-ctask="${t.id}"`:''} title="✓ 끝냄 · ${esc(t.title)}${l?' · '+esc(l.name||''):''}">${em?`<span class="ck58">${esc(em)}</span>`:''}✓ ${esc(t.title)}</div>`}
+  return `<div class="cchip done d84 ${cls||''}${l?' lc70':''}" style="${l?`--lc70:${l.color};border-left:3px solid ${l.color};background:color-mix(in srgb,${l.color} 13%,var(--panel))`:''}" data-ctask="${t.id}" title="✓ 끝냄 · ${esc(t.title)}${l?' · '+esc(l.name||''):''}">${em?`<span class="ck58">${esc(em)}</span>`:''}✓ ${esc(t.title)}</div>`}
 function allday84(){const pane=$('calPane');if(!pane||!calShown())return;
   let most=0;
   pane.querySelectorAll('.tgall [data-drop^="allday:"]').forEach(c=>{const k=c.dataset.drop.slice(7);c.querySelectorAll('.dd84').forEach(x=>x.remove());

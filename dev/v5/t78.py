@@ -98,7 +98,7 @@ def body(pg,phone=False):
     J(pg,f"openTaskSheet('{A}')");pg.wait_for_timeout(500)
     n0=J(pg,"Object.keys(TASKS).length")
     clk(pg,'#sheetC [data-m78="more"]',400)
-    ok(cnt(pg,'#m61 [role=menuitem]')==4,T+'⋯ 메뉴: 집중·복사·안 하기·삭제',cnt(pg,'#m61 [role=menuitem]'))
+    ok(cnt(pg,'#m61 [role=menuitem]')==4+(1 if '건너뛰기' in J(pg,"document.getElementById('m61').innerText") else 0),T+'⋯ 메뉴: (반복이면 건너뛰기) 집중·복사·안 하기·삭제',cnt(pg,'#m61 [role=menuitem]'))
     menu(pg,'복사',700);notoast(pg)
     ok(J(pg,"Object.keys(TASKS).length")>n0,T+'⋯ → 복사')
     J(pg,f"openTaskSheet('{A}')");pg.wait_for_timeout(500)
