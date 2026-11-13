@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs>
+<clipPath id="r"><rect width="512" height="512" rx="112"/></clipPath>
+<clipPath id="in"><path d="M165,430 L165,230 A89,89 0 0 1 343,230 L343,430 Z"/></clipPath>
+<linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2e1a48"/><stop offset="1" stop-color="#1f1230"/></linearGradient>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b3a7a"/><stop offset=".45" stop-color="#c0636b"/><stop offset=".85" stop-color="#ff9a4a"/><stop offset="1" stop-color="#ffb24f"/></linearGradient>
+</defs><g clip-path="url(#r)">
+<rect width="512" height="512" fill="url(#wall)"/>
+<circle cx="77" cy="89" r="3.4" fill="#ffe9a8"/><circle cx="438" cy="109" r="2.6" fill="#ffe9a8"/><circle cx="428" cy="300" r="2.4" fill="#ffe9a8"/>
+<rect x="0" y="430" width="512" height="82" fill="#3b2155"/>
+<path d="M240,430 L267,430 L321,512 L183,512 Z" fill="#7d5a55"/>
+<path d="M143,430 L143,231 A111,111 0 0 1 365,231 L365,430 Z" fill="#fdeccd"/>
+<g clip-path="url(#in)"><rect x="150" y="120" width="210" height="320" fill="url(#sky)"/>
+<circle cx="253" cy="327" r="46" fill="#ffcb5e"/>
+<path d="M150,379 C200,366 250,366 300,362 C330,359 345,356 360,353 L360,440 L150,440 Z" fill="#6b3274"/></g>
+</g></svg>
