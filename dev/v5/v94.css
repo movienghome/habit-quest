@@ -1,0 +1,20 @@
+/* v9.5: D2 카드 편집 창 */
+.sh.ae94sh{display:flex;align-items:center;gap:8px}
+.sh.ae94sh .x{flex:none}
+input.ae94n{flex:1;min-width:0;font-size:20px;font-weight:700;padding:8px 10px}
+.ae94id{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ae94sc{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
+.ae94sc label.s94{font-size:12.5px;font-weight:600;color:var(--ink)}
+.ae94sc label.s94 input{font-size:24px;font-weight:700;text-align:center;padding:8px 4px;min-height:54px;font-variant-numeric:tabular-nums}
+.ae94pre{flex-wrap:nowrap!important;overflow-x:auto;gap:4px;padding-bottom:2px}
+.ae94pre>*{flex:none;white-space:nowrap}
+.ae94i summary{font-size:12px;color:var(--muted);cursor:pointer}
+.ae94i p{margin:4px 0 0}
+details.ae94d{border:1.5px solid var(--line);border-radius:12px;background:var(--panel2)}
+details.ae94d>summary{cursor:pointer;padding:10px 12px;min-height:44px;display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px;list-style:none}
+details.ae94d>summary::-webkit-details-marker{display:none}
+details.ae94d>summary::after{content:'▾';margin-left:auto;color:var(--muted)}
+details.ae94d[open]>summary::after{content:'▴'}
+details.ae94d>summary small{font-weight:400}
+.ae94b{padding:2px 12px 12px;display:grid;gap:10px}
+.sc.ae94 .ae94f{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom,0px));background:var(--panel);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));margin-bottom:-6px;border-top:1px solid var(--line);z-index:2}
