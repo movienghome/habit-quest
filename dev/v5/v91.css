@@ -1,0 +1,13 @@
+/* v9.2: 쫄따구 HP 막대(칸+숫자) · 보스 바로 아래 배치 · 도전 보스 */
+#battleBox .minions{border-top:0;margin-top:6px;padding-top:0;gap:6px 4px}
+#battleBox .mini{width:42px;height:auto;display:flex;flex-direction:column;align-items:center;gap:2px;padding:2px 0 3px}
+#battleBox .mini>svg{width:38px;height:30px;flex:none}
+.hb91{display:grid;justify-items:center;gap:1px;width:100%}
+.hb91.none{visibility:hidden}
+.bar91{display:block;width:34px;height:7px;box-sizing:border-box;border:1.5px solid var(--ink);border-radius:4px;background:var(--track,transparent);overflow:hidden}
+.bar91>i{display:block;height:100%;background:var(--bad)}
+.num91{font-size:10px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+.cb91{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;justify-content:center;margin-top:8px}
+.chip91{font:inherit;font-size:12px;padding:3px 9px;border:1px dashed var(--line);border-radius:999px;background:none;color:var(--muted);cursor:pointer}
+.sum91{white-space:nowrap}
+.boss2.c91 .c91tag{border:1px solid currentColor;border-radius:6px;padding:0 6px;line-height:1.5}

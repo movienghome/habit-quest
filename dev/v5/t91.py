@@ -14,7 +14,7 @@ with sync_playwright() as pw:
           const inBox=id=>!!q('#battleBox #'+id);
           return {m90:document.body.classList.contains('m90'),prof:R(q('[data-hid=profile]')),box:R(q('#battleBox')),
             ids:['heroAv','moodName','areaBars','energy','equipped'].map(inBox),areas:document.querySelectorAll('#battleBox .area').length,
-            mini:document.querySelectorAll('#battleBox .mini').length,mh:document.querySelectorAll('#battleBox .mh90').length,
+            mini:document.querySelectorAll('#battleBox .mini').length,mh:document.querySelectorAll('#battleBox .mh90,#battleBox .hb91').length,
             av:R(q('#heroAv')),hp:R(q('.hp90')),sw:document.documentElement.scrollWidth,iw:innerWidth,
             mood:(q('#moodName')||{}).textContent,hpw:(q('.hp90 .fill')||{style:{}}).style.width}}""")
         print(W,r)
