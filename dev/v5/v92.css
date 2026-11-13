@@ -1,0 +1,11 @@
+/* v9.3: 다시 씩씩해지기 — 오늘은 하나만 · 복귀 표시 · 다시 오르는 길 */
+.l93{display:grid;gap:4px;margin:8px 0}
+.r93{display:flex;align-items:flex-start;gap:10px;min-height:44px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer}
+.r93:has(input:checked){border-color:var(--ink);border-width:2px;padding:7.5px 9.5px}
+.r93 input{width:auto;margin-top:3px;flex:none}
+.r93 small{color:var(--muted);font-weight:400}
+.b93d{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:2px 0}
+.alerts li.b93 .p93{display:inline-flex;flex-wrap:wrap;gap:2px 6px;align-items:center;margin-top:3px;font-size:12px;color:var(--muted)}
+.alerts li.b93 .p93 i{font-style:normal}
+.alerts li.b93 .p93 i+i::before{content:"─ ";opacity:.6}
+.alerts li.b93 .chipbtn{margin-left:4px}
