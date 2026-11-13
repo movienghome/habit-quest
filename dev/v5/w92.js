@@ -131,8 +131,9 @@
   addEventListener('change',e=>{if(e.target&&e.target.matches&&e.target.matches('input[name=k93]'))e.stopPropagation()},true);
 
   /* ---- 입구 늘리기(M3): 할 일 줄 ⋯·우클릭 메뉴 · 상세 ⋯ · 오늘 머리 칩(할 일 오늘·홈 오늘·캘린더 서랍 오늘) ---- */
-  const okKeep93=t=>{const rr=R93()[GD()];return cand93().mv.some(x=>x.id===t.id)||!!(rr&&rr.moved.some(m=>m.id===t.id))};
-  function keepOne93(id){const g=GD();if(R93()[g])undoRest93(g,true);doRest93(id)}   // 이미 정했으면 먼저 풀고 다시(되돌리기 기록이 덮여 사라지지 않게)
+  const okKeep93=t=>!!t&&t.status===0&&!t.cb76&&!t.ml80&&!t.parent&&!t.rid&&!t.rstep;   // v9.3c: 날짜 없는·시각 있는·미래 할 일도 메뉴에 보임(예전엔 '오늘 옮겨질 후보'만 → 메뉴가 안 뜸)
+  function keepOne93(id){const g=GD(),t=TASKS[id],td=TD();if(t&&!t.time&&(!t.due||t.due>td)){t.due=td;saveTask(t)}   // 날짜 없거나 미래인 할 일을 고르면 오늘로 끌어옴
+    if(R93()[g])undoRest93(g,true);doRest93(id)}   // 이미 정했으면 먼저 풀고 다시(되돌리기 기록이 덮여 사라지지 않게)
   let MT93=null;
   taskMenu61=(function(prev){return function(t){MT93=t;try{return prev.apply(this,arguments)}finally{MT93=null}}})(taskMenu61);
   menu61=(function(prev){return function(x,y,title,items){

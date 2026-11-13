@@ -79,7 +79,7 @@ with sync_playwright() as pw:
         # ---- 시각 있는 일정은 메뉴에 없음
         pg.evaluate("(id)=>{taskMenu61(TASKS[id],200,200)}",ids['d']);pg.wait_for_timeout(250)
         items=pg.evaluate("()=>[...document.querySelectorAll('#m61 button')].map(b=>b.innerText)")
-        ok(not any('이것만 남기기' in x for x in items),tag+'시각 있는 일정 메뉴엔 없음(건드리지 않는 것)',items[:6])
+        ok(any('이것만 남기기' in x for x in items),tag+'시각 있는 일정 메뉴에도 있음(v9.3c — 그 일정은 그대로 두고 나머지만 내일로)',items[:6])
         pg.keyboard.press('Escape')
         # ---- 캘린더 서랍 오늘 머리 (데스크톱만 서랍이 있음)
         if W>=900:
