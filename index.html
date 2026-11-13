@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v8.5</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v8.6</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -12590,6 +12590,22 @@ addEventListener('hashchange',()=>setTimeout(()=>{try{placeCal();chip84btn();if(
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['✓ 끝낸 일 보이기','캘린더 (월·1일·3일·주)','끝낸 일이 목록 색·이모지와 ✓로 남아요 — 시각 없는 끝낸 일은 종일 칸에, 월 보기는 날짜 옆 ✓n으로 개수까지.'],
   ['🕒 폰 시간표','할 일 화면 칩 줄 🕒 시간표','할 일 목록 아래에 오늘 시간표가 떠요. 할 일을 꾹 눌러 끌어 시간에 놓으면 시각이 정해져요. 위 손잡이를 끌면 높이가 바뀌고 ×로 닫아요.']])}})(F67);
+
+/* ---- v8.5+ (w85.js): B9 묶인 할 일은 머리의 영역을 따라감 ----
+   areaOfTask(t) = 따로 정한 영역(t.area) > 태그 영역 > 카드 영역 > (묶인 할 일이면) 머리의 영역.
+   루틴 단계(t.rstep)는 루틴 규칙이 따로 있어 건드리지 않음. 머리 사슬은 최대 5단(순환 방지).
+   areaOfTask는 function 선언이라 뒤에 선언한 이 함수가 v5a의 것을 덮음(앞 모듈에서 부르는 곳도 같은 이름을 찾음). */
+function areaOfTask(t){
+  let cur=t,n=0;
+  while(cur&&n++<5){
+    const a=cur.aid&&C.actions.find(x=>x.id===cur.aid);
+    const own=cur.area||tagArea(cur)||(a&&a.area)||null;
+    if(own)return own;
+    if(cur.rstep||!cur.parent)return null;
+    cur=(typeof TASKS!=='undefined')&&TASKS[cur.parent];
+  }
+  return null;
+}
 
 route();boot();
 </script>
