@@ -1,0 +1,28 @@
+/* v8.4 — 끝낸 일 칩(✓) · 월 날짜 머리 ✓n · 폰 시간표 독 */
+.cchip.done.d84{opacity:1;text-decoration:none;font-weight:600;color:var(--muted);border-style:dashed;border-left-style:solid;border-color:color-mix(in srgb,var(--lc70,var(--good)) 55%,var(--line));cursor:default}
+.cchip.done.d84[data-ctask]{cursor:pointer}
+.cchip.done.d84:not(.lc70){background:color-mix(in srgb,var(--good) 8%,var(--panel))}
+.cchip.done.d84 .ck58{margin-right:2px}
+.tgall .cchip.done.d84{margin-top:2px}
+.dn84{margin-left:3px;font-size:10px;line-height:1;padding:1px 3px;border-radius:7px;color:var(--muted);border:1px dashed var(--line);white-space:nowrap}
+.mc .mch{align-items:center}
+.bar83 .ck58{margin-right:2px}
+#tt84slot{display:none}
+body.tt84 #tt84slot{display:flex;flex-direction:column;position:fixed;left:0;right:0;bottom:var(--bnavh,58px);height:var(--tt84h,42vh);z-index:50;background:var(--bg,var(--panel));border-top:1px solid var(--line);border-radius:14px 14px 0 0;box-shadow:0 -6px 18px color-mix(in srgb,var(--ink) 16%,transparent)}
+body.tt84 [data-view="tasks"]{padding-bottom:calc(var(--tt84h,42vh) + 8px)}
+#tt84slot .h84{display:flex;align-items:center;gap:8px;padding:4px 8px 2px;touch-action:none;cursor:ns-resize;flex:none;position:relative}
+#tt84slot .g84{position:absolute;left:50%;top:3px;width:38px;height:4px;margin-left:-19px;border-radius:2px;background:var(--line)}
+#tt84slot .h84 b{font-size:13px;margin-top:6px}
+#tt84slot .hint84{flex:1;font-size:11px;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tt84slot .h84 .ib{margin-top:4px}
+body.tt84 #tt84slot #calPane{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 8px;gap:2px;overflow:hidden}
+body.tt84 #tt84slot .calbar2{flex-wrap:nowrap;gap:4px;padding:0}
+body.tt84 #tt84slot .calbar2 h2{flex:1;min-width:0;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.tt84 #tt84slot .calbar2 .ib,body.tt84 #tt84slot .calbar2 .btn{white-space:nowrap;flex:none}
+body.tt84 #calModes,body.tt84 #cal62v,body.tt84 #cal57Color,body.tt84 [data-calhelp],body.tt84 #calHelp,body.tt84 #c76tasks,body.tt84 #calTrayBtn,body.tt84 #calTray,body.tt84 #cal63add,body.tt84 #calPane .calbar2 label.ib,body.tt84 #cal62m,body.tt84 #calDay,body.tt84 #cal63fab{display:none!important}
+body.tt84 #tt84slot .callay{flex:1;min-height:0;display:flex;flex-direction:column}
+body.tt84 #tt84slot .callay>.stack{flex:1;min-height:0;display:flex;flex-direction:column;gap:0}
+body.tt84 #tt84slot #calMain{flex:1;min-height:0;display:flex;flex-direction:column}
+body.tt84 #tt84slot .tgwrap{flex:1;min-height:0;display:flex;flex-direction:column;border-radius:10px}
+body.tt84 #tt84slot .tgscroll{flex:1 1 0;min-height:0;max-height:none}
+#t84tt.on{background:color-mix(in srgb,var(--accent) 18%,var(--panel));border-color:var(--accent)}

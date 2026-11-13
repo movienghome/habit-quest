@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v8.3</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v8.4</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -1927,6 +1927,35 @@ body.dragging .bar83{pointer-events:none}
 .plus83{position:absolute;left:1px;right:1px;z-index:1;pointer-events:none;border:1px dashed var(--line);border-radius:5px;color:var(--muted);font-size:11px;line-height:1.2;padding:1px 4px;background:color-mix(in srgb,var(--accent) 7%,transparent);overflow:hidden}
 .plus83[hidden]{display:none}
 @media (hover:hover){.mc:not(.open63):hover::before{content:"＋";position:absolute;right:3px;top:3px;font-size:11px;line-height:1;color:var(--muted);opacity:.7;pointer-events:none}}
+
+/* v8.4 — 끝낸 일 칩(✓) · 월 날짜 머리 ✓n · 폰 시간표 독 */
+.cchip.done.d84{opacity:1;text-decoration:none;font-weight:600;color:var(--muted);border-style:dashed;border-left-style:solid;border-color:color-mix(in srgb,var(--lc70,var(--good)) 55%,var(--line));cursor:default}
+.cchip.done.d84[data-ctask]{cursor:pointer}
+.cchip.done.d84:not(.lc70){background:color-mix(in srgb,var(--good) 8%,var(--panel))}
+.cchip.done.d84 .ck58{margin-right:2px}
+.tgall .cchip.done.d84{margin-top:2px}
+.dn84{margin-left:3px;font-size:10px;line-height:1;padding:1px 3px;border-radius:7px;color:var(--muted);border:1px dashed var(--line);white-space:nowrap}
+.mc .mch{align-items:center}
+.bar83 .ck58{margin-right:2px}
+#tt84slot{display:none}
+body.tt84 #tt84slot{display:flex;flex-direction:column;position:fixed;left:0;right:0;bottom:var(--bnavh,58px);height:var(--tt84h,42vh);z-index:50;background:var(--bg,var(--panel));border-top:1px solid var(--line);border-radius:14px 14px 0 0;box-shadow:0 -6px 18px color-mix(in srgb,var(--ink) 16%,transparent)}
+body.tt84 [data-view="tasks"]{padding-bottom:calc(var(--tt84h,42vh) + 8px)}
+#tt84slot .h84{display:flex;align-items:center;gap:8px;padding:4px 8px 2px;touch-action:none;cursor:ns-resize;flex:none;position:relative}
+#tt84slot .g84{position:absolute;left:50%;top:3px;width:38px;height:4px;margin-left:-19px;border-radius:2px;background:var(--line)}
+#tt84slot .h84 b{font-size:13px;margin-top:6px}
+#tt84slot .hint84{flex:1;font-size:11px;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tt84slot .h84 .ib{margin-top:4px}
+body.tt84 #tt84slot #calPane{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 8px;gap:2px;overflow:hidden}
+body.tt84 #tt84slot .calbar2{flex-wrap:nowrap;gap:4px;padding:0}
+body.tt84 #tt84slot .calbar2 h2{flex:1;min-width:0;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.tt84 #tt84slot .calbar2 .ib,body.tt84 #tt84slot .calbar2 .btn{white-space:nowrap;flex:none}
+body.tt84 #calModes,body.tt84 #cal62v,body.tt84 #cal57Color,body.tt84 [data-calhelp],body.tt84 #calHelp,body.tt84 #c76tasks,body.tt84 #calTrayBtn,body.tt84 #calTray,body.tt84 #cal63add,body.tt84 #calPane .calbar2 label.ib,body.tt84 #cal62m,body.tt84 #calDay,body.tt84 #cal63fab{display:none!important}
+body.tt84 #tt84slot .callay{flex:1;min-height:0;display:flex;flex-direction:column}
+body.tt84 #tt84slot .callay>.stack{flex:1;min-height:0;display:flex;flex-direction:column;gap:0}
+body.tt84 #tt84slot #calMain{flex:1;min-height:0;display:flex;flex-direction:column}
+body.tt84 #tt84slot .tgwrap{flex:1;min-height:0;display:flex;flex-direction:column;border-radius:10px}
+body.tt84 #tt84slot .tgscroll{flex:1 1 0;min-height:0;max-height:none}
+#t84tt.on{background:color-mix(in srgb,var(--accent) 18%,var(--panel));border-color:var(--accent)}
 </style>
 
 <header class="hud" id="hud">
@@ -3276,7 +3305,8 @@ function renderGuide(){
       </ul></div>
   </div>
   <div class="panel"><h2>자세한 규칙</h2><p class="help">눌러서 펼쳐요. 화면 곳곳의 <b>?</b> 버튼을 누르면 해당 항목이 열려요. 숫자·버튼·병을 <b>꾹 누르거나 우클릭</b>하면 그 자리에서 설명과 편집이 떠요.</p>
-    ${acc('card83','🆕 v8.3 · 캘린더 — 막대 · 하루씩 · ＋ 추가 · 루틴 블록','지금 버전',`<ul><li><b>월 보기</b>: 여러 날 일정이 칸마다 따로 뜨지 않고 <b>한 줄 막대</b>로 이어져요(‹ › = 앞뒤로 이어짐). 막대를 끌면 길이 그대로 통째로 옮겨요.</li><li><b>1일·3일 보기</b>: 옆으로 휠(Shift+휠)·폰은 옆으로 밀면 <b>하루씩</b> 넘어가요.</li><li><b>＋ 추가</b>: 날짜 패널 아래 큰 입력칸을 접고, 제목 줄 <b>＋ 추가</b>(또는 N 키)가 팝업을 띄워요. 시간표 빈 곳에 마우스를 올리면 ＋ 힌트.</li><li><b>루틴 블록</b>: 단계 시간을 합친 길이로 보이고, 시간표에서 옮기면 <b>이 날만 / 앞으로</b> 물어요(루틴 ⏰ 몇 시쯤은 '앞으로'일 때만 바뀜).</li></ul>`)}
+    ${acc('card84','🆕 v8.4 · 끝낸 일 보이기 · 막대 색·이모지 · 폰 시간표','지금 버전',`<ul><li><b>끝낸 일</b>: 캘린더 1일·3일·주 <b>종일 칸</b>에 시각 없는 끝낸 일이 ✓와 목록 색·이모지로 남고, 월 보기는 끝낸 칩이 목록 색·이모지로 보이며 날짜 옆 <b>✓n</b>으로 개수가 보여요.</li><li><b>월 막대</b>: 여러 날 막대가 목록 색·이모지를 따라요('표시: 목록 이모지'일 때).</li><li><b>폰 시간표</b>: 할 일 화면 칩 줄 <b>🕒 시간표</b>를 켜면 아래에 시간표가 떠요. 할 일을 꾹 눌러 끌어 놓으면 시각이 정해지고, 위 손잡이를 끌면 높이가 바뀌어요.</li></ul>`)}
+    ${acc('card83','v8.3 · 캘린더 — 막대 · 하루씩 · ＋ 추가 · 루틴 블록','지난 버전',`<ul><li><b>월 보기</b>: 여러 날 일정이 칸마다 따로 뜨지 않고 <b>한 줄 막대</b>로 이어져요(‹ › = 앞뒤로 이어짐). 막대를 끌면 길이 그대로 통째로 옮겨요.</li><li><b>1일·3일 보기</b>: 옆으로 휠(Shift+휠)·폰은 옆으로 밀면 <b>하루씩</b> 넘어가요.</li><li><b>＋ 추가</b>: 날짜 패널 아래 큰 입력칸을 접고, 제목 줄 <b>＋ 추가</b>(또는 N 키)가 팝업을 띄워요. 시간표 빈 곳에 마우스를 올리면 ＋ 힌트.</li><li><b>루틴 블록</b>: 단계 시간을 합친 길이로 보이고, 시간표에서 옮기면 <b>이 날만 / 앞으로</b> 물어요(루틴 ⏰ 몇 시쯤은 '앞으로'일 때만 바뀜).</li></ul>`)}
     ${acc('card82','v8.2 · 해 보니 용기였어요 · 보이기·숨기기','지난 버전',`<ul><li><b>⚔️ 용기 칩</b>: 카드로 이은 할 일에도 늘 있어요(카드에 용기가 있으면 카드 것, 없으면 이 할 일 것).</li><li><b>해 보고 나서 용기</b>: 끝낸 뒤에 ⚔️를 골라도 방금 기록에 용기 점수가 붙어요. 기록 뒤 아래 알림의 ⚔️는 <b>그 기록에만</b>(할 일·카드는 그대로).</li><li><b>⚲ 보이기·숨기기</b>: 캘린더 '거르기'를 <b>고른 것 보이기 / 고른 것 숨기기</b>로 불러요.</li></ul>`)}
     ${acc('card81','v8.1 · 칩 줄 고침','지난 버전',`<ul><li><b>할 일 상세 칩 줄</b>: 어떤 할 일에서 칩 순서·'여기부터는 쓸 때만' 선을 바꿔도 다른 할 일에서 흐트러지지 않아요(그 할 일에 없는 칩 자리를 그대로 둬요).</li><li><b>⚔️ 용기 칩</b>: 카드로 이어진 할 일도 카드에 용기가 있으면 칩이 떠요(누르면 카드 편집).</li><li><b>⚲ 거르기</b>: '보일 것 / 숨길 것'이라고 부르던 걸 다시 <b>거르기</b>로 — 창 제목·단추 설명·설정 메뉴·도움말.</li></ul>`)}
     ${acc('card80','v8.0 · 🍱 식단표 · 🌙 시간표 짜기','지난 버전',`<ul><li><b>🍱 식단표</b>: 캘린더 오른쪽 ⋯ 설정 → <b>🍱 식단표</b>(또는 '밀프렙' 할 일 상세의 🍱). 주간 표에 점심·저녁 메뉴를 적으면 시간표에 <b>🍱 점심 · 메뉴</b> 블록이 오늘부터 7일치 자동으로 생겨요.</li><li>블록은 캘린더에서 <b>끌어 옮기면 그날만</b> 바뀌고, 누르면 메뉴·시간·길이를 고쳐요. 지우면 그 끼니는 다시 안 만들어요. 점수 없음 · 하루 예산에서 빠져요 · 목록·홈에는 안 떠요.</li><li><b>🌙 시간표 짜기</b>: 캘린더 줄 🌙(폰은 ⋯ 설정). 내일의 정해진 것과 시간 안 정한 일을 한 화면에 모으고, 길이만 정해 두면 <b>빈 시간에 넣어 보기</b> → 미리보기 → <b>이대로 넣기</b>(되돌리기 있음). 중요도 높은 것부터 · 정해진 일정·🍱 식사를 피해서 · 반복 할 일은 직접 놓아요. ⇥로 다음 날로 보내기도 돼요.</li></ul>`)}
@@ -12464,6 +12494,97 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['↔ 1일·3일 보기 하루씩','캘린더 1일·3일 보기','옆으로 휠·Shift+휠·폰 옆으로 밀기로 하루씩 넘어가요.'],
   ['＋ 날짜에 추가','캘린더 날짜 패널 ＋ 추가 · N 키','큰 입력칸 대신 작은 ＋ 추가가 팝업을 띄워요. 시간표 빈 곳·월 칸 빈 곳 누르기도 같아요.'],
   ['⏱ 루틴 블록','캘린더 시간표','루틴은 단계 시간 합만큼 길게 보이고, 시각을 옮기면 이 날만/앞으로를 물어요.']])}})(F67);
+
+/* ---- v8.4 (w84.js): 캘린더 끝낸 일 · 막대 색·이모지 · 폰 할 일 화면 시간표 ----
+   1) 끝낸 일 보이기: ① 1일·3일·주 보기 '종일 칸'에 시각 없는 끝낸 일(✓ + 목록 색·이모지) ② 월 보기 끝낸 칩을 할 일 기준으로 다시 그림
+      (목록 색·이모지·✓ · 눌러서 상세) + 날짜 머리 ✓n(칩이 칸에 안 들어가도 개수는 보임). 거르기(보이기·숨기기)는 doneOn이 CAL77 안에서 그대로 적용.
+   2) 월 막대(.bar83): w83이 renderCal 맨 끝에서 막대를 만들어 w70·v5o의 '목록 색·이모지 입히기'가 닿지 않았음 → 맨 바깥 감싸개 bars84가 같은 규칙으로 입힘.
+   3) 폰 할 일 화면 시간표(독): C.tt84(켜짐)·C.tt84h(높이 px) — 둘 다 C 최상위 키. #calPane을 #tt84slot(아래 고정)으로 옮기고
+      설정은 C.ui.cal._p84(1일)로 따로(PC 3단의 _t와 안 섞임). splitOn()은 그대로(PC 3단 전용) — 독은 tt84On()·calShown·placeCal·C.ui.cal 접근자만 손봄. */
+var FORCEOFF84=0;
+function tt84On(){return curView()==='tasks'&&innerWidth<760&&!!C.tt84}
+function calShown(){return curView()==='cal'||splitOn()||tt84On()}
+function splitOn(){return !FORCEOFF84&&curView()==='tasks'&&innerWidth>=1200&&C.ui.split!==false}
+
+/* ---- 1) 끝낸 일 ---- */
+function doneTasks84(k){const p=CAL77;CAL77=1;let es=[];try{es=doneOn(k)}finally{CAL77=p}
+  const seen=new Set(),out=[];
+  es.forEach(e=>{const t=TASKS[e.tid];if(!t||seen.has(t.id)||t.cb76||t.ml80||isStep62(t))return;
+    const once=t.status===2&&t.doneAt===k,rep=t.status===0&&t.rep&&t.rep.f&&t.due!==k;if(!once&&!rep)return;seen.add(t.id);out.push({t,e,once})});
+  return {list:out,raw:es.length}}
+function chip84(t,once,cls){const cs=C.ui.cal||{},byList=cs.color==='list',l=byList?lcOf70(t):null;
+  const em=byList?(listEmoji(t.list)||listName(listOk(t.list)?t.list:'inbox').replace(/^[^\p{L}\p{N}]+/u,'').slice(0,2)):'';
+  return `<div class="cchip done d84 ${cls||''}${l?' lc70':''}" style="${l?`--lc70:${l.color};border-left:3px solid ${l.color};background:color-mix(in srgb,${l.color} 13%,var(--panel))`:''}"${once?` data-ctask="${t.id}"`:''} title="✓ 끝냄 · ${esc(t.title)}${l?' · '+esc(l.name||''):''}">${em?`<span class="ck58">${esc(em)}</span>`:''}✓ ${esc(t.title)}</div>`}
+function allday84(){const pane=$('calPane');if(!pane||!calShown())return;
+  let most=0;
+  pane.querySelectorAll('.tgall [data-drop^="allday:"]').forEach(c=>{const k=c.dataset.drop.slice(7);c.querySelectorAll('.dd84').forEach(x=>x.remove());
+    const ds=doneTasks84(k).list.filter(({t})=>!t.time);
+    if(ds.length)c.insertAdjacentHTML('beforeend',ds.map(({t,once})=>chip84(t,once,'dd84')).join(''));
+    most=Math.max(most,c.querySelectorAll('.cchip').length)});
+  const tg=pane.querySelector('.alltog');if(tg&&most>3&&!/[▾▴]/.test(tg.textContent))tg.textContent='종일 '+(ui.allOpen?'▴':'▾')}
+function month84(){const g=$('calMain')&&$('calMain').querySelector('.mgrid');if(!g)return;
+  g.querySelectorAll('.mc[data-calday]').forEach(mc=>{const k=mc.dataset.calday;
+    mc.querySelectorAll('.dc84').forEach(x=>x.remove());
+    const old=[...mc.querySelectorAll('.cchip.done:not(.d84)')],{list,raw}=doneTasks84(k);
+    if(!old.length&&!list.length)return;
+    // 칸 +n 기준 값에서 '아직 안 그려진 끝낸 일' 만큼 빼고, 끝낸 일은 전부 다시 그려 칸 맞춤(cal62fit)이 넘치는 것을 세게 함
+    const mr=mc.querySelector('.more');let base=mc.dataset.b62!=null?+mc.dataset.b62:(mr?(parseInt(mr.textContent.replace(/\D/g,''))||0):0);
+    base=Math.max(0,base-Math.max(0,raw-old.length));mc.dataset.b62=base;if(mr)mr.remove();
+    old.forEach(x=>x.remove());
+    if(list.length){const h=list.map(({t,once})=>chip84(t,once,'dc84')).join('');const first=mc.querySelector('.sp83~.cchip,.cchip');
+      mc.insertAdjacentHTML('beforeend',h)}
+    const hd=mc.querySelector('.mch');if(hd&&list.length&&!hd.querySelector('.dn84'))hd.insertAdjacentHTML('beforeend',`<span class="dn84" title="끝낸 일 ${list.length}개">✓${list.length}</span>`)})}
+function bars84(){const m=$('calMain');if(!m)return;const cs=C.ui.cal||{};if(cs.color!=='list')return;
+  m.querySelectorAll('.bar83').forEach(b=>{const t=TASKS[b.dataset.ctask];if(!t)return;const l=lcOf70(t),cl=b.classList.contains('cl83'),cr=b.classList.contains('cr83');
+    if(l){b.classList.add('lc70');b.style.setProperty('--lc70',l.color);if(!cl)b.style.borderLeft=`3px solid ${l.color}`;else b.style.borderTopColor=b.style.borderBottomColor=l.color;
+      b.style.background=`color-mix(in srgb,${l.color} 34%,var(--panel))`}
+    if(!b.querySelector('.ck58')){const txt=listEmoji(t.list)||listName(listOk(t.list)?t.list:'inbox').replace(/^[^\p{L}\p{N}]+/u,'').slice(0,2);
+      b.innerHTML=`${cl?'‹ ':''}<span class="ck58">${esc(txt)}</span>${esc(t.title)}${cr?' ›':''}`}});
+  try{place83()}catch(e){}}
+renderCal=(function(prev){return function(){const x=prev.apply(this,arguments);
+  try{if(calShown()){const md=(C.ui.cal||{}).mode;if(md==='month'){month84();bars84()}else if(md==='1day'||md==='3day'||md==='week')allday84()}}catch(e){console.error(e)}return x}})(renderCal);
+
+/* ---- 3) 폰 할 일 화면 시간표(독) ---- */
+function pdock84(base){if(!base._p84||typeof base._p84!=='object'){const c={};Object.keys(base).forEach(k=>{if(k[0]!=='_'&&k!=='filter')c[k]=base[k]});base._p84=Object.assign(c,{mode:'1day',actual:true,tray:false})}return base._p84}
+function cal84Install(){const u=C&&C.ui;if(!u)return;const d=Object.getOwnPropertyDescriptor(u,'cal');if(!d||!d.get||d.get.m84)return;
+  FORCEOFF84=1;let base;try{base=d.get.call(u)}finally{FORCEOFF84=0}if(!base||typeof base!=='object')return;
+  const get=function(){return splitOn()?base._t:tt84On()?pdock84(base):base};get.m84=1;
+  Object.defineProperty(u,'cal',{get,set(v){if(splitOn())base._t=v;
+    else if(tt84On()){const t=pdock84(base);Object.keys(t).forEach(k=>delete t[k]);Object.assign(t,v)}
+    else{const t=base._t,p=base._p84;Object.keys(base).forEach(k=>delete base[k]);Object.assign(base,v);if(!base._t&&t)base._t=t;if(!base._p84&&p)base._p84=p}},enumerable:false,configurable:true})}
+calSplitInstall=(function(prev){return function(){prev.apply(this,arguments);try{cal84Install()}catch(e){console.error(e)}}})(calSplitInstall);
+function slot84(){let s=$('tt84slot');if(!s){s=document.createElement('div');s.id='tt84slot';
+  s.innerHTML='<div class="h84" id="tt84h"><span class="g84" aria-hidden="true"></span><b>🕒 시간표</b><span class="hint84">할 일을 꾹 눌러 끌어다 놓아요</span><button type="button" class="ib" data-tt84="x" aria-label="시간표 닫기">×</button></div>';
+  (document.querySelector('[data-view="tasks"]')||document.body).appendChild(s)}return s}
+function placeCal(){const pane=$('calPane');if(!pane)return;const on=splitOn(),dk=tt84On();
+  const want=on?$('tCalSlot'):dk?slot84():document.querySelector('[data-view="cal"]');
+  if(want&&pane.parentElement!==want){want.appendChild(pane);ui.calKeepScroll=false}
+  const B=document.body.classList;B.toggle('split',on);B.toggle('wideview',on||curView()==='cal');B.toggle('tt84',dk);
+  if(C.ui.listW)document.documentElement.style.setProperty('--listw',C.ui.listW+'px');
+  const nav=document.querySelector('.bnav'),nh=nav&&getComputedStyle(nav).display!=='none'?Math.round(nav.getBoundingClientRect().height):0;
+  const h=Math.min(Math.round(innerHeight*.75),Math.max(180,+C.tt84h||Math.round(innerHeight*.42)));
+  document.documentElement.style.setProperty('--tt84h',h+'px');document.documentElement.style.setProperty('--bnavh',nh+'px')}
+// 할 일 칩 줄: 📅 캘린더 옆에 🕒 시간표
+function chip84btn(){const old=$('t84tt');if(innerWidth>=760||curView()!=='tasks'){if(old)old.remove();return}
+  const ch=$('tChips');if(!ch)return;let b=old;if(!b){b=document.createElement('button');b.type='button';b.className='chipbtn';b.id='t84tt';b.textContent='🕒 시간표';b.title='아래에 시간표를 띄워 할 일을 끌어다 놓기';
+    const cal=$('t76cal');if(cal)cal.after(b);else ch.insertAdjacentHTML('afterbegin','')||ch.prepend(b)}
+  b.setAttribute('aria-pressed',!!C.tt84);b.classList.toggle('on',!!C.tt84)}
+render=(function(prev){return function(){const x=prev.apply(this,arguments);try{chip84btn()}catch(e){console.error(e)}return x}})(render);
+addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#t84tt,[data-tt84]');if(!b)return;e.preventDefault();e.stopPropagation();
+  C.tt84=b.id==='t84tt'?!C.tt84:false;save('config');ui.calKeepScroll=false;render();
+  if(C.tt84)toast('🕒 아래 시간표에 할 일을 꾹 눌러 끌어 놓으면 시각이 정해져요 · ◀ ▶로 날짜 넘기기')},true);
+// 손잡이를 끌어 높이 바꾸기
+{let on=false,sy=0,sh=0;
+  addEventListener('pointerdown',e=>{const h=e.target.closest&&e.target.closest('#tt84h');if(!h||e.target.closest('button'))return;on=true;sy=e.clientY;sh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tt84h'))||300;h.setPointerCapture&&h.setPointerCapture(e.pointerId);document.body.classList.add('dragging')});
+  addEventListener('pointermove',e=>{if(!on)return;const v=Math.round(Math.min(innerHeight*.75,Math.max(180,sh+sy-e.clientY)));document.documentElement.style.setProperty('--tt84h',v+'px');C.tt84h=v});
+  const end=()=>{if(!on)return;on=false;document.body.classList.remove('dragging');save('config');ui.calKeepScroll=true;try{renderCal()}catch(e){}};
+  addEventListener('pointerup',end);addEventListener('pointercancel',end)}
+addEventListener('resize',()=>{try{placeCal();chip84btn()}catch(e){}});
+addEventListener('hashchange',()=>setTimeout(()=>{try{placeCal();chip84btn();if(tt84On())renderCal()}catch(e){}},0));
+
+F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
+  ['✓ 끝낸 일 보이기','캘린더 (월·1일·3일·주)','끝낸 일이 목록 색·이모지와 ✓로 남아요 — 시각 없는 끝낸 일은 종일 칸에, 월 보기는 날짜 옆 ✓n으로 개수까지.'],
+  ['🕒 폰 시간표','할 일 화면 칩 줄 🕒 시간표','할 일 목록 아래에 오늘 시간표가 떠요. 할 일을 꾹 눌러 끌어 시간에 놓으면 시각이 정해져요. 위 손잡이를 끌면 높이가 바뀌고 ×로 닫아요.']])}})(F67);
 
 route();boot();
 </script>
