@@ -1,0 +1,4 @@
+/* v8.5 — 끝낸 일 취소선 되살리기(캘린더 블록·칩·종일 칸·월 칸). ✓·점선은 그대로 */
+#calPane .blk.done.d77 .bt{text-decoration:line-through;text-decoration-color:var(--muted)}
+.cchip.done.d84{text-decoration:line-through;text-decoration-color:var(--muted)}
+.cchip.done.d84 .ck58{display:inline-block;text-decoration:none}
