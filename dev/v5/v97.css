@@ -1,0 +1,14 @@
+/* v9.8 (w97.js): D11-3 — 기록하기에서 바로 정리(끌기) */
+#actGroups.mv97 .act[data-drag]{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:grab}
+#actGroups.mv97 .ghead[data-drag]{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:grab}
+#actGroups.mv97 .ghead[data-drag]::after{content:'⋮⋮';margin-left:auto;padding-left:8px;color:var(--muted);font-size:12px;letter-spacing:-2px;opacity:.7}
+.mv97[aria-pressed="true"]{outline:2px solid var(--accent)}
+/* 끄는 동안 놓을 자리 표시 (줄 노드 대신 기준 칸에 표시 — 격자 칸을 안 차지함) */
+.act.ins97b{box-shadow:-4px 0 0 0 var(--accent)}
+.act.ins97a{box-shadow:4px 0 0 0 var(--accent)}
+#actGroups .ghead.ins97b{box-shadow:inset 0 3px 0 var(--accent)}
+#actGroups .acts.ins97a,#actGroups .ghead.ins97a{box-shadow:inset 0 -3px 0 var(--accent)}
+.board57 .dcol.ins97b{box-shadow:-4px 0 0 0 var(--accent)}
+.board57 .dcol.ins97a{box-shadow:4px 0 0 0 var(--accent)}
+.dh97{cursor:grab}
+body.dragging .dh97,body.dragging #actGroups .ghead[data-drag]{user-select:none;-webkit-user-select:none}
