@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v9.0</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v9.1</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2025,6 +2025,29 @@ body.tt84.tt84f #tt84slot{height:34px;overflow:hidden}
   .hud-bars .mbar .v{display:none}
   .hud-bars .track{height:5px}
 }
+
+/* v9.0 미니멀 2: 홈 '나' 카드를 전투 카드에 합침 */
+body.m90 #homeGrid .hblock[data-hid="profile"]{display:none}
+body.m90 #battleBox>p.tiny.muted{display:none}
+#battleBox .arena2{grid-template-columns:1.25fr auto 1fr}
+#battleBox .me90{justify-items:stretch;text-align:left;gap:4px}
+.me90 #heroAv{width:76px;height:80px;margin:0 auto}
+.me90 #heroAv svg{width:100%;height:100%}
+.me90 .mi90{display:grid;gap:3px;min-width:0}
+.me90 .mm90 .mood,.me90 #moodName{font-family:var(--display);font-size:14px;line-height:1.2;display:block}
+.me90 .hp90{height:8px}
+.me90 .ml90{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:center}
+.me90 .ml90 .items{display:inline-flex;gap:2px}
+.ft90{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.ft90 .areas{grid-template-columns:1fr 1fr;column-gap:14px;row-gap:4px;margin-top:0}
+.ft90 .area{grid-template-columns:30px 1fr 30px;gap:5px;font-size:12px}
+.ft90 .energy{margin-top:6px}
+.ft90 .energy button{padding:2px 0;font-size:11px}
+#battleBox .minions{margin-top:6px;padding-top:6px}
+#battleBox .mini{position:relative}
+.mini .mh90{position:absolute;left:50%;bottom:0;height:3px;transform:translateX(-50%);background:var(--bad);border-radius:2px;pointer-events:none}
+.ptitle #dayLabel{margin-right:4px}
+@media (max-width:430px){.ptitle #dayLabel{display:none}.me90 #heroAv{width:64px;height:68px}#battleBox .arena2{gap:6px}}
 </style>
 
 <header class="hud" id="hud">
@@ -13030,6 +13053,49 @@ try{pBtn88();pTick88(true);if(PM88&&PM88.hold)pPop88()}catch(e){console.error(e)
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['🍅 뽀모도로','맨 위 🍅 단추','집중 시간(기본 25분)을 재고 끝나면 소리·팝업·알림으로 알려요. 일시정지, 쉬는 5분, 그만두기(여기까지 기록 / 기록 안 함)가 있고 채울 때마다 구슬이 들어가요. 통계는 패널 아래 📊.'],
   ['🗓 캘린더 첫 칸','설정 → 규칙','캘린더 첫 칸(일/월)은 보기만 바꿔요. 마감·주 N회 횟수·주간 보스는 한 주의 시작(월요일) 기준이에요.']])}})(F67);
+
+/* ---- v9.0 미니멀 2: 홈 '나' 카드(아바타·기분·영역 막대·아침 에너지)를 전투 카드에 합침 ---- */
+{
+  const IDS90=['heroAv','moodName','dayLabel','areaBars','energy','equipped'];
+  const PH90={};
+  // 원래 자리에 표지(주석)를 남겨 두고 노드를 옮김 → 합치기를 끄면 그대로 되돌릴 수 있음
+  const ph90=id=>{const n=$(id);if(!n)return null;if(!PH90[id]){const c=document.createComment('p90-'+id);n.before(c);PH90[id]=c}return PH90[id]};
+  const back90=()=>{IDS90.forEach(id=>{const p=PH90[id],n=$(id);if(p&&n&&p.nextSibling!==n)p.after(n)})};
+  const hp90=t=>{try{return Math.max(1,Math.round(taskBase(t).xp||0))}catch(e){return 1}};
+  function merge90(box){
+    const day=today(),ov=overallOf(day),L=levelOf(P.xp);
+    const me=box.querySelector('.hero2'),ar=box.querySelector('.arena2');
+    if(!me||!ar)return;
+    me.className='hero2 me90';me.innerHTML='';
+    me.appendChild($('heroAv'));
+    const info=document.createElement('div');info.className='mi90';
+    info.innerHTML=`<div class="mm90"></div><div class="track hp90" role="img" aria-label="HP ${ov}/100"><div class="fill hp ${ov<35?'low':''}" style="width:${ov}%"></div></div><div class="tiny num ml90"><span>HP ${ov}</span><span>💰${P.gold.toLocaleString()}</span><span>Lv.${L.lv}</span></div>`;
+    info.querySelector('.mm90').appendChild($('moodName'));
+    info.querySelector('.ml90').appendChild($('equipped'));
+    me.appendChild(info);
+    const ft=document.createElement('div');ft.className='ft90';
+    ft.appendChild($('areaBars'));ft.appendChild($('energy'));
+    ar.after(ft);
+    const row=box.parentElement.querySelector('.ptitle .row');
+    if(row&&$('dayLabel')&&$('dayLabel').parentElement!==row)row.prepend($('dayLabel'));
+    // 쫄따구 HP = 그 할 일을 끝냈을 때 보스에게 가는 XP
+    const ms=[...box.querySelectorAll('.mini[data-ctask]:not(.dead)')];
+    const xs=ms.map(m=>TASKS[m.dataset.ctask]?hp90(TASKS[m.dataset.ctask]):0),mx=Math.max(1,...xs);
+    ms.forEach((m,i)=>{if(!xs[i]||m.querySelector('.mh90'))return;
+      const b=document.createElement('i');b.className='mh90';b.style.width=Math.max(18,Math.round(xs[i]/mx*100))+'%';m.appendChild(b);
+      m.title=(m.title||'')+' · HP '+xs[i]});
+  }
+  const _rb=renderBattle;
+  renderBattle=function(){
+    const box=$('battleBox'),hb=box&&box.closest('.hblock');
+    IDS90.forEach(ph90);
+    if(!box||!hb||hb.hidden){document.body.classList.remove('m90');back90();return _rb.apply(this,arguments)}
+    back90(); // 다시 그리기 전에 노드를 창고로(박스를 비우면 같이 사라지므로)
+    const r=_rb.apply(this,arguments);
+    try{merge90(box);document.body.classList.add('m90')}catch(e){console.error(e);document.body.classList.remove('m90');back90()}
+    return r;
+  };
+}
 
 route();boot();
 </script>

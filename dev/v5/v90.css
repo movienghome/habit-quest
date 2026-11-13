@@ -1,0 +1,22 @@
+/* v9.0 미니멀 2: 홈 '나' 카드를 전투 카드에 합침 */
+body.m90 #homeGrid .hblock[data-hid="profile"]{display:none}
+body.m90 #battleBox>p.tiny.muted{display:none}
+#battleBox .arena2{grid-template-columns:1.25fr auto 1fr}
+#battleBox .me90{justify-items:stretch;text-align:left;gap:4px}
+.me90 #heroAv{width:76px;height:80px;margin:0 auto}
+.me90 #heroAv svg{width:100%;height:100%}
+.me90 .mi90{display:grid;gap:3px;min-width:0}
+.me90 .mm90 .mood,.me90 #moodName{font-family:var(--display);font-size:14px;line-height:1.2;display:block}
+.me90 .hp90{height:8px}
+.me90 .ml90{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:center}
+.me90 .ml90 .items{display:inline-flex;gap:2px}
+.ft90{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.ft90 .areas{grid-template-columns:1fr 1fr;column-gap:14px;row-gap:4px;margin-top:0}
+.ft90 .area{grid-template-columns:30px 1fr 30px;gap:5px;font-size:12px}
+.ft90 .energy{margin-top:6px}
+.ft90 .energy button{padding:2px 0;font-size:11px}
+#battleBox .minions{margin-top:6px;padding-top:6px}
+#battleBox .mini{position:relative}
+.mini .mh90{position:absolute;left:50%;bottom:0;height:3px;transform:translateX(-50%);background:var(--bad);border-radius:2px;pointer-events:none}
+.ptitle #dayLabel{margin-right:4px}
+@media (max-width:430px){.ptitle #dayLabel{display:none}.me90 #heroAv{width:64px;height:68px}#battleBox .arena2{gap:6px}}
