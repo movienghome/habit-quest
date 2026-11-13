@@ -7,7 +7,6 @@
 <rect width="512" height="512" fill="url(#wall)"/>
 <circle cx="77" cy="89" r="3.4" fill="#ffe9a8"/><circle cx="438" cy="109" r="2.6" fill="#ffe9a8"/><circle cx="428" cy="300" r="2.4" fill="#ffe9a8"/>
 <rect x="0" y="430" width="512" height="82" fill="#3b2155"/>
-<path d="M240,430 L267,430 L321,512 L183,512 Z" fill="#7d5a55"/>
 <path d="M143,430 L143,231 A111,111 0 0 1 365,231 L365,430 Z" fill="#fdeccd"/>
 <g clip-path="url(#in)"><rect x="150" y="120" width="210" height="320" fill="url(#sky)"/>
 <circle cx="253" cy="327" r="46" fill="#ffcb5e"/>
