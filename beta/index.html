@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v8.9</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='해비티카틱 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v9.0</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2001,6 +2001,28 @@ body.tt84.tt84f #tt84slot{height:34px;overflow:hidden}
 .fab88{position:fixed;right:10px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:70;border:2px solid var(--accent);background:var(--panel);color:var(--text);border-radius:999px;padding:6px 12px;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
 .fab88[hidden]{display:none}
 @media (max-width:759px){.fab88{bottom:calc(74px + env(safe-area-inset-bottom,0px))}}
+
+/* v8.9+ 미니멀 1: 맨 위 머리줄(#hud) 얇게 — 아바타 작게, 이름·칭호 줄 없애고 한 줄로 */
+.hud-in{padding:4px max(10px,env(safe-area-inset-right,0px)) 4px max(10px,env(safe-area-inset-left,0px));gap:8px}
+.hud-av{width:32px;height:32px;border-radius:8px;border-width:1px}
+.hud-av svg{width:28px;height:28px}
+.hud-main{display:flex;align-items:center;gap:10px;min-width:0}
+.hud-top{flex:none;gap:6px}
+.hud-name,.hud-title{display:none}
+.hud-pills{margin-left:0;gap:4px}
+.hud-pills .pill{font-size:11px;padding:1px 6px}
+.hud-bars{flex:1;min-width:0;gap:8px}
+.hud-bars .track{height:6px}
+.hud-bars .mbar{grid-template-columns:18px 1fr auto;gap:4px;font-size:10px}
+.hud-bars .mbar .v{min-width:0}
+@media (max-width:520px){
+  .hud-main{gap:6px}
+  .hud-bars{gap:0}
+  .hud-bars .mbar{grid-template-columns:1fr}
+  .hud-bars .mbar .k{display:none}
+  #hudGold{display:none} /* 폰은 골드 칩 숨김(⚡용기·LV 유지) */
+  .hud-bars .mbar:nth-child(2){display:none} /* 폰은 HP 막대만(XP는 LV 칩·홈에서) */
+}
 </style>
 
 <header class="hud" id="hud">
