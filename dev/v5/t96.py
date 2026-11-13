@@ -23,13 +23,23 @@ with sync_playwright() as pw:
         txt=pg.inner_text('#sheetC')
         ok('하그둘 만남' in txt and '치과' in txt,tag+'정해진 일정 단계: 시각 없는 fixed + 깔린 일정',txt[:160].replace('\n',' | '))
         # 시각 정하기
-        pg.fill("#sheetC input[data-w93tm]",'15:00');pg.wait_for_timeout(500)
+        # v9.5: 시각 입력칸 대신 '일을 고르고 → 시간표를 눌러 놓기'(15:00)
+        pg.click(f"#sheetC [data-w93s='{ids['fx']}']");pg.wait_for_timeout(300)
+        g=pg.evaluate("()=>{const g=document.querySelector('#sheetC [data-w93g]'),r=g.getBoundingClientRect();return {t:r.top,l:r.left,w:r.width,s0:+g.dataset.s0}}")
+        sc=pg.evaluate("()=>{const e=document.querySelector('#sheetC .tt93s');const r=e.getBoundingClientRect();return [r.top,r.bottom]}")
+        yy=g['t']+(15*60-g['s0'])+2
+        if yy>sc[1]-4 or yy<sc[0]+4:
+            pg.evaluate(f"()=>{{const e=document.querySelector('#sheetC .tt93s');e.scrollTop+={yy}-({sc[0]}+{sc[1]})/2}}");pg.wait_for_timeout(100)
+            g=pg.evaluate("()=>{const g=document.querySelector('#sheetC [data-w93g]'),r=g.getBoundingClientRect();return {t:r.top,l:r.left,w:r.width,s0:+g.dataset.s0}}")
+            yy=g['t']+(15*60-g['s0'])+2
+        pg.mouse.click(g['l']+g['w']-12,yy);pg.wait_for_timeout(600)
         st=pg.evaluate("(i)=>{const t=TASKS[i.fx];return [t.time,t.dur]}",ids)
         ok(st[0]=='15:00',tag+'정해진 일정에 시각 적용',st)
         # 다음 단계(주 N회)
         pg.click("#sheetC [data-w93nav='1']");pg.wait_for_timeout(300)
         ok('시나리오 쓰기' in pg.inner_text('#sheetC'),tag+'주 N회 단계에 시나리오')
-        pg.click("#sheetC [data-w93add]");pg.wait_for_timeout(500)
+        pg.click(f"#sheetC [data-w93s='{ids['wk']}']");pg.wait_for_timeout(300)
+        pg.click("#sheetC [data-w93q]");pg.wait_for_timeout(500)
         sl=pg.evaluate("(i)=>{const k=addDays(midKey68(),1);return TASKS[i.wk].sl91&&TASKS[i.wk].sl91[k]}",ids)
         ok(bool(sl),tag+'내일 자리가 빈 시간에 놓임',sl)
         ok(sl not in ('10:00','15:00'),tag+'정해진 일정과 안 겹침',sl)

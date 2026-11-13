@@ -18,3 +18,22 @@ details.ae94d[open]>summary::after{content:'▴'}
 details.ae94d>summary small{font-weight:400}
 .ae94b{padding:2px 12px 12px;display:grid;gap:10px}
 .sc.ae94 .ae94f{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom,0px));background:var(--panel);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));margin-bottom:-6px;border-top:1px solid var(--line);z-index:2}
+/* v9.5: 내일 짜기 시간표 */
+.tray93{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
+.chipbtn.t93{min-height:36px}
+.chipbtn.t93.on{border-color:var(--ink);border-width:2px;font-weight:700}
+.sel93{border:2px solid var(--ink);border-radius:12px;padding:8px 10px;margin:6px 0;display:grid;gap:6px;background:var(--panel2)}
+.sel93 .s2{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.sel93 input[type=time],.sel93 select{width:auto}
+.tt93s{height:min(46vh,380px);overflow-y:auto;border:1.5px solid var(--line);border-radius:12px;background:var(--panel);margin:6px 0;-webkit-overflow-scrolling:touch}
+@media (min-width:700px){.tt93s{height:min(52vh,460px)}}
+.tt93g{position:relative;margin:10px 6px 8px 34px;cursor:pointer}
+.hl93{position:absolute;left:0;right:0;border-top:1px solid var(--line);height:0;pointer-events:none}
+.hl93.half{border-top-style:dotted;opacity:.6}
+.hl93 span{position:absolute;left:-32px;top:-8px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.b93{position:absolute;box-sizing:border-box;overflow:hidden;border:1.5px dashed var(--edge);border-radius:8px;background:var(--panel2);padding:2px 6px;font-size:12.5px;line-height:1.25;color:var(--muted);cursor:pointer}
+.b93.mv{cursor:grab}
+.b93 b{font-variant-numeric:tabular-nums}
+.b93.cur{border:2px solid var(--ink);background:var(--panel);color:var(--ink);font-weight:600}
+.b93.sel{border:3px solid var(--ink);box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--ink);z-index:3}
+.gh93{position:absolute;left:0;right:0;border:2px dashed var(--ink);border-radius:8px;background:color-mix(in srgb,var(--ink) 8%,transparent);font-size:12px;padding:2px 6px;pointer-events:none;z-index:4;overflow:hidden}
