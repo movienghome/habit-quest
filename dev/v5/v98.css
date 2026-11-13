@@ -1,0 +1,15 @@
+/* v9.9: 경보판 연쇄 창 · 용기 고르기 · 오늘 타임라인 — 색만으로 구분 금지(글자·기호 같이) */
+#alerts li.a98{cursor:pointer}
+#alerts li.a98:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.c98d{margin:6px 0 2px;padding:6px 8px;border-radius:8px;border:1px solid var(--line)}
+.c98d>b{display:block;font-size:13px;margin-bottom:2px}
+.c98e{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:1px 0}
+.c98e small{opacity:.75;white-space:nowrap}
+.c98r{display:flex;align-items:center;gap:10px;padding:7px 2px;border-top:1px solid var(--line)}
+.c98t{display:flex;flex-direction:column;min-width:0}
+.c98t small{opacity:.75;font-size:12px}
+.c98k{width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);background:none;flex:none;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink)}
+.c98k.br{border-color:var(--brave)}
+.c98k.on{background:var(--brave);color:#fff}
+#homeLog li.more98{display:block;text-align:center;border:0;padding:2px 0}
+#homeLog li.more98 button{background:none;border:0;color:var(--accent);font-size:12.5px;cursor:pointer;padding:4px 10px}

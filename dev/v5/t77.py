@@ -184,7 +184,7 @@ with sync_playwright() as pw:
 
     # ================= 4) 도파민 =================
     b,pg=run(pw,W=1400,H=900);closepops(pg);pg.wait_for_timeout(300)
-    ok(J(pg,"C.dopa77===1&&dopaC().some(c=>c[0]==='meal')&&C.actions.filter(a=>a.dopa==='meal').length>=3"),'🍽 식사 친구 코스와 항목이 생김',J(pg,"C.actions.filter(a=>a.dopa==='meal').map(a=>a.name).join(' · ')"))
+    ok(J(pg,"C.dopa77===1&&dopaC().some(c=>c[0]==='meal')&&C.actions.filter(a=>a.dopa==='meal').length>=1"),'🍽 식사 친구 코스가 있고 항목이 남음(v9.9: 안 쓰기로 한 3개는 정리)',J(pg,"C.actions.filter(a=>a.dopa==='meal').map(a=>a.name).join(' · ')"))
     ok(J(pg,"['body','both','meal'].every(k=>DSTATE.some(x=>x[0]===k))"),'상태 셋(몸이 지쳤어요·심신이 지쳤어요·밥 먹어요)')
     ok(J(pg,"JSON.stringify(Object.keys(C.dopaBak77.m))")=='[]' or True,'(기본 카드에서는 옮긴 게 거의 없음)',J(pg,"JSON.stringify(C.dopaBak77.ch)")[:160])
     J(pg,"openDopaNow('meal')");pg.wait_for_timeout(500)
