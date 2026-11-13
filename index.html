@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v9.2</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v9.3</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2062,6 +2062,21 @@ body.m90 #battleBox>p.tiny.muted{display:none}
 .chip91{font:inherit;font-size:12px;padding:3px 9px;border:1px dashed var(--line);border-radius:999px;background:none;color:var(--muted);cursor:pointer}
 .sum91{white-space:nowrap}
 .boss2.c91 .c91tag{border:1px solid currentColor;border-radius:6px;padding:0 6px;line-height:1.5}
+
+/* v9.3: 다시 씩씩해지기 — 오늘은 하나만 · 복귀 표시 · 다시 오르는 길 */
+.l93{display:grid;gap:4px;margin:8px 0}
+.r93{display:flex;align-items:flex-start;gap:10px;min-height:44px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer}
+.r93:has(input:checked){border-color:var(--ink);border-width:2px;padding:7.5px 9.5px}
+.r93 input{width:auto;margin-top:3px;flex:none}
+.r93 small{color:var(--muted);font-weight:400}
+.b93d{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:2px 0}
+.alerts li.b93 .p93{display:inline-flex;flex-wrap:wrap;gap:2px 6px;align-items:center;margin-top:3px;font-size:12px;color:var(--muted)}
+.alerts li.b93 .p93 i{font-style:normal}
+.alerts li.b93 .p93 i+i::before{content:"─ ";opacity:.6}
+.alerts li.b93 .chipbtn{margin-left:4px}
+.b93h{margin-left:6px;white-space:nowrap;font-size:12.5px}
+.ad .b93h{float:right;margin-left:8px}
+@media(max-width:520px){.ptitle .b93h .t93{display:none}.ptitle .b93h{margin-left:2px;padding-left:8px;padding-right:8px}}
 </style>
 
 <header class="hud" id="hud">
@@ -3418,7 +3433,7 @@ function renderGuide(){
     ${acc('card80','v8.0 · 🍱 식단표 · 🌙 시간표 짜기','지난 버전',`<ul><li><b>🍱 식단표</b>: 캘린더 오른쪽 ⋯ 설정 → <b>🍱 식단표</b>(또는 '밀프렙' 할 일 상세의 🍱). 주간 표에 점심·저녁 메뉴를 적으면 시간표에 <b>🍱 점심 · 메뉴</b> 블록이 오늘부터 7일치 자동으로 생겨요.</li><li>블록은 캘린더에서 <b>끌어 옮기면 그날만</b> 바뀌고, 누르면 메뉴·시간·길이를 고쳐요. 지우면 그 끼니는 다시 안 만들어요. 점수 없음 · 하루 예산에서 빠져요 · 목록·홈에는 안 떠요.</li><li><b>🌙 시간표 짜기</b>: 캘린더 줄 🌙(폰은 ⋯ 설정). 내일의 정해진 것과 시간 안 정한 일을 한 화면에 모으고, 길이만 정해 두면 <b>빈 시간에 넣어 보기</b> → 미리보기 → <b>이대로 넣기</b>(되돌리기 있음). 중요도 높은 것부터 · 정해진 일정·🍱 식사를 피해서 · 반복 할 일은 직접 놓아요. ⇥로 다음 날로 보내기도 돼요.</li></ul>`)}
     ${acc('card79','v7.9 · 상세 칩 줄이기 · 메모 목록 · 끌어서 묶기 · ✓ 한 일 · 사이드바 접기','지난 버전',`<ul><li><b>캘린더 ⚲ 보일 것 / 숨길 것</b>: 이름만 바꿨어요. 위에 '○○만 보는 중 / ○○ 숨기는 중'이 글로 떠요.</li><li><b>상세 칩 줄</b>: 날짜·목록·중요도·영역만 늘 보이고, 나머지(🧽 관리 포함)는 값이 있을 때만 + <b>＋ 더</b>. 펼친 채 칩을 끌면 순서가 바뀌고, <b>|</b> 선 너머로 끌면 '값 있을 때만' 칸으로 가요.</li><li><b>메모</b>에 <code>- [ ]</code> 줄이 있으면 보기 모습에 ☐/☑ · 점 · ↑↓ · ↗(묶인 할 일로). Enter로 항목 이어쓰기. 누르면 글 편집.</li><li><b>묶인 할 일</b> 앞 ⋮⋮를 끌어 순서 바꾸기 · 열린 묶음·체크리스트는 접기 단추.</li><li><b>끌어서 묶기</b>: 할 일을 다른 줄 <b>가운데</b>에 놓으면 그 밑으로 묶여요(줄 가장자리는 기존처럼 끼워넣기). 되돌리기 있음.</li><li>입력칸 옆 <b>✓</b> 또는 <b>Ctrl+Enter</b> = 이미 한 일로 바로 기록. 홈의 '빠른 기록' 칸은 한 번 접어 뒀어요.</li><li>할 일 화면 제목 앞 <b>« / ☰</b> = 목록 사이드바 접기. 왼쪽 PC 메뉴 항목도 끌어서 순서 바꾸기.</li><li>날짜 칸은 한 줄로.</li></ul>`)}
     ${acc('card78','v7.8 · 할 일 상세 줄이기','지난 버전',`<ul><li><b>상세 머리</b>: '할 일' 글자 대신 제목이 맨 위 한 줄. 🎯 집중·📄 복사는 아래 <b>⋯</b>로.</li><li><b>📅 날짜 칸</b>: 날짜와 오늘·내일·주말·다음 주만 보여요. 시간·반복·마감일·여러 날·중간 점검은 <b>값이 있을 때만</b>, 없으면 아래 <b>＋</b> 칩으로.</li><li><b>📂 목록 · ⚑ 중요도</b> 칩: 누르면 바로 고르는 메뉴.</li><li><b>메모</b> 머리 없앰. <b>묶인 할 일 · 체크리스트</b>는 비었으면 ＋ 칩 한 줄, 묶인 할 일은 접힌 채로(누르면 펴짐).</li><li><b>아래 버튼</b> 세 줄 → 두 줄: <b>😶 막힐 때 ▾</b>(10분만 · ✂ 첫 조각만 · 자꾸 피하게 돼요) · 미루기 ▾ · ⋯(집중·복사·안 하기·삭제).</li><li>입력칸 <b>Shift+Enter</b> = 추가하면서 자세히 · 안내 글에 기호(# !! ^ @ * %).</li></ul>`)}
-    ${acc('card77','v7.7 · 캘린더 거르기 · 끝낸 블록 · 관리 등록 · 도파민 코스','지난 버전',`<ul><li><b>⚲ 캘린더에 보일 것</b>: 거르기가 하나로(캘린더 화면·할 일 옆 캘린더가 같이 써요). <b>끝낸 일·지난 날</b>에도 적용. 목록·영역·태그에 <b>종류</b>(루틴·일퀘·반복·한 번·관리)가 생겼고, <b>고른 것만 보기 / 고른 것 숨기기</b>를 골라요.</li><li><b>✓ 끝낸 블록</b>: 흐리게 한 덩어리가 아니라 <b>목록 색·이모지 그대로</b> ✓ + 점선 테두리. 반복 할 일·루틴도 한 날에 남아요.</li><li><b>짧은·겹친 블록</b>: 아이콘과 제목이 한 줄. 15분짜리도 제목이 보이고, 긴 블록은 제목이 여러 줄로.</li><li><b>🧽 관리</b>: 제 목록·전체에서는 🧽 표시와 함께 보여요(오늘·캘린더에서는 그대로 빠짐). <b>반복 없는 할 일도</b> 관리로(며칠마다인지 물어요). 등록할 때는 입력칸에 <b>%</b>(변기청소 %14 = 14일마다), 상세 칩 줄 <b>🧽 관리</b>, 🧽 관리 목록에서 바로 적기.</li><li><b>🍬 도파민</b>: 코스를 다시 추천해 반영(편집 → 도파민 → 🪄, 바꾼 것 보기·되돌리기). <b>🍽 식사 친구</b> 코스, 상태 <b>🥱 몸이 지쳤어요 · 🫠 심신이 지쳤어요 · 🍽 밥 먹어요</b>.</li><li><b>홈 2단</b>이 1단으로 바뀌던 것 고침 · <b>할 일 찾기</b>는 제목 줄 돋보기로 · <b>추가</b> 단추는 입력칸과 같은 줄.</li></ul>`)}
+    ${acc('card77','v7.7 · 캘린더 거르기 · 끝낸 블록 · 관리 등록 · 도파민 코스','지난 버전',`<ul><li><b>⚲ 캘린더에 보일 것</b>: 거르기가 하나로(캘린더 화면·할 일 옆 캘린더가 같이 써요). <b>끝낸 일·지난 날</b>에도 적용. 목록·영역·태그에 <b>종류</b>(루틴·일퀘·반복·한 번·관리)가 생겼고, <b>고른 것만 보기 / 고른 것 숨기기</b>를 골라요.</li><li><b>✓ 끝낸 블록</b>: 흐리게 한 덩어리가 아니라 <b>목록 색·이모지 그대로</b> ✓ + 점선 테두리. 반복 할 일·루틴도 한 날에 남아요.</li><li><b>짧은·겹친 블록</b>: 아이콘과 제목이 한 줄. 15분짜리도 제목이 보이고, 긴 블록은 제목이 여러 줄로.</li><li><b>🧽 관리</b>: 제 목록·전체에서는 🧽 표시와 함께 보여요(오늘·캘린더에서는 그대로 빠짐). <b>반복 없는 할 일도</b> 관리로(며칠마다인지 물어요). 등록할 때는 입력칸에 <b>%</b>(변기청소 %14 = 14일마다), 상세 칩 줄 <b>🧽 관리</b>, 🧽 관리 목록에서 바로 적기.</li><li><b>🍬 도파민</b>: 코스를 다시 추천해 반영(편집 → 도파민 → 🪄, 바꾼 것 보기·되돌리기). <b>🍽 식사 친구</b> 코스, 상태 <b>🥱 몸이 지쳤어요 · 😞 심신이 지쳤어요 · 🍽 밥 먹어요</b>.</li><li><b>홈 2단</b>이 1단으로 바뀌던 것 고침 · <b>할 일 찾기</b>는 제목 줄 돋보기로 · <b>추가</b> 단추는 입력칸과 같은 줄.</li></ul>`)}
     ${acc('card76','v7.6 · 🧽 관리 나누기 · 하루 예산 · 루틴 배우기','지난 버전',`<ul><li><b>🧽 관리</b>: 집안일·몸 돌봄처럼 '때 되면 하는' 반복 할 일을 <b>우클릭(길게 누르기) → 관리로</b>, 또는 홈 '오늘' 칸 맨 아래 안내의 <b>고르기</b>로 한꺼번에. 관리는 할 일 목록·캘린더 종일 칸·서랍에서 빠지고 <b>관리 줄</b>(홈 오늘 칸·할 일 '오늘' 맨 아래)에 칩으로만 떠요. 칩의 ○ = 했어요. 늦어도 ☠ 없이 <b>⏳ 때 지남</b>. 'n일마다'는 한 날부터 다시 세요. 전체는 할 일 → <b>🧽 관리</b> 목록.</li><li><b>☑ 일퀘 할 일</b>도 목록에서 빠지고 같은 줄에 칩으로(루틴은 그대로 목록에). 예전처럼 보려면 관리 창에서 끄기.</li><li><b>🗓 관리 블록</b>: 관리 창에서 30분·1시간을 고르면 차례가 있는 날 종일 칸에 🧽 관리 하나. 시간표에 끌어다 놓고, 누르면 그날 차례.</li><li><b>⏱ 하루 예산</b>: 캘린더(1일·3일·주) 날짜 밑에 <b>놓은 시간/쓸 수 있는 시간</b>. 넘치면 ⚠. 눌러서 그날만·매일 기본(처음 8시간)을 바꿔요.</li><li><b>🧠 루틴 배우기</b>: 타이머로 돈 최근 5번을 보고 '자주 건너뛴 단계 → ◌ 선택 단계'·'목표 분 → 실제 평균'을 끝난 뒤 물어요.</li><li><b>📅 폰</b>: 할 일 화면 제목 줄 📅 → 캘린더, 캘린더 📋 할 일 → 목록.</li></ul>`)}
     ${acc('card75','v7.5 · 루틴 실행 중 고치기 · 점수 직접','지난 버전',`<ul><li><b>↶ 루틴 실행 중 되돌리기</b>: 실행 화면 왼쪽 아래 <b>↶ 이전</b> = 방금 넘긴 단계로(체크를 되돌리고 시간은 이어서). <b>단계 이름을 누르면</b> 끝낸 단계 되돌리기 · 아직 안 한 단계 먼저 하기·오늘은 건너뛰기 · 분 바꾸기 · 루틴에서 빼기(앞으로도). <b>＋</b>로 단계 넣기(오늘만 / 앞으로도).</li><li><b>미니 창</b>(내리기)·탭 제목 = 지금 단계 시간 / 목표.</li><li><b>✓ 오늘 한 단계</b>: 할 일 목록 루틴 머리 밑에 체크한 단계가 칩으로 남아요. 누르면 되돌려요.</li><li><b>☑ 루틴 일퀘</b>: 단계를 하나라도 하면 그 루틴 일퀘는 한 걸로(완주 보너스는 다 했을 때만).</li><li><b>✎ 점수 고치기</b>: 기록 창 미리보기 줄에서 이번 기록의 ✨💰🔋만 직접(카드·용기 연결은 그대로). 카드와 이은 할 일도 상세 크기 칸에서 '이 할 일만 직접 정하기'.</li><li><b>폰 캘린더</b>: 블록 아래 손잡이가 커졌어요(길이 바꾸기).</li></ul>`)}
     ${acc('card74','🆕 v7.4 · 되돌리기 · 목록 순서 · 시간표','지금 버전',`<ul><li><b>↶ 루틴 단계 되돌리기</b>: 잘못 체크한 단계는 ① 루틴 체크 창의 단계 줄 '↶ 되돌리기' ② 오늘 한 일 줄의 ×(🌅 루틴 이름이 붙어요) ③ 목록 루틴 머리의 '오늘 n개 ↶'로 되돌려요. 완주 보너스를 받았으면 같이 빠지고, 오늘 한 단계가 하나도 없으면 루틴이 다시 오늘로 돌아와요.</li><li><b>📋 목록별 묶기</b>: 묶음이 옆 목록(받은함 → 목록, 📁 폴더는 첫 목록 자리에서 모아서) 순서대로 나와요. 캘린더 서랍 묶기도 같아요.</li><li><b>🗓 캘린더 상단(종일 칸)</b> = 시간표에 아직 안 놓은 할 일. 시간표에 놓으면 종일 칸에서 빠지고, 시간표의 블록을 종일 칸에 올리면 시간표에서 빠져요(다른 날 종일 칸이어도, 알림 '되돌리기'). 종일 칸 이름 밑 숫자 = 안 놓은 개수.</li></ul>`)}
@@ -6322,7 +6337,7 @@ document.addEventListener('submit',e=>{const f=e.target;if(!C.mig57||!f.dataset|
    ADHD 도파민 메뉴의 핵심은 '목록'이 아니라 '그 순간에 꺼내기'. 상태를 먼저 고르면 3개만 보여주고(고를 게 많으면 못 고름),
    해본 뒤 '도움 됐나'를 모아 나에게 맞는 것을 위로 올려요. 디저트는 끝 시간을 정해서(시간 안에 멈추면 보너스). */
 var DSTATE=[
-  ['low','🪫 멍하고 처져요','몸을 깨우는 짧은 것 하나 · 5분 안',['app'],'처질 땐 생각보다 몸·감각(움직이기·찬물·햇빛·음악)이 각성을 더 빨리 올려요.'],
+  ['low','😶 멍하고 처져요','몸을 깨우는 짧은 것 하나 · 5분 안',['app'],'처질 땐 생각보다 몸·감각(움직이기·찬물·햇빛·음악)이 각성을 더 빨리 올려요.'],
   ['stuck','🧱 시작이 안 돼요','할 일에 곁들일 것 + 딱 5분만',['side'],'지루해서 안 될 땐 일을 바꾸지 말고 자극을 곁들여요. 첫 5분만 약속하면 시작 문턱이 낮아져요.'],
   ['urge','📱 폰·쇼츠가 당겨요','대신할 것 하나 · 그래도 원하면 타이머 걸고',['app','dessert'],'충동은 파도처럼 10~20분이면 지나가요. 손과 몸을 다른 데 쓰면 넘기기 쉬워요. 디저트를 고르면 끝 시간을 정해요.'],
   ['over','😵 머리가 꽉 찼어요','자극을 줄이는 쉼표 · 화면 없이',['rest'],'과부하일 때 쇼츠는 쉬는 것 같아도 자극을 더해서 더 지치게 해요. 눈·귀를 쉬게 해요.'],
@@ -11792,7 +11807,7 @@ var STD77=['app','side','rest','main','meal','dessert','special'];
 (function(){try{const has=k=>DSTATE.some(x=>x[0]===k),at=(k,row)=>{const i=DSTATE.findIndex(x=>x[0]===k);DSTATE.splice(i<0?DSTATE.length:i,0,row)};
   if(!has('body'))at('stuck',['body','🥱 몸이 지쳤어요','몸을 쉬게 하거나 살살 푸는 것 하나',['rest','app'],'몸이 지친 건 의지 문제가 아니에요. 눕기·스트레칭·따뜻한 물처럼 회복이 먼저예요. 카페인·쇼츠는 피로를 가릴 뿐이에요.',
     a=>a.dopa==='rest'?.3:/스트레칭|폼롤러|샤워|물 한 컵|햇빛|기지개|세수/.test(a.name)?.2:-.3]);
-  if(!has('both'))at('stuck',['both','🫠 심신이 지쳤어요','오늘은 최소한만 · 쉼표 하나',['rest'],'몸도 마음도 바닥이면 목표를 줄이는 게 맞아요. 쉼표 하나 하고, 오늘 꼭 해야 할 것 하나만 남겨요. 나머지는 내일로 옮겨도 미룬 게 아니에요.',
+  if(!has('both'))at('stuck',['both','😞 심신이 지쳤어요','오늘은 최소한만 · 쉼표 하나',['rest'],'몸도 마음도 바닥이면 목표를 줄이는 게 맞아요. 쉼표 하나 하고, 오늘 꼭 해야 할 것 하나만 남겨요. 나머지는 내일로 옮겨도 미룬 게 아니에요.',
     a=>/눕|눈 감|차 한 잔|창밖|낮잠|반신욕/.test(a.name)?.25:0]);
   if(!has('meal'))at('ok',['meal','🍽 밥 먹어요','먹으면서 곁들일 것 · 끝이 있는 한 편',['meal'],'밥 먹을 때 쇼츠·피드는 끝이 없어서 식사가 끝나도 이어져요. 한 편으로 끝나는 걸 먹기 전에 골라 둬요.'])}catch(e){console.error(e)}})();
 function dopaPicks(st,shift){
@@ -11878,7 +11893,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['✓ 끝낸 블록에 목록 색','캘린더 시간표','끝낸 할 일이 목록 색·이모지 그대로 ✓와 함께 남아요(반복 할 일도 한 날에). 짧은 블록도 제목이 보여요',()=>{location.hash='cal'},'캘린더 끝낸 완료 체크 목록 색 짧은 블록 제목'],
   ['🧽 관리로 등록하기','입력칸에 % · 할 일 상세 칩 줄 🧽 · 우클릭 → 관리로 · 🧽 관리 목록에서 적기','변기청소 %14 = 14일마다 관리. 반복 없는 할 일도 옮길 수 있고(주기를 물어요), 관리는 제 목록에서도 🧽 표시로 보여요',()=>{C.ui.tasks.sel='care';save('config');location.hash='tasks';render()},'관리 등록 추가 주기 며칠마다 청소 변기'],
   ['🪄 도파민 코스 다시 추천','편집 → 도파민 → 🪄 코스 다시 추천','카드 이름·시간으로 코스를 다시 나눠요. 바꾼 것 보기·하나씩 고치기·모두 되돌리기',()=>{dopaRecSheet77()},'도파민 코스 추천 다시 세팅 식사 친구'],
-  ['🍽 식사 친구 · 🥱 몸이 지쳤어요 · 🫠 심신이 지쳤어요','🍬 지금 어때?','밥 먹을 때 곁들일 것, 지쳤을 때 회복부터 고르는 상태가 생겼어요',()=>{openDopaNow()},'도파민 식사 밥 지쳤어요 심신 몸 상태']])}})(F67);
+  ['🍽 식사 친구 · 🥱 몸이 지쳤어요 · 😞 심신이 지쳤어요','🍬 지금 어때?','밥 먹을 때 곁들일 것, 지쳤을 때 회복부터 고르는 상태가 생겼어요',()=>{openDopaNow()},'도파민 식사 밥 지쳤어요 심신 몸 상태']])}})(F67);
 
 /* ================= v7.8: B 묶음 첫 조각 — 할 일 상세 줄이기(공간) · 입력칸 =================
    맨 끝 모듈(w77 뒤, route();boot(); 앞).
@@ -13275,6 +13290,173 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
     const i=e.target&&e.target.closest&&e.target.closest('[data-a91]');if(!i)return;
     e.stopPropagation();C.bauto91off=i.checked?0:1;save('config');toast(i.checked?'보스 HP를 매주 자동으로 맞춰요':'보스 HP 자동 조정을 껐어요');
   },true);
+}
+
+/* ---- v9.3 다시 씩씩해지기: ① ☝ 오늘은 하나만(할 일 하나만 남기고 나머지는 내일로, ☠ 없이) ② 🌱 복귀 표시(못 한 날 뒤 첫 걸음) ③ 다시 오르는 길(홈 경보판 맨 위 한 줄) ----
+   저장: C.rest93={게임날짜:{keep,moved:[{id,from,sk,mv72,skip,sk61}],at,td,tom}} · C.back93={게임날짜:{n,from,e}} (둘 다 C 최상위 — normConfig가 보존)
+   '내려간 날' = 쉬는 날(rest93) · 컨디션이 복귀 기준 아래(low, 기존 복귀 보너스와 같은 기준) · 기록이 빈 날(gap, 앞에 기록이 있을 때만). */
+{
+  const GD=()=>gk76(),TD=()=>midKey68();
+  const R93=()=>(C.rest93=C.rest93&&typeof C.rest93==='object'?C.rest93:{});
+  const B93=()=>(C.back93=C.back93&&typeof C.back93==='object'?C.back93:{});
+  const THR93=()=>+((C.recovery||{}).threshold)||40;
+  const GOODK93=['act','task','courage','routine','free','happy','five','director','counter','check'];
+
+  /* ---- 내려간 날 ---- */
+  function firstData93(){let f=null;for(const k in DAYS){if(hasData(DAYS[k])&&(!f||k<f))f=k}return f}
+  function downOf93(k){
+    if(R93()[k])return 'rest';
+    const d=DAYS[k];
+    if(d&&hasData(d))return overallOf(d)<THR93()?'low':null;
+    const f=firstData93();return f&&f<k&&k<GD()?'gap':null;
+  }
+  function runLen93(y){let n=0;for(let i=0;i<14;i++){if(downOf93(addDays(y,-i)))n++;else break}return n}
+
+  /* ---- ① 오늘은 하나만 ---- */
+  function cand93(){
+    const td=TD(),mv=[],fx=[];
+    openTasks().filter(t=>t.status===0&&t.due&&t.due<=td&&!t.cb76&&!t.ml80&&!t.parent&&!t.rid).forEach(t=>{
+      const rep=!!(t.rep&&t.rep.f);
+      if(t.time||span71(t)||(rep&&t.rep.f==='x'))fx.push(t);else mv.push(t);
+    });
+    // 남길 후보 추천: 중요도 높은 것 → 마감 빠른 것 → 짧은 것
+    mv.sort((a,b)=>(b.prio||0)-(a.prio||0)||(a.due<b.due?-1:a.due>b.due?1:0)||((+a.dur||999)-(+b.dur||999)));
+    return {mv,fx};
+  }
+  function sheet93(){
+    const {mv,fx}=cand93(),td=TD();
+    const rows=mv.map((t,i)=>`<label class="r93"><input type="radio" name="k93" value="${t.id}"${i===0?' checked':''}><span><b>${esc(t.title)}</b><small>${i===0?' · 추천':''}${(t.prio||0)>=3?' · 중요':''}${t.dur?' · '+t.dur+'분':''}${t.due<td?' · 밀려 있어요':''}${t.rep&&t.rep.f?' · ↻ 반복':''}</small></span></label>`).join('');
+    openSheet(`<div class="sh"><h3>☝ 오늘은 하나만</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+      <p class="small" style="margin:0">오늘 꼭 할 것 하나만 남기고 나머지는 내일로 옮겨요. 미룬 게 아니라서 ☠도 안 붙고, 언제든 되돌릴 수 있어요.</p>
+      <div class="l93">${rows}<label class="r93"><input type="radio" name="k93" value=""${mv.length?'':' checked'}><span><b>하나도 안 남기기</b><small> · 오늘은 쉬어요</small></span></label></div>
+      ${fx.length?`<p class="tiny muted" style="margin:0">시각이 있는 일정·루틴·주 N회 ${fx.length}개는 그대로 있어요: ${fx.slice(0,4).map(t=>esc(t.title)).join(' · ')}${fx.length>4?' …':''}</p>`:''}
+      ${mv.length?'':'<p class="tiny muted" style="margin:0">옮길 할 일이 없어요. 쉬는 날로만 표시할게요.</p>'}
+      <div class="row" style="gap:8px;flex-wrap:wrap"><button type="button" class="btn" data-go93="1">이대로 정하기</button><button type="button" class="btn ghost" data-sheet="close">그만두기</button></div>`);
+    sheetCtx={b93:1};
+  }
+  function doRest93(keepId){
+    const td=TD(),tom=addDays(td,1),g=GD(),{mv}=cand93(),rec={keep:keepId||null,moved:[],at:Date.now(),td,tom};
+    mv.forEach(t=>{
+      if(t.id===keepId)return;
+      const m={id:t.id,from:t.due,sk:t.skull||0,mv72:t.moved72||0};
+      if(t.rep&&t.rep.f){   // 반복 할 일 = 오늘은 건너뛰기(skipToday61과 같은 방식, ☠ 없이)
+        m.skip=1;m.sk61=(t.skip61||[]).slice();
+        t.skip61=[...new Set([...(t.skip61||[]).filter(d=>d>=addDays(td,-14)),td])];
+        const nd=nextDue(t.rep,td);if(nd)t.due=nd;
+        delete t.skull;
+      }else{t.due=tom;t.moved72=(t.moved72||0)+1}   // 한 번짜리 = 내일로(사정상 옮김, ☠ 안 올림)
+      saveTask(t);rec.moved.push(m);
+    });
+    const R=R93();R[g]=rec;
+    Object.keys(R).sort().slice(0,-60).forEach(k=>delete R[k]);
+    syncDailies(C);save('config');render();
+    const k=keepId&&TASKS[keepId],n=rec.moved.length;
+    toastAct(k?`오늘은 '${k.title}' 하나만 · 나머지 ${n}개는 내일로`:`오늘은 쉬어요${n?` · ${n}개는 내일로`:''}`,'되돌리기',()=>undoRest93(g),7000);
+  }
+  function undoRest93(date,quiet){
+    const r=R93()[date];if(!r)return;
+    r.moved.forEach(m=>{const t=TASKS[m.id];if(!t)return;
+      if(m.skip){t.skip61=m.sk61||[];if(!t.skip61.length)delete t.skip61;t.due=m.from;if(m.sk)t.skull=m.sk;else delete t.skull}
+      else if(t.due===r.tom){t.due=m.from;if(m.mv72)t.moved72=m.mv72;else delete t.moved72}   // 그새 다른 날로 옮겼으면 그대로 둠
+      saveTask(t)});
+    delete R93()[date];syncDailies(C);save('config');render();if(!quiet)toast('되돌렸어요 · 할 일을 원래 날짜로');
+  }
+
+  /* ---- ② 복귀 표시: 내려간 날 다음 날, 오늘 처음 하는 좋은 기록 ---- */
+  const qual93=e=>!!(e&&e.type==='good'&&GOODK93.includes(e.kind));
+  applyEntry=(function(prev){return function(day,e){
+    const r=prev.apply(this,arguments);
+    try{
+      if(day&&e&&day.date===GD()&&!e.late&&qual93(e)&&!B93()[day.date]){
+        const y=addDays(day.date,-1),dn=downOf93(y);
+        if(dn){const n=runLen93(y);B93()[day.date]={n,from:dn,e:e.id};const first=!e.back93;e.back93=n;save('config');
+          if(first)setTimeout(()=>toast(`🌱 다시 씩씩해졌어요! ${n>1?n+'일 만의 ':''}첫 걸음이에요`),700)}
+      }
+    }catch(x){console.error(x)}
+    return r}})(applyEntry);
+  unapplyEntry=(function(prev){return function(day,e){
+    const r=prev.apply(this,arguments);
+    try{const b=e&&e.back93&&day&&B93()[day.date];if(b&&b.e===e.id){delete B93()[day.date];save('config')}}catch(x){console.error(x)}
+    return r}})(unapplyEntry);
+  // 쉬어 간 다음 날도 기존 복귀 보너스(컨디션이 낮았던 다음 날 경험치 ×배수)를 받음
+  recoveryActive=(function(prev){return function(){
+    if(prev.apply(this,arguments))return true;
+    try{return !!(C.rest93&&C.rest93[dateKey(-ui.off-1)])}catch(x){return false}}})(recoveryActive);
+
+  /* ---- ③ 다시 오르는 길: 홈 경보판 맨 위 한 줄(할 말이 있을 때만) ---- */
+  function rowHTML93(){
+    const g=GD(),y=addDays(g,-1),rr=R93()[g],bk=B93()[g],dn=downOf93(y);
+    if(bk){const tot=Object.keys(B93()).length;
+      return `<li class="info b93"><span class="ic">🌱</span><span><b>다시 씩씩해졌어요</b> · ${bk.n>1?bk.n+'일 만에 ':''}첫 걸음${rr?' · 오늘은 하나만 하는 날':''} <span class="tiny muted">복귀 ${tot}번째</span></span></li>`}
+    if(!rr&&!dn)return '';
+    const lab={rest:'쉬었어요',low:'힘든 날이었어요',gap:'기록이 없었어요'};
+    const sh={rest:'쉼',low:'힘든 날',gap:'비운 날'};
+    const path=dn?`<span class="p93" aria-label="다시 오르는 길"><i>✓ 어제 ${sh[dn]}</i><i>▸ 오늘 첫 걸음</i><i>🌱 복귀</i></span>`:'';
+    const bonus=dn&&recoveryActive()?` · 복귀하면 경험치 ×${(C.recovery||{}).mult||1.5}`:'';
+    if(rr){const k=rr.keep&&TASKS[rr.keep],n=rr.moved.length;
+      return `<li class="info b93"><span class="ic">☝</span><span>${k?`오늘은 <b>${esc(k.title)}</b> 하나만`:'<b>오늘은 쉬는 날</b>'}${n?` · 나머지 ${n}개는 내일로`:''} <button type="button" class="chipbtn" data-undo93="${g}">되돌리기</button>${path?'<br>'+path:''}</span></li>`}
+    return `<li class="info b93"><span class="ic">🌱</span><span><b>다시 오르는 길</b> · 어제는 ${lab[dn]}. 오늘은 작은 걸음 하나면 돼요${bonus}<br>${path} <button type="button" class="chipbtn" data-open93="1">☝ 오늘은 하나만</button></span></li>`;
+  }
+  function row93(){
+    const ul=document.getElementById('alerts');if(!ul)return;
+    ul.querySelectorAll('.b93').forEach(x=>x.remove());
+    if(typeof ready!=='undefined'&&!ready)return;
+    const h=rowHTML93();if(!h)return;
+    const only=ul.children.length===1&&/특별한 경보가 없어요/.test(ul.textContent);
+    if(only)ul.innerHTML='';
+    ul.insertAdjacentHTML('afterbegin',h);
+  }
+  render=(function(prev){return function(){const r=prev.apply(this,arguments);try{row93()}catch(x){console.error(x)}return r}})(render);
+
+  /* ---- 🍬 지금 어때? 에서 '몸이 지쳤어요'·'심신이 지쳤어요'를 고르면 같은 단추 ---- */
+  openDopaNow=(function(prev){return function(){
+    const r=prev.apply(this,arguments);
+    try{if(ui.dst==='both'||ui.dst==='body'){const sc=$('sheetC'),st=sc&&sc.querySelector('.stack');
+      if(st&&!sc.querySelector('.b93d')){const g=GD(),rr=R93()[g];
+        st.insertAdjacentHTML('beforebegin',rr?`<div class="b93d small">☝ 오늘은 하나만 하는 날이에요 <button type="button" class="chipbtn" data-undo93="${g}">되돌리기</button></div>`
+          :`<div class="b93d"><button type="button" class="btn sm" data-open93="1">☝ 오늘은 하나만 남기기 ›</button><span class="tiny muted"> 나머지는 내일로 (☠ 없이)</span></div>`)}}}catch(x){console.error(x)}
+    return r}})(openDopaNow);
+
+  addEventListener('click',e=>{
+    const o=e.target.closest('[data-open93]');if(o){e.preventDefault();e.stopPropagation();sheet93();return}
+    const g=e.target.closest('[data-go93]');if(g){e.preventDefault();e.stopPropagation();const r=document.querySelector('#sheetC input[name=k93]:checked');const id=r?r.value:'';closeSheet();doRest93(id);return}
+    const u=e.target.closest('[data-undo93]');if(u){e.preventDefault();e.stopPropagation();undoRest93(u.dataset.undo93)}
+  },true);
+  addEventListener('change',e=>{if(e.target&&e.target.matches&&e.target.matches('input[name=k93]'))e.stopPropagation()},true);
+
+  /* ---- 입구 늘리기(M3): 할 일 줄 ⋯·우클릭 메뉴 · 상세 ⋯ · 오늘 머리 칩(할 일 오늘·홈 오늘·캘린더 서랍 오늘) ---- */
+  const okKeep93=t=>!!t&&t.status===0&&!t.cb76&&!t.ml80&&!t.parent&&!t.rid&&!t.rstep;   // v9.3c: 날짜 없는·시각 있는·미래 할 일도 메뉴에 보임(예전엔 '오늘 옮겨질 후보'만 → 메뉴가 안 뜸)
+  function keepOne93(id){const g=GD(),t=TASKS[id],td=TD();if(t&&!t.time&&(!t.due||t.due>td)){t.due=td;saveTask(t)}   // 날짜 없거나 미래인 할 일을 고르면 오늘로 끌어옴
+    if(R93()[g])undoRest93(g,true);doRest93(id)}   // 이미 정했으면 먼저 풀고 다시(되돌리기 기록이 덮여 사라지지 않게)
+  let MT93=null;
+  taskMenu61=(function(prev){return function(t){MT93=t;try{return prev.apply(this,arguments)}finally{MT93=null}}})(taskMenu61);
+  menu61=(function(prev){return function(x,y,title,items){
+    try{
+      let t=MT93,sheet=false;
+      if(!t&&sheetCtx&&sheetCtx.task&&Array.isArray(items)&&items.some(i=>i&&i.keep&&i.l==='🗑 삭제')){t=TASKS[sheetCtx.task];sheet=true}
+      if(t&&t.status===0&&Array.isArray(items)&&!items.some(i=>i&&i.k93)&&okKeep93(t)){
+        const it={k93:1,l:'☝ 오늘은 이것만 남기기 <small class="muted">나머지는 내일로 · ☠ 없이</small>',f:()=>{if(sheet){try{tsRead()}catch(e){}closeSheet()}keepOne93(t.id)}};
+        if(sheet)items=[it,'-'].concat(items);
+        else{let i=items.findIndex(x=>x&&/끝내기|루틴 시작/.test(x.l||''));i=i<0?items.length:i+1;items=items.slice();items.splice(i,0,it)}}
+    }catch(e){console.error(e)}
+    return prev.call(this,x,y,title,items)}})(menu61);
+  function chips93(){
+    document.querySelectorAll('.b93h').forEach(x=>x.remove());
+    if(typeof ready!=='undefined'&&!ready)return;
+    const g=GD(),rr=R93()[g];
+    if(!rr&&cand93().mv.length<2)return;   // 고를 게 둘 이상일 때만(공간 낭비 없게)
+    const h=rr?`<button type="button" class="chipbtn b93h" data-undo93="${g}" title="오늘은 하나만 하기를 되돌려요">↩ 하나만 되돌리기</button>`
+      :`<button type="button" class="chipbtn b93h" data-open93="1" title="오늘 꼭 할 것 하나만 남기고 나머지는 내일로 (☠ 없이)">☝ 하나만<span class="t93"> 남기기</span></button>`;
+    const put=(el,w)=>{if(el&&el.isConnected)el.insertAdjacentHTML(w,h)};
+    if((C.ui.tasks.sel||'today')==='today')put($('tCount'),'afterend');
+    put($('htCount'),'afterend');
+    document.querySelectorAll('.ad.today').forEach(a=>put(a,'beforeend'));
+  }
+  const aft93=f=>function(){const r=f.apply(this,arguments);try{chips93()}catch(x){console.error(x)}return r};
+  render=aft93(render);renderTasks=aft93(renderTasks);renderTray=aft93(renderTray);
+
+  F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
+    ['🌱 다시 씩씩해지기','🍬 지금 어때? · 홈 경보판','힘든 날엔 "☝ 오늘은 하나만 남기기"(🍬 지쳤어요 · 홈 경보판 · 오늘 머리의 ☝ 하나만 남기기 칩 · 할 일 줄 ⋯ 메뉴 ☝ 이것만 남기기)로 할 일 하나만 남기고 나머지를 내일로 옮겨요(☠ 없음, 되돌리기 가능, 시각 있는 일정·루틴은 그대로). 쉬거나 힘들었거나 기록이 빈 날 다음에 첫 걸음을 하면 🌱 복귀로 표시하고, 쉬어 간 다음 날도 복귀 보너스 경험치를 받아요.']])}})(F67);
 }
 
 route();boot();
