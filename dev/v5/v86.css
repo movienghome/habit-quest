@@ -1,0 +1,5 @@
+/* v8.7: 주 N회 카운터 줄 */
+.wk91{display:flex;flex-wrap:wrap;gap:4px 6px;padding:3px 8px;font-size:12px}
+.wk91 .c91{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border:1px solid var(--line);border-radius:999px;background:var(--panel);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.wk91 .c91.ok{border-style:dashed}
+.wk91 .c91 i{font-style:normal;color:var(--muted);font-size:11px}

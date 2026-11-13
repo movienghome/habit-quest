@@ -75,7 +75,7 @@ function taskRow(t,{showList=true,compact=false}={}){
   const meta=[];
   if(t.due)meta.push(`<span class="${late?'late':t.due===td?'tday':''}">${esc(dueLabel(t.due))}${t.time?' '+t.time:''}</span>`);
   if(t.dur)meta.push(`<span>⏱${durTxt(t.dur)}</span>`);
-  if(t.rep)meta.push(`<span title="${esc(repLabel(t.rep))}">🔁${t.rep.f==='x'?` ${(t.wc&&t.wc.w===weekStart(td)?t.wc.n:0)}/${t.rep.n||3}`:''}</span>`);
+  if(t.rep)meta.push(`<span title="${esc(repLabel(t.rep))}">🔁${t.rep.f==='x'?` ${wkCnt91(t,weekStart(td))}/${t.rep.n||3}${slotTxt91(t,weekStart(td))}`:''}</span>`);
   if(sd)meta.push(`<span><span class="subbar"><i style="width:${sdn/sd*100}%"></i></span> ${sdn}/${sd}</span>`);
   if(showList&&t.list&&t.list!=='inbox')meta.push(`<span>${esc(listName(t.list))}</span>`);
   {const ar=C.areas.find(x=>x.id===areaOfTask(t));if(ar&&!compact)meta.push(`<span class="areac">${esc(ar.name)}</span>`)}
