@@ -132,6 +132,8 @@ def t_plan(pg,T=''):
     else:
         ok(cnt(pg,'#calPlanBtn')==1,T+'캘린더 줄에 🌙 단추(데스크톱)')
         clk(pg,'#calPlanBtn',700)
+    ok('내일 짜기' in vis(pg,'#sheetC h3').inner_text(),T+'진입점은 v9.4부터 내일 짜기 화면',vis(pg,'#sheetC h3').inner_text())
+    J(pg,"planSheet80(addDays(midKey68(),1))");pg.wait_for_timeout(400)   # v9.4: 예전 화면은 날짜를 주고 열기
     ok('시간표 짜기' in vis(pg,'#sheetC h3').inner_text(),T+'창이 열림(기본 내일)',vis(pg,'#sheetC h3').inner_text())
     ok(cnt(pg,'#sheetC .p80f')==1 and cnt(pg,'#sheetC .p80l')==4,T+'정해진 것 1 · 시간 안 정한 일 4',(cnt(pg,'#sheetC .p80f'),cnt(pg,'#sheetC .p80l')))
     ok(cnt(pg,'#sheetC .p80l .p80n')==1 and cnt(pg,'#sheetC .p80l input[type=checkbox]')==3,T+'반복 할 일은 자동 배치에서 빠짐(↻ 표시)')

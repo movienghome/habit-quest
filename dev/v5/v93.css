@@ -1,0 +1,13 @@
+/* v9.4: 내일 짜기 */
+.w93dots{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.w93d{border:1.5px solid var(--line);border-radius:999px;background:none;padding:4px 10px;font-size:12.5px;min-height:32px;cursor:pointer;color:inherit}
+.w93d.on{border-color:var(--ink);border-width:2px;font-weight:700}
+.w93d.pass{color:var(--muted)}
+.r93w{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:5px 2px;border-bottom:1px solid var(--line)}
+.r93w .w93n{flex:1;min-width:90px;cursor:pointer;overflow:hidden;text-overflow:ellipsis}
+.r93w.tm{cursor:pointer}
+.r93w.tm b{font-variant-numeric:tabular-nums;font-size:13px}
+.r93w input[type=time]{width:auto}
+.r93w select{width:auto;padding:2px 4px;font-size:12.5px}
+.n93{display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:6px;border-top:1px dashed var(--line)}
+.n93 .ib{margin-left:auto}
