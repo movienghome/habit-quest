@@ -2016,12 +2016,14 @@ body.tt84.tt84f #tt84slot{height:34px;overflow:hidden}
 .hud-bars .mbar{grid-template-columns:18px 1fr auto;gap:4px;font-size:10px}
 .hud-bars .mbar .v{min-width:0}
 @media (max-width:520px){
-  .hud-main{gap:6px}
-  .hud-bars{gap:0}
-  .hud-bars .mbar{grid-template-columns:1fr}
-  .hud-bars .mbar .k{display:none}
-  #hudGold{display:none} /* 폰은 골드 칩 숨김(⚡용기·LV 유지) */
-  .hud-bars .mbar:nth-child(2){display:none} /* 폰은 HP 막대만(XP는 LV 칩·홈에서) */
+  /* 폰: 칩(LV·골드·⚡)은 윗줄, HP·XP 막대는 그 밑에 나란히 — 아바타(32px) 높이 안에 두 줄이 들어감 */
+  .hud-main{display:grid;gap:3px;align-items:center}
+  .hud-top{min-width:0}
+  .hud-bars{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .hud-bars .mbar{grid-template-columns:16px 1fr;gap:3px;font-size:9px}
+  .hud-bars .mbar .k{display:block}
+  .hud-bars .mbar .v{display:none}
+  .hud-bars .track{height:5px}
 }
 </style>
 
