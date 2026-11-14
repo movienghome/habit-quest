@@ -81,10 +81,62 @@ def run_main(pg,W):
         ok(J(pg,"!!document.querySelector('.sel93')"),f'[{W}] 끼니 블록도 선택(이동 가능)')
     notoast(pg)
 
+def run_done(pg,W):
+    pg.wait_for_timeout(700);notoast(pg)
+    if W=='폰':
+        J(pg,"location.hash='tasks'");pg.wait_for_timeout(700);notoast(pg)
+        J(pg,"document.getElementById('t84tt')&&document.getElementById('t84tt').click()");pg.wait_for_timeout(900);notoast(pg)
+    J(pg,"""(()=>{const td=midKey68();const a=newTask({title:'T109끝낸일',due:td,time:'09:00',dur:30});saveTask(a);window.__d=a.id;
+      const r=newTask({title:'T109반복끝',due:td,time:'10:00',dur:30,rep:{f:'d',i:1}});saveTask(r);window.__r=r.id;
+      completeTask(a);completeTask(r);C.ui.cal.mode='3day';C.ui.cal.color='list';ui.calAnchor=td;ui.calSel=td;save('config');renderCal()})()""")
+    pg.wait_for_timeout(900);notoast(pg)
+    n=J(pg,"document.querySelectorAll('.blk.done.d77').length")
+    ok(n>=2,f'[{W}] 끝낸 블록이 캘린더에 보임',n)
+    ok(J(pg,'!!document.querySelector(".blk.done.d77[data-drag^=done105]")'),f'[{W}] 끝낸 블록에 끌기 표시')
+    # 누르면 메뉴
+    J(pg,"[...document.querySelectorAll('.blk.done.d77')].find(b=>b.dataset.ctask===window.__d).dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,clientX:300,clientY:300}))")
+    pg.wait_for_timeout(300)
+    mt=J(pg,"(()=>{const m=document.getElementById('m61');return m?m.innerText:''})()")
+    ok('체크 해제' in mt and '시각 바꾸기' in mt,f'[{W}] 끝낸 블록 메뉴',mt)
+    # 시각 바꾸기
+    pg.evaluate("[...document.querySelectorAll('#m61 button')].find(b=>/시각 바꾸기/.test(b.innerText)).click()");pg.wait_for_timeout(400)
+    ok(J(pg,"!!document.getElementById('ct105v')"),f'[{W}] 시각 창')
+    pg.fill('#ct105v','14:30');pg.click('[data-ct105=save]');pg.wait_for_timeout(600)
+    ok(J(pg,"(()=>{const e=entOf105(midKey68(),window.__d);return !!e&&e.ct105==='14:30'&&TASKS[window.__d].time==='09:00'})()"),f'[{W}] 기록에 ct105, 할 일 시각은 그대로')
+    top=J(pg,"(()=>{const b=[...document.querySelectorAll('.blk.done.d77')].find(b=>b.dataset.ctask===window.__d);return b?parseFloat(b.style.top):-1})()")
+    ok(top>0,f'[{W}] 블록이 새 시각 자리로',top)
+    # 체크 해제
+    J(pg,"[...document.querySelectorAll('.blk.done.d77')].find(b=>b.dataset.ctask===window.__d).dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,clientX:300,clientY:300}))");pg.wait_for_timeout(300)
+    pg.evaluate("[...document.querySelectorAll('#m61 button')].find(b=>/체크 해제/.test(b.innerText)).click()");pg.wait_for_timeout(600)
+    ok(J(pg,"TASKS[window.__d].status===0&&!entOf105(midKey68(),window.__d)"),f'[{W}] 체크 해제 → 할 일 다시 열림·기록 없어짐')
+    ok(J(pg,"![...document.querySelectorAll('.blk.done.d77')].some(b=>b.dataset.ctask===window.__d)"),f'[{W}] 끝낸 블록 사라짐')
+    # 반복 끝낸 일 해제 → due 되돌림
+    J(pg,"[...document.querySelectorAll('.blk.done.d77')].find(b=>b.dataset.ctask===window.__r).dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,clientX:300,clientY:300}))");pg.wait_for_timeout(300)
+    pg.evaluate("[...document.querySelectorAll('#m61 button')].find(b=>/체크 해제/.test(b.innerText)).click()");pg.wait_for_timeout(600)
+    ok(J(pg,"TASKS[window.__r].due===midKey68()"),f'[{W}] 반복 할 일 체크 해제 → due 오늘로',J(pg,"TASKS[window.__r].due"))
+    # PC: 마우스 끌어 시각 옮기기
+    if W=='PC':
+        J(pg,"completeTask(TASKS[window.__d])");pg.wait_for_timeout(700)
+        r=J(pg,"(()=>{const b=[...document.querySelectorAll('.blk.done.d77')].find(b=>b.dataset.ctask===window.__d);if(!b)return null;b.scrollIntoView({block:'center'});const r=b.getBoundingClientRect();return [r.left+r.width/2,r.top+6]})()");pg.wait_for_timeout(300)
+        r=J(pg,"(()=>{const b=[...document.querySelectorAll('.blk.done.d77')].find(b=>b.dataset.ctask===window.__d);const r=b.getBoundingClientRect();return [r.left+r.width/2,r.top+6]})()")
+        if r:
+            drag(pg,(r[0],r[1]),(r[0],r[1]+120))
+            pg.wait_for_timeout(500)
+            ok(J(pg,"(()=>{const e=entOf105(midKey68(),window.__d);return !!e&&!!e.ct105&&e.ct105!=='09:00'})()"),f'[{W}] 마우스로 끌어 시각 옮김',J(pg,"JSON.stringify((entOf105(midKey68(),window.__d)||{}).ct105)"))
+        else:ok(False,f'[{W}] 끌 블록 없음')
+    notoast(pg)
+
 with sync_playwright() as pw:
+    for W,(w,h,pre) in {'PC2':(1400,900,'')}.items():
+        pass
     for W,(w,h,pre) in {'PC':(1400,900,''),'폰':(420,900,'window.__coarse75=1;')}.items():
         b,pg=run(pw,W=w,H=h,pre=pre)
-        try:run_main(pg,W)
+        try:
+            run_main(pg,W)
+        except Exception as e:
+            import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
+        b.close();b,pg=run(pw,W=w,H=h,pre=pre)
+        try:run_done(pg,W)
         except Exception as e:
             import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
         print('errs',errs[:5]);errs.clear()
