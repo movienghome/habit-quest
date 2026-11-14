@@ -26,7 +26,7 @@ def run_t(pg,W):
     ok('몸 최대 75' in J(pg,"document.querySelector('#sheetC .rs102').textContent"),f'[{W}] 술 켜면 −15 → 75')
     pg.click('[data-sl102ok]');pg.wait_for_timeout(500);notoast(pg)
     s=J(pg,"({sl:today().sl102,cap:st102(today()).cap,chip:document.querySelector('#battleBox .sl102').textContent})")
-    ok(s['sl']=={'b':'02:10','w':'07:30','dr':1,'ln':0} and s['cap']==75 and '몸≤75' in s['chip'] and '🍺' in s['chip'],f'[{W}] 저장 → day.sl102 · 칩에 5h20 🍺 몸≤75',s)
+    ok(s['sl']=={'b':'02:10','w':'07:30','dr':1,'ln':0} and s['cap']==75 and '몸 최대 75' in s['chip'] and '🍺술' in s['chip'] and '5h20' in s['chip'],f'[{W}] 저장 → day.sl102 · 칩에 잠 5h20 · 🍺술 · 몸 최대 75',s)
     ok(J(pg,"(()=>{const k=gk76();return normDay(k,JSON.parse(JSON.stringify(DAYS[k]))).sl102})()")=={'b':'02:10','w':'07:30','dr':1,'ln':0},f'[{W}] normDay가 sl102를 지킴(새로고침 뒤에도 남음)')
     cap=J(pg,"(()=>{const tr=document.querySelector('#areaBars .area[data-info=\"area:body\"] .track .cap102');return tr?tr.style.left:null})()")
     ok(cap=='75%',f'[{W}] 몸 막대에만 최대 빗금(75%)',cap)

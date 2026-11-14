@@ -25,11 +25,14 @@ with sync_playwright() as pw:
         ok(not J(pg,"document.querySelector('#actGroups .act[data-info=\"act:g1\"] .meta .xp').offsetWidth"),tag+'타일에선 +n 숨김')
         # □ 누르면 기록 (실제 클릭)
         n0=J(pg,"curDay().entries.length")
-        pg.click('#actGroups .acts:not(.now96) [data-act="g1"]');pg.wait_for_timeout(500);closepops(pg)
+        pg.click('#actGroups .acts:not(.now96) [data-act="g1"]');pg.wait_for_timeout(500)
+        if not J(pg,"document.getElementById('sheet').hidden"):pg.click('#sheetC [data-sheet=ok]');pg.wait_for_timeout(400)   # v10.4: □ = 기록 창 → 했어요
+        closepops(pg)
         ok(J(pg,"curDay().entries.filter(e=>e.aid==='g1').length")==1,tag+'타일 □ 클릭 = 기록')
         # 이름 누르면 설명·편집
         pg.click('#actGroups .acts:not(.now96) .act[data-info="act:g3"] .n');pg.wait_for_timeout(500)
-        ok(J(pg,"!!document.querySelector('#pop [data-act=\"g3\"]')&&document.getElementById('pop').offsetWidth>0"),tag+'타일 이름 클릭 = 설명 창 열림')
+        pg.click('#m61 button:has-text("설명")');pg.wait_for_timeout(500)   # v10.4: 카드 누르면 메뉴 → ℹ 설명·통계
+        ok(J(pg,"!!document.querySelector('#pop [data-act=\"g3\"]')&&document.getElementById('pop').offsetWidth>0"),tag+'타일 이름 클릭 → 메뉴 → 설명 창 열림')
         pg.click('#scrim',position={'x':5,'y':5});pg.wait_for_timeout(300)
         ok(not J(pg,"document.getElementById('pop').offsetWidth>0&&document.getElementById('scrim').offsetWidth>0"),tag+'설명 창 닫힘')
         # ② 지금 맞는 카드
@@ -41,7 +44,9 @@ with sync_playwright() as pw:
         ok(not any(J(pg,f"!!(C.actions.find(a=>a.id==='{i[4:]}')||{{}}).link") for i in ids),tag+'🔗 자동 카드 빠짐')
         ok(len(ids)<=(4 if W<760 else 6),tag+'개수 제한',len(ids))
         ok(J(pg,"document.querySelector('.now96 .act[data-info=\"act:g4\"] .why96').textContent").startswith('요즘 이 시간'),tag+'이유 글자')
-        pg.click('.now96 [data-act="g4"]');pg.wait_for_timeout(500);closepops(pg)
+        pg.click('.now96 [data-act="g4"]');pg.wait_for_timeout(500)
+        if not J(pg,"document.getElementById('sheet').hidden"):pg.click('#sheetC [data-sheet=ok]');pg.wait_for_timeout(400)   # v10.4: □ = 기록 창
+        closepops(pg)
         ok(J(pg,"curDay().entries.some(e=>e.aid==='g4')"),tag+'지금 맞는 카드 □ = 기록')
         ok(J(pg,"![...document.querySelectorAll('.now96 .act')].some(x=>x.dataset.info==='act:g4')"),tag+'기록하면 위 묶음에서 빠짐')
         # 접기

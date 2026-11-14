@@ -75,7 +75,9 @@ with sync_playwright() as pw:
         # 4) □ 기록은 그대로
         pg.evaluate("C.ui.collapsed={};renderLog()");pg.wait_for_timeout(300)
         pg.evaluate("document.querySelector('#actGroups .acts:not(.now96) [data-act=\"g2\"]').scrollIntoView({block:'center'})");pg.wait_for_timeout(200)
-        pg.click('#actGroups .acts:not(.now96) [data-act="g2"]');pg.wait_for_timeout(500);closepops(pg)
+        pg.click('#actGroups .acts:not(.now96) [data-act="g2"]');pg.wait_for_timeout(500)
+        if not J(pg,"document.getElementById('sheet').hidden"):pg.click('#sheetC [data-sheet=ok]');pg.wait_for_timeout(400)   # v10.4: □ = 기록 창 → 했어요
+        closepops(pg)
         ok(J(pg,"curDay().entries.some(e=>e.aid==='g2')"),tag+'□ 누르면 기록(끌기 켜져 있어도)')
         # 5) 묶기를 영역 아닌 것으로 바꾸면 끌기 표시 없음
         pg.evaluate("C.ui.list.group='type';renderLog()");pg.wait_for_timeout(300)
