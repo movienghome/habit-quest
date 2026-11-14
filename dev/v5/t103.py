@@ -40,7 +40,7 @@ def run_t(pg,W):
     if w:
         ok(w['n']==7,f'[{W}] 점이 7개',w['n'])
         ok('4/5' in w['txt'],f'[{W}] n/N 그대로 보임',w['txt'])
-        ok('여유' in w['txt'],f'[{W}] 여유 일수 글자가 보임(색만 X)',w['txt'])
+        ok('남음' in w['txt'],f'[{W}] 남은 횟수·쉬어도 되는 날 글자가 보임(색만 X)',w['txt'])
         ok('●' in w['txt'] and '◐' in w['txt'],f'[{W}] ● 한 날 · ◐ 10분만 한 날이 글자로 구분됨',w['txt'])
         ok(w['aria'] and '10분만' in w['aria'],f'[{W}] 점 줄에 읽어 주는 설명(aria-label)',w['aria'])
     # 4) 내일 짜기 맨 위 줄 경보(여유 0일)
@@ -50,7 +50,7 @@ def run_t(pg,W):
       const days=slack99(T,k).days;T.rep.n=days;saveTask(T)})()"""%r['id'])
     J(pg,"planSheet80()");pg.wait_for_timeout(600)
     a=J(pg,"(()=>{const e=document.querySelector('#sheetC .al99');return e?e.textContent:null})()")
-    ok(a is not None and '여유가 0일' in a,f'[{W}] 내일 짜기 맨 위에 경보',a)
+    ok(a is not None and '매일 한 번씩' in a,f'[{W}] 내일 짜기 맨 위에 경보',a)
     ok(a is not None and '안 깎여요' in a,f'[{W}] 점수 안 깎인다고 알림',a)
     first=J(pg,"(()=>{const sc=document.getElementById('sheetC'),sh=sc.querySelector('.sh');return !!(sh&&sh.nextElementSibling&&sh.nextElementSibling.classList.contains('al99'))})()")
     ok(first,f'[{W}] 머리 바로 아래(첫 줄)에 있음')

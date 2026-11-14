@@ -18,7 +18,7 @@ function slack99(t,from){const ws=weekStart(from),we=addDays(ws,6),N=+t.rep.n||3
   let days=0;for(let k=from,g=0;k<=we&&g<8;k=addDays(k,1),g++)days++;
   const need=Math.max(0,N-n);return{n,N,need,days,slack:days-need,ws}}
 function from99(t,td){const c=dayCnt99(t,td);return(c.n||c.tr)?addDays(td,1):td}
-const DOT99={'●':'한 날','◐':'10분만 한 날','○':'안 한 날','◇':'정해 둔 자리','·':'앞으로'};
+const DOT99={'●':'한 날','◐':'10분만 한 날','○':'안 한 날','◇':'하기로 정한 날','·':'앞으로'};
 function dots99(t,ws,td){let s='',lab=[];
   for(let i=0;i<7;i++){const k=addDays(ws,i),c=dayCnt99(t,k);
     const ch=c.n?'●':c.tr?'◐':k<td?'○':(t.sl91&&t.sl91[k]!==undefined)?'◇':'·';
@@ -33,9 +33,11 @@ function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
   const cur=ws===weekStart(td);
   const chips=L.slice(0,4).map(t=>{const n=wkCnt91(t,ws),N=+t.rep.n||3,ks=slotKeys91(t,ws),fin=n>=N;
     let sl='';if(cur&&!fin){const s=slack99(t,from99(t,td));
-      sl=s.slack>0?`<i>여유 ${s.slack}일</i>`:`<i class="w99" title="남은 날 ${s.days}일 · 남은 횟수 ${s.need}번 — 점수는 안 깎여요">⚠ 여유 ${s.slack}일</i>`}
+      sl=s.slack>0?`<i title="이번 주 ${s.need}번 더 하면 돼요. 남은 날 ${s.days}일 중 ${s.slack}일은 쉬어도 목표를 채울 수 있어요">${s.need}번 남음 · 쉬어도 되는 날 ${s.slack}일</i>`
+        :s.slack===0?`<i class="w99" title="목표를 채울 수 있어요. 다만 쉬는 날 없이 남은 날마다 한 번씩 해야 해요 (점수는 안 깎여요)">⚠ ${s.need}번 남음 · 매일 해야 채워요</i>`
+        :`<i class="w99" title="남은 날 ${s.days}일에 ${s.need}번이라 하루에 두 번 하는 날이 있어야 해요 (점수는 안 깎여요)">⚠ ${s.need}번 남음 · 하루 두 번 필요</i>`}
     const hg=t.hg99?`<i title="이번 주 하그둘 만남">🤝 ${hgCnt99(t,ws)}회</i>`:'';
-    return `<span class="c91 k99${fin?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정해 둔 날 '+ks.map(k=>fmtD(k)+(t.sl91[k]?' '+t.sl91[k]:'')).join(', '):''}">${fin?'✓':'🔁'} ${esc(t.title)} <b>${n}/${N}</b>${dots99(t,ws,td)}${sl}${hg}${ks.length?`<i>자리 ${ks.length}</i>`:''}</span>`}).join('');
+    return `<span class="c91 k99${fin?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정해 둔 날 '+ks.map(k=>fmtD(k)+(t.sl91[k]?' '+t.sl91[k]:'')).join(', '):''}">${fin?'✓':'🔁'} ${esc(t.title)} <b>${n}/${N}</b>${dots99(t,ws,td)}${sl}${hg}${ks.length?`<i>정한 날 ${ks.length}</i>`:''}</span>`}).join('');
   const d=document.createElement('div');d.className='wk91';d.innerHTML=chips+(L.length>4?`<span class="c91">+${L.length-4}</span>`:'');
   m.parentElement.insertBefore(d,m)}
 
@@ -45,8 +47,8 @@ function alert99(k){
   if(!L.length)return '';
   const lab=k===addDays(midKey68(),1)?'내일':dayName68(k);
   return `<div class="al99" role="status">${L.slice(0,3).map(x=>x.slack===0
-    ?`<div>⚠ <b>${esc(x.t.title)}</b> · 이번 주 ${x.need}번 남았고 남은 날도 ${x.days}일이에요. 여유가 0일이라 ${esc(lab)}은 꼭 놓을 날이에요.</div>`
-    :`<div>⚠ <b>${esc(x.t.title)}</b> · ${x.need}번 남았는데 남은 날은 ${x.days}일뿐이에요. 하루에 두 번 쓰거나 이번 주 목표를 줄여도 괜찮아요.</div>`).join('')}<small class="muted">알림만 해요 · 점수·HP는 안 깎여요</small></div>`}
+    ?`<div>⚠ <b>${esc(x.t.title)}</b> · 이번 주 ${x.need}번 남았고 남은 날도 ${x.days}일이에요. 쉬는 날 없이 ${esc(lab)}부터 매일 한 번씩 하면 목표를 채울 수 있어요.</div>`
+    :`<div>⚠ <b>${esc(x.t.title)}</b> · ${x.need}번 남았는데 남은 날은 ${x.days}일뿐이에요. 하루에 두 번 하는 날이 있어야 채워요. 이번 주 목표를 줄여도 괜찮아요.</div>`).join('')}<small class="muted">알림만 해요 · 점수·HP는 안 깎여요</small></div>`}
 openSheet=(function(prev){return function(){const r=prev.apply(this,arguments);
   try{if(sheetCtx&&sheetCtx.w93){const sc=$('sheetC'),sh=sc&&sc.querySelector('.sh');
     if(sh&&!sc.querySelector('.al99')){const h=alert99(sheetCtx.w93);if(h)sh.insertAdjacentHTML('afterend',h)}}}catch(e){console.error(e)}
@@ -78,5 +80,5 @@ completeTask=(function(prev){return function(t,ctx){
   return r}})(completeTask);
 
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['🔁 이번 주 점 7개·여유 일수','캘린더 위 줄 · 🌙 내일 짜기 맨 위','주 N회 할 일(시나리오 쓰기 등)이 이번 주 월~일 어느 날 했는지 점으로 보여요(● 한 날 · ◐ 10분만 · ○ 안 한 날 · ◇ 정해 둔 자리). 여유 일수 = 남은 날 − 남은 횟수, 0이 되면 내일 짜기 맨 위에서 알려요(점수는 안 깎여요). 🌱 10분만 한 날도 1번으로 세요.',()=>{location.hash='tasks'},'주 N회 시나리오 여유 일수 점 10분만'],
+  ['🔁 이번 주 점 7개·여유 일수','캘린더 위 줄 · 🌙 내일 짜기 맨 위','주 N회 할 일(시나리오 쓰기 등)이 이번 주 월~일 어느 날 했는지 점으로 보여요(● 한 날 · ◐ 10분만 · ○ 안 한 날 · ◇ 하기로 정한 날). 남은 횟수와 남은 날이 같아지면(쉬는 날이 없어지면) 내일 짜기 맨 위에서 알려요(점수는 안 깎여요, 목표를 못 채운 게 아니에요). 🌱 10분만 한 날도 1번으로 세요.',()=>{location.hash='tasks'},'주 N회 시나리오 여유 일수 점 10분만'],
   ['🤝 하그둘 꼬리표','할 일 상세 ⋯ · 끝낸 뒤 아래 알림','주 N회 할 일 ⋯ 메뉴에서 켜면, 끝낸 뒤 아래 알림의 🤝로 "이번 기록은 하그둘 만남"을 표시해요. 같은 카드로 이은 정해진 일정(하그둘 만남)을 끝내면 저절로 표시돼요. 캘린더 위 줄에 🤝 n회로 보여요.',()=>{location.hash='tasks'},'하그둘 만남 꼬리표 시나리오']])}})(F67);
