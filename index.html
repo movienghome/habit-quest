@@ -15107,7 +15107,7 @@ addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.f104
 /* ---- ③ 한 번짜리 정리(사용자 OK, 11/14) ---- */
 // [할 일 id, 이을 카드 id, 이 카드일 때만(지워진 카드)] — 이미 다른 살아 있는 카드에 이어져 있으면 안 건드림
 const LINK104=[['tyf41846k5l','g6'],['tlmyoxvtki6','dp5eh8'],['thhdi4c91vb','dp5eh8']];
-// [카드 id, 보조 영역, 몫%] — 사용자가 이미 보조 영역을 정한 카드(ar2 키가 있음)는 안 건드림
+// [카드 id, 보조 영역, 몫%] — 사용자가 이미 보조 영역을 정한 카드(ar2 값이 있음)는 안 건드림('' = 안 정함)
 const AR104=[['9oi9xl7','body',50],['g6','body',30],['g20','body',50],['dp5eh8','mind',30],['dp22fz4','mind',50],['dp155a1','mind',30],
   ['939vyek','mind',30],['taphz8p','body',30],['dp9a43','body',30],['dp23phv','body',30],['dqelkwfe','body',30],['g15','mind',30],
   ['kck6','life',30],['g13','mind',30],['g25','mind',30],['g22','mind',30]];
@@ -15115,7 +15115,7 @@ function mig104(){if(C.mig104||!ready72()||!tOK64()||!Array.isArray(C.actions))r
   const has=id=>C.actions.some(a=>a.id===id),out={links:[],ar:[]};
   if(!LINK104.some(([tid])=>TASKS[tid])){C.mig104={at:gk76(),n:0,skip:1};save('config');return out}   // 이 사용자(와 그 베타 복사본) 기록에만
   LINK104.forEach(([tid,aid])=>{const t=TASKS[tid];if(!t||!has(aid)||(t.aid&&has(t.aid)))return;t.aid=aid;saveTask(t);out.links.push([t.title,(C.actions.find(a=>a.id===aid)||{}).name])});
-  AR104.forEach(([id,ar,r])=>{const a=C.actions.find(x=>x.id===id);if(!a||'ar2' in a||!C.areas.some(x=>x.id===ar)||a.area===ar)return;a.ar2=ar;a.r2=r;out.ar.push(a.name+' +'+((C.areas.find(x=>x.id===ar)||{}).name||ar)+' '+r+'%')});
+  AR104.forEach(([id,ar,r])=>{const a=C.actions.find(x=>x.id===id);if(!a||a.ar2||!C.areas.some(x=>x.id===ar)||a.area===ar)return;a.ar2=ar;a.r2=r;out.ar.push(a.name+' +'+((C.areas.find(x=>x.id===ar)||{}).name||ar)+' '+r+'%')});
   C.mig104={at:gk76(),n:out.links.length+out.ar.length};save('config');
   if(out.links.length||out.ar.length)setTimeout(()=>{try{toast(`🃏 카드 잇기 ${out.links.length}개 · 보조 영역 ${out.ar.length}개 넣었어요 — 편집 → 행동에서 빼면 돼요`)}catch(e){}},1200);
   return out}

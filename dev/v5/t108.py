@@ -42,7 +42,7 @@ def run_main(pg,W):
       if(!C.actions.some(a=>a.id==='dp5eh8'))C.actions.push({id:'dp5eh8',name:'폼롤러·스트레칭',type:'good',area:'body',cond:4,xp:2,gold:0,marble:''});
       if(!C.actions.some(a=>a.id==='9oi9xl7'))C.actions.push({id:'9oi9xl7',name:'산책',type:'good',area:'mind',cond:10,xp:5,gold:0,marble:''});
       const g6=C.actions.find(a=>a.id==='g6')||(C.actions.push({id:'g6',name:'명상',type:'good',area:'mind',cond:15,xp:20,gold:0,marble:''}),C.actions.find(a=>a.id==='g6'));
-      g6.ar2='life';g6.r2=70;   // 사용자가 이미 정한 것 → 안 건드림
+      g6.ar2='life';g6.r2=70;const w=C.actions.find(x=>x.id==='9oi9xl7');w.ar2='';   // 사용자가 이미 정한 것 → 안 건드림
       C.actions=C.actions.filter(a=>a.id!=='g4');mk('tyf41846k5l','명상',null);mk('tlmyoxvtki6','스트레칭','g4');mk('thhdi4c91vb','스트레칭','g4');
       delete C.mig104;render();
       const a=id=>C.actions.find(x=>x.id===id);
