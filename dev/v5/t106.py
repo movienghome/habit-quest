@@ -1,0 +1,106 @@
+# t106 (v10.3): F1 조각 2 — 몸 출발점(어젯밤 잠·술·야식 → 몸 최대, 어제 몸 이월) · HP 비교 이유 · 도감 단추 · 진척 칩 한 줄
+exec(open('h61.py').read())
+URL=os.environ.get('HQURL',URL)
+J=lambda pg,x:pg.evaluate(x)
+FAILS=[]
+def ok(c,msg,extra=''):
+    print(('PASS ' if c else 'FAIL ')+msg+(' · '+str(extra) if extra!='' else ''))
+    if not c:FAILS.append(msg)
+def notoast(pg):
+    J(pg,"(()=>{const t=document.getElementById('toast');if(t){t.classList.remove('on');t.style.pointerEvents=''}})()")
+PUT="""window.put106=(k,e)=>{DAYS[k]=DAYS[k]||blankDay(k);DAYS[k].entries=DAYS[k].entries||[];DAYS[k].entries.push(Object.assign({id:'z'+Math.random().toString(36).slice(2),type:'good',xp:0,gold:0,t:'10:00'},e))};
+window.clr106=()=>{const td=gk76();[0,1,2].forEach(i=>{const k=addDays(td,-i);if(DAYS[k]){DAYS[k].entries=[];DAYS[k].food={};delete DAYS[k].sl102}})};"""
+def run_t(pg,W):
+    pg.wait_for_timeout(700);notoast(pg);J(pg,PUT)
+    st=J(pg,"({f1:C.f1from101,f2:C.f2from102,td:gk76(),b:bodyA102()})")
+    ok(st['f2']==st['td'] and st['b']=='body',f'[{W}] 처음 켜질 때 오늘부터 몸 출발점 · 몸 영역 짐작',st)
+    J(pg,"clr106();location.hash='home';render()");pg.wait_for_timeout(500);notoast(pg)
+    c=J(pg,"(()=>{const b=document.querySelector('#battleBox .mm90 .sl102');return b?{t:b.textContent,no:b.classList.contains('no102')}:null})()")
+    ok(c and c['no'] and '어젯밤' in c['t'],f'[{W}] 안 적었으면 기분 줄 옆 🛏 어젯밤? 점선 칩',c)
+    # 창에서 적기
+    pg.click('#battleBox .sl102');pg.wait_for_timeout(400)
+    pg.fill('[data-sl102b]','02:10');pg.fill('[data-sl102w]','07:30');pg.wait_for_timeout(150)
+    pv=J(pg,"(()=>{const s=document.getElementById('sheetC');return {hm:s.querySelector('.hm102').textContent,rs:s.querySelector('.rs102').textContent}})()")
+    ok('5시간 20분' in pv['hm'] and '몸 최대 90' in pv['rs'],f'[{W}] 시각 넣으면 바로 계산(5시간 20분 → 몸 최대 90)',pv)
+    pg.click('[data-sl102t=dr]');pg.wait_for_timeout(150)
+    ok('몸 최대 75' in J(pg,"document.querySelector('#sheetC .rs102').textContent"),f'[{W}] 술 켜면 −15 → 75')
+    pg.click('[data-sl102ok]');pg.wait_for_timeout(500);notoast(pg)
+    s=J(pg,"({sl:today().sl102,cap:st102(today()).cap,chip:document.querySelector('#battleBox .sl102').textContent})")
+    ok(s['sl']=={'b':'02:10','w':'07:30','dr':1,'ln':0} and s['cap']==75 and '몸≤75' in s['chip'] and '🍺' in s['chip'],f'[{W}] 저장 → day.sl102 · 칩에 5h20 🍺 몸≤75',s)
+    ok(J(pg,"(()=>{const k=gk76();return normDay(k,JSON.parse(JSON.stringify(DAYS[k]))).sl102})()")=={'b':'02:10','w':'07:30','dr':1,'ln':0},f'[{W}] normDay가 sl102를 지킴(새로고침 뒤에도 남음)')
+    cap=J(pg,"(()=>{const tr=document.querySelector('#areaBars .area[data-info=\"area:body\"] .track .cap102');return tr?tr.style.left:null})()")
+    ok(cap=='75%',f'[{W}] 몸 막대에만 최대 빗금(75%)',cap)
+    ok(J(pg,"document.querySelectorAll('#areaBars .cap102').length")==1,f'[{W}] 다른 막대엔 빗금 없음')
+    # 몸 카드 많이 해도 75에서 멈춤, HP도 몸 몫은 75까지
+    J(pg,"put106(gk76(),{kind:'act',name:'운동',area:'body',cond:30,xp:5});put106(gk76(),{kind:'act',name:'명상',area:'mind',cond:5,xp:5});render()")
+    v=J(pg,"({av:areaValues(today()),hp:overallOf(today()),p:hpParts101(today())})")
+    ok(v['av']['body']==75 and v['av']['mind']==65 and v['hp']==80 and v['p']['cut']==15,f'[{W}] 몸 +30 → 몸 막대 75(최대), 마음 65, HP = 75 + 5 = 80, 잘린 15',v)
+    # 어제 이월
+    J(pg,"clr106();put106(addDays(gk76(),-1),{kind:'act',name:'운동',area:'body',cond:20,xp:5});render()")
+    v=J(pg,"({s:st102(today()),av:areaValues(today()),hp:overallOf(today())})")
+    ok(v['s']['ye']==80 and v['s']['carry']==6 and v['s']['start']==66 and v['av']['body']==66 and v['av']['mind']==60 and v['hp']==66,f'[{W}] 어제 몸 끝 80 → 30% 이월 +6 → 몸·HP 시작 66, 마음은 60',v)
+    J(pg,"clr106();put106(addDays(gk76(),-1),{kind:'act',name:'술',type:'bad',aid:'b1',area:'body',cond:-30});render()")
+    v=J(pg,"st102(today())")
+    ok(v['ye']==30 and v['carry']==-9 and v['start']==51,f'[{W}] 어제 몸 끝 30 → −9 → 시작 51',v)
+    # 어제 기록에서 술 찾아 미리 켜 둠
+    pg.click('#battleBox .sl102');pg.wait_for_timeout(400)
+    h=J(pg,"(()=>{const b=document.querySelector('#sheetC [data-sl102t=dr]');return {p:b.getAttribute('aria-pressed'),t:b.textContent}})()")
+    ok(h['p']=='true' and '어제 기록에서' in h['t'],f'[{W}] 어제 술 카드 기록 → 🍺 미리 켜짐',h)
+    ok(J(pg,"!!document.querySelector('#sheetC [data-sl102card]')"),f'[{W}] 늦게 잠 카드도 기록하기 링크')
+    J(pg,"closeSheet()")
+    # 어제 최대도 이월에 걸림
+    J(pg,"clr106();const y=dayOf(addDays(gk76(),-1));y.sl102={b:'03:00',w:'07:00',dr:1,ln:0};put106(y.date,{kind:'act',name:'운동',area:'body',cond:30,xp:5});render()")
+    v=J(pg,"st102(today())")
+    exp=J(pg,"(()=>{const y=DAYS[addDays(gk76(),-1)];return Math.min(90,cap102(y).cap)})()")
+    ok(v['ye']==exp and exp<90,f'[{W}] 어제 끝값도 어제 몸 최대까지만 이월에 씀',[v,exp])
+    # 몸 출발점 전 날은 그대로(조각 1 규칙)
+    J(pg,"clr106();const y=addDays(gk76(),-1);put106(y,{kind:'act',name:'운동',area:'body',cond:20,xp:5});dayOf(y).sl102={b:'04:00',w:'06:00',dr:1,ln:1};render()")
+    v=J(pg,"(()=>{const y=DAYS[addDays(gk76(),-1)];return {n:new102(y),av:areaValues(y).body,hp:overallOf(y)}})()")
+    ok(not v['n'] and v['av']==80 and v['hp']==80,f'[{W}] 시작한 날 전(어제)은 몸 최대 없이 그대로',v)
+    # HP 창: 몸 출발점 줄 + 7일 비교 이유
+    J(pg,"clr106();const td=gk76(),y=addDays(td,-1);DAYS[y]=DAYS[y]||blankDay(y);DAYS[y].energy=4;put106(y,{kind:'act',aid:'zz',name:'시나리오 25분',area:'make',cond:3,xp:20});put106(y,{kind:'act',name:'작업일지',area:'make',cond:2,xp:5});put106(y,{kind:'act',name:'걷기',area:'body',cond:4,xp:5});render()")
+    J(pg,"openInfo?openInfo('hp'):0") if J(pg,"typeof openInfo")=='function' else pg.click('#moodName')
+    pg.wait_for_timeout(500)
+    t=J(pg,"(document.getElementById('pop')||{}).innerText||''")
+    ok('몸 출발점' in t and '몸 최대' in t,f'[{W}] HP 창에 몸 출발점 줄',t[:200])
+    rows=J(pg,"document.querySelectorAll('#pop .cw102').length")
+    ok(rows>=1,f'[{W}] 7일 비교 줄이 펼칠 수 있는 칸',rows)
+    pg.click('#pop .cw102:nth-of-type(2) > summary') if rows>=2 else pg.click('#pop .cw102 > summary')
+    pg.wait_for_timeout(200)
+    w=J(pg,"(()=>{const d=[...document.querySelectorAll('#pop .cw102')].find(x=>x.open);return d?d.innerText:''})()")
+    ok('시나리오 25분 +3' in w and '작업일지 +2' in w and '시작' in w,f'[{W}] 펼치면 이유(시작값 차이·HP에서 뺀 기록 이름)',w[:300])
+    J(pg,"(()=>{const p=document.getElementById('pop');if(p)p.hidden=true;document.querySelector('[data-pop=close],#pop .x')?.click()})()")
+    # 전투 카드: 도감 단추 쫄따구 줄 · 칩 한 줄
+    J(pg,"location.hash='home';render()");pg.wait_for_timeout(500)
+    d=J(pg,"(()=>{const b=document.querySelector('#battleBox [data-x61dex]');return b?{in:!!b.closest('.minions'),n:document.querySelectorAll('#battleBox [data-x61dex]').length,t:b.textContent}:null})()")
+    ok(d and d['in'] and d['n']==1,f'[{W}] 📖 도감 단추가 쫄따구 줄 안 하나',d)
+    tops=J(pg,"[...document.querySelectorAll('#areaBars .pc101')].map(b=>Math.round(b.getBoundingClientRect().top))")
+    ok(len(tops)==3 and len(set(tops))==1,f'[{W}] 진척 칩 셋이 한 줄',tops)
+    ovf=J(pg,"(()=>{const b=document.getElementById('battleBox');return b.scrollWidth-b.clientWidth})()")
+    ok(ovf<=1,f'[{W}] 전투 카드 가로 안 넘침',ovf)
+    pg.click('#battleBox [data-x61dex]');pg.wait_for_timeout(400)
+    ok('도감' in J(pg,"(document.getElementById('sheetC')||{}).textContent||''"),f'[{W}] 도감 단추 누르면 도감 창')
+    J(pg,"closeSheet()")
+    # 편집 → 컨디션 영역: 기준 · 끄기
+    J(pg,"ui.edit='areas';location.hash='edit'");pg.wait_for_timeout(500);J(pg,"renderEdit()");pg.wait_for_timeout(200)
+    ok(J(pg,"!!document.querySelector('#editBody .ak101p .kv102')"),f'[{W}] 편집 → 컨디션 영역에 몸 출발점 기준 칸')
+    J(pg,"clr106();put106(addDays(gk76(),-1),{kind:'act',name:'운동',area:'body',cond:20,xp:5});render()")
+    pg.fill('#editBody [data-f102=carry]','0');J(pg,"document.querySelector('#editBody [data-f102=carry]').dispatchEvent(new Event('change',{bubbles:true}))");pg.wait_for_timeout(300)
+    ok(J(pg,"st102(today()).start")==60 and J(pg,"C.bs102.carry")==0,f'[{W}] 이월 0% → 시작 60')
+    pg.click('#editBody [data-bs102off]');pg.wait_for_timeout(300)
+    J(pg,"dayOf(gk76()).sl102={b:'03:00',w:'06:00',dr:1,ln:1};render()")
+    ok(J(pg,"C.bs102off")==1 and J(pg,"!new102(today())") and J(pg,"areaValues(today()).body")==60,f'[{W}] 끄면 몸 최대·이월 없음')
+    ok(J(pg,"!document.querySelector('#battleBox .sl102')"),f'[{W}] 끄면 🛏 칩도 숨김')
+    pg.click('#editBody [data-bs102off]');pg.wait_for_timeout(300)
+    ok(J(pg,"new102(today())"),f'[{W}] 다시 켜기')
+
+with sync_playwright() as pw:
+    for W,H in [(1400,900),(390,800),(360,760)]:
+        b,pg=run(pw,W=W,H=H)
+        try:run_t(pg,W)
+        except Exception as e:
+            ok(False,f'[{W}] 예외 {e}')
+        b.close()
+real=[e for e in errs if 'favicon' not in e and 'net::' not in e and 'Failed to load' not in e]
+ok(not real,'콘솔 오류 없음',real[:3])
+print('FAILS',len(FAILS),FAILS)

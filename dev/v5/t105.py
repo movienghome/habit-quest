@@ -12,6 +12,7 @@ PUT="""window.put105=(k,e)=>{DAYS[k]=DAYS[k]||blankDay(k);DAYS[k].entries=DAYS[k
 def run_t(pg,W):
     pg.wait_for_timeout(600);notoast(pg)
     J(pg,PUT)
+    J(pg,"C.bs102off=1")   # v10.3: 조각 1 규칙만 보는 시험 — 몸 출발점(이월·최대)은 t106
     st=J(pg,"({f:C.f1from101,td:gk76(),ak:C.ak101,hpb:C.hpb101,cls:document.body.classList.contains('f101'),en:getComputedStyle(document.getElementById('energy')).display})")
     ok(st['f']==st['td'],f'[{W}] 처음 켜질 때 오늘(게임 날)부터 새 규칙',st)
     ok(st['ak']=={'body':'c','mind':'c','make':'p','grow':'p','life':'c','money':'m'},f'[{W}] 영역 종류 짐작(몸·마음·생활=🔋, 작품·성장=📈, 경제=💰)',st['ak'])
@@ -21,7 +22,7 @@ def run_t(pg,W):
     J(pg,"location.hash='home'");pg.wait_for_timeout(600)
     h=J(pg,"(()=>{const b=document.getElementById('areaBars');return {n:b.querySelectorAll('.area').length,names:[...b.querySelectorAll('.area b')].map(x=>x.textContent),pc:[...b.querySelectorAll('.pc101')].map(x=>x.textContent)}})()")
     ok(h['n']==3 and h['names']==['몸','마음','생활'],f'[{W}] 홈 막대는 🔋 영역 셋만',h)
-    ok(len(h['pc'])==3 and h['pc'][0].startswith('📈 작품') and 'Lv.' in h['pc'][0] and h['pc'][2].startswith('💰 경제'),f'[{W}] 작품·성장은 📈, 경제는 💰 칩(레벨·아이콘+글자)',h['pc'])
+    ok(len(h['pc'])==3 and h['pc'][0].startswith('📈 작품') and 'Lv' in h['pc'][0] and h['pc'][2].startswith('💰 경제'),f'[{W}] 작품·성장은 📈, 경제는 💰 칩(레벨·아이콘+글자)',h['pc'])
     # HP 계산
     base=J(pg,"overallOf(today())")
     ok(base==60,f'[{W}] 기록 없는 오늘 HP = 60',base)
@@ -100,7 +101,7 @@ def run_t(pg,W):
     J(pg,"""(()=>{const td=gk76();for(const k in DAYS)(DAYS[k].entries||[]).forEach(e=>{if(e.area==='make')e.area='life'});put105(addDays(td,-10),{kind:'act',name:'옛 창작',area:'make',cond:0,xp:9});location.hash='home';render()})()""")
     pg.wait_for_timeout(600)
     pc=J(pg,"(()=>{const b=document.querySelector('#areaBars .pc101');return b?{t:b.textContent,st:b.classList.contains('st101')}:null})()")
-    ok(pc and pc['st'] and '⏸ 10일째' in pc['t'],f'[{W}] 10일 멈춘 진척 영역에 ⏸ 10일째(점선 + 글자)',pc)
+    ok(pc and pc['st'] and '⏸10일' in pc['t'],f'[{W}] 10일 멈춘 진척 영역에 ⏸ 10일째(점선 + 글자)',pc)
     # 가로 넘침
     ovf=J(pg,"(()=>{const b=document.getElementById('battleBox');return b?b.scrollWidth-b.clientWidth:-1})()")
     ok(ovf<=1,f'[{W}] 전투 카드 가로 안 넘침',ovf)
