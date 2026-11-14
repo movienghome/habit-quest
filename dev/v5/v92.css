@@ -5,10 +5,10 @@
 .r93 input{width:auto;margin-top:3px;flex:none}
 .r93 small{color:var(--muted);font-weight:400}
 .b93d{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:2px 0}
-.alerts li.b93 .p93{display:inline-flex;flex-wrap:wrap;gap:2px 6px;align-items:center;margin-top:3px;font-size:12px;color:var(--muted)}
-.alerts li.b93 .p93 i{font-style:normal}
-.alerts li.b93 .p93 i+i::before{content:"─ ";opacity:.6}
-.alerts li.b93 .chipbtn{margin-left:4px}
+.alerts li.rw93 .p93{display:inline-flex;flex-wrap:wrap;gap:2px 6px;align-items:center;margin-top:3px;font-size:12px;color:var(--muted)}
+.alerts li.rw93 .p93 i{font-style:normal}
+.alerts li.rw93 .p93 i+i::before{content:"─ ";opacity:.6}
+.alerts li.rw93 .chipbtn{margin-left:4px}
 .b93h{margin-left:6px;white-space:nowrap;font-size:12.5px}
 .ad .b93h{float:right;margin-left:8px}
 @media(max-width:520px){.ptitle .b93h .t93{display:none}.ptitle .b93h{margin-left:2px;padding-left:8px;padding-right:8px}}

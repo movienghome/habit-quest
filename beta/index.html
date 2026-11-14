@@ -2070,10 +2070,10 @@ body.m90 #battleBox>p.tiny.muted{display:none}
 .r93 input{width:auto;margin-top:3px;flex:none}
 .r93 small{color:var(--muted);font-weight:400}
 .b93d{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:2px 0}
-.alerts li.b93 .p93{display:inline-flex;flex-wrap:wrap;gap:2px 6px;align-items:center;margin-top:3px;font-size:12px;color:var(--muted)}
-.alerts li.b93 .p93 i{font-style:normal}
-.alerts li.b93 .p93 i+i::before{content:"─ ";opacity:.6}
-.alerts li.b93 .chipbtn{margin-left:4px}
+.alerts li.rw93 .p93{display:inline-flex;flex-wrap:wrap;gap:2px 6px;align-items:center;margin-top:3px;font-size:12px;color:var(--muted)}
+.alerts li.rw93 .p93 i{font-style:normal}
+.alerts li.rw93 .p93 i+i::before{content:"─ ";opacity:.6}
+.alerts li.rw93 .chipbtn{margin-left:4px}
 .b93h{margin-left:6px;white-space:nowrap;font-size:12.5px}
 .ad .b93h{float:right;margin-left:8px}
 @media(max-width:520px){.ptitle .b93h .t93{display:none}.ptitle .b93h{margin-left:2px;padding-left:8px;padding-right:8px}}
@@ -13533,19 +13533,19 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   function rowHTML93(){
     const g=GD(),y=addDays(g,-1),rr=R93()[g],bk=B93()[g],dn=downOf93(y);
     if(bk){const tot=Object.keys(B93()).length;
-      return `<li class="info b93"><span class="ic">🌱</span><span><b>다시 씩씩해졌어요</b> · ${bk.n>1?bk.n+'일 만에 ':''}첫 걸음${rr?' · 오늘은 하나만 하는 날':''} <span class="tiny muted">복귀 ${tot}번째</span></span></li>`}
+      return `<li class="info rw93"><span class="ic">🌱</span><span><b>다시 씩씩해졌어요</b> · ${bk.n>1?bk.n+'일 만에 ':''}첫 걸음${rr?' · 오늘은 하나만 하는 날':''} <span class="tiny muted">복귀 ${tot}번째</span></span></li>`}
     if(!rr&&!dn)return '';
     const lab={rest:'쉬었어요',low:'힘든 날이었어요',gap:'기록이 없었어요'};
     const sh={rest:'쉼',low:'힘든 날',gap:'비운 날'};
     const path=dn?`<span class="p93" aria-label="다시 오르는 길"><i>✓ 어제 ${sh[dn]}</i><i>▸ 오늘 첫 걸음</i><i>🌱 복귀</i></span>`:'';
     const bonus=dn&&recoveryActive()?` · 복귀하면 경험치 ×${(C.recovery||{}).mult||1.5}`:'';
     if(rr){const k=rr.keep&&TASKS[rr.keep],n=rr.moved.length;
-      return `<li class="info b93"><span class="ic">☝</span><span>${k?`오늘은 <b>${esc(k.title)}</b> 하나만`:'<b>오늘은 쉬는 날</b>'}${n?` · 나머지 ${n}개는 내일로`:''} <button type="button" class="chipbtn" data-undo93="${g}">되돌리기</button>${path?'<br>'+path:''}</span></li>`}
-    return `<li class="info b93"><span class="ic">🌱</span><span><b>다시 오르는 길</b> · 어제는 ${lab[dn]}. 오늘은 작은 걸음 하나면 돼요${bonus}<br>${path} <button type="button" class="chipbtn" data-open93="1">☝ 오늘은 하나만</button></span></li>`;
+      return `<li class="info rw93"><span class="ic">☝</span><span>${k?`오늘은 <b>${esc(k.title)}</b> 하나만`:'<b>오늘은 쉬는 날</b>'}${n?` · 나머지 ${n}개는 내일로`:''} <button type="button" class="chipbtn" data-undo93="${g}">되돌리기</button>${path?'<br>'+path:''}</span></li>`}
+    return `<li class="info rw93"><span class="ic">🌱</span><span><b>다시 오르는 길</b> · 어제는 ${lab[dn]}. 오늘은 작은 걸음 하나면 돼요${bonus}<br>${path} <button type="button" class="chipbtn" data-open93="1">☝ 오늘은 하나만</button></span></li>`;
   }
   function row93(){
     const ul=document.getElementById('alerts');if(!ul)return;
-    ul.querySelectorAll('.b93').forEach(x=>x.remove());
+    ul.querySelectorAll('.rw93').forEach(x=>x.remove());
     if(typeof ready!=='undefined'&&!ready)return;
     const h=rowHTML93();if(!h)return;
     const only=ul.children.length===1&&/특별한 경보가 없어요/.test(ul.textContent);

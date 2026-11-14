@@ -21,11 +21,13 @@ with sync_playwright() as pw:
         ids=J(pg,SEED);pg.wait_for_timeout(500)
         tag=f'[{W}] '
         # ---- 1. 다시 오르는 길 줄 (어제 비움)
-        t=pg.evaluate("()=>{const r=document.querySelector('#alerts .b93');return r?r.innerText:null}")
+        t=pg.evaluate("()=>{const r=document.querySelector('#alerts .rw93');return r?r.innerText:null}")
         ok(t and '다시 오르는 길' in t and '비운 날' in t,tag+'경보판 맨 위에 다시 오르는 길(어제 비운 날)',t)
-        ok(J(pg,"document.querySelector('#alerts li:first-child').classList.contains('b93')"),tag+'그 줄이 맨 위')
+        ok(J(pg,"document.querySelector('#alerts li:first-child').classList.contains('rw93')"),tag+'그 줄이 맨 위')
+        # v9.9b: 경보판 줄이 서로 겹치지 않음(.b93 시간표 블록 CSS가 새던 것 — position:absolute)
+        ok(J(pg,"(()=>{const L=[...document.querySelectorAll('#alerts li')].map(l=>[getComputedStyle(l).position,l.getBoundingClientRect()]);return L.length>0&&L.every(([p])=>p==='static')&&L.every((x,i)=>i===0||x[1].top>=L[i-1][1].bottom-1)})()"),tag+'경보판 줄이 겹치지 않음')
         # ---- 2. 오늘은 하나만: 실제 단추 → 창 → 고르기 → 정하기
-        pg.click('#alerts .b93 [data-open93]');pg.wait_for_timeout(400)
+        pg.click('#alerts .rw93 [data-open93]');pg.wait_for_timeout(400)
         rd=pg.evaluate("()=>[...document.querySelectorAll('#sheetC input[name=k93]')].map(r=>({v:r.value,c:r.checked}))")
         vs=[r['v'] for r in rd]
         ok(all(ids[i] in vs for i in 'abce') and ids['d'] not in vs and '' in vs,tag+'후보에 한 번짜리·반복이 있고 시각 있는 일정은 빠지고 하나도 안 남기기가 있음',len(rd))
@@ -45,20 +47,20 @@ with sync_playwright() as pw:
         ok(s['mv']==[1,1,0],tag+'사정상 옮김으로 셈(moved72)',s['mv'])
         ok(s['e']['skip'] and s['e']['due'],tag+'반복 할 일은 오늘 건너뛰기(다음 차례로)')
         ok(s['rec'] and s['keep'],tag+'오늘 기록 C.rest93 저장')
-        t=pg.evaluate("()=>{const r=document.querySelector('#alerts .b93');return r?r.innerText:null}")
+        t=pg.evaluate("()=>{const r=document.querySelector('#alerts .rw93');return r?r.innerText:null}")
         ok(t and '큰일' not in t and '작은 일 둘' in t and '하나만' in t,tag+'경보판이 오늘은 하나만 줄로 바뀜',t)
         # ---- 3. 되돌리기 (경보판 단추)
-        pg.click('#alerts .b93 [data-undo93]');pg.wait_for_timeout(600)
+        pg.click('#alerts .rw93 [data-undo93]');pg.wait_for_timeout(600)
         s=pg.evaluate("""(ids)=>{const td=midKey68(),T=i=>TASKS[ids[i]];
           return {a:T('a').due===td,c:T('c').due===td,mv:[T('a').moved72||0,T('c').moved72||0],e:(T('e').skip61||[]).length,edue:T('e').due,rec:!!(C.rest93&&C.rest93[dateKey()])}}""",ids)
         ok(s['a'] and s['c'] and s['mv']==[0,0] and s['e']==0 and not s['rec'],tag+'되돌리면 날짜·건너뛰기·기록 모두 원래대로',s)
-        t=pg.evaluate("()=>{const r=document.querySelector('#alerts .b93');return r?r.innerText:null}")
+        t=pg.evaluate("()=>{const r=document.querySelector('#alerts .rw93');return r?r.innerText:null}")
         ok(t and '다시 오르는 길' in t,tag+'되돌린 뒤 다시 오르는 길 줄로 돌아옴')
         # ---- 4. 복귀: 오늘 첫 좋은 기록
         pg.evaluate("(ids)=>{const t=TASKS[ids.b];completeTask(t);render()}",ids);pg.wait_for_timeout(900)
         bk=J(pg,"C.back93&&C.back93[dateKey()]")
         ok(bk and bk['n']==2 and bk['from']=='gap',tag+'첫 걸음 → 복귀 표시(2일 비운 뒤)',bk)
-        t=pg.evaluate("()=>{const r=document.querySelector('#alerts .b93');return r?r.innerText:null}")
+        t=pg.evaluate("()=>{const r=document.querySelector('#alerts .rw93');return r?r.innerText:null}")
         ok(t and '다시 씩씩해졌어요' in t and '2일 만에' in t and '복귀 1번째' in t,tag+'경보판이 복귀 줄로 바뀜',t)
         ok(J(pg,"(DAYS[dateKey()].entries||[]).some(e=>e.back93===2)"),tag+'기록에 복귀 표시(back93)')
         # 두 번째 기록은 복귀를 또 만들지 않음
@@ -75,7 +77,7 @@ with sync_playwright() as pw:
         ok(r['before'] is False and r['after'] is True,tag+'쉬어 간 다음 날은 복귀 보너스 켜짐(원래는 꺼짐)',r)
         pg.evaluate("()=>{const y=addDays(dateKey(),-1);DAYS[y]=normDay(y,{});DAYS[y].entries=[{id:'t93y',kind:'act',type:'good',name:'어제',xp:5,cond:0,gold:0,t:'09:00'}];C.recovery=C.recovery||{};C.__thr=C.recovery.threshold;C.recovery.threshold=999;delete C.back93[dateKey()];location.hash='#home';render()}")
         pg.wait_for_timeout(500)
-        t=pg.evaluate("()=>{const r=document.querySelector('#alerts .b93');return r?r.innerText:null}")
+        t=pg.evaluate("()=>{const r=document.querySelector('#alerts .rw93');return r?r.innerText:null}")
         ok(t and '힘든 날' in t and '복귀하면 경험치' in t,tag+'컨디션 낮았던 다음 날: 힘든 날 + 복귀 보너스 안내',t)
         pg.evaluate("()=>{C.recovery.threshold=C.__thr;delete C.__thr}")
         # ---- 6. 🍬 지쳤어요에서 같은 단추
