@@ -35,12 +35,14 @@ def run_t(pg,W):
     ok(s['sun']['slack']==0,f'[{W}] 일요일에 1번 남으면 0일',s['sun'])
     # 3) 점 7개 + 위 줄
     J(pg,"location.hash='cal'");pg.wait_for_timeout(1500);notoast(pg)
-    w=J(pg,"""(()=>{const e=document.querySelector('.wk91 .k99');if(!e)return null;return {n:e.querySelectorAll('.d99').length,txt:e.textContent,aria:(e.querySelector('.dd99')||{}).getAttribute&&e.querySelector('.dd99').getAttribute('aria-label')}})()""")
+    w=J(pg,"""(()=>{const e=document.querySelector('.wk91 .k105[data-wk105]:not(.all)');if(!e)return null;return {n:e.querySelectorAll('.d99').length,txt:e.textContent,aria:(e.querySelector('.dd99')||{}).getAttribute&&e.querySelector('.dd99').getAttribute('aria-label')}})()""")
     ok(w is not None,f'[{W}] 위 줄에 주 N회 칩(k99)이 있음')
     if w:
         ok(w['n']==7,f'[{W}] 점이 7개',w['n'])
         ok('4/5' in w['txt'],f'[{W}] n/N 그대로 보임',w['txt'])
-        ok('남음' in w['txt'],f'[{W}] 남은 횟수·쉬어도 되는 날 글자가 보임(색만 X)',w['txt'])
+        J(pg,"document.querySelector('.wk91 .k105[data-wk105]:not(.all)').click()");pg.wait_for_timeout(400)
+        st=J(pg,"(document.querySelector('.w105c')||{}).innerText||''")
+        ok('남은' in st and '쉬어도' in st or '쉬는 날 없이' in st,f'[{W}] 칩을 누르면 남은 횟수·쉬는 날이 글자로 보임(색만 X)',st[:120]);J(pg,"closeSheet()")
         ok('●' in w['txt'] and '◐' in w['txt'],f'[{W}] ● 한 날 · ◐ 10분만 한 날이 글자로 구분됨',w['txt'])
         ok(w['aria'] and '10분만' in w['aria'],f'[{W}] 점 줄에 읽어 주는 설명(aria-label)',w['aria'])
     # 4) 내일 짜기 맨 위 줄 경보(여유 0일)
@@ -80,11 +82,11 @@ def run_t(pg,W):
     ok(not nb,f'[{W}] 꼬리표 안 켠 할 일엔 🤝 없음')
     # 위 줄 🤝 n회
     J(pg,"location.hash='tasks'");pg.wait_for_timeout(300);J(pg,"location.hash='cal'");pg.wait_for_timeout(1300)
-    hw=J(pg,"(()=>{return [...document.querySelectorAll('.wk91 .k99')].map(e=>e.textContent).join('|')})()")
+    hw=J(pg,"(()=>{return [...document.querySelectorAll('.wk91 .k105[data-wk105]:not(.all)')].map(e=>e.textContent).join('|')})()")
     ok('🤝' in hw,f'[{W}] 위 줄에 🤝 n회',hw)
     # 같은 카드로 이은 주 N회 할 일은 위 줄에 한 칩으로 합쳐짐
     g=J(pg,"""(()=>{const a=TASKS[__mk(5)],b=newTask({title:"'하나 그리고 둘'",rep:{f:'x',n:3},due:null});b.rep={f:'x',n:3};b.aid=a.aid;b.due=a.due;saveTask(b);a.title='시나리오 쓰기 합침시험';saveTask(a);render();return 1})()""");pg.wait_for_timeout(900)
-    g2=J(pg,"""(()=>{const c=[...document.querySelectorAll('.wk91 .k99')];return {n:c.length,txt:c.map(e=>e.textContent).join('|')}})()""")
+    g2=J(pg,"""(()=>{const c=[...document.querySelectorAll('.wk91 .k105[data-wk105]:not(.all)')];return {n:c.length,txt:c.map(e=>e.title+e.textContent).join('|')}})()""")
     ok(g2['n']==1,f'[{W}] 같은 카드(시나리오 쓰기·하나 그리고 둘)는 위 줄에 한 칩',g2)
     ok("합침시험" in g2['txt'] and "하나 그리고 둘" in g2['txt'] and ' + ' in g2['txt'],f'[{W}] 칩 이름이 두 할 일을 + 로 같이 보여 줌',g2['txt'])
     # 메뉴 항목

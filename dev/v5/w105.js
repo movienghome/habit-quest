@@ -98,7 +98,7 @@ dndEnd=(function(prev){return function(x,y){
     const cur=ws===weekStart(td);
     const chips=G.map(g=>{const t=g.t,n=wkCnt91(t,ws),N=g.N,fin=n>=N;let warn='';
       if(cur&&!fin){const s=slack99(t,from99(t,td),N);if(s.slack<=0)warn=`<i class="w99" title="쉬는 날 없이 해야 채워요">⚠</i>`}
-      return `<button type="button" class="c91 k105${fin?' ok':''}" data-wk105="${t.id}" title="${esc(g.title)} · 이번 주 ${n}/${N}회 · 눌러서 기록·횟수 보기">${fin?'✓':'🔁'} ${esc(short(g.title))} <b>${n}/${N}</b>${dots99(t,ws,td)}${warn}</button>`}).join('');
+      return `<button type="button" class="c91 k105${fin?' ok':''}" data-wk105="${t.id}" title="${esc(g.title)} · 이번 주 ${n}/${N}회 · 눌러서 기록·횟수 보기">${fin?'✓':'🔁'} ${esc(short(g.title))} <b>${n}/${N}</b>${dots99(t,ws,td)}${warn}${g.ts.some(x=>x.hg99)?`<i title="이번 주 하그둘 만남">🤝${hgCnt99(t,ws)}</i>`:''}</button>`}).join('');
     const d=document.createElement('div');d.className='wk91 one105';
     d.innerHTML=`<button type="button" class="c91 k105 all" data-wk105="*" title="주 N회 할 일 전체 보기·고치기">🔁 ${G.length}</button>`+chips;
     m.parentElement.insertBefore(d,m)};
@@ -116,7 +116,7 @@ dndEnd=(function(prev){return function(x,y){
       return `<div class="jarcard w105c"><div class="row" style="gap:6px;align-items:center;flex-wrap:wrap"><b>${esc(g.title)}</b><span class="small">${weekRangeLabel105(ws)} · <b>${n}/${N}</b>회</span><span style="flex:1"></span>
         <label class="small row" style="gap:4px">목표 <button type="button" class="ib" data-wk105n="${t.id}:-1" aria-label="횟수 줄이기">−</button><b>${+t.rep.n||3}</b><button type="button" class="ib" data-wk105n="${t.id}:1" aria-label="횟수 늘리기">＋</button>회/주</label></div>
         <div class="small" style="margin:4px 0">${dots99(t,ws,td)} ${s?(s.slack>0?`남은 ${s.need}번 · 쉬어도 되는 날 ${s.slack}일`:`⚠ 남은 ${s.need}번 · 쉬는 날 없이`):(n>=N?'✓ 이번 주 목표를 채웠어요':'')}</div>
-        <div class="tiny muted">셈에 들어간 기록 ${R.length}개 (한 주 = ${fmtD(ws)}(월) ~ ${fmtD(addDays(ws,6))}(일))</div>
+        ${g.ts.some(x=>x.hg99)?`<div class="tiny">🤝 이번 주 하그둘 만남 ${hgCnt99(t,ws)}회</div>`:''}<div class="tiny muted">셈에 들어간 기록 ${R.length}개 (한 주 = ${fmtD(ws)}(월) ~ ${fmtD(addDays(ws,6))}(일))</div>
         ${R.length?`<ul class="l105">${R.map(r=>`<li>${fmtD(r.k)}(${wdOf(r.k)}) ${esc(r.e.t||'')} · ${esc((r.e.name||'').slice(0,30))} <span class="muted">· ${esc(r.why)}</span></li>`).join('')}</ul>`:'<div class="tiny muted">아직 기록이 없어요</div>'}
         ${ks.length?`<div class="tiny">정한 날: ${ks.map(k=>fmtD(k)+'('+wdOf(k)+')').join(', ')}</div>`:''}
         <div class="row" style="gap:6px;margin-top:6px;flex-wrap:wrap">${g.ts.map(x=>`<button type="button" class="btn sm ghost" data-wk105open="${x.id}">✎ ${esc(g.ts.length>1?x.title:'할 일 열기')}</button>`).join('')}</div></div>`};
@@ -137,3 +137,25 @@ dndEnd=(function(prev){return function(x,y){
         if(Date.now()-(+x.dset72||0)<10*60e3){x.keep105=x.due;saveTask(x);return}
         x.due=nx;x.wc={w:addDays(ws,7),n:0};saveTask(x)})}catch(e){console.error(e)}finally{HEAL91=0}};
 })();
+
+/* ===== v10.6 ④ 기록하기 '오늘 한 일' 위 요약을 누르면 최근 7일 한 줄씩 (HP·XP·용기) ===== */
+(function(){
+  const keyOf=d=>{for(const k in DAYS)if(DAYS[k]===d)return k;return midKey68()};
+  const one=k=>{const d=DAYS[k];if(!d)return {hp:'—',xp:0,br:0,n:0};let xp=0,br=0;(d.entries||[]).forEach(e=>{xp+=+e.xp||0;try{if(typeof brv100==='function'?brv100(e):isBrave(e))br++}catch(x){}});
+    let hp='—';try{hp=overallOf(d)}catch(x){}return {hp,xp,br,n:(d.entries||[]).length}};
+  const body=k0=>{let h='';for(let i=0;i<7;i++){const k=addDays(k0,-i),o=one(k);
+    h+=`<div class="r105"><span>${fmtD(k)}(${wdOf(k)})</span><span>❤ <b class="num">${o.hp}</b></span><span>✨ <b class="num">${o.xp>0?'+':''}${o.xp}</b></span><span>⚡ <b class="num">${o.br}</b></span><span class="tiny muted">기록 ${o.n}</span></div>`}return h};
+  renderLog=(function(prev){return function(){const r=prev.apply(this,arguments);try{
+    const w=document.querySelector('.ds104w'),s=w&&w.querySelector('.ds104');if(!s)return r;
+    s.setAttribute('role','button');s.setAttribute('tabindex','0');s.title='눌러서 최근 7일 보기';s.style.cursor='pointer';
+    if(ui.ds105){const d=document.createElement('div');d.className='w7105';d.innerHTML=`<div class="tiny muted">최근 7일 (요약을 다시 누르면 접혀요)</div>`+body(keyOf(curDay()));w.appendChild(d)}}catch(e){console.error(e)}return r}})(renderLog);
+  document.addEventListener('click',e=>{const s=e.target.closest('.ds104w .ds104');if(!s||e.target.closest('.w7105'))return;ui.ds105=!ui.ds105;renderLog()},true);
+  document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.ds104w .ds104')){e.preventDefault();ui.ds105=!ui.ds105;renderLog()}},true);
+})();
+
+F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
+  ['⬅ 내일 짜기 뒤로·옵션','내일 짜기','상세·끼니 창에서 ← 뒤로 · 시간 고정·루틴·끼니도 옮김 · 선택한 일 ⋯ 옵션(날짜 다시 정하기·하루 뒤로·건너뛰기·안 하기, 되돌리기)'],
+  ['🕒 지난 날 끝낸 일 옮기기·체크 해제','할 일 화면 캘린더','끝낸 블록·칩을 누르면 메뉴(할 일 열기·체크 해제·시각 바꾸기). PC는 끌어서 같은 날 시각 옮김'],
+  ['↶ 관리로 넣기 되돌리기','🧽 관리 창','최근에 관리로 넣은 것 목록에서 되돌리기 · 루틴 카드에 ⏭ 오늘은 건너뛰기 단추'],
+  ['🔁 주 N회 줄 한 줄·관리 창','캘린더 위 줄','한 줄 옆으로 밀기 · 칩을 누르면 이번 주 기록·횟수 고치기 · 주는 월요일부터 · 직접 정한 날은 다음 주로 안 밀림'],
+  ['📅 7일 요약','기록하기','하루 요약을 누르면 최근 7일 HP·XP·용기 한 줄씩']])}})(F67);

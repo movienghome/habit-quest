@@ -63,9 +63,10 @@ def run_done(pg,W):
     for nm in ['끝낸반복','끝낸한번']:
         el=pg.query_selector(f'#calMain .cchip.done:has-text("{nm}")')
         if not el: ok(False,f'[{W}] {nm} 칩 없음');continue
-        el.click();pg.wait_for_timeout(500)
+        el.click();pg.wait_for_timeout(400)
+        J(pg,"(()=>{const b=document.querySelector('#m61 button[data-m61=\"0\"]');b&&b.click()})()");pg.wait_for_timeout(500)   # v10.6: 누르면 메뉴(할 일 열기·체크 해제·시각 바꾸기)
         c=J(pg,"sheetCtx&&sheetCtx.task?TASKS[sheetCtx.task].title:''")
-        ok(c==nm,f'[{W}] {nm} 칩 누르면 상세가 열림',c)
+        ok(c==nm,f'[{W}] {nm} 칩 누르면 메뉴 → 할 일 열기로 상세가 열림',c)
         J(pg,"closeSheet()")
     # 1일 보기 끝낸 블록
     J(pg,"(()=>{C.ui.cal.mode='1day';ui.calAnchor=dateKey();ui.calSel=dateKey();save('config');render()})()");pg.wait_for_timeout(1000)

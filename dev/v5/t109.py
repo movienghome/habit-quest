@@ -167,6 +167,15 @@ def run_wk(pg,W):
     ok(J(pg,"TASKS[window.__c].due===addDays(weekStart(midKey68()),6)"),f'[{W}] 내가 정한 일요일은 다음 주로 안 밀림',J(pg,"TASKS[window.__c].due"))
     notoast(pg)
 
+def run_log(pg,W):
+    pg.wait_for_timeout(700);notoast(pg)
+    J(pg,"location.hash='log'");pg.wait_for_timeout(600)
+    ok(J(pg,"!!document.querySelector('.ds104w .ds104')"),f'[{W}] 하루 요약이 있음')
+    J(pg,"document.querySelector('.ds104w .ds104').click()");pg.wait_for_timeout(300)
+    ok(J(pg,"document.querySelectorAll('.w7105 .r105').length===7"),f'[{W}] 눌러서 7일 줄',J(pg,"document.querySelectorAll('.w7105 .r105').length"))
+    J(pg,"document.querySelector('.ds104w .ds104').click()");pg.wait_for_timeout(300)
+    ok(J(pg,"!document.querySelector('.w7105')"),f'[{W}] 다시 누르면 접힘')
+
 with sync_playwright() as pw:
     for W,(w,h,pre) in {'PC2':(1400,900,'')}.items():
         pass
@@ -186,6 +195,10 @@ with sync_playwright() as pw:
             import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
         b.close();b,pg=run(pw,W=w,H=h,pre=pre)
         try:run_wk(pg,W)
+        except Exception as e:
+            import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
+        b.close();b,pg=run(pw,W=w,H=h,pre=pre)
+        try:run_log(pg,W)
         except Exception as e:
             import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
         print('errs',errs[:5]);errs.clear()

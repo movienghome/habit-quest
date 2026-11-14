@@ -7,3 +7,6 @@
 .wk91 .c91.k105.all{font-weight:700}
 .l105{margin:4px 0;padding-left:18px;font-size:12px}
 .w105c{margin-bottom:8px}
+.w7105{margin-top:6px;border-top:1px dashed var(--line);padding-top:4px}
+.w7105 .r105{display:flex;gap:10px;align-items:baseline;font-size:12px;padding:2px 0;flex-wrap:wrap}
+.w7105 .r105 span:first-child{min-width:74px}
