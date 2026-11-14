@@ -1,0 +1,23 @@
+/* v10.2 (F1 조각 1): 막대 구조 분리 — 아침 에너지 숨김 · 진척 칩 · 영역 종류 칸 · HP 비교 */
+body.f101 #energy{display:none}
+.pg101{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.pc101{display:inline-flex;align-items:baseline;gap:4px;border:1px solid var(--line);background:transparent;color:inherit;border-radius:999px;padding:2px 8px;font:inherit;font-size:11.5px;cursor:pointer;max-width:100%;white-space:nowrap}
+.pc101 small{color:var(--muted);font-size:10.5px}
+.pc101.st101{border-style:dashed}
+.pc101.st101 .st{color:var(--bad);font-weight:600}
+.ak101p{margin-top:14px;padding-top:10px;border-top:1px dashed var(--line)}
+.ak101p h3{margin:0 0 4px;font-size:15px}
+.ak101r{display:grid;grid-template-columns:minmax(52px,auto) 1fr;gap:4px 8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.ak101r:first-of-type{border-top:0}
+.sg101{display:flex;flex-wrap:wrap;gap:4px}
+.cd101{grid-column:1/-1;padding-left:4px}
+.cd101 summary{cursor:pointer}
+.cd101[open]{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.cd101[open] summary{flex-basis:100%}
+.cd101 .chipbtn{font-size:11.5px}
+.cd101 .chipbtn[aria-pressed="false"]{border-style:dashed}
+.kv101{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:10px 0 6px;font-size:13px}
+.kv101 input{width:58px;margin:0 4px}
+.cm101{display:grid;grid-template-columns:auto auto auto auto;gap:2px 10px;justify-content:start;align-items:baseline;margin-top:8px;font-size:13px}
+.ak101i{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:8px}
+select.c95.hk101{max-width:100%}

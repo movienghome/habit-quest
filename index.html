@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v10.1</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v10.2</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2239,6 +2239,30 @@ body.dragging .dh97,body.dragging #actGroups .ghead[data-drag]{user-select:none;
 .pf100 .l100{list-style:none;margin:6px 0 0;padding:0}
 .pf100 .r100{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;padding:3px 0;border-top:1px dashed var(--line,#8884);font-size:13px}
 .pf100 .r100:first-child{border-top:0}
+
+/* v10.2 (F1 조각 1): 막대 구조 분리 — 아침 에너지 숨김 · 진척 칩 · 영역 종류 칸 · HP 비교 */
+body.f101 #energy{display:none}
+.pg101{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.pc101{display:inline-flex;align-items:baseline;gap:4px;border:1px solid var(--line);background:transparent;color:inherit;border-radius:999px;padding:2px 8px;font:inherit;font-size:11.5px;cursor:pointer;max-width:100%;white-space:nowrap}
+.pc101 small{color:var(--muted);font-size:10.5px}
+.pc101.st101{border-style:dashed}
+.pc101.st101 .st{color:var(--bad);font-weight:600}
+.ak101p{margin-top:14px;padding-top:10px;border-top:1px dashed var(--line)}
+.ak101p h3{margin:0 0 4px;font-size:15px}
+.ak101r{display:grid;grid-template-columns:minmax(52px,auto) 1fr;gap:4px 8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.ak101r:first-of-type{border-top:0}
+.sg101{display:flex;flex-wrap:wrap;gap:4px}
+.cd101{grid-column:1/-1;padding-left:4px}
+.cd101 summary{cursor:pointer}
+.cd101[open]{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.cd101[open] summary{flex-basis:100%}
+.cd101 .chipbtn{font-size:11.5px}
+.cd101 .chipbtn[aria-pressed="false"]{border-style:dashed}
+.kv101{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:10px 0 6px;font-size:13px}
+.kv101 input{width:58px;margin:0 4px}
+.cm101{display:grid;grid-template-columns:auto auto auto auto;gap:2px 10px;justify-content:start;align-items:baseline;margin-top:8px;font-size:13px}
+.ak101i{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:8px}
+select.c95.hk101{max-width:100%}
 </style>
 
 <header class="hud" id="hud">
@@ -2875,7 +2899,7 @@ function foodDelta(day){
   return out;
 }
 function areaValues(day){
-  const base=C.energyBase[(day.energy||3)-1]??60, out={};
+  const base=hpBase101(day), out={};
   C.areas.forEach(a=>out[a.id]=base);
   (day.entries||[]).forEach(e=>{if(e.cond&&out[e.area]!=null)out[e.area]+=e.cond});
   const fd=foodDelta(day);for(const k in fd)if(out[k]!=null)out[k]+=fd[k];
@@ -2884,7 +2908,7 @@ function areaValues(day){
   return out;
 }
 function overallOf(day){
-  const base=C.energyBase[(day.energy||3)-1]??60;let v=base;const ids=new Set(C.areas.map(a=>a.id));
+  const base=hpBase101(day);let v=base;const ids=new Set(C.areas.map(a=>a.id));
   (day.entries||[]).forEach(e=>{if(e.cond&&ids.has(e.area))v+=e.cond});
   const fd=foodDelta(day);for(const k in fd)if(ids.has(k))v+=fd[k];
   neglectList(day.date).forEach(n=>{if(ids.has(n.t.area))v-=n.pen});
@@ -3216,7 +3240,7 @@ function render(){
   syncDailies(C);
   if(tasksReady&&(C.focusMig||C.limenMig)&&Object.keys(TASKS).length)mig53Tasks();
   const day=today(),av=areaValues(day),ov=overallOf(day),L=levelOf(P.xp),items=unlocked(L.lv),mood=moodKey(ov),bt=braveTitle();
-  const base=C.energyBase[(day.energy||3)-1]??60;
+  const base=hpBase101(day);
   // HUD
   $('hudAv').innerHTML=spriteSVG(C.avatar.kind,mood,C.avatar.outfit,{level:1,fx:false});
   $('hudName').textContent=C.avatar.name||'이름 없음';$('hudTitle').textContent='⚔️ '+bt.name;
@@ -3620,7 +3644,7 @@ function renderGuide(){
     ${acc('card56','🆕 v5.6 · 홈 좌우 배치 · 할 일 묶음 · 타이머 방식','지금 버전',`<ul><li><b>홈 배치</b>: ✎ 홈 배치에서 칸을 왼쪽·오른쪽 단 어디든 끌어 놓거나 ⇢/⇠로 옮겨요. 한쪽이 길어도 다른 쪽으로 넘어가지 않아요. 폰은 한 줄이라 순서만.</li><li><b>📦 할 일 묶음</b>: 할 일 상세의 '묶인 할 일'에 추가하거나, 여러 개 고른 뒤 '📦 묶기'. 묶여도 각자 따로인 할 일이라 하나만 끝내도 그 점수를 받아요. 목록에서 ▾로 접고 펴요.</li><li>체크리스트(점수 없는 작은 단계)는 그대로 있고, ↗로 묶인 할 일로 바꿀 수 있어요.</li><li><b>할 일 상세</b>: 위에 칩 한 줄(📅 날짜 · 🃏 카드 · # 태그 · 🧭 영역 · 📂 목록 · ⚑ · 크기 · ⏱). 눌러야 그 칸이 펼쳐져요.</li><li><b>타이머 방식</b>: ⏱ 시간 안에 = 목표 안에 끝내면 보너스(샤워처럼 서두를 필요 없는 것). ⚡ 빠를수록 = 빨리 끝낼수록 보너스가 커요(설거지·청소·답장 몰아 하기처럼 해치우고 싶은 것). 카드·할 일에 정해두고, 시작하고 2분 안에는 목표 분과 방식을 그때그때 바꿔요.</li></ul>`)}
     ${acc('card55','🆕 v5.5 · 행동/습관 편집이 쉬워졌어요','지금 버전',`<ul><li>이름이 <b>행동 카드</b>로 바뀌었어요. 점수는 카드에만 있고, 그중 <b>반복</b>(☑ 매일·요일·📌)이 있는 카드를 <b>↻ 습관</b>이라고 불러요.</li><li>편집 → 행동/습관: 줄마다 <b>☑</b>(매일 켜고 끄기)·<b>🗑</b>(지우기, 되돌리기 가능). <b>☐ 여러 개 고르기</b>로 한꺼번에 지우기·영역 바꾸기·매일 켜기.</li><li><b>👁 보이는 칸</b>에서 영역·XP·골드·컨디션·반복·용기·30일 횟수를 켜고 꺼요. 점수는 아이콘이 붙은 칩으로 보여요.</li><li>행동 카드 편집은 <b>완료</b>를 눌러야 저장돼요. ×나 바깥을 누르면 취소 (알림의 '되살리기'로 살릴 수 있어요).</li><li>할 일 상세는 반대로 <b>자동 저장</b>. 바깥을 누르면 저장하고 닫혀요 (PC 오른쪽 상세도).</li><li>루틴: 단계마다 연결된 카드 점수가 들어가고, 루틴 자체는 <b>완주 보너스</b>만 줘요.</li><li>할 일 스마트 목록: ⏰ 지난 것 · ⏳ 마감 3일 안 · ⚔️ 용기 · ☠ 미룬 것 · ↻ 습관 연결. 할 일 화면 왼쪽 목록을 끌어서 순서를 바꿔요.</li></ul>`)}
     ${acc('card54','🃏 행동 카드 하나로 · 점수 뜻 · ⚔️ 용기','v5.4',`<ul><li>점수는 <b>행동 카드</b>에만 있어요. 일퀘·도파민 메뉴·할 일 연결·루틴은 그 카드를 보여주는 방법일 뿐이에요.</li><li><b>일퀘</b> = '☑ 매일'로 둔 행동 카드. 따로 점수가 없고, 다 하면 상자를 열어요. 몸무게·채소처럼 다른 기록과 이어진 카드(🔗)도 있어요.</li><li><b>XP</b> = 성장(레벨) · <b>골드</b> = 현실의 돈·자원 · <b>컨디션</b> = 지금의 몸과 마음. 상관없는 칸은 0이에요.</li><li>새 습관은 <b>프리셋</b>(가벼움·보통·힘듦·작품·일…)을 눌러 바로 채워요. 프리셋 숫자는 습관 탭 맨 아래에서 바꿔요.</li><li>행동 카드에 <b>⚔️ 용기 표시</b>를 붙이면 할 때마다 용기 점수·용기 구슬이 함께 쌓여요.</li><li>HP(컨디션)는 영역 평균이 아니라 <b>모두 더한 값</b>이에요. 점수 낼 일이 적은 영역(경제 등)이 깎아먹지 않아요.</li></ul>`)}
-    ${acc('flow','컨디션 (HP)','오늘의 몸·마음 상태',`<ul><li>아침 에너지(지금 ${C.energyBase.join(' / ')})가 모든 영역의 시작점이에요.</li><li>영역(${C.areas.map(a=>esc(a.name)).join('·')})끼리는 서로 메꿔지지 않아요. 운동을 많이 해도 과음의 몸 페널티는 그대로예요.</li><li><b>HP = 아침 시작점 + 오늘 모든 컨디션 변화의 합</b>(영역 평균이 아니에요). 매일 아침 새로 시작하고, 어제의 선택은 '아침에 느끼는 몸'으로 들어와요. 영역 막대는 균형을 보는 용도예요. 아바타 표정: 75↑ 활기, 55↑ 괜찮음, 35↑ 지침, 그 아래 바닥.</li><li>"지금 하면 좋은 것"은 방치 경보, 이번 주 용기, 남은 일퀘, 가장 낮은 영역을 보고 골라줘요.</li></ul>`)}
+    ${acc('flow','컨디션 (HP)','오늘의 몸·마음 상태',`<ul><li>${on101()?`HP는 하루 시작값(${hpb101()})에서 시작해 🔋 컨디션 영역의 변화만 더해요(📈 진척·💰 경제는 따로). 지난 날은 아침 에너지(${C.energyBase.join(' / ')})가 시작점이었어요.`:`아침 에너지(지금 ${C.energyBase.join(' / ')})가 모든 영역의 시작점이에요.`}</li><li>영역(${C.areas.map(a=>esc(a.name)).join('·')})끼리는 서로 메꿔지지 않아요. 운동을 많이 해도 과음의 몸 페널티는 그대로예요.</li><li><b>HP = 아침 시작점 + 오늘 모든 컨디션 변화의 합</b>(영역 평균이 아니에요). 매일 아침 새로 시작하고, 어제의 선택은 '아침에 느끼는 몸'으로 들어와요. 영역 막대는 균형을 보는 용도예요. 아바타 표정: 75↑ 활기, 55↑ 괜찮음, 35↑ 지침, 그 아래 바닥.</li><li>"지금 하면 좋은 것"은 방치 경보, 이번 주 용기, 남은 일퀘, 가장 낮은 영역을 보고 골라줘요.</li></ul>`)}
     ${acc('brave','⚔️ 용기','가장 큰 보상',`<ul><li>두렵거나 망설여졌는데 해본 것. 결과와 상관없이 기록해요.</li><li>XP·골드를 가장 많이 주고, '용기 점수'(1~3)가 쌓여 칭호가 올라가요: ${BRAVE_TITLES.map(t=>t[0]+'점 '+t[1]).slice(1,6).join(', ')}…</li><li>구슬이 연결돼 있으면 '시도했다' 병에 자동으로 들어가요.</li><li>목록에 없으면 크기(작은·보통·큰)를 고르고 직접 적어요.</li><li>이번 주 목표(${C.weekly.courage}번)를 채우면 +💰${C.weekly.courageGold}. 7일 넘게 용기가 없으면 방치 경보가 떠요.</li></ul>`)}
     ${acc('quest','일퀘와 상자','매일 숙제',`<ul><li>매일 새로 시작해요. 행동·식사·몸무게와 연결된 건 자동으로 체크돼요.</li><li>전부 끝내면 상자 +💰${C.dailyBonus.gold}·XP +${C.dailyBonus.xp}. 연속 3·7·30일은 업적.</li><li>못 끝낸 날 벌점은 없어요. 연속 기록만 끊겨요.</li></ul>`)}
     ${acc('week','주간 보스와 용기 목표','월요일마다 새로',`<ul><li>매주 보스가 나와요 (HP ${C.weekly.bossHp}). 그 주에 얻은 XP가 그대로 데미지예요.</li><li>나쁜 행동은 보스를 회복시켜요 (깎인 컨디션만큼).</li><li>쓰러뜨리면 +💰${C.weekly.bossGold}·XP +${C.weekly.bossXp}.</li></ul>`)}
@@ -3671,7 +3695,7 @@ function infoFor(key){
   case 'brave':case 'title':return{kind:'용기 점수·칭호',t:'⚔️ '+bt.name,b:`<p>용기를 기록할 때마다 점수가 쌓여 칭호가 올라가요. 점수는 줄지 않아요.</p><div class="brk"><span>지금 점수</span><span>${P.courage}</span>${bt.next?`<span>다음 칭호 '${esc(bt.next[1])}'</span><span>${bt.next[0]-P.courage}점 남음</span>`:''}</div><ul>${BRAVE_TITLES.map(x=>`<li${x[1]===bt.name?' style="font-weight:700;color:var(--brave)"':''}>${x[0]}점 · ${x[1]}</li>`).join('')}</ul>`+btns(gd('brave'),goE('courage','용기 목록 편집'))};
   case 'bravebtn':return{kind:'용기',t:'⚔️ 용기 냈어요',b:`<p>두렵거나 망설여졌는데 해본 걸 기록하는 곳이에요. 결과와 상관없어요. 누르면 기록 탭의 용기 칸으로 가요.</p><p class="small muted">아래 문구는 날마다 바뀌어요. 편집 → 용기에서 문구를 바꾸거나 더할 수 있어요.</p>`+btns(goE('courage','문구·목록 편집'))};
   case 'energy':return{kind:'오늘의 시작점',t:'🌅 아침 에너지',b:`<p>아침에 몸이 어떤지 골라요. 모든 영역이 이 값에서 시작해요.</p><div class="brk">${ENERGY_LBL.map((l,i)=>`<span>${l}</span><span>${C.energyBase[i]}</span>`).join('')}</div>`+btns(goE('rules','시작점 바꾸기'))};
-  case 'area':{const ar=C.areas.find(x=>x.id===a);if(!ar)return null;const base=C.energyBase[(day.energy||3)-1]??60;let acts=0;(day.entries||[]).forEach(e=>{if(e.area===a&&e.cond)acts+=e.cond});const fd=foodDelta(day)[a]||0,ng=neglectList(day.date).filter(n=>n.t.area===a);
+  case 'area':{const ar=C.areas.find(x=>x.id===a);if(!ar)return null;const base=hpBase101(day);let acts=0;(day.entries||[]).forEach(e=>{if(e.area===a&&e.cond)acts+=e.cond});const fd=foodDelta(day)[a]||0,ng=neglectList(day.date).filter(n=>n.t.area===a);
     const up=C.actions.filter(x=>x.type==='good'&&x.area===a).map(x=>x.name),dn=C.actions.filter(x=>x.type==='bad'&&x.area===a).map(x=>x.name);
     return{kind:'컨디션 영역',t:esc(ar.name)+' 영역',b:`<p>오늘 ${esc(ar.name)} 상태예요. 다른 영역과 서로 메꿔지지 않아요.</p><div class="brk"><span>아침 시작점</span><span>${base}</span><span>행동·용기</span><span>${acts>=0?'+':''}${acts}</span><span>식사</span><span>${fd>=0?'+':''}${fd}</span>${ng.map(n=>`<span>방치: ${esc(n.t.name)} ${n.since}일</span><span>−${n.pen}</span>`).join('')}<span><b>오늘</b></span><span><b>${areaValues(day)[a]}</b></span></div>${up.length?`<p class="small"><b style="color:var(--good)">올리는 것</b> ${esc(up.join(', '))}</p>`:''}${dn.length?`<p class="small"><b style="color:var(--bad)">내리는 것</b> ${esc(dn.join(', '))}</p>`:''}`+btns(goE('areas','영역 편집'),goE('actions','행동 편집'))}}
   case 'act':{const x=C.actions.find(y=>y.id===a);if(!x)return null;const w=countAct(e=>e.aid===a,7),m=countAct(e=>e.aid===a,30),all=countAct(e=>e.aid===a);const ar=C.areas.find(y=>y.id===x.area);
@@ -9189,7 +9213,7 @@ function areasHTML66(ws){const W=areaWeek66(ws),Pw=areaWeek66(addDays(ws,-7)),T=
   const low=C.areas.filter(a=>a.id!=='money').slice().sort((a,b)=>W[a.id].xp-W[b.id].xp)[0];
   const td=dateKey(),days=[...Array(7)].map((_,i)=>addDays(ws,i));
   const hp=days.map(k=>{const d=DAYS[k];if(k>td)return `<div class="hp66"><span class="tiny muted">${wdOf(k)}</span><i style="--h:0"></i><span class="tiny muted">·</span></div>`;if(!d||!hasData(d))return `<div class="hp66"><span class="tiny muted">${wdOf(k)}</span><i style="--h:0"></i><span class="tiny muted">-</span></div>`;
-    const b=C.energyBase[(d.energy||3)-1]??60,v=overallOf(d);return `<div class="hp66" title="시작 ${b} → 끝 ${v}"><span class="tiny muted">${wdOf(k)}</span><i style="--h:${v}"><b style="--h:${b}"></b></i><span class="tiny num">${v}</span></div>`}).join('');
+    const b=hpBase101(d),v=overallOf(d);return `<div class="hp66" title="시작 ${b} → 끝 ${v}"><span class="tiny muted">${wdOf(k)}</span><i style="--h:${v}"><b style="--h:${b}"></b></i><span class="tiny num">${v}</span></div>`}).join('');
   return `<div class="panel"><div class="ptitle"><h2>🧭 영역</h2><span class="tiny muted">이번 주 XP · 지금까지 쌓은 영역 레벨</span></div>
     <div class="ar66">${C.areas.map(a=>{const w=W[a.id],p=Pw[a.id],L=levelOf(T[a.id]||0),d=w.xp-p.xp;
       return `<div class="arr66"><span class="nm">${esc(a.name)} <span class="tiny muted">Lv.${L.lv}</span></span><span class="bar66"><i style="width:${Math.round(w.xp/mx*100)}%"></i></span><span class="num small">✨${w.xp}</span><span class="tiny muted">${w.n}번 · ${d===0?'지난주와 같음':(d>0?'▲':'▼')+Math.abs(d)}${a.id==='money'&&(w.sv||w.sp)?` · ₩ 아낌 ${w.sv.toLocaleString()} / 씀 ${w.sp.toLocaleString()}`:''}</span></div>`}).join('')}</div>
@@ -9433,9 +9457,9 @@ function dayCount67(day){const K=K67().KIND,o={};(day.entries||[]).forEach(e=>{c
   return {o,food,list:Object.entries(o).sort((a,b)=>b[1]-a[1]).map(([k,n])=>[K[k]||k,n])}}
 function daySum67(){const el=$('logDaySum');if(!el)return;const day=curDay(),c=dayCount67(day),n=(day.entries||[]).length,hp=overallOf(day);
   el.innerHTML=`<button type="button" class="linkbtn ds67" data-ds67="1" title="무엇을 셌는지 보기">HP ${hp} · 기록 ${n}개${c.food?` · 식사 칸 ${c.food}`:''} ⓘ</button>`}
-function daySheet67(){const day=curDay(),c=dayCount67(day),hp=overallOf(day),base=C.energyBase[(day.energy||3)-1]??60;sheetCtx={ds67:1};
+function daySheet67(){const day=curDay(),c=dayCount67(day),hp=overallOf(day),base=hpBase101(day);sheetCtx={ds67:1};
   openSheet(`<div class="sh"><h3>${ui.off?'그날':'오늘'} 숫자 풀이</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
-  <p class="small" style="margin:0"><b>HP ${hp}</b> = 아침 시작점 ${base}(${ENERGY_LBL[(day.energy||3)-1]||'보통'}) + 오늘 컨디션 변화의 합. 영역 평균이 아니에요.</p>
+  <p class="small" style="margin:0"><b>HP ${hp}</b> = 아침 시작점 ${base}(${hpLbl101(day)}) + 오늘 컨디션 변화의 합. 영역 평균이 아니에요.</p>
   <p class="small" style="margin:10px 0 4px"><b>기록 ${(day.entries||[]).length}개</b> = '오늘 한 일'에 적힌 줄 수예요. 종류별로:</p>
   <div class="brk68">${c.list.map(([k,n])=>`<span class="chipbtn"><span>${esc(k)}</span> <b class="num">${n}</b></span>`).join(' ')||'<span class="muted">아직 없어요</span>'}</div>
   <p class="tiny muted" style="margin:8px 0 0">일퀘 상자·보스 처치·흐름 보너스 같은 보너스 줄도 하나로 세요. 식사 칸(채소·나쁜 식사 등)은 줄이 아니라 칸의 숫자라서 따로 셌어요${c.food?`(오늘 ${c.food}칸)`:''}. 몸무게는 줄 하나예요.</p>`)}
@@ -9520,7 +9544,7 @@ function areasHTML66(ws){const W=areaWeek66(ws),Pw=areaWeek66(addDays(ws,-7)),T=
     if(k>td||!d||!hasData(d))return `<div class="hp66">${lb}<i style="--h:0"></i><span class="tiny muted">${k>td?'·':'-'}</span></div>`;
     if(isMoney){let sv=0,sp=0;(d.entries||[]).forEach(e=>{if(e.amt){if(e.type==='bad')sp+=+e.amt;else sv+=+e.amt}});const net=sv-sp,M=Math.max(1,...days.map(x=>{let a=0,b=0;((DAYS[x]||{}).entries||[]).forEach(e=>{if(e.amt){if(e.type==='bad')b+=+e.amt;else a+=+e.amt}});return Math.max(a,b)}));
       return `<div class="hp66 m67" title="아낌 ₩${sv.toLocaleString()} · 씀 ₩${sp.toLocaleString()}">${lb}<i class="mm67"><b class="sv" style="--h:${Math.round(sv/M*100)}"></b><b class="sp" style="--h:${Math.round(sp/M*100)}"></b></i><span class="tiny num">${net===0?'0':(net>0?'+':'−')+Math.abs(Math.round(net/1000))+'k'}</span></div>`}
-    const b=C.energyBase[(d.energy||3)-1]??60,v=selA?areaValues(d)[selA.id]:overallOf(d);
+    const b=hpBase101(d),v=selA?areaValues(d)[selA.id]:overallOf(d);
     return `<div class="hp66" title="시작 ${b} → 끝 ${v}">${lb}<i style="--h:${v}"><b style="--h:${b}"></b></i><span class="tiny num">${v}</span></div>`};
   const tabs=`<div class="row hp67t" style="gap:4px;flex-wrap:wrap">${[['all','종합']].concat(C.areas.filter(a=>a.id!=='money').map(a=>[a.id,a.name])).concat([['₩','₩ 경제']]).map(([k,l])=>`<button type="button" class="chipbtn" data-hp67="${k}" aria-pressed="${sel===k}">${esc(l)}</button>`).join('')}</div>`;
   const tl=isMoney?'':trendLine67(selA?selA.id:null);
@@ -9727,7 +9751,7 @@ function aiText67(){const o=aiOpt67(),ks=o.n==='all'?Object.keys(DAYS).sort():la
   ln.push(`앱 규칙: XP=성장, 골드=현실의 돈·자원, HP(컨디션 0~100)=아침 시작점(그날 몸 느낌) + 그날 컨디션 변화의 합. 하루는 ${C.dayStart}시에 바뀜. ⚔️=용기(내게 무서운 일). ▼=끊고 싶은 행동.`);
   if(K.hp){const ds=ks.filter(k=>DAYS[k]&&hasData(DAYS[k]));ln.push(`요즘 지표(최근 2주 가중 평균 HP): ${trend67(dateKey())??'-'} · 기록한 날 ${ds.length}일`)}
   ks.forEach(k=>{const d=DAYS[k];if(!d||!hasData(d)&&!(d.j67||[]).length)return;const p=[];
-    if(K.hp)p.push(`HP ${C.energyBase[(d.energy||3)-1]??60}→${overallOf(d)} (아침: ${ENERGY_LBL[(d.energy||3)-1]||'보통'})`);
+    if(K.hp)p.push(`HP ${hpBase101(d)}→${overallOf(d)} (아침: ${hpLbl101(d)})`);
     if(K.weight&&d.weight)p.push(`몸무게 ${d.weight}kg`);
     if(K.food){const f=C.food.map(f=>{const v=+((d.food||{})[f.id]||0);return v?`${f.name} ${f.kind==='check'?'✓':v}`:''}).filter(Boolean);if(f.length)p.push('식사: '+f.join(', '))}
     const es=(d.entries||[]).filter(e=>{if(isBrave(e))return K.brave;if(e.type==='bad')return K.bad;if(e.kind==='act'||e.kind==='free'||e.kind==='happy')return K.act;if(e.kind==='task'||e.kind==='routine')return K.task;if(e.kind==='jar')return K.jar;return false});
@@ -14442,6 +14466,151 @@ function proof100(){
 }
 reviewHTML59=(function(prev){return function(){const h=prev.apply(this,arguments);
   try{const p=proof100(),m='<div class="panel"><div class="ptitle"><h2>왼쪽 메뉴</h2>',i=h.lastIndexOf(m);return i>=0?h.slice(0,i)+p+h.slice(i):h+p}catch(e){console.error(e);return h}}})(reviewHTML59);
+
+/* ---- v10.2 (w101.js): F1 조각 1 — 막대 구조 분리 + 아침 에너지 빼기 ----
+   설계: TODO 'F 결정'의 F1·F1 보충(11/11·11/14). 영역·카드는 안 바꿈(마이그레이션 금지) — 위에 '종류' 층만 얹음.
+   ① 영역 종류 C.ak101={영역id:'c'|'p'|'m'} — 🔋 컨디션(HP에 넣음) / 📈 진척 / 💰 경제(둘 다 HP에 안 넣음).
+      처음 켜질 때 이름으로 짐작해 한 번 적어 둠(akGuess101). 나중에 생긴 영역은 짐작값.
+   ② 카드 예외 a.hk101 = ''(영역 따라) | 'c'(HP에 넣기) | 'x'(HP에서 빼기). 카드 편집 칩 줄(.r95)·편집 → 컨디션 영역에서.
+   ③ HP = 하루 시작값 C.hpb101(아침 에너지 대신, 기본 = 옛 '보통' 값) + HP에 넣는 컨디션 변화(inHP101) + 그 영역 식사·방치.
+      ⚔ 용기 기록은 영역과 관계없이 넣음(C.bv101!==0) — 분리하다 용기 보상이 슬며시 줄지 않게.
+   ④ 지난 날은 옛 규칙 그대로: C.f1from101(처음 켜진 게임 날) 앞의 날은 아침 에너지 + 모든 영역. C.f101off=1이면 옛 규칙으로.
+      빌드(patch54)가 'C.energyBase[(x.energy||3)-1]??60' → hpBase101(x), 'ENERGY_LBL[(x.energy||3)-1]||'보통'' → hpLbl101(x)로 바꿈.
+   ⑤ 홈: 영역 막대는 🔋 영역만, 📈·💰 영역은 한 줄 칩(영역 레벨 · 이번 주 ✨ · ⏸ n일 멈춤, 누르면 영역 여정). 아침 에너지 단추 숨김(body.f101).
+   ⑥ HP 설명 창: 새 규칙 설명 + 최근 7일 '옛 규칙 → 새 규칙' 비교. 영역 설명 창: 종류 칩. */
+let F101=0; // 0 보통 · 1 옛 규칙 강제 · 2 새 규칙 강제(비교용)
+const AK101={c:['🔋','컨디션'],p:['📈','진척'],m:['💰','경제']};
+function on101(){return !!(C&&C.f1from101)&&C.f101off!==1}
+function new101(day){if(F101===1)return false;if(F101===2)return true;return on101()&&!!day&&String(day.date||'')>=C.f1from101}
+function hpb101(){const v=C.hpb101;return (v!=null&&v!==''&&isFinite(+v))?clamp(Math.round(+v),0,100):((C.energyBase||[])[2]??60)}
+function hpBase101(day){return new101(day)?hpb101():((C.energyBase||[])[((day&&day.energy)||3)-1]??60)}
+function hpLbl101(day){return new101(day)?'하루 시작값':(ENERGY_LBL[((day&&day.energy)||3)-1]||'보통')}
+function akGuess101(a){const id=a.id,n=a.name||'';
+  if(id==='money'||/경제|돈|재정|금전|수입|지출/.test(n))return 'm';
+  if(['body','mind','life'].includes(id)||/몸|마음|생활|건강|휴식|수면|관계|집|살림|돌봄/.test(n))return 'c';
+  return 'p'}
+function akOf101(id){const m=C.ak101||{};if(m[id]&&AK101[m[id]])return m[id];const a=C.areas.find(x=>x.id===id);return a?akGuess101(a):'c'}
+function hkOf101(a){return a&&(a.hk101==='c'||a.hk101==='x')?a.hk101:''}
+function brv101(e){return e&&(e.kind==='courage'||!!e.brave)}
+function inHP101(e){
+  if(!e||!e.cond||!e.area||!C.areas.some(a=>a.id===e.area))return false;
+  if(C.bv101!==0&&brv101(e))return true;
+  const a=e.aid&&C.actions.find(x=>x.id===e.aid),h=hkOf101(a);
+  if(h==='c')return true;if(h==='x')return false;
+  return akOf101(e.area)==='c'}
+function hpParts101(day){ // 새 규칙으로 나눠 보기(설명 창·시험용)
+  const base=hpb101();let inn=0,out=0;
+  (day.entries||[]).forEach(e=>{if(!e.cond||!e.area)return;if(inHP101(e))inn+=e.cond;else if(C.areas.some(a=>a.id===e.area))out+=e.cond});
+  return{base,inn,out}}
+{
+  const ov0=overallOf;
+  overallOf=function(day){
+    if(!new101(day))return ov0.apply(this,arguments);
+    let v=hpb101();
+    (day.entries||[]).forEach(e=>{if(inHP101(e))v+=e.cond});
+    const fd=foodDelta(day);for(const k in fd)if(C.areas.some(a=>a.id===k)&&akOf101(k)==='c')v+=fd[k];
+    neglectList(day.date).forEach(n=>{const ar=n.t&&n.t.area;if(ar&&C.areas.some(a=>a.id===ar)&&akOf101(ar)==='c')v-=n.pen});
+    return clamp(Math.round(v),0,100)};
+  window.ovOld101=d=>{const p=F101;F101=1;try{return overallOf(d)}finally{F101=p}};
+  window.ovNew101=d=>{const p=F101;F101=2;try{return overallOf(d)}finally{F101=p}};
+}
+// 처음 켜기: 서버 설정이 온 뒤 한 번(게임 날 기준). 종류 짐작을 적어 둬서 영역 이름을 바꿔도 안 흔들리게.
+function init101(){
+  if(!ready72()||!C||C.f1from101)return;
+  C.f1from101=gk76();C.ak101=Object.assign({},C.ak101||{});
+  C.areas.forEach(a=>{if(!AK101[C.ak101[a.id]])C.ak101[a.id]=akGuess101(a)});
+  if(C.hpb101==null)C.hpb101=(C.energyBase||[])[2]??60;
+  save('config');
+  const ps=C.areas.filter(a=>akOf101(a.id)!=='c').map(a=>a.name);
+  setTimeout(()=>toast(`HP가 이제 🔋 컨디션 영역만 더해요${ps.length?` (${ps.join('·')}은 진척·경제로 따로)`:''}. 아침 에너지 대신 시작값 ${hpb101()} · 편집 → 컨디션 영역에서 바꿔요`,7000),1800)}
+render=(function(prev){return function(){
+  try{init101()}catch(e){console.error(e)}
+  const r=prev.apply(this,arguments);
+  try{document.body.classList.toggle('f101',on101())}catch(e){}
+  return r}})(render);
+
+/* ---- 홈: 🔋 영역만 막대, 📈·💰는 칩 한 줄 ---- */
+function lastAct101(){const o={},ks=Object.keys(DAYS).sort().reverse(),want=new Set(C.areas.filter(a=>akOf101(a.id)!=='c').map(a=>a.id));
+  for(const k of ks){if(!want.size)break;((DAYS[k]||{}).entries||[]).forEach(e=>{if(want.has(e.area)&&e.type!=='bad'&&(e.xp||0)>0){o[e.area]=k;want.delete(e.area)}})}
+  return o}
+function stall101(){const v=+C.stall101;return v>0?Math.round(v):7}
+function prog101(){
+  const ps=C.areas.filter(a=>akOf101(a.id)!=='c');if(!ps.length)return '';
+  const W=areaWeek66(weekStart(gk76())),T=areaTotal66(),la=lastAct101(),td=gk76(),sn=stall101();
+  return `<div class="pg101" role="group" aria-label="진척·경제 영역 (HP와 따로)">${ps.map(a=>{const k=akOf101(a.id),L=aLevel67(T[a.id]||0),wx=(W[a.id]||{}).xp||0,lk=la[a.id],gap=lk?diffDays(td,lk):null,st=gap!=null&&gap>=sn;
+    return `<button type="button" class="pc101${st?' st101':''}" data-aj67="${esc(a.id)}" title="${esc(a.name)} · ${AK101[k][1]} — HP에 안 들어가요. 누르면 영역 여정${lk?` · 마지막 ${fmtD(lk)}`:''}">${AK101[k][0]} ${esc(a.name)} <b class="num">Lv.${L.lv}</b> <small class="num">${wx?'이번 주 ✨'+wx:'이번 주 —'}</small>${st?` <small class="st">⏸ ${gap}일째</small>`:''}</button>`}).join('')}</div>`}
+renderHome=(function(prev){return function(day,av){const r=prev.apply(this,arguments);
+  try{if(on101()){const el=$('areaBars');if(el){
+    const base=hpBase101(day),neg=neglectList(day.date);
+    el.innerHTML=C.areas.filter(a=>akOf101(a.id)==='c').map(a=>{const v=av[a.id],pen=neg.filter(n=>n.t.area===a.id).reduce((s,n)=>s+n.pen,0);return `<div class="area" data-info="area:${a.id}"><b>${esc(a.name)}</b><div class="track"><div class="fill ${v<35?'low':''}" style="width:${v}%"></div><div class="base" style="left:${base}%"></div></div><span class="num" title="${pen?'방치 페널티 −'+pen:''}">${v}${pen?'⚠':''}</span></div>`}).join('')+prog101()}}}catch(e){console.error(e)}
+  return r}})(renderHome);
+
+/* ---- 편집 → 컨디션 영역: 종류 · 카드 예외 · 시작값 ---- */
+const O101={};
+document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.dataset&&d.dataset.cd101!=null)O101[d.dataset.cd101]=d.open},true);
+function akPanel101(){
+  const seg=a=>{const k=akOf101(a.id);return `<span class="sg101" role="group" aria-label="${esc(a.name)} 종류">${Object.keys(AK101).map(x=>`<button type="button" class="chipbtn" data-ak101="${esc(a.id)}:${x}" aria-pressed="${k===x}">${AK101[x][0]} ${AK101[x][1]}</button>`).join('')}</span>`};
+  const cards=a=>{const k=akOf101(a.id),cs=C.actions.filter(x=>x.area===a.id&&+x.cond&&!x.link);
+    const show=k==='c'?cs.filter(x=>hkOf101(x)==='x'):cs;if(!show.length)return '';
+    const nin=show.filter(x=>hkOf101(x)==='c'||(hkOf101(x)===''&&k==='c')||(C.bv101!==0&&x.brave)).length;
+    return `<details class="cd101" data-cd101="${esc(a.id)}"${O101[a.id]?' open':''}><summary class="tiny muted">${k==='c'?`HP에서 뺀 카드 ${show.length}개`:`컨디션 점수가 있는 카드 ${show.length}개 · HP에 넣은 것 ${nin}개`}</summary>${show.map(x=>{const h=hkOf101(x),inn=h==='c'||(h===''&&k==='c'),bv=C.bv101!==0&&x.brave;
+      return `<button type="button" class="chipbtn" data-hk101="${esc(x.id)}" aria-pressed="${inn||bv}" ${bv?'disabled title="⚔ 용기 카드는 영역과 관계없이 HP에 들어가요"':''}>${inn||bv?'🔋 넣음':'○ 뺌'} · ${esc(x.name)} <small class="num">${x.cond>0?'+':'−'}${Math.abs(+x.cond)}</small>${bv?' ⚔':''}</button>`}).join('')}</details>`};
+  return `<div class="ak101p">
+    <h3>🔋 HP에 넣을 영역 <span class="tiny muted">(F1 · ${on101()?esc(fmtD(C.f1from101))+'부터 새 규칙':'옛 규칙 사용 중'})</span></h3>
+    <p class="help">HP(컨디션)는 <b>🔋 컨디션 영역</b>(오늘 내 상태)만 더해요. <b>📈 진척</b>(쌓여 가는 것)·<b>💰 경제</b>(골드가 맡음)는 HP에 안 들어가고, 홈 막대 아래 칩으로 영역 레벨·이번 주 ✨·멈춘 날을 보여요. 영역 이름·카드 점수는 그대로예요. 지난 날 HP는 옛 규칙 그대로예요.</p>
+    ${C.areas.map(a=>`<div class="ak101r"><b>${esc(a.name)}</b>${seg(a)}${cards(a)}</div>`).join('')}
+    <div class="kv101">
+      <label>🌅 하루 시작 HP <input type="number" min="0" max="100" data-f101="hpb101" value="${hpb101()}"></label>
+      <label>⏸ 진척 멈춤 표시 <input type="number" min="1" max="60" data-f101="stall101" value="${stall101()}">일</label>
+      <button type="button" class="chipbtn" data-bv101="1" aria-pressed="${C.bv101!==0}">${C.bv101!==0?'⚔ 용기 기록은 영역과 관계없이 HP에 넣음':'⚔ 용기 기록도 영역 따라'}</button>
+    </div>
+    <p class="tiny muted">아침 에너지 단추는 숨겼어요 — 몸 출발점(수면·야식·음주)은 다음 조각에서 시작값을 대신해요. <button type="button" class="linkbtn" data-f101off="1">${on101()?'옛 규칙(아침 에너지 + 모든 영역)으로 돌아가기':(C.f1from101?'새 규칙 다시 켜기':'')}</button></p>
+  </div>`}
+renderEdit=(function(prev){return function(){const r=prev.apply(this,arguments);
+  try{if(ui.edit==='areas'){const b=$('editBody');if(b&&!b.querySelector('.ak101p')){const ae=document.activeElement;if(!(ae&&b.contains(ae)&&ae.matches('input,select,textarea')))b.insertAdjacentHTML('beforeend',akPanel101())}}}catch(e){console.error(e)}
+  return r}})(renderEdit);
+function reAk101(){render();if(ui.edit==='areas'){const b=$('editBody'),p=b&&b.querySelector('.ak101p');if(p){p.outerHTML=akPanel101()}}}
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-ak101],[data-hk101],[data-bv101],[data-f101off]');if(!t)return;
+  e.preventDefault();e.stopPropagation();if(!ready)return;
+  if(t.dataset.ak101){const [id,k]=t.dataset.ak101.split(':');if(!AK101[k])return;C.ak101=Object.assign({},C.ak101||{},{[id]:k});save('config');reAk101();
+    const a=C.areas.find(x=>x.id===id);toast(`${a?a.name:''} → ${AK101[k][0]} ${AK101[k][1]}${k==='c'?' · HP에 넣어요':' · HP에 안 넣어요'}`);return}
+  if(t.dataset.hk101){const a=C.actions.find(x=>x.id===t.dataset.hk101);if(!a)return;const k=akOf101(a.area),inn=hkOf101(a)==='c'||(hkOf101(a)===''&&k==='c');
+    a.hk101=inn?(k==='c'?'x':''):(k==='c'?'':'c');save('config');reAk101();toast(`${a.name} · ${inn?'HP에서 뺌':'HP에 넣음'}`);return}
+  if(t.dataset.bv101){C.bv101=C.bv101===0?1:0;save('config');reAk101();return}
+  if(t.dataset.f101off){if(!C.f1from101)return;C.f101off=on101()?1:0;save('config');reAk101();toast(on101()?'새 규칙으로 HP를 셈':'옛 규칙(아침 에너지 + 모든 영역)으로 HP를 셈');return}
+},true);
+document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||!t.dataset.f101)return;e.stopPropagation();
+  const k=t.dataset.f101,v=Math.round(+t.value);if(!isFinite(v))return;
+  if(k==='hpb101')C.hpb101=clamp(v,0,100);else if(k==='stall101')C.stall101=clamp(v,1,60);else return;
+  save('config');t.blur();reAk101()},true);
+
+/* ---- 카드 편집 창: 칩 줄에 🔋 HP 칩 ---- */
+openActionEditor=(function(prev){return function(id){const r=prev.apply(this,arguments);
+  try{if(on101()){const sc=$('sheetC'),row=sc&&sc.querySelector('.r95'),a=C.actions.find(x=>x.id===id);
+    if(row&&a&&!row.querySelector('[data-ae="hk101"]')){const dk=akOf101(a.area)==='c',s=document.createElement('select');
+      s.dataset.ae='hk101';s.className='c95 hk101'+(hkOf101(a)?'':' def95');s.setAttribute('aria-label','HP(컨디션)에 넣을지');
+      s.innerHTML=`<option value="">🔋 영역 따라 (${dk?'HP에 넣음':'HP에 안 넣음'})</option><option value="c">🔋 HP에 넣기</option><option value="x">○ HP에서 빼기</option>`;
+      s.value=hkOf101(a);const ar=row.querySelector('[data-ae="area"]');if(ar)ar.after(s);else row.appendChild(s)}}}catch(e){console.error(e)}
+  return r}})(openActionEditor);
+document.addEventListener('change',e=>{const t=e.target;if(t&&t.matches&&t.matches('select.hk101'))t.classList.toggle('def95',!t.value)});
+
+/* ---- 설명 창: HP(새 규칙 + 옛/새 비교) · 영역(종류 칩) ---- */
+function cmp101(){const td=gk76(),rows=[];
+  for(let i=0;i<7;i++){const k=addDays(td,-i),d=DAYS[k];if(!d||!hasData(d))continue;rows.push(`<span>${esc(wdOf(k))} ${esc(fmtD(k))}</span><span class="num">${ovOld101(d)}</span><span>→</span><b class="num">${ovNew101(d)}</b>`)}
+  return rows.length?`<div class="cm101"><span class="tiny muted">날짜</span><span class="tiny muted">옛 규칙</span><span></span><span class="tiny muted">새 규칙</span>${rows.join('')}</div><p class="tiny muted" style="margin:4px 0 0">옛 규칙 = 그날 고른 아침 에너지 + 모든 영역 · 새 규칙 = 시작값 ${hpb101()} + 🔋 영역(+⚔ 용기)만. 지난 날 홈·통계에는 옛 값이 그대로 남아요 — 여기서만 비교해요.</p>`:''}
+infoFor=(function(prev){return function(k){const r=prev.apply(this,arguments);
+  try{if(r&&on101()&&k==='hp'){const day=curDay(),p=hpParts101(day),cs=C.areas.filter(a=>akOf101(a.id)==='c').map(a=>esc(a.name)).join('·'),ps=C.areas.filter(a=>akOf101(a.id)!=='c').map(a=>esc(a.name)).join('·');
+      const top=`<p>오늘 몸·마음 상태(0~100). <b>새 규칙</b>: 하루 시작값 <b>${p.base}</b> + 🔋 컨디션 영역(${cs||'—'})의 컨디션 변화${C.bv101!==0?' + ⚔ 용기 기록':''} + 그 영역 식사·방치. ${ps?`<b>${ps}</b>은 HP에 안 들어가요(진척·경제).`:''}</p><p class="small">오늘: 시작 ${p.base} · 들어간 변화 ${p.inn>=0?'+':'−'}${Math.abs(p.inn)}${p.out?` · 안 들어간 변화 ${p.out>0?'+':'−'}${Math.abs(p.out)}`:''}</p>`;
+      r.b=r.b.replace(/^<p>[\s\S]*?<\/p>/,top)+cmp101()+`<p class="tiny"><button type="button" class="linkbtn" data-goedit101="areas">영역 종류 바꾸기</button></p>`}
+    if(r&&on101()&&k&&k.startsWith('area:')){const id=k.slice(5),a=C.areas.find(x=>x.id===id);if(a){const kk=akOf101(id);
+      r.b+=`<div class="ak101i"><span class="tiny muted">이 영역은</span> ${Object.keys(AK101).map(x=>`<button type="button" class="chipbtn" data-ak101="${esc(id)}:${x}" aria-pressed="${kk===x}">${AK101[x][0]} ${AK101[x][1]}</button>`).join('')}<span class="tiny muted">${kk==='c'?'· HP에 들어가요':'· HP에 안 들어가요'}</span></div>`}}}catch(e){console.error(e)}
+  return r}})(infoFor);
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-goedit101]');if(!b)return;e.preventDefault();e.stopPropagation();
+  ui.edit=b.dataset.goedit101;try{closeSheet()}catch(x){}location.hash='edit';setTimeout(()=>{try{renderEdit()}catch(x){}},50)},true);
+
+F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
+  ['🔋 HP에 넣을 영역(컨디션·진척·경제)','편집 → 컨디션 영역 · 영역 막대 누르기','HP는 🔋 컨디션 영역(몸·마음·생활 등)만 더해요. 📈 진척·💰 경제 영역은 HP와 따로, 홈 막대 아래 칩으로 영역 레벨·이번 주 ✨·멈춘 날을 보여요. 카드마다 예외(HP에 넣기/빼기)는 카드 편집 칩 줄의 🔋 칩. 아침 에너지 대신 하루 시작값을 써요.',()=>{ui.edit='areas';location.hash='edit'},'컨디션 영역 HP 진척 경제 아침 에너지 시작값 F1'],
+  ['📈 진척 칩(멈춤 표시)','홈 전투 카드 영역 막대 아래','진척·경제 영역의 영역 레벨과 이번 주 ✨를 보여 주고, 정한 날(기본 7일) 넘게 안 하면 ⏸ n일째가 붙어요. 줄지 않아요 — HP를 깎지 않고 알려만 줘요.',()=>{location.hash='home'},'진척 멈춤 경보 원정 작품 성장']])}})(F67);
 
 route();boot();
 </script>
