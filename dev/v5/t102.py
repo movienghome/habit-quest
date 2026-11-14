@@ -43,7 +43,7 @@ with sync_playwright() as pw:
     ok('다시 추천(mealEnsure77)이 지운 카드를 안 넣음', len(added)==0, added)
     ok('코스 다시 추천 뒤에도 4개 없음', not any(n in ev(pg,"()=>C.actions.map(a=>a.name)") for n in ['영화 리뷰·인터뷰 영상 한 편만','시트콤·예능 한 편 (끝나면 끄기)','화면 없이 천천히 먹기']))
     # (e) 화면에서 지우면 묘비가 생기고, 되돌리면 묘비도 사라짐
-    ev(pg,"()=>{window.__a=C.actions.find(a=>a.id==='g1')||C.actions.find(a=>a.type==='good'&&!/^(dq|dm77)/.test(a.id));window.__id=window.__a.id;delActs([window.__id])}")
+    ev(pg,"()=>{window.__a=C.actions.find(a=>a.id==='g1')||C.actions.find(a=>a.type==='good'&&!/^(dq|dm77)/.test(a.id));window.__id=window.__a.id;delActs([window.__id]);const g=document.querySelector('[data-d104=go]');if(g)g.click()}")   # v10.5: 이어진 할 일이 있으면 창 → 연결 풀고 지우기
     ok('지우면 묘비', ev(pg,"()=>C.delA.some(t=>t.id===window.__id)"))
     ok('지운 카드 없음', ev(pg,"()=>!C.actions.some(a=>a.id===window.__id)"))
     pg.evaluate("()=>{const b=[...document.querySelectorAll('#toast button')].find(x=>/되돌리기/.test(x.innerText));if(b)b.click()}")

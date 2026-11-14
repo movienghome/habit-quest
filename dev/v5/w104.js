@@ -92,9 +92,12 @@ addEventListener('change',e=>{const s=e.target;if(!s||!s.dataset||!s.dataset.d10
 addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-d104]');if(!b)return;e.preventDefault();e.stopPropagation();
   const ids=DEL104.ids;if(b.dataset.d104==='cancel'||!ids){DEL104.ids=null;closeSheet();return}
   const sel=document.querySelector('[data-d104sel]'),to=sel&&sel.value||'',L=linked104(ids);
+  const prev=L.map(t=>[t.id,t.aid]),tn=to?(C.actions.find(a=>a.id===to)||{}).name:'';
   L.forEach(t=>{if(to)t.aid=to;else delete t.aid;saveTask(t)});
-  DEL104.ids=null;closeSheet();DEL104.ok=1;delActs(ids);
-  setTimeout(()=>{try{toast(to?`이어진 일 ${L.length}개를 '${(C.actions.find(a=>a.id===to)||{}).name}'로 옮기고 지웠어요`:`이어진 일 ${L.length}개의 카드 연결을 풀고 지웠어요`)}catch(x){}},400)},true);
+  DEL104.ids=null;closeSheet();DEL104.ok=1;
+  // 지우기 알림(되돌리기)에 '이어진 일'도 같이 — 되돌리면 할 일 연결도 원래대로
+  const _ta=toastAct;toastAct=function(m,l,f){return _ta.call(this,m+(to?` · 이어진 일 ${L.length}개 → '${tn}'`:` · 이어진 일 ${L.length}개 연결 풀림`),l,()=>{prev.forEach(([id,a])=>{const t=TASKS[id];if(t){t.aid=a;saveTask(t)}});f&&f()})};
+  try{delActs(ids)}finally{toastAct=_ta}},true);
 
 /* ---- ⑤ 기록하기 '…한 일' 칸 맨 위 하루 요약 ---- */
 function daySum104(day){if(!day)return '';const es=day.entries||[];

@@ -63,6 +63,11 @@ def run_main(pg,W):
     pg.click('#sheetC [data-d104=go]');pg.wait_for_timeout(400)
     r=J(pg,"[TASKS[window.__t108].aid,C.actions.some(a=>a.id==='x108'),document.getElementById('sheet').hidden]")
     ok(r==['dp5eh8',False,True],f'[{W}] 옮기고 지움',r)
+    tt=J(pg,"document.getElementById('toast').innerText")
+    ok('이어진 일 1개' in tt and '되돌리기' in tt,f'[{W}] 지우기 알림에 이어진 일 · 되돌리기',tt)
+    J(pg,"document.querySelector('#toast .tbtn55').click()");pg.wait_for_timeout(300)
+    r=J(pg,"[TASKS[window.__t108].aid,C.actions.some(a=>a.id==='x108')]")
+    ok(r==['x108',True],f'[{W}] 되돌리면 카드와 할 일 연결 모두 원래대로',r)
     r=J(pg,"(()=>{C.actions.push({id:'y108',name:'혼자 카드',type:'good',area:'body',cond:3,xp:2,gold:0,marble:''});delActs(['y108']);return [C.actions.some(a=>a.id==='y108'),document.getElementById('sheet').hidden]})()")
     ok(r==[False,True],f'[{W}] 이어진 일이 없으면 바로 지움(창 없음)',r)
     r=J(pg,"""(()=>{C.actions.push({id:'z108',name:'풀 카드',type:'good',area:'body',cond:3,xp:2,gold:0,marble:''});const t=newTask({title:'풀 일',list:'inbox'});t.aid='z108';saveTask(t);
