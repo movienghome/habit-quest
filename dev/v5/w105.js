@@ -62,3 +62,23 @@ dndEnd=(function(prev){return function(x,y){
     else if(drop.type==='allday'){if(setCt105(k0,id,''))toast(`${TASKS[id].title} · 종일 칸으로`)}
     return}
   return prev.apply(this,arguments)}})(dndEnd);
+
+/* ===== v10.6 ② 관리로 넣기 되돌리기 목록 + 루틴 '오늘은 건너뛰기' 단추 ===== */
+(function(){
+  const hist=()=>{C.careHist105=(C.careHist105||[]).filter(h=>TASKS[h.id]&&TASKS[h.id].care76&&Date.now()-h.at<30*864e5).slice(-10);return C.careHist105};
+  (function(prev){careOn77=function(t,n){try{if(t&&t.id&&!t.care76){C.careHist105=(C.careHist105||[]).filter(h=>h.id!==t.id);C.careHist105.push({id:t.id,at:Date.now(),rep:t.rep?clone(t.rep):null,due:t.due||null,time:t.time||null})}}catch(x){}return prev.apply(this,arguments)}})(careOn77);
+  (function(prev){careSheet76=function(k){prev.apply(this,arguments);try{
+    const hs=hist().slice().reverse();if(!hs.length)return;const sc=$('sheetC'),anchor=sc&&sc.querySelector('.c76o');if(!anchor)return;
+    const d=document.createElement('details');d.className='c76d';
+    d.innerHTML=`<summary>↶ 최근에 관리로 넣은 것 ${hs.length}개 <small class="muted">· 잘못 넣었으면 되돌리기</small></summary><div class="c76l">${hs.map(h=>{const t=TASKS[h.id];return `<div class="c76r"><span class="c76t"><b>${esc(t.title)}</b><small>${esc(repLabel(t.rep))}로 바뀌었어요</small></span><button type="button" class="btn sm ghost" data-ch105="${h.id}">↶ 되돌리기</button></div>`}).join('')}</div>`;
+    anchor.parentNode.insertBefore(d,anchor)}catch(x){}}})(careSheet76);
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-ch105]');if(!b)return;e.preventDefault();e.stopPropagation();
+    const id=b.dataset.ch105,h=(C.careHist105||[]).find(x=>x.id===id),t=TASKS[id];if(!h||!t){toast('이미 바뀌었어요');return}
+    const k=sheetCtx&&sheetCtx.c76;setCare76(t,false);t.rep=h.rep;t.due=h.due;if(h.time)t.time=h.time;saveTask(t);C.careHist105=C.careHist105.filter(x=>x.id!==id);save('config');render();
+    toast(`'${t.title}'을 관리에서 빼고 원래 반복(${t.rep?repLabel(t.rep):'없음'})으로 돌렸어요`);careSheet76(k)},true);
+  // 루틴 카드: 오늘 차례면 '⏭ 오늘은 건너뛰기' (폰엔 우클릭이 없어서 눈에 보이는 단추)
+  (function(prev){rtCard61=function(r){let h=prev.apply(this,arguments);try{const t=rtT(r),td=dateKey();
+    if(t&&t.due&&t.due<=td&&!(t.skip61||[]).includes(td)){const btn=`<button type="button" class="chipbtn" data-sk105="${t.id}">⏭ 오늘은 건너뛰기</button>`;let i=h.indexOf('<span class="tiny muted">다음:');if(i<0)i=h.indexOf('data-x60task="'+t.id+'"');if(i>=0){if(h[i]!=='<')i=h.lastIndexOf('<button',i);h=h.slice(0,i)+btn+h.slice(i)}}}catch(x){}return h}})(rtCard61);
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-sk105]');if(!b)return;e.preventDefault();e.stopPropagation();
+    const t=TASKS[b.dataset.sk105];if(!t)return;closeSheet();skipToday61(t)},true);
+})();

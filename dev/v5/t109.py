@@ -126,6 +126,24 @@ def run_done(pg,W):
         else:ok(False,f'[{W}] 끌 블록 없음')
     notoast(pg)
 
+def run_care(pg,W):
+    pg.wait_for_timeout(700);notoast(pg)
+    J(pg,"""(()=>{const td=midKey68();const a=newTask({title:'T109빨래',due:td,rep:{f:'d',i:7}});saveTask(a);window.__k=a.id;
+      const r=rtNew61('T109루틴',[{name:'스트레칭',min:5}]);const h=newTask({title:'T109루틴',due:td,rep:{f:'d',i:1},rid:r.id});saveTask(h);window.__h=h.id;window.__r=r.id;save('config');render()})()""")
+    # 관리로 넣기 → 되돌리기 목록
+    J(pg,"(()=>{const t=TASKS[window.__k];careOn77(t,3);save('config');render()})()")
+    J(pg,"careSheet76()");pg.wait_for_timeout(500)
+    ok(J(pg,"!!document.querySelector('[data-ch105]')"),f'[{W}] 관리 창에 되돌리기 목록')
+    J(pg,"document.querySelector('[data-ch105=\\\"'+window.__k+'\\\"]').click()");pg.wait_for_timeout(400)
+    ok(J(pg,"(()=>{const t=TASKS[window.__k];return !t.care76&&t.rep&&t.rep.i===7})()"),f'[{W}] 되돌리면 관리 해제·원래 주기(7일)')
+    closeS=J(pg,"closeSheet()")
+    # 루틴 카드 건너뛰기 단추
+    J(pg,"openRt61(window.__r)");pg.wait_for_timeout(400)
+    ok(J(pg,"!!document.querySelector('[data-sk105]')"),f'[{W}] 루틴 카드에 ⏭ 오늘은 건너뛰기')
+    J(pg,"document.querySelector('[data-sk105]').click()");pg.wait_for_timeout(400)
+    ok(J(pg,"(()=>{const t=TASKS[window.__h];return (t.skip61||[]).includes(dateKey())&&t.due>dateKey()})()"),f'[{W}] 건너뜀 → due 다음 날로',J(pg,"TASKS[window.__h].due"))
+    notoast(pg)
+
 with sync_playwright() as pw:
     for W,(w,h,pre) in {'PC2':(1400,900,'')}.items():
         pass
@@ -137,6 +155,10 @@ with sync_playwright() as pw:
             import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
         b.close();b,pg=run(pw,W=w,H=h,pre=pre)
         try:run_done(pg,W)
+        except Exception as e:
+            import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
+        b.close();b,pg=run(pw,W=w,H=h,pre=pre)
+        try:run_care(pg,W)
         except Exception as e:
             import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
         print('errs',errs[:5]);errs.clear()
