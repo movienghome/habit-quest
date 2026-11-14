@@ -1,0 +1,10 @@
+/* v10.0 (K2 시나리오 주간): 캘린더 위 줄 점 7개·여유 일수 · 내일 짜기 경보 */
+.wk91 .c91.k99{flex-wrap:wrap;overflow:visible;white-space:normal;row-gap:2px}
+.wk91 .dd99{display:inline-flex;gap:1px;font-size:12px;letter-spacing:0;line-height:1}
+.wk91 .dd99 .d99{font-style:normal;color:var(--text);min-width:11px;text-align:center}
+.wk91 .dd99 .d99.now{border-bottom:2px solid var(--text);font-weight:700}
+.wk91 .c91 i.w99{color:var(--text);font-weight:700;border:1px solid var(--text);border-radius:6px;padding:0 4px}
+.al99{margin:6px 0 4px;padding:6px 10px;border:1.5px solid var(--text);border-radius:10px;font-size:13px;line-height:1.45}
+.al99 div+div{margin-top:3px}
+.al99 small{display:block;margin-top:3px}
+[data-snack99][aria-pressed="true"]{outline:2px solid var(--text)}
