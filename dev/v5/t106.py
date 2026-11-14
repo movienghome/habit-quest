@@ -32,6 +32,7 @@ def run_t(pg,W):
     ok(cap=='75%',f'[{W}] 몸 막대에만 최대 빗금(75%)',cap)
     ok(J(pg,"document.querySelectorAll('#areaBars .cap102').length")==1,f'[{W}] 다른 막대엔 빗금 없음')
     # 몸 카드 많이 해도 75에서 멈춤, HP도 몸 몫은 75까지
+    J(pg,"C.bs102=Object.assign({},C.bs102||{},{sp:0})")   # v10.5: 잠·술 몸 시작 몫은 t108에서 시험 — 여기선 몸 최대만
     J(pg,"put106(gk76(),{kind:'act',name:'운동',area:'body',cond:30,xp:5});put106(gk76(),{kind:'act',name:'명상',area:'mind',cond:5,xp:5});render()")
     v=J(pg,"({av:areaValues(today()),hp:overallOf(today()),p:hpParts101(today())})")
     ok(v['av']['body']==75 and v['av']['mind']==65 and v['hp']==80 and v['p']['cut']==15,f'[{W}] 몸 +30 → 몸 막대 75(최대), 마음 65, HP = 75 + 5 = 80, 잘린 15',v)
