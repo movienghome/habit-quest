@@ -144,6 +144,29 @@ def run_care(pg,W):
     ok(J(pg,"(()=>{const t=TASKS[window.__h];return (t.skip61||[]).includes(dateKey())&&t.due>dateKey()})()"),f'[{W}] 건너뜀 → due 다음 날로',J(pg,"TASKS[window.__h].due"))
     notoast(pg)
 
+def run_wk(pg,W):
+    pg.wait_for_timeout(700);notoast(pg)
+    J(pg,"""(()=>{const td=midKey68(),ws=weekStart(td);
+      const a=newTask({title:'T시나',rep:{f:'x',n:3},list:'inbox'});saveTask(a);const b=newTask({title:'T시나',rep:{f:'x',n:3}});saveTask(b);
+      const c=newTask({title:'T청소',rep:{f:'x',n:2}});saveTask(c);window.__w=a.id;window.__c=c.id;
+      [1,3,5].forEach(i=>{const k=addDays(ws,i);if(k>td)return;(DAYS[k]=DAYS[k]||{entries:[]});DAYS[k].entries=DAYS[k].entries||[];DAYS[k].entries.push({kind:'task',type:'good',name:'T시나',xp:5,gold:0,tid:a.id,id:uid(),t:'10:00'})});
+      C.ui.cal.mode='3day';C.ui.cal.color='list';ui.calAnchor=td;save('config');location.hash='cal';render();renderCal()})()""")
+    pg.wait_for_timeout(600)
+    ok(J(pg,"document.querySelectorAll('.wk91').length===1"),f'[{W}] 위 줄 하나')
+    ok(J(pg,"(()=>{const r=document.querySelector('.wk91').getBoundingClientRect();return r.height<44})()"),f'[{W}] 위 줄 한 줄 높이',J(pg,"Math.round(document.querySelector('.wk91').getBoundingClientRect().height)"))
+    ok(J(pg,"!/T시나 \\+ T시나/.test(document.querySelector('.wk91').textContent)"),f'[{W}] 같은 이름 겹침 없음',J(pg,"document.querySelector('.wk91').textContent"))
+    J(pg,"document.querySelector('[data-wk105=\\\"'+window.__w+'\\\"]').click()");pg.wait_for_timeout(500)
+    ok(J(pg,"!!(sheetCtx&&sheetCtx.wk105)&&!!document.querySelector('.l105')"),f'[{W}] 칩 → 기록 목록 창',J(pg,"document.querySelector('.w105c')&&document.querySelector('.w105c').innerText.slice(0,260)"))
+    J(pg,"document.querySelector('[data-wk105n$=\":1\"]').click()");pg.wait_for_timeout(400)
+    ok(J(pg,"TASKS[window.__w].rep.n===4||TASKS[window.__w].rep.n===3"),f'[{W}] 횟수 고치기',J(pg,"TASKS[window.__w].rep.n"))
+    J(pg,"document.querySelector('[data-wk105=\"*\"]')&&document.querySelector('[data-wk105=\"*\"]').click()");pg.wait_for_timeout(300)
+    # 직접 정한 날 지키기
+    J(pg,"""(()=>{closeSheet();const t=TASKS[window.__c];const ws=weekStart(midKey68());t.due=addDays(ws,6);t.dset72=Date.now();saveTask(t);
+      const k=addDays(ws,0);(DAYS[k]=DAYS[k]||{entries:[]}).entries.push({kind:'task',type:'good',name:'T청소',xp:5,gold:0,tid:t.id,id:uid()});const k2=addDays(ws,1);(DAYS[k2]=DAYS[k2]||{entries:[]}).entries.push({kind:'task',type:'good',name:'T청소',xp:5,gold:0,tid:t.id,id:uid()});render()})()""")
+    pg.wait_for_timeout(300)
+    ok(J(pg,"TASKS[window.__c].due===addDays(weekStart(midKey68()),6)"),f'[{W}] 내가 정한 일요일은 다음 주로 안 밀림',J(pg,"TASKS[window.__c].due"))
+    notoast(pg)
+
 with sync_playwright() as pw:
     for W,(w,h,pre) in {'PC2':(1400,900,'')}.items():
         pass
@@ -159,6 +182,10 @@ with sync_playwright() as pw:
             import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
         b.close();b,pg=run(pw,W=w,H=h,pre=pre)
         try:run_care(pg,W)
+        except Exception as e:
+            import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
+        b.close();b,pg=run(pw,W=w,H=h,pre=pre)
+        try:run_wk(pg,W)
         except Exception as e:
             import traceback;traceback.print_exc();FAILS.append('EXC '+str(e)[:100])
         print('errs',errs[:5]);errs.clear()

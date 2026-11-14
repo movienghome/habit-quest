@@ -158,7 +158,7 @@
   function moveTo93(t,nd){const k=W.k;
     act93(t,`'${t.title}' ${fmtD(nd)}로 옮김`,()=>{
       if(isWk(t)){t.sl91=t.sl91||{};const had=t.sl91[k]!==undefined,v=had?t.sl91[k]:'';delete t.sl91[k];t.sl91[nd]=v}
-      else{if(t.rid&&t.tx83)delete t.tx83;t.due=nd}})}
+      else{if(t.rid&&t.tx83)delete t.tx83;t.due=nd;t.dset72=Date.now();if(t.rep&&t.rep.f==='x')t.keep105=nd}})}
   function skip93(t){const k=W.k,td=midKey68();
     act93(t,`'${t.title}' 이번엔 건너뜀`,()=>{
       t.skip61=[...new Set([...(t.skip61||[]).filter(d=>d>=addDays(td,-14)),k])];

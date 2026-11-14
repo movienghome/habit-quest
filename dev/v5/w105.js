@@ -82,3 +82,58 @@ dndEnd=(function(prev){return function(x,y){
   document.addEventListener('click',e=>{const b=e.target.closest('[data-sk105]');if(!b)return;e.preventDefault();e.stopPropagation();
     const t=TASKS[b.dataset.sk105];if(!t)return;closeSheet();skipToday61(t)},true);
 })();
+
+/* ===== v10.6 ③ 주 N회: 위 줄 한 줄 · 칩을 누르면 관리 창 · 같은 이름 겹침 · 내가 정한 날 지키기 ===== */
+(function(){
+  const nm=g=>[...new Set(g.ts.map(t=>t.title))].join(' + ');
+  const short=s=>s.length>10?s.slice(0,10)+'…':s;
+  const groups=()=>grp99(openTasks().filter(t=>wx91(t)&&calPass(t)));
+  const wsOf=()=>{const md=(C.ui.cal||{}).mode,td=midKey68();return weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td))};
+  // ① 같은 이름이 겹쳐 '빨래 + 빨래'가 되던 것
+  (function(prev){grp99=function(){const out=prev.apply(this,arguments);out.forEach(g=>{g.title=nm(g)});return out}})(grp99);
+  // ② 위 줄: 한 줄(옆으로 밀기). 칩 = 눌러서 관리 창
+  strip91=function(){const m=$('calMain');if(!m||!m.parentElement)return;
+    const old=m.parentElement.querySelector(':scope > .wk91');if(old)old.remove();
+    const td=midKey68(),ws=wsOf(),G=groups();if(!G.length)return;
+    const cur=ws===weekStart(td);
+    const chips=G.map(g=>{const t=g.t,n=wkCnt91(t,ws),N=g.N,fin=n>=N;let warn='';
+      if(cur&&!fin){const s=slack99(t,from99(t,td),N);if(s.slack<=0)warn=`<i class="w99" title="쉬는 날 없이 해야 채워요">⚠</i>`}
+      return `<button type="button" class="c91 k105${fin?' ok':''}" data-wk105="${t.id}" title="${esc(g.title)} · 이번 주 ${n}/${N}회 · 눌러서 기록·횟수 보기">${fin?'✓':'🔁'} ${esc(short(g.title))} <b>${n}/${N}</b>${dots99(t,ws,td)}${warn}</button>`}).join('');
+    const d=document.createElement('div');d.className='wk91 one105';
+    d.innerHTML=`<button type="button" class="c91 k105 all" data-wk105="*" title="주 N회 할 일 전체 보기·고치기">🔁 ${G.length}</button>`+chips;
+    m.parentElement.insertBefore(d,m)};
+  // ③ 관리 창
+  function recs(t,ws){const out=[];for(let i=0;i<7;i++){const k=addDays(ws,i),d=DAYS[k];if(!d)continue;
+    (d.entries||[]).forEach(e=>{
+      if(e.tid===t.id)out.push({k,e,why:'이 할 일'});
+      else if(t.aid&&e.aid===t.aid&&e.tid!=null)out.push({k,e,why:'같은 카드로 이은 다른 할 일'+(TASKS[e.tid]?' ('+TASKS[e.tid].title+')':'')});
+      else if(e.kind==='start65'&&e.t65){const x=TASKS[e.t65];if(e.t65===t.id||(t.aid&&x&&x.aid===t.aid))out.push({k,e,why:'🌱 10분만 (하루 1번으로 셈)'})}})}
+    return out}
+  function wkSheet105(tid){const ws=wsOf(),td=midKey68(),G=groups();if(!G.length){closeSheet();toast('주 N회 할 일이 없어요');return}
+    const one=tid&&tid!=='*'?G.filter(g=>g.ts.some(x=>x.id===tid)):G;
+    const card=g=>{const t=g.t,n=wkCnt91(t,ws),N=g.N,R=recs(t,ws),ks=[...new Set([].concat(...g.ts.map(x=>slotKeys91(x,ws))))].sort();
+      const s=ws===weekStart(td)&&n<N?slack99(t,from99(t,td),N):null;
+      return `<div class="jarcard w105c"><div class="row" style="gap:6px;align-items:center;flex-wrap:wrap"><b>${esc(g.title)}</b><span class="small">${weekRangeLabel105(ws)} · <b>${n}/${N}</b>회</span><span style="flex:1"></span>
+        <label class="small row" style="gap:4px">목표 <button type="button" class="ib" data-wk105n="${t.id}:-1" aria-label="횟수 줄이기">−</button><b>${+t.rep.n||3}</b><button type="button" class="ib" data-wk105n="${t.id}:1" aria-label="횟수 늘리기">＋</button>회/주</label></div>
+        <div class="small" style="margin:4px 0">${dots99(t,ws,td)} ${s?(s.slack>0?`남은 ${s.need}번 · 쉬어도 되는 날 ${s.slack}일`:`⚠ 남은 ${s.need}번 · 쉬는 날 없이`):(n>=N?'✓ 이번 주 목표를 채웠어요':'')}</div>
+        <div class="tiny muted">셈에 들어간 기록 ${R.length}개 (한 주 = ${fmtD(ws)}(월) ~ ${fmtD(addDays(ws,6))}(일))</div>
+        ${R.length?`<ul class="l105">${R.map(r=>`<li>${fmtD(r.k)}(${wdOf(r.k)}) ${esc(r.e.t||'')} · ${esc((r.e.name||'').slice(0,30))} <span class="muted">· ${esc(r.why)}</span></li>`).join('')}</ul>`:'<div class="tiny muted">아직 기록이 없어요</div>'}
+        ${ks.length?`<div class="tiny">정한 날: ${ks.map(k=>fmtD(k)+'('+wdOf(k)+')').join(', ')}</div>`:''}
+        <div class="row" style="gap:6px;margin-top:6px;flex-wrap:wrap">${g.ts.map(x=>`<button type="button" class="btn sm ghost" data-wk105open="${x.id}">✎ ${esc(g.ts.length>1?x.title:'할 일 열기')}</button>`).join('')}</div></div>`};
+    sheetCtx={wk105:tid||'*'};
+    openSheet(`<div class="sh"><h3>🔁 주 N회${one.length===1?' · '+esc(one[0].title):''}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>${one.map(card).join('')}${one.length===1&&G.length>1?`<button type="button" class="btn sm ghost" data-wk105="*">🔁 전체 ${G.length}개 보기</button>`:''}<p class="help">주는 <b>월요일</b>부터예요 (캘린더 보기만 일요일이 맨 앞). 횟수 = 이 할 일 기록 + 같은 카드로 이은 할 일 기록 + 🌱10분만(하루 1번). 잘못 센 기록은 위 '셈에 들어간 기록'에서 날짜를 보고 캘린더에서 체크 해제하세요.</p>`)}
+  window.wkSheet105=wkSheet105;
+  window.weekRangeLabel105=ws=>fmtD(ws)+'~'+fmtD(addDays(ws,6));
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-wk105],[data-wk105n],[data-wk105open]');if(!b)return;e.preventDefault();e.stopPropagation();
+    if(b.dataset.wk105){wkSheet105(b.dataset.wk105);return}
+    if(b.dataset.wk105n){const [id,d]=b.dataset.wk105n.split(':'),t=TASKS[id];if(!t)return;t.rep.n=Math.max(1,Math.min(7,(+t.rep.n||3)+(+d)));saveTask(t);render();wkSheet105(sheetCtx&&sheetCtx.wk105);return}
+    if(b.dataset.wk105open){const id=b.dataset.wk105open;PRE61={c:{k:'wk105',id:sheetCtx&&sheetCtx.wk105||'*',n:'🔁 주 N회'},at:Date.now()};closeSheet();openTaskSheet(id)}},true);
+  // ④ 사용자가 직접 정한 날은 '이번 주 다 채웠다'며 다음 주로 밀지 않음
+  heal91=function(){if(HEAL91||CT91)return;if(typeof ready==='undefined'||!ready||typeof tasksReady==='undefined'||!tasksReady||!tOK64())return;
+    HEAL91=1;try{const ws=weekStart(midKey68()),nx=addDays(ws,13);
+      Object.values(TASKS).forEach(x=>{if(!wx91(x)||!x.due||x.due>=addDays(ws,7)||x.due<ws)return;
+        if(wkCnt91(x,ws)<(+x.rep.n||3))return;
+        if(x.keep105===x.due)return;
+        if(Date.now()-(+x.dset72||0)<10*60e3){x.keep105=x.due;saveTask(x);return}
+        x.due=nx;x.wc={w:addDays(ws,7),n:0};saveTask(x)})}catch(e){console.error(e)}finally{HEAL91=0}};
+})();
