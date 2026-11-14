@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v10.0</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v10.1</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2233,6 +2233,12 @@ body.dragging .dh97,body.dragging #actGroups .ghead[data-drag]{user-select:none;
 .al99{margin:4px 0 2px;padding:3px 8px;border:1.5px solid var(--text);border-radius:8px;font-size:12px;line-height:1.35}
 .al99 div+div{margin-top:3px}
 [data-snack99][aria-pressed="true"]{outline:2px solid var(--text)}
+
+/* v10.1 (M1 복귀 모아 보기 + 용기 기록 모아 보기): 돌아보기 '🌱 다시 일어난 증거' 칸 */
+.pf100 .h100{margin:12px 0 4px;font-size:14px}
+.pf100 .l100{list-style:none;margin:6px 0 0;padding:0}
+.pf100 .r100{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;padding:3px 0;border-top:1px dashed var(--line,#8884);font-size:13px}
+.pf100 .r100:first-child{border-top:0}
 </style>
 
 <header class="hud" id="hud">
@@ -14407,6 +14413,35 @@ completeTask=(function(prev){return function(t,ctx){
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['🔁 이번 주 점 7개·여유 일수','캘린더 위 줄 · 🌙 내일 짜기 맨 위','주 N회 할 일(시나리오 쓰기 등)이 이번 주 월~일 어느 날 했는지 점으로 보여요(● 한 날 · ◐ 10분만 · ○ 안 한 날 · ◇ 하기로 정한 날). 남은 횟수와 남은 날이 같아지면(쉬는 날이 없어지면) 내일 짜기 맨 위에서 알려요(점수는 안 깎여요, 목표를 못 채운 게 아니에요). 🌱 10분만 한 날도 1번으로 세요.',()=>{location.hash='tasks'},'주 N회 시나리오 여유 일수 점 10분만'],
   ['🤝 하그둘 꼬리표','할 일 상세 ⋯ · 끝낸 뒤 아래 알림','주 N회 할 일 ⋯ 메뉴에서 켜면, 끝낸 뒤 아래 알림의 🤝로 "이번 기록은 하그둘 만남"을 표시해요. 같은 카드로 이은 정해진 일정(하그둘 만남)을 끝내면 저절로 표시돼요. 캘린더 위 줄에 🤝 n회로 보여요.',()=>{location.hash='tasks'},'하그둘 만남 꼬리표 시나리오']])}})(F67);
+
+/* ---- v10.1 (w100.js): M1 복귀 모아 보기 + 용기 기록 모아 보기 — 돌아보기('📅 이번 주') 화면에 '🌱 다시 일어난 증거' 칸 하나 ----
+   읽기만 함(새 저장 키 없음, 점수·HP 안 건드림). 자료 = C.back93={게임날짜:{n,from,e}}(w92, 쉬었다 돌아온 날) · 기록 e.brave / kind==='courage'(용기 기록, 사후 표시 e.bv82).
+   ① 복귀: 모두 몇 번 · 이번 주(보고 있는 주) 몇 번 · 평균 며칠 쉬고 돌아왔나 · 마지막 복귀 · 최근 5번(어디서 돌아왔나: 쉼·힘든 날·비운 날).
+   ② 용기: 보고 있는 주에 용기 낸 일 목록(날짜·이름·✨, 나중에 붙인 건 🕘) + 지금까지 총 몇 번. 12줄 넘으면 '…외 n번'.
+   reviewHTML59를 맨 바깥에서 감싸 '왼쪽 메뉴' 칸 바로 앞에 끼움(그 칸이 없으면 맨 뒤). 색만으로 구분 안 함 — 아이콘·글자. */
+const FROM100={rest:'😴 쉼',low:'🪫 힘든 날',gap:'📭 비운 날'};
+function brv100(e){return !!(e&&e.type==='good'&&(e.kind==='courage'||e.brave))}
+function ev100(ws){const out=[];for(let i=0;i<7;i++){const k=addDays(ws,i),d=DAYS[k];(d&&d.entries||[]).forEach(e=>{if(brv100(e))out.push([k,e])})}
+  out.sort((a,b)=>a[0]===b[0]?String(b[1].t||'').localeCompare(String(a[1].t||'')):(a[0]<b[0]?1:-1));return out}
+function brvAll100(){let n=0;for(const k in DAYS){const d=DAYS[k];(d&&d.entries||[]).forEach(e=>{if(brv100(e))n++})}return n}
+function proof100(){
+  const off=ui.rv59||0,td=dateKey(),ws=addDays(weekStart(td),-7*off),we=addDays(ws,6);
+  const B=(C.back93&&typeof C.back93==='object')?C.back93:{},ks=Object.keys(B).filter(k=>B[k]).sort();
+  const tot=ks.length,wk=ks.filter(k=>k>=ws&&k<=we).length;
+  const avg=tot?Math.round(ks.reduce((s,k)=>s+(+B[k].n||1),0)/tot*10)/10:0;
+  const lastK=tot?ks[tot-1]:'',last=lastK?B[lastK]:null;
+  const rec=ks.slice(-5).reverse().map(k=>{const b=B[k];return `<li class="r100"><span class="num">${esc(fmtD(k))}</span><span>${+b.n>1?b.n+'일 만에':'하루 쉬고'} 돌아옴</span><span class="tiny muted">${FROM100[b.from]||''}</span></li>`}).join('');
+  const cmpc=(l,v,sub)=>`<div><span class="tiny muted">${l}</span><b class="num">${v}</b><span class="tiny muted">${sub}</span></div>`;
+  const rt=`<div class="cmp59">${cmpc('🌱 돌아온 횟수',tot+'번',`이 주 ${wk}번`)}${cmpc('⏳ 평균',tot?avg+'일':'-',tot?'쉬고 돌아오기까지':'아직 없어요')}${cmpc('🕘 마지막',last?esc(fmtD(lastK)):'-',last?(+last.n>1?last.n+'일 만에':'하루 쉬고'):'')}</div>
+    ${rec?`<ul class="l100">${rec}</ul>`:'<p class="small muted" style="margin:6px 0 0">쉬거나 힘든 날 다음 날 첫 걸음을 떼면 여기에 쌓여요. 못 한 날이 있어도 다시 오는 게 기록이 돼요.</p>'}`;
+  const ev=ev100(ws),all=brvAll100(),shown=ev.slice(0,12);
+  const bl=ev.length?`<ul class="l100">${shown.map(([k,e])=>`<li class="r100"><span class="num">${esc(wdOf(k))} ${esc(fmtD(k))}</span><span>⚔ ${esc(e.name||'용기')}${e.bv82?' <span class="tiny muted" title="끝낸 뒤에 용기로 표시했어요">🕘 나중에 붙임</span>':''}</span><span class="tiny num">${(+e.xp)?'✨'+(+e.xp):''}</span></li>`).join('')}${ev.length>12?`<li class="tiny muted">…외 ${ev.length-12}번</li>`:''}</ul>`
+    :'<p class="small muted" style="margin:6px 0 0">이 주에는 용기 기록이 아직 없어요. 할 일 상세의 ⚔️ 칩이나 끝낸 뒤 알림의 ⚔️로 붙일 수 있어요.</p>';
+  return `<div class="panel pf100"><div class="ptitle"><h2>🌱 다시 일어난 증거</h2><span class="tiny muted">쌓이기만 하고 줄지 않아요</span></div>${rt}
+    <h3 class="h100">⚔ ${off?off===1?'지난주':off+'주 전':'이번 주'} 용기 낸 일 · ${ev.length}번 <span class="tiny muted">(지금까지 ${all}번)</span></h3>${bl}</div>`;
+}
+reviewHTML59=(function(prev){return function(){const h=prev.apply(this,arguments);
+  try{const p=proof100(),m='<div class="panel"><div class="ptitle"><h2>왼쪽 메뉴</h2>',i=h.lastIndexOf(m);return i>=0?h.slice(0,i)+p+h.slice(i):h+p}catch(e){console.error(e);return h}}})(reviewHTML59);
 
 route();boot();
 </script>

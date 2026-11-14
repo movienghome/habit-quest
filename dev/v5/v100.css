@@ -1,0 +1,5 @@
+/* v10.1 (M1 복귀 모아 보기 + 용기 기록 모아 보기): 돌아보기 '🌱 다시 일어난 증거' 칸 */
+.pf100 .h100{margin:12px 0 4px;font-size:14px}
+.pf100 .l100{list-style:none;margin:6px 0 0;padding:0}
+.pf100 .r100{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;padding:3px 0;border-top:1px dashed var(--line,#8884);font-size:13px}
+.pf100 .r100:first-child{border-top:0}
