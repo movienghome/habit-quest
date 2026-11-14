@@ -2230,9 +2230,8 @@ body.dragging .dh97,body.dragging #actGroups .ghead[data-drag]{user-select:none;
 .wk91 .dd99 .d99{font-style:normal;color:var(--text);min-width:11px;text-align:center}
 .wk91 .dd99 .d99.now{border-bottom:2px solid var(--text);font-weight:700}
 .wk91 .c91 i.w99{color:var(--text);font-weight:700;border:1px solid var(--text);border-radius:6px;padding:0 4px}
-.al99{margin:6px 0 4px;padding:6px 10px;border:1.5px solid var(--text);border-radius:10px;font-size:13px;line-height:1.45}
+.al99{margin:4px 0 2px;padding:3px 8px;border:1.5px solid var(--text);border-radius:8px;font-size:12px;line-height:1.35}
 .al99 div+div{margin-top:3px}
-.al99 small{display:block;margin-top:3px}
 [data-snack99][aria-pressed="true"]{outline:2px solid var(--text)}
 </style>
 
@@ -12911,13 +12910,13 @@ dndEnd=(function(prev){return function(x,y){
       if(drop.type==='tray'&&!has)return prev.apply(this,arguments);
       DND.drop=null;const r=prev.apply(this,arguments);
       t.sl91=t.sl91||{};
-      if(drop.type==='tray'){delete t.sl91[sd];toast(`${t.title} · ${fmtD(sd)} 자리를 뺐어요`)}
+      if(drop.type==='tray'){delete t.sl91[sd];toast(`${t.title} · ${fmtD(sd)} 날 정함을 뺐어요`)}
       else{const nd=drop.date,tm=drop.type==='time'?hm(drop.min):'';
         if(has&&sd!==nd)delete t.sl91[sd];
         t.sl91[nd]=tm;if(tm&&!t.dur)t.dur=30;
         const lim=addDays(weekStart(midKey68()),-14);Object.keys(t.sl91).forEach(k=>{if(k<lim)delete t.sl91[k]});
         const ws=weekStart(nd),n=slotKeys91(t,ws).length;
-        toast(`${t.title} → ${dueLabel(nd)}${tm?' '+tm:''} · 이번 주 자리 ${n}/${t.rep.n||3}`);ui.calSel=nd}
+        toast(`${t.title} → ${dueLabel(nd)}${tm?' '+tm:''} · 이번 주 날 정함 ${n}/${t.rep.n||3}`);ui.calSel=nd}
       if(!Object.keys(t.sl91).length)delete t.sl91;
       saveTask(t);ui.calKeepScroll=true;render();return r}}catch(e){console.error(e)}
   return prev.apply(this,arguments)}})(dndEnd);
@@ -12928,13 +12927,13 @@ function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
   const md=(C.ui.cal||{}).mode,td=midKey68();
   const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t)&&calPass(t));if(!L.length)return;
   const chips=L.slice(0,4).map(t=>{const n=wkCnt91(t,ws),N=+t.rep.n||3,ks=slotKeys91(t,ws);
-    return `<span class="c91${n>=N?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정해 둔 날 '+ks.map(k=>fmtD(k)+(t.sl91[k]?' '+t.sl91[k]:'')).join(', '):''}">${n>=N?'✓':'🔁'} ${esc(t.title)} <b>${n}/${N}</b>${ks.length?`<i>자리 ${ks.length}</i>`:''}</span>`}).join('');
+    return `<span class="c91${n>=N?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정해 둔 날 '+ks.map(k=>fmtD(k)+(t.sl91[k]?' '+t.sl91[k]:'')).join(', '):''}">${n>=N?'✓':'🔁'} ${esc(t.title)} <b>${n}/${N}</b>${ks.length?`<i>정한 날 ${ks.length}</i>`:''}</span>`}).join('');
   const d=document.createElement('div');d.className='wk91';d.innerHTML=chips+(L.length>4?`<span class="c91">+${L.length-4}</span>`:'');
   m.parentElement.insertBefore(d,m)}
 renderCal=(function(prev){return function(){const x=prev.apply(this,arguments);try{if(calShown())strip91()}catch(e){console.error(e)}return x}})(renderCal);
 
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['🔁 주 N회 자리','캘린더 시간표·할 일 목록','주 N회 할 일을 시간표나 종일 칸에 끌어 놓으면 그 날(시각)이 이번 주 자리로 남아요. 날마다 시각이 달라도 되고, 안 지켜도 미룸이 아니에요. 캘린더 위 줄과 목록 줄에 이번 주 n/N이 보여요.']])}})(F67);
+  ['🔁 주 N회 날 정함','캘린더 시간표·할 일 목록','주 N회 할 일을 시간표나 종일 칸에 끌어 놓으면 그 날(시각)이 이번 주 "하기로 정한 날"로 남아요. 날마다 시각이 달라도 되고, 안 지켜도 미룸이 아니에요. 캘린더 위 줄과 목록 줄에 이번 주 n/N이 보여요.']])}})(F67);
 
 /* ---- 폰 시간표 독 접기 ----
    독 머리(#tt84h)를 한 번 누르면 한 줄로 접힘(C.tt84f, C 최상위 키 — normConfig가 보존) · 다시 누르면 펴짐. 끌면 높이 바꾸기는 그대로(펴진 상태에서만).
@@ -13694,7 +13693,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
     const t=W.sel&&TASKS[W.sel];if(!t)return '';
     const wk=isWk(t),sl=wk?(t.sl91&&t.sl91[k]):t.time,placed=!!sl&&hm80(sl)!=null,d=+t.dur||30,rep=t.rep&&t.rep.f&&!wk;
     return `<div class="sel93"><div class="s1"><b>${esc(t.title)}</b> <span class="tiny muted">${placed?fmt80(hm80(sl))+'–'+fmt80(hm80(sl)+d):'아직 시간 안 정함 — 아래 시간표를 눌러 놓아요'}</span></div>
-      <div class="s2">${durOpt(t)}${placed?`<button type="button" class="chipbtn" data-w93len="-15" aria-label="15분 줄이기">−15분</button><button type="button" class="chipbtn" data-w93len="15" aria-label="15분 늘리기">＋15분</button><input type="time" data-w93seltm="1" aria-label="시각" value="${esc(fmt80(hm80(sl)))}"><button type="button" class="chipbtn" data-w93off="1">${wk?'종일 칸으로':'시간 빼기'}</button>`:`<button type="button" class="chipbtn" data-w93q="1">빈 시간에 놓기</button>`}${wk&&t.sl91&&t.sl91[k]!==undefined?'<button type="button" class="chipbtn" data-w93del="1">자리 빼기</button>':''}<button type="button" class="chipbtn" data-w93det="1">상세</button><button type="button" class="ib" data-w93desel="1" aria-label="선택 끝">×</button></div>
+      <div class="s2">${durOpt(t)}${placed?`<button type="button" class="chipbtn" data-w93len="-15" aria-label="15분 줄이기">−15분</button><button type="button" class="chipbtn" data-w93len="15" aria-label="15분 늘리기">＋15분</button><input type="time" data-w93seltm="1" aria-label="시각" value="${esc(fmt80(hm80(sl)))}"><button type="button" class="chipbtn" data-w93off="1">${wk?'종일 칸으로':'시간 빼기'}</button>`:`<button type="button" class="chipbtn" data-w93q="1">빈 시간에 놓기</button>`}${wk&&t.sl91&&t.sl91[k]!==undefined?'<button type="button" class="chipbtn" data-w93del="1">날 정함 빼기</button>':''}<button type="button" class="chipbtn" data-w93det="1">상세</button><button type="button" class="ib" data-w93desel="1" aria-label="선택 끝">×</button></div>
       ${rep?'<div class="tiny muted">↻ 반복 할 일이라 시각을 바꾸면 앞으로의 시각도 바뀌어요</div>':''}</div>`;
   }
   function tray93(id,k){
@@ -13779,7 +13778,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
     if((b=T.closest('[data-w93g]'))&&W.sel&&TASKS[W.sel]){stop();if(Date.now()-(W.drg||0)<350)return;put93(TASKS[W.sel],min93(b,e.clientY));return}
     if((b=T.closest('[data-w93len]'))){stop();const t=TASKS[W.sel];if(t)mut93(t,`'${t.title}' 길이`,()=>{t.dur=Math.max(10,(+t.dur||30)+(+b.dataset.w93len))});return}
     if((b=T.closest('[data-w93off]'))){stop();const t=TASKS[W.sel];if(t)put93(t,null);return}
-    if((b=T.closest('[data-w93del]'))){stop();const t=TASKS[W.sel];if(!t||!t.sl91)return;mut93(t,`'${t.title}' 자리 뺌`,()=>{delete t.sl91[W.k];if(!Object.keys(t.sl91).length)delete t.sl91});W.sel=null;return}
+    if((b=T.closest('[data-w93del]'))){stop();const t=TASKS[W.sel];if(!t||!t.sl91)return;mut93(t,`'${t.title}' 날 정함 뺌`,()=>{delete t.sl91[W.k];if(!Object.keys(t.sl91).length)delete t.sl91});W.sel=null;return}
     if((b=T.closest('[data-w93det]'))){stop();const id=W.sel;if(id){closeSheet();openTaskSheet(id)}return}
     if((b=T.closest('[data-w93desel]'))){stop();W.sel=null;wiz93();return}
     if((b=T.closest('[data-w93q]'))){stop();const t=TASKS[W.sel];if(!t)return;const p=free93(W.k,+t.dur||30,busy93(W.k,[t.id]));if(p==null){toast('빈 시간이 없어요 — 시간표를 눌러 직접 놓아요');return}put93(t,p);return}
@@ -13787,7 +13786,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
       items.forEach(t=>{const d=Math.max(10,+t.dur||30),p=free93(k,d,busy);if(p==null){miss++;return}
         prev.push({id:t.id,time:t.time||null,dur:t.dur||null});t.time=fmt80(p);t.dur=d;saveTask(t);busy.push([p,p+d+5]);n++});
       W.undo=n?{l:`방금 넣은 ${n}개`,fn:()=>{prev.forEach(p=>{const t=TASKS[p.id];if(t){t.time=p.time;t.dur=p.dur;saveTask(t)}})}}:null;
-      redo93();toast(n?`🌙 ${n}개를 빈 시간에 넣었어요${miss?` · ${miss}개는 자리가 없어요`:''}`:'넣을 빈 시간이 없어요 — 길이를 줄이거나 하루 끝 시각을 늦춰요');return}
+      redo93();toast(n?`🌙 ${n}개를 빈 시간에 넣었어요${miss?` · ${miss}개는 빈 시간이 없어요`:''}`:'넣을 빈 시간이 없어요 — 길이를 줄이거나 하루 끝 시각을 늦춰요');return}
     if((b=T.closest('[data-w93u]'))){stop();const u=W.undo;W.undo=null;if(u)u.fn();redo93();return}
     if((b=T.closest('[data-w93care]'))){stop();const k=W.k;closeSheet();careSheet76(k);return}
     if((b=T.closest('[data-w93fin]'))){stop();const k=W.k;done93()[k]=1;Object.keys(C.tm93done).sort().slice(0,-30).forEach(d=>delete C.tm93done[d]);save('config');closeSheet();render();toast('🌙 내일 짜기 끝! 푹 쉬어요');return}
@@ -13846,7 +13845,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);try{const b=$('calPlanBtn');if(b){b.title='내일 짜기 (시간표 짜기)';b.setAttribute('aria-label','내일 짜기')}}catch(e){console.error(e)}return r}})(renderCal);
 
   F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-    ['🌙 내일 짜기','홈 오늘 칸(밤) · 캘린더 줄 🌙 (폰은 ⋯ 설정)','전날 밤 한 화면에서 내일 시간표를 짜요: 📌 정해진 일정(시각 먼저) → 🔁 주 N회 자리 → 🗓 종일 칸 일 → 🧽 관리. 모든 단계에 내일 시간표가 같이 보여요 — 일을 누르고 시간표 빈 곳을 눌러 놓고, 놓인 일(이미 정해진 일정도)을 눌러 옮기고, 길이는 ±15분. 마지막 줄에 놓은 시간/하루 예산. "내일 짜기 끝"을 누르면 그날 밤엔 다시 안 떠요. 뜨는 시각과 단계 순서는 ⚙ 설정에서 바꿔요.',()=>{open93()},'내일 짜기 시간표 전날 밤 정해진 일정 주 N회 종일 칸 관리 하루 예산']])}})(F67);
+    ['🌙 내일 짜기','홈 오늘 칸(밤) · 캘린더 줄 🌙 (폰은 ⋯ 설정)','전날 밤 한 화면에서 내일 시간표를 짜요: 📌 정해진 일정(시각 먼저) → 🔁 주 N회 → 🗓 종일 칸 일 → 🧽 관리. 모든 단계에 내일 시간표가 같이 보여요 — 일을 누르고 시간표 빈 곳을 눌러 놓고, 놓인 일(이미 정해진 일정도)을 눌러 옮기고, 길이는 ±15분. 마지막 줄에 놓은 시간/하루 예산. "내일 짜기 끝"을 누르면 그날 밤엔 다시 안 떠요. 뜨는 시각과 단계 순서는 ⚙ 설정에서 바꿔요.',()=>{open93()},'내일 짜기 시간표 전날 밤 정해진 일정 주 N회 종일 칸 관리 하루 예산']])}})(F67);
 }
 
 /* ---- v9.5 (w94.js): D2 카드 편집 창 새로 · D3 점수 큰 순에서 ✨XP·💰골드·🔋컨디션 고르기 ----
@@ -14335,7 +14334,7 @@ function dayCnt99(t,k){const d=DAYS[k];let n=0,tr=0;if(!d||!t)return{n:0,tr:0};
 function wkCnt91(t,ws){let n=0;if(!t||!ws)return 0;for(let i=0;i<7;i++){const c=dayCnt99(t,addDays(ws,i));n+=c.n||c.tr}return n}
 function hgCnt99(t,ws){let n=0;if(!t||!ws)return 0;for(let i=0;i<7;i++){const d=DAYS[addDays(ws,i)];if(!d)continue;
   (d.entries||[]).forEach(e=>{if(e.hg99&&(e.tid===t.id||(t.aid&&e.aid===t.aid)))n++})}return n}
-function slack99(t,from){const ws=weekStart(from),we=addDays(ws,6),N=+t.rep.n||3,n=wkCnt91(t,ws);
+function slack99(t,from,Nov){const ws=weekStart(from),we=addDays(ws,6),N=Nov||+t.rep.n||3,n=wkCnt91(t,ws);
   let days=0;for(let k=from,g=0;k<=we&&g<8;k=addDays(k,1),g++)days++;
   const need=Math.max(0,N-n);return{n,N,need,days,slack:days-need,ws}}
 function from99(t,td){const c=dayCnt99(t,td);return(c.n||c.tr)?addDays(td,1):td}
@@ -14346,30 +14345,35 @@ function dots99(t,ws,td){let s='',lab=[];
     s+=`<i class="d99${k===td?' now':''}">${ch}</i>`;lab.push(wdOf(k)+' '+DOT99[ch])}
   return `<span class="dd99" role="img" aria-label="${lab.join(', ')}" title="${lab.join(' · ')}">${s}</span>`}
 
+/* 같은 카드(aid)로 이은 주 N회 할 일은 위 줄·경보에서 한 묶음(시나리오 쓰기 + 하나 그리고 둘). 횟수는 원래 카드 기준 합산이라 어느 쪽으로 해도 같음.
+   목표 N은 묶음 중 가장 큰 값. 할 일 자체는 합치지 않음(목록·시간표·내일 짜기는 그대로 따로). */
+function grp99(L){const m=new Map(),out=[];L.forEach(t=>{const key=t.aid?'a:'+t.aid:'t:'+t.id;let g=m.get(key);if(!g){g={ts:[]};m.set(key,g);out.push(g)}g.ts.push(t)});
+  out.forEach(g=>{g.ts.sort((a,b)=>(+b.rep.n||3)-(+a.rep.n||3));g.t=g.ts[0];g.N=+g.t.rep.n||3;g.title=g.ts.map(t=>t.title).join(' + ')});return out}
 /* ③ 캘린더 위 줄(w86 strip91을 덮음) */
 function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
   const old=m.parentElement.querySelector(':scope > .wk91');if(old)old.remove();
   const md=(C.ui.cal||{}).mode,td=midKey68();
   const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t)&&calPass(t));if(!L.length)return;
-  const cur=ws===weekStart(td);
-  const chips=L.slice(0,4).map(t=>{const n=wkCnt91(t,ws),N=+t.rep.n||3,ks=slotKeys91(t,ws),fin=n>=N;
-    let sl='';if(cur&&!fin){const s=slack99(t,from99(t,td));
+  const cur=ws===weekStart(td),G=grp99(L);
+  const chips=G.slice(0,4).map(g=>{const t=g.t,n=wkCnt91(t,ws),N=g.N,ks=[...new Set([].concat(...g.ts.map(x=>slotKeys91(x,ws))))].sort(),fin=n>=N,
+      kt=k=>{const o=g.ts.find(x=>x.sl91&&x.sl91[k]!==undefined);return o&&o.sl91[k]||''};
+    let sl='';if(cur&&!fin){const s=slack99(t,from99(t,td),N);
       sl=s.slack>0?`<i title="이번 주 ${s.need}번 더 하면 돼요. 남은 날 ${s.days}일 중 ${s.slack}일은 쉬어도 목표를 채울 수 있어요">${s.need}번 남음 · 쉬어도 되는 날 ${s.slack}일</i>`
         :s.slack===0?`<i class="w99" title="목표를 채울 수 있어요. 다만 쉬는 날 없이 남은 날마다 한 번씩 해야 해요 (점수는 안 깎여요)">⚠ ${s.need}번 남음 · 매일 해야 채워요</i>`
         :`<i class="w99" title="남은 날 ${s.days}일에 ${s.need}번이라 하루에 두 번 하는 날이 있어야 해요 (점수는 안 깎여요)">⚠ ${s.need}번 남음 · 하루 두 번 필요</i>`}
-    const hg=t.hg99?`<i title="이번 주 하그둘 만남">🤝 ${hgCnt99(t,ws)}회</i>`:'';
-    return `<span class="c91 k99${fin?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정해 둔 날 '+ks.map(k=>fmtD(k)+(t.sl91[k]?' '+t.sl91[k]:'')).join(', '):''}">${fin?'✓':'🔁'} ${esc(t.title)} <b>${n}/${N}</b>${dots99(t,ws,td)}${sl}${hg}${ks.length?`<i>정한 날 ${ks.length}</i>`:''}</span>`}).join('');
-  const d=document.createElement('div');d.className='wk91';d.innerHTML=chips+(L.length>4?`<span class="c91">+${L.length-4}</span>`:'');
+    const hg=g.ts.some(x=>x.hg99)?`<i title="이번 주 하그둘 만남">🤝 ${hgCnt99(t,ws)}회</i>`:'';
+    return `<span class="c91 k99${fin?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정한 날 '+ks.map(k=>fmtD(k)+(kt(k)?' '+kt(k):'')).join(', '):''}">${fin?'✓':'🔁'} ${esc(g.title)} <b>${n}/${N}</b>${dots99(t,ws,td)}${sl}${hg}${ks.length?`<i>정한 날 ${ks.length}</i>`:''}</span>`}).join('');
+  const d=document.createElement('div');d.className='wk91';d.innerHTML=chips+(G.length>4?`<span class="c91">+${G.length-4}</span>`:'');
   m.parentElement.insertBefore(d,m)}
 
 /* ② 내일 짜기 맨 위 줄 — 알리기만 */
 function alert99(k){
-  const L=openTasks().filter(t=>wx91(t)&&calPass(t)&&!hid76(t)).map(t=>Object.assign({t},slack99(t,k))).filter(x=>x.need>0&&x.slack<=0);
+  const L=grp99(openTasks().filter(t=>wx91(t)&&calPass(t)&&!hid76(t))).map(g=>Object.assign({t:{title:g.title}},slack99(g.t,k,g.N))).filter(x=>x.need>0&&x.slack<=0);
   if(!L.length)return '';
   const lab=k===addDays(midKey68(),1)?'내일':dayName68(k);
-  return `<div class="al99" role="status">${L.slice(0,3).map(x=>x.slack===0
-    ?`<div>⚠ <b>${esc(x.t.title)}</b> · 이번 주 ${x.need}번 남았고 남은 날도 ${x.days}일이에요. 쉬는 날 없이 ${esc(lab)}부터 매일 한 번씩 하면 목표를 채울 수 있어요.</div>`
-    :`<div>⚠ <b>${esc(x.t.title)}</b> · ${x.need}번 남았는데 남은 날은 ${x.days}일뿐이에요. 하루에 두 번 하는 날이 있어야 채워요. 이번 주 목표를 줄여도 괜찮아요.</div>`).join('')}<small class="muted">알림만 해요 · 점수·HP는 안 깎여요</small></div>`}
+  return `<div class="al99" role="status" title="알림만 해요 · 점수·HP는 안 깎여요, 목표를 못 채운 게 아니에요">${L.slice(0,2).map(x=>x.slack===0
+    ?`<div>⚠ <b>${esc(x.t.title)}</b> · ${x.need}번 남음 · ${esc(lab)}부터 쉬는 날 없이 매일 한 번씩</div>`
+    :`<div>⚠ <b>${esc(x.t.title)}</b> · ${x.need}번 남음 · 남은 날 ${x.days}일 (하루 두 번 필요)</div>`).join('')}</div>`}
 openSheet=(function(prev){return function(){const r=prev.apply(this,arguments);
   try{if(sheetCtx&&sheetCtx.w93){const sc=$('sheetC'),sh=sc&&sc.querySelector('.sh');
     if(sh&&!sc.querySelector('.al99')){const h=alert99(sheetCtx.w93);if(h)sh.insertAdjacentHTML('afterend',h)}}}catch(e){console.error(e)}

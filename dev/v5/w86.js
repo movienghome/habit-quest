@@ -29,13 +29,13 @@ dndEnd=(function(prev){return function(x,y){
       if(drop.type==='tray'&&!has)return prev.apply(this,arguments);
       DND.drop=null;const r=prev.apply(this,arguments);
       t.sl91=t.sl91||{};
-      if(drop.type==='tray'){delete t.sl91[sd];toast(`${t.title} · ${fmtD(sd)} 자리를 뺐어요`)}
+      if(drop.type==='tray'){delete t.sl91[sd];toast(`${t.title} · ${fmtD(sd)} 날 정함을 뺐어요`)}
       else{const nd=drop.date,tm=drop.type==='time'?hm(drop.min):'';
         if(has&&sd!==nd)delete t.sl91[sd];
         t.sl91[nd]=tm;if(tm&&!t.dur)t.dur=30;
         const lim=addDays(weekStart(midKey68()),-14);Object.keys(t.sl91).forEach(k=>{if(k<lim)delete t.sl91[k]});
         const ws=weekStart(nd),n=slotKeys91(t,ws).length;
-        toast(`${t.title} → ${dueLabel(nd)}${tm?' '+tm:''} · 이번 주 자리 ${n}/${t.rep.n||3}`);ui.calSel=nd}
+        toast(`${t.title} → ${dueLabel(nd)}${tm?' '+tm:''} · 이번 주 날 정함 ${n}/${t.rep.n||3}`);ui.calSel=nd}
       if(!Object.keys(t.sl91).length)delete t.sl91;
       saveTask(t);ui.calKeepScroll=true;render();return r}}catch(e){console.error(e)}
   return prev.apply(this,arguments)}})(dndEnd);
@@ -46,13 +46,13 @@ function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
   const md=(C.ui.cal||{}).mode,td=midKey68();
   const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t)&&calPass(t));if(!L.length)return;
   const chips=L.slice(0,4).map(t=>{const n=wkCnt91(t,ws),N=+t.rep.n||3,ks=slotKeys91(t,ws);
-    return `<span class="c91${n>=N?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정해 둔 날 '+ks.map(k=>fmtD(k)+(t.sl91[k]?' '+t.sl91[k]:'')).join(', '):''}">${n>=N?'✓':'🔁'} ${esc(t.title)} <b>${n}/${N}</b>${ks.length?`<i>자리 ${ks.length}</i>`:''}</span>`}).join('');
+    return `<span class="c91${n>=N?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정해 둔 날 '+ks.map(k=>fmtD(k)+(t.sl91[k]?' '+t.sl91[k]:'')).join(', '):''}">${n>=N?'✓':'🔁'} ${esc(t.title)} <b>${n}/${N}</b>${ks.length?`<i>정한 날 ${ks.length}</i>`:''}</span>`}).join('');
   const d=document.createElement('div');d.className='wk91';d.innerHTML=chips+(L.length>4?`<span class="c91">+${L.length-4}</span>`:'');
   m.parentElement.insertBefore(d,m)}
 renderCal=(function(prev){return function(){const x=prev.apply(this,arguments);try{if(calShown())strip91()}catch(e){console.error(e)}return x}})(renderCal);
 
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['🔁 주 N회 자리','캘린더 시간표·할 일 목록','주 N회 할 일을 시간표나 종일 칸에 끌어 놓으면 그 날(시각)이 이번 주 자리로 남아요. 날마다 시각이 달라도 되고, 안 지켜도 미룸이 아니에요. 캘린더 위 줄과 목록 줄에 이번 주 n/N이 보여요.']])}})(F67);
+  ['🔁 주 N회 날 정함','캘린더 시간표·할 일 목록','주 N회 할 일을 시간표나 종일 칸에 끌어 놓으면 그 날(시각)이 이번 주 "하기로 정한 날"로 남아요. 날마다 시각이 달라도 되고, 안 지켜도 미룸이 아니에요. 캘린더 위 줄과 목록 줄에 이번 주 n/N이 보여요.']])}})(F67);
 
 /* ---- 폰 시간표 독 접기 ----
    독 머리(#tt84h)를 한 번 누르면 한 줄로 접힘(C.tt84f, C 최상위 키 — normConfig가 보존) · 다시 누르면 펴짐. 끌면 높이 바꾸기는 그대로(펴진 상태에서만).

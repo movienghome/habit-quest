@@ -14,7 +14,7 @@ function dayCnt99(t,k){const d=DAYS[k];let n=0,tr=0;if(!d||!t)return{n:0,tr:0};
 function wkCnt91(t,ws){let n=0;if(!t||!ws)return 0;for(let i=0;i<7;i++){const c=dayCnt99(t,addDays(ws,i));n+=c.n||c.tr}return n}
 function hgCnt99(t,ws){let n=0;if(!t||!ws)return 0;for(let i=0;i<7;i++){const d=DAYS[addDays(ws,i)];if(!d)continue;
   (d.entries||[]).forEach(e=>{if(e.hg99&&(e.tid===t.id||(t.aid&&e.aid===t.aid)))n++})}return n}
-function slack99(t,from){const ws=weekStart(from),we=addDays(ws,6),N=+t.rep.n||3,n=wkCnt91(t,ws);
+function slack99(t,from,Nov){const ws=weekStart(from),we=addDays(ws,6),N=Nov||+t.rep.n||3,n=wkCnt91(t,ws);
   let days=0;for(let k=from,g=0;k<=we&&g<8;k=addDays(k,1),g++)days++;
   const need=Math.max(0,N-n);return{n,N,need,days,slack:days-need,ws}}
 function from99(t,td){const c=dayCnt99(t,td);return(c.n||c.tr)?addDays(td,1):td}
@@ -25,30 +25,35 @@ function dots99(t,ws,td){let s='',lab=[];
     s+=`<i class="d99${k===td?' now':''}">${ch}</i>`;lab.push(wdOf(k)+' '+DOT99[ch])}
   return `<span class="dd99" role="img" aria-label="${lab.join(', ')}" title="${lab.join(' · ')}">${s}</span>`}
 
+/* 같은 카드(aid)로 이은 주 N회 할 일은 위 줄·경보에서 한 묶음(시나리오 쓰기 + 하나 그리고 둘). 횟수는 원래 카드 기준 합산이라 어느 쪽으로 해도 같음.
+   목표 N은 묶음 중 가장 큰 값. 할 일 자체는 합치지 않음(목록·시간표·내일 짜기는 그대로 따로). */
+function grp99(L){const m=new Map(),out=[];L.forEach(t=>{const key=t.aid?'a:'+t.aid:'t:'+t.id;let g=m.get(key);if(!g){g={ts:[]};m.set(key,g);out.push(g)}g.ts.push(t)});
+  out.forEach(g=>{g.ts.sort((a,b)=>(+b.rep.n||3)-(+a.rep.n||3));g.t=g.ts[0];g.N=+g.t.rep.n||3;g.title=g.ts.map(t=>t.title).join(' + ')});return out}
 /* ③ 캘린더 위 줄(w86 strip91을 덮음) */
 function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
   const old=m.parentElement.querySelector(':scope > .wk91');if(old)old.remove();
   const md=(C.ui.cal||{}).mode,td=midKey68();
   const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t)&&calPass(t));if(!L.length)return;
-  const cur=ws===weekStart(td);
-  const chips=L.slice(0,4).map(t=>{const n=wkCnt91(t,ws),N=+t.rep.n||3,ks=slotKeys91(t,ws),fin=n>=N;
-    let sl='';if(cur&&!fin){const s=slack99(t,from99(t,td));
+  const cur=ws===weekStart(td),G=grp99(L);
+  const chips=G.slice(0,4).map(g=>{const t=g.t,n=wkCnt91(t,ws),N=g.N,ks=[...new Set([].concat(...g.ts.map(x=>slotKeys91(x,ws))))].sort(),fin=n>=N,
+      kt=k=>{const o=g.ts.find(x=>x.sl91&&x.sl91[k]!==undefined);return o&&o.sl91[k]||''};
+    let sl='';if(cur&&!fin){const s=slack99(t,from99(t,td),N);
       sl=s.slack>0?`<i title="이번 주 ${s.need}번 더 하면 돼요. 남은 날 ${s.days}일 중 ${s.slack}일은 쉬어도 목표를 채울 수 있어요">${s.need}번 남음 · 쉬어도 되는 날 ${s.slack}일</i>`
         :s.slack===0?`<i class="w99" title="목표를 채울 수 있어요. 다만 쉬는 날 없이 남은 날마다 한 번씩 해야 해요 (점수는 안 깎여요)">⚠ ${s.need}번 남음 · 매일 해야 채워요</i>`
         :`<i class="w99" title="남은 날 ${s.days}일에 ${s.need}번이라 하루에 두 번 하는 날이 있어야 해요 (점수는 안 깎여요)">⚠ ${s.need}번 남음 · 하루 두 번 필요</i>`}
-    const hg=t.hg99?`<i title="이번 주 하그둘 만남">🤝 ${hgCnt99(t,ws)}회</i>`:'';
-    return `<span class="c91 k99${fin?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정해 둔 날 '+ks.map(k=>fmtD(k)+(t.sl91[k]?' '+t.sl91[k]:'')).join(', '):''}">${fin?'✓':'🔁'} ${esc(t.title)} <b>${n}/${N}</b>${dots99(t,ws,td)}${sl}${hg}${ks.length?`<i>정한 날 ${ks.length}</i>`:''}</span>`}).join('');
-  const d=document.createElement('div');d.className='wk91';d.innerHTML=chips+(L.length>4?`<span class="c91">+${L.length-4}</span>`:'');
+    const hg=g.ts.some(x=>x.hg99)?`<i title="이번 주 하그둘 만남">🤝 ${hgCnt99(t,ws)}회</i>`:'';
+    return `<span class="c91 k99${fin?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정한 날 '+ks.map(k=>fmtD(k)+(kt(k)?' '+kt(k):'')).join(', '):''}">${fin?'✓':'🔁'} ${esc(g.title)} <b>${n}/${N}</b>${dots99(t,ws,td)}${sl}${hg}${ks.length?`<i>정한 날 ${ks.length}</i>`:''}</span>`}).join('');
+  const d=document.createElement('div');d.className='wk91';d.innerHTML=chips+(G.length>4?`<span class="c91">+${G.length-4}</span>`:'');
   m.parentElement.insertBefore(d,m)}
 
 /* ② 내일 짜기 맨 위 줄 — 알리기만 */
 function alert99(k){
-  const L=openTasks().filter(t=>wx91(t)&&calPass(t)&&!hid76(t)).map(t=>Object.assign({t},slack99(t,k))).filter(x=>x.need>0&&x.slack<=0);
+  const L=grp99(openTasks().filter(t=>wx91(t)&&calPass(t)&&!hid76(t))).map(g=>Object.assign({t:{title:g.title}},slack99(g.t,k,g.N))).filter(x=>x.need>0&&x.slack<=0);
   if(!L.length)return '';
   const lab=k===addDays(midKey68(),1)?'내일':dayName68(k);
-  return `<div class="al99" role="status">${L.slice(0,3).map(x=>x.slack===0
-    ?`<div>⚠ <b>${esc(x.t.title)}</b> · 이번 주 ${x.need}번 남았고 남은 날도 ${x.days}일이에요. 쉬는 날 없이 ${esc(lab)}부터 매일 한 번씩 하면 목표를 채울 수 있어요.</div>`
-    :`<div>⚠ <b>${esc(x.t.title)}</b> · ${x.need}번 남았는데 남은 날은 ${x.days}일뿐이에요. 하루에 두 번 하는 날이 있어야 채워요. 이번 주 목표를 줄여도 괜찮아요.</div>`).join('')}<small class="muted">알림만 해요 · 점수·HP는 안 깎여요</small></div>`}
+  return `<div class="al99" role="status" title="알림만 해요 · 점수·HP는 안 깎여요, 목표를 못 채운 게 아니에요">${L.slice(0,2).map(x=>x.slack===0
+    ?`<div>⚠ <b>${esc(x.t.title)}</b> · ${x.need}번 남음 · ${esc(lab)}부터 쉬는 날 없이 매일 한 번씩</div>`
+    :`<div>⚠ <b>${esc(x.t.title)}</b> · ${x.need}번 남음 · 남은 날 ${x.days}일 (하루 두 번 필요)</div>`).join('')}</div>`}
 openSheet=(function(prev){return function(){const r=prev.apply(this,arguments);
   try{if(sheetCtx&&sheetCtx.w93){const sc=$('sheetC'),sh=sc&&sc.querySelector('.sh');
     if(sh&&!sc.querySelector('.al99')){const h=alert99(sheetCtx.w93);if(h)sh.insertAdjacentHTML('afterend',h)}}}catch(e){console.error(e)}

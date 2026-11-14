@@ -4,7 +4,6 @@
 .wk91 .dd99 .d99{font-style:normal;color:var(--text);min-width:11px;text-align:center}
 .wk91 .dd99 .d99.now{border-bottom:2px solid var(--text);font-weight:700}
 .wk91 .c91 i.w99{color:var(--text);font-weight:700;border:1px solid var(--text);border-radius:6px;padding:0 4px}
-.al99{margin:6px 0 4px;padding:6px 10px;border:1.5px solid var(--text);border-radius:10px;font-size:13px;line-height:1.45}
+.al99{margin:4px 0 2px;padding:3px 8px;border:1.5px solid var(--text);border-radius:8px;font-size:12px;line-height:1.35}
 .al99 div+div{margin-top:3px}
-.al99 small{display:block;margin-top:3px}
 [data-snack99][aria-pressed="true"]{outline:2px solid var(--text)}

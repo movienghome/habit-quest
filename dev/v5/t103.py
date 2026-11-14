@@ -51,7 +51,8 @@ def run_t(pg,W):
     J(pg,"planSheet80()");pg.wait_for_timeout(600)
     a=J(pg,"(()=>{const e=document.querySelector('#sheetC .al99');return e?e.textContent:null})()")
     ok(a is not None and '매일 한 번씩' in a,f'[{W}] 내일 짜기 맨 위에 경보',a)
-    ok(a is not None and '안 깎여요' in a,f'[{W}] 점수 안 깎인다고 알림',a)
+    tt=J(pg,"(()=>{const e=document.querySelector('#sheetC .al99');return e?e.title:''})()")
+    ok('안 깎여요' in tt,f'[{W}] 점수 안 깎인다고 알림(마우스 올리면)',tt)
     first=J(pg,"(()=>{const sc=document.getElementById('sheetC'),sh=sc.querySelector('.sh');return !!(sh&&sh.nextElementSibling&&sh.nextElementSibling.classList.contains('al99'))})()")
     ok(first,f'[{W}] 머리 바로 아래(첫 줄)에 있음')
     # 여유가 있으면 경보 없음
@@ -81,6 +82,11 @@ def run_t(pg,W):
     J(pg,"location.hash='tasks'");pg.wait_for_timeout(300);J(pg,"location.hash='cal'");pg.wait_for_timeout(1300)
     hw=J(pg,"(()=>{return [...document.querySelectorAll('.wk91 .k99')].map(e=>e.textContent).join('|')})()")
     ok('🤝' in hw,f'[{W}] 위 줄에 🤝 n회',hw)
+    # 같은 카드로 이은 주 N회 할 일은 위 줄에 한 칩으로 합쳐짐
+    g=J(pg,"""(()=>{const a=TASKS[__mk(5)],b=newTask({title:"'하나 그리고 둘'",rep:{f:'x',n:3},due:null});b.rep={f:'x',n:3};b.aid=a.aid;b.due=a.due;saveTask(b);a.title='시나리오 쓰기 합침시험';saveTask(a);render();return 1})()""");pg.wait_for_timeout(900)
+    g2=J(pg,"""(()=>{const c=[...document.querySelectorAll('.wk91 .k99')];return {n:c.length,txt:c.map(e=>e.textContent).join('|')}})()""")
+    ok(g2['n']==1,f'[{W}] 같은 카드(시나리오 쓰기·하나 그리고 둘)는 위 줄에 한 칩',g2)
+    ok("합침시험" in g2['txt'] and "하나 그리고 둘" in g2['txt'] and ' + ' in g2['txt'],f'[{W}] 칩 이름이 두 할 일을 + 로 같이 보여 줌',g2['txt'])
     # 메뉴 항목
     m=J(pg,"""(()=>{const id=__mk(5);sheetCtx={task:id};let got=null;const _m=menu61;
       try{menu61(10,10,'t',[{l:'🗑 삭제',keep:1,f(){}}])}catch(e){return 'ERR '+e}

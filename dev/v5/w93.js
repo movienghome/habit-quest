@@ -76,7 +76,7 @@
     const t=W.sel&&TASKS[W.sel];if(!t)return '';
     const wk=isWk(t),sl=wk?(t.sl91&&t.sl91[k]):t.time,placed=!!sl&&hm80(sl)!=null,d=+t.dur||30,rep=t.rep&&t.rep.f&&!wk;
     return `<div class="sel93"><div class="s1"><b>${esc(t.title)}</b> <span class="tiny muted">${placed?fmt80(hm80(sl))+'–'+fmt80(hm80(sl)+d):'아직 시간 안 정함 — 아래 시간표를 눌러 놓아요'}</span></div>
-      <div class="s2">${durOpt(t)}${placed?`<button type="button" class="chipbtn" data-w93len="-15" aria-label="15분 줄이기">−15분</button><button type="button" class="chipbtn" data-w93len="15" aria-label="15분 늘리기">＋15분</button><input type="time" data-w93seltm="1" aria-label="시각" value="${esc(fmt80(hm80(sl)))}"><button type="button" class="chipbtn" data-w93off="1">${wk?'종일 칸으로':'시간 빼기'}</button>`:`<button type="button" class="chipbtn" data-w93q="1">빈 시간에 놓기</button>`}${wk&&t.sl91&&t.sl91[k]!==undefined?'<button type="button" class="chipbtn" data-w93del="1">자리 빼기</button>':''}<button type="button" class="chipbtn" data-w93det="1">상세</button><button type="button" class="ib" data-w93desel="1" aria-label="선택 끝">×</button></div>
+      <div class="s2">${durOpt(t)}${placed?`<button type="button" class="chipbtn" data-w93len="-15" aria-label="15분 줄이기">−15분</button><button type="button" class="chipbtn" data-w93len="15" aria-label="15분 늘리기">＋15분</button><input type="time" data-w93seltm="1" aria-label="시각" value="${esc(fmt80(hm80(sl)))}"><button type="button" class="chipbtn" data-w93off="1">${wk?'종일 칸으로':'시간 빼기'}</button>`:`<button type="button" class="chipbtn" data-w93q="1">빈 시간에 놓기</button>`}${wk&&t.sl91&&t.sl91[k]!==undefined?'<button type="button" class="chipbtn" data-w93del="1">날 정함 빼기</button>':''}<button type="button" class="chipbtn" data-w93det="1">상세</button><button type="button" class="ib" data-w93desel="1" aria-label="선택 끝">×</button></div>
       ${rep?'<div class="tiny muted">↻ 반복 할 일이라 시각을 바꾸면 앞으로의 시각도 바뀌어요</div>':''}</div>`;
   }
   function tray93(id,k){
@@ -161,7 +161,7 @@
     if((b=T.closest('[data-w93g]'))&&W.sel&&TASKS[W.sel]){stop();if(Date.now()-(W.drg||0)<350)return;put93(TASKS[W.sel],min93(b,e.clientY));return}
     if((b=T.closest('[data-w93len]'))){stop();const t=TASKS[W.sel];if(t)mut93(t,`'${t.title}' 길이`,()=>{t.dur=Math.max(10,(+t.dur||30)+(+b.dataset.w93len))});return}
     if((b=T.closest('[data-w93off]'))){stop();const t=TASKS[W.sel];if(t)put93(t,null);return}
-    if((b=T.closest('[data-w93del]'))){stop();const t=TASKS[W.sel];if(!t||!t.sl91)return;mut93(t,`'${t.title}' 자리 뺌`,()=>{delete t.sl91[W.k];if(!Object.keys(t.sl91).length)delete t.sl91});W.sel=null;return}
+    if((b=T.closest('[data-w93del]'))){stop();const t=TASKS[W.sel];if(!t||!t.sl91)return;mut93(t,`'${t.title}' 날 정함 뺌`,()=>{delete t.sl91[W.k];if(!Object.keys(t.sl91).length)delete t.sl91});W.sel=null;return}
     if((b=T.closest('[data-w93det]'))){stop();const id=W.sel;if(id){closeSheet();openTaskSheet(id)}return}
     if((b=T.closest('[data-w93desel]'))){stop();W.sel=null;wiz93();return}
     if((b=T.closest('[data-w93q]'))){stop();const t=TASKS[W.sel];if(!t)return;const p=free93(W.k,+t.dur||30,busy93(W.k,[t.id]));if(p==null){toast('빈 시간이 없어요 — 시간표를 눌러 직접 놓아요');return}put93(t,p);return}
@@ -169,7 +169,7 @@
       items.forEach(t=>{const d=Math.max(10,+t.dur||30),p=free93(k,d,busy);if(p==null){miss++;return}
         prev.push({id:t.id,time:t.time||null,dur:t.dur||null});t.time=fmt80(p);t.dur=d;saveTask(t);busy.push([p,p+d+5]);n++});
       W.undo=n?{l:`방금 넣은 ${n}개`,fn:()=>{prev.forEach(p=>{const t=TASKS[p.id];if(t){t.time=p.time;t.dur=p.dur;saveTask(t)}})}}:null;
-      redo93();toast(n?`🌙 ${n}개를 빈 시간에 넣었어요${miss?` · ${miss}개는 자리가 없어요`:''}`:'넣을 빈 시간이 없어요 — 길이를 줄이거나 하루 끝 시각을 늦춰요');return}
+      redo93();toast(n?`🌙 ${n}개를 빈 시간에 넣었어요${miss?` · ${miss}개는 빈 시간이 없어요`:''}`:'넣을 빈 시간이 없어요 — 길이를 줄이거나 하루 끝 시각을 늦춰요');return}
     if((b=T.closest('[data-w93u]'))){stop();const u=W.undo;W.undo=null;if(u)u.fn();redo93();return}
     if((b=T.closest('[data-w93care]'))){stop();const k=W.k;closeSheet();careSheet76(k);return}
     if((b=T.closest('[data-w93fin]'))){stop();const k=W.k;done93()[k]=1;Object.keys(C.tm93done).sort().slice(0,-30).forEach(d=>delete C.tm93done[d]);save('config');closeSheet();render();toast('🌙 내일 짜기 끝! 푹 쉬어요');return}
@@ -228,5 +228,5 @@
   renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);try{const b=$('calPlanBtn');if(b){b.title='내일 짜기 (시간표 짜기)';b.setAttribute('aria-label','내일 짜기')}}catch(e){console.error(e)}return r}})(renderCal);
 
   F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-    ['🌙 내일 짜기','홈 오늘 칸(밤) · 캘린더 줄 🌙 (폰은 ⋯ 설정)','전날 밤 한 화면에서 내일 시간표를 짜요: 📌 정해진 일정(시각 먼저) → 🔁 주 N회 자리 → 🗓 종일 칸 일 → 🧽 관리. 모든 단계에 내일 시간표가 같이 보여요 — 일을 누르고 시간표 빈 곳을 눌러 놓고, 놓인 일(이미 정해진 일정도)을 눌러 옮기고, 길이는 ±15분. 마지막 줄에 놓은 시간/하루 예산. "내일 짜기 끝"을 누르면 그날 밤엔 다시 안 떠요. 뜨는 시각과 단계 순서는 ⚙ 설정에서 바꿔요.',()=>{open93()},'내일 짜기 시간표 전날 밤 정해진 일정 주 N회 종일 칸 관리 하루 예산']])}})(F67);
+    ['🌙 내일 짜기','홈 오늘 칸(밤) · 캘린더 줄 🌙 (폰은 ⋯ 설정)','전날 밤 한 화면에서 내일 시간표를 짜요: 📌 정해진 일정(시각 먼저) → 🔁 주 N회 → 🗓 종일 칸 일 → 🧽 관리. 모든 단계에 내일 시간표가 같이 보여요 — 일을 누르고 시간표 빈 곳을 눌러 놓고, 놓인 일(이미 정해진 일정도)을 눌러 옮기고, 길이는 ±15분. 마지막 줄에 놓은 시간/하루 예산. "내일 짜기 끝"을 누르면 그날 밤엔 다시 안 떠요. 뜨는 시각과 단계 순서는 ⚙ 설정에서 바꿔요.',()=>{open93()},'내일 짜기 시간표 전날 밤 정해진 일정 주 N회 종일 칸 관리 하루 예산']])}})(F67);
 }
