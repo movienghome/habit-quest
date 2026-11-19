@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v10.7</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v10.8</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -15573,6 +15573,22 @@ function dn75(t){try{const r=t&&t.status===0&&C.mig62&&rtOfT62(t);if(!r)return '
   const open=DN106.has(r.id);
   return `<details class="dn75 d106" data-r106="${r.id}"${open?' open':''}><summary class="lb">✓ 오늘 한 단계 <b>${st.length}</b>${open?' <small>누르면 되돌려요</small>':''}</summary><div class="d106b">${st.map(s=>`<button type="button" class="chipbtn" data-u74s="${s.tid}" data-u74r="${r.id}" title="'${esc(stName61(s))}' 체크 되돌리기">${esc(stName61(s))} ↶</button>`).join('')}</div></details>`}catch(e){return ''}}
 document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.classList&&d.classList.contains('d106')&&d.dataset.r106){d.open?DN106.add(d.dataset.r106):DN106.delete(d.dataset.r106)}},true);
+
+/* ---- v10.8 (w107.js): N20 — 홈 전투 카드에 마음 막대가 없던 것 ----
+   원인: 영역 종류 C.ak101(w101)에 '마음'이 💰 경제(m)로 저장돼 있었음 → 홈 막대는 🔋 컨디션 영역만 그려서 마음이 칩(마음 Lv5)으로만 보였음.
+   (처음 켜질 때의 이름 짐작이나 종류 칩을 잘못 눌러서 생긴 것으로 보임 — 어느 쪽인지는 데이터를 못 봐서 모름)
+   고침: 한 번(C.mig107)만, 이름이 정확히 몸·마음·생활인 영역이 🔋가 아니면 🔋로 되돌림(F1 결정: 몸·마음·생활 = 컨디션).
+   이후 사용자가 종류 칩으로 다시 바꾸면 그대로 둠(한 번짜리). 영역 이름·카드·점수·순서는 안 건드림. */
+function mig107(){
+  if(C.mig107||!ready72()||!C||!C.f1from101||!Array.isArray(C.areas))return;
+  const fix=[];
+  C.ak101=Object.assign({},C.ak101||{});
+  C.areas.forEach(a=>{const k=C.ak101[a.id];
+    if(/^(몸|마음|생활)$/.test(String(a.name||'').trim())&&k&&k!=='c'){C.ak101[a.id]='c';fix.push(a.name)}});
+  C.mig107={at:gk76(),fix};
+  save('config');
+  if(fix.length)setTimeout(()=>toast(`${fix.join('·')} 막대를 홈에 되살렸어요 (영역 종류가 🔋 컨디션이 아니었어요) · 편집 → 컨디션 영역에서 바꿀 수 있어요`,7000),1800)}
+render=(function(prev){return function(){try{mig107()}catch(e){console.error(e)}return prev.apply(this,arguments)}})(render);
 
 route();boot();
 </script>
