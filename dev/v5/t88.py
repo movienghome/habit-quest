@@ -101,6 +101,7 @@ def run_pomo(pg,W):
     # 25분 채우기 → 팝업 + 구슬
     m0=J(pg,"(curDay().entries||[]).filter(e=>e.kind==='jar').length")
     pg.click('[data-p88="start"]');pg.wait_for_timeout(400)
+    J(pg,"pset88().ab106=0;save('config')")   # v10.7: 쉬는 시간 자동 시작은 t110에서 따로 시험
     J(pg,"PM88.t0-=25*60000+1000;pSave88()");pg.wait_for_timeout(900)
     ok(J(pg,"PM88.hold")=='workdone',f'[{W}] 25분 채우면 끝 상태')
     ok(J(pg,"!$('pomoPop88').hidden"),f'[{W}] 팝업이 뜸')
