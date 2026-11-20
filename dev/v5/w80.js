@@ -7,20 +7,22 @@
       · 만들기·지우기는 mealEnsure80(render 앞, tOK64 뒤)만. 사용자가 블록을 지우면 C.meal80.no에 id를 넣어 다시 안 만듦. */
 
 var AUTO80=0;
-var SL80=[['l','점심'],['d','저녁']];
+/* v11.0(N18): 아침(b)·간식(s) 칸 추가 — 둘은 기본 꺼짐(c.b.on·c.s.on), 점심(l)·저녁(d)은 늘 켜짐. 블록 id `ml80_날짜_b|l|s|d`, 이모지 🥐·🍱·🍪 */
+var SL80=[['b','아침'],['l','점심'],['s','간식'],['d','저녁']];
+var SN80={b:'아침',l:'점심',s:'간식',d:'저녁'},SI80={b:'🥐',l:'🍱',s:'🍪',d:'🍱'},DF80={b:['08:00',20],l:['12:30',40],s:['16:00',15],d:['18:30',50]};
 function ml80cfg(){let m=C.meal80;if(!m||typeof m!=='object'||Array.isArray(m))m=C.meal80={};
-  if(!m.l||typeof m.l!=='object')m.l={t:'12:30',m:40};
-  if(!m.d||typeof m.d!=='object')m.d={t:'18:30',m:50};
-  if(!/^\d{1,2}:\d{2}$/.test(m.l.t||''))m.l.t='12:30';if(!/^\d{1,2}:\d{2}$/.test(m.d.t||''))m.d.t='18:30';
-  if(!(+m.l.m>0))m.l.m=40;if(!(+m.d.m>0))m.d.m=50;
+  ['b','l','s','d'].forEach(s=>{if(!m[s]||typeof m[s]!=='object')m[s]={t:DF80[s][0],m:DF80[s][1]};
+    if(!/^\d{1,2}:\d{2}$/.test(m[s].t||''))m[s].t=DF80[s][0];if(!(+m[s].m>0))m[s].m=DF80[s][1];
+    if(s==='b'||s==='s')m[s].on=+m[s].on?1:0});
   if(!m.menu||typeof m.menu!=='object'||Array.isArray(m.menu))m.menu={};
   if(!Array.isArray(m.no))m.no=[];
   return m}
+function slOn80(s,c){c=c||ml80cfg();return s==='l'||s==='d'||!!(c[s]&&+c[s].on)}
 function id80(k,s){return 'ml80_'+k+'_'+s}
 function menuOf80(k,s){return ((ml80cfg().menu[k]||{})[s])||''}
-function title80(s,k){const m=menuOf80(k,s);return '🍱 '+(s==='l'?'점심':'저녁')+(m?' · '+m:'')}
+function title80(s,k){const m=menuOf80(k,s);return (SI80[s]||'🍱')+' '+(SN80[s]||'식사')+(m?' · '+m:'')}
 function setMenu80(k,s,v){const c=ml80cfg();v=String(v||'').replace(/\s+/g,' ').trim().slice(0,60);
-  if(v){c.menu[k]=c.menu[k]||{};c.menu[k][s]=v}else if(c.menu[k]){delete c.menu[k][s];if(!c.menu[k].l&&!c.menu[k].d)delete c.menu[k]}
+  if(v){c.menu[k]=c.menu[k]||{};c.menu[k][s]=v}else if(c.menu[k]){delete c.menu[k][s];if(!Object.keys(c.menu[k]).length)delete c.menu[k]}
   save('config')}
 function hm80(s){const m=/^(\d{1,2}):(\d{2})$/.exec(s||'');return m?(+m[1])*60+(+m[2]):null}
 
@@ -30,12 +32,12 @@ function mealEnsure80(){if(!C.meal80||typeof ready==='undefined'||!ready||!ready
   try{
     Object.values(TASKS).forEach(t=>{if(!t.ml80)return;
       // 끔 · 지난 날에 안 한 것 · 사흘 지난 것은 치움
-      if(!c.on||(t.status===0&&t.due&&t.due<td)||(t.due&&t.due<old)){deleteTask(t.id);ch=true;return}
+      if(!c.on||(t.status===0&&t.due&&t.due<td)||(t.due&&t.due<old)||(t.status===0&&t.ms80&&!slOn80(t.ms80,c))){deleteTask(t.id);ch=true;return}   // 끈 끼니(아침·간식)의 안 한 블록도 치움
       if(t.status===0&&t.ms80&&t.md80){const want=title80(t.ms80,t.md80);if(t.title!==want){t.title=want;saveTask(t);ch=true}}
     });
     if(!c.on)return ch;
     const n=new Date(),nm=n.getHours()*60+n.getMinutes();
-    for(let i=0;i<7;i++){const k=addDays(td,i);SL80.forEach(([s])=>{const id=id80(k,s);if(TASKS[id]||c.no.includes(id))return;
+    for(let i=0;i<7;i++){const k=addDays(td,i);SL80.forEach(([s])=>{if(!slOn80(s,c))return;const id=id80(k,s);if(TASKS[id]||c.no.includes(id))return;
       const st=hm80(c[s].t);if(i===0&&st!=null&&st+(+c[s].m||40)<=nm)return;   // 오늘 그 끼니 시간이 이미 지났으면 안 만듦
       const t=newTask({title:title80(s,k),due:k,time:c[s].t,dur:+c[s].m||40});t.id=id;t.ml80=1;t.ms80=s;t.md80=k;t.mt80=c[s].t;t.dupok65=1;saveTask(t);ch=true})}
     if(c.no.some(x=>String(x).split('_')[1]<old)){c.no=c.no.filter(x=>String(x).split('_')[1]>=old);save('config')}
@@ -51,7 +53,7 @@ openTasks=(function(prev){return function(){const a=prev.apply(this,arguments);r
 function placed76(k){let m=0;tasksOn(k).forEach(t=>{if(t.time&&t.status===0&&!t.ml80)m+=(+t.dur||30)});return m}
 function loose76(k){const a=tasksOn(k).filter(t=>!t.time&&t.status===0&&!t.cb76&&!t.ml80);return {n:a.length,m:a.reduce((s,t)=>s+(+t.dur||0),0),nd:a.filter(t=>!t.dur).length}}
 completeTask=(function(prev){return function(t,ctx){
-  if(t&&t.ml80){if(t.status===0){t.status=2;t.doneAt=gk76();saveTask(t);toast('🍱 '+(t.ms80==='l'?'점심':'저녁')+' 먹었어요 (점수는 없어요)')}
+  if(t&&t.ml80){if(t.status===0){t.status=2;t.doneAt=gk76();saveTask(t);toast((SI80[t.ms80]||'🍱')+' '+(SN80[t.ms80]||'식사')+' 먹었어요 (점수는 없어요)')}
     else{t.status=0;delete t.doneAt;saveTask(t);toast('↶ 안 먹은 걸로 되돌렸어요')}
     render();return}
   return prev.apply(this,arguments)}})(completeTask);
@@ -59,25 +61,25 @@ openTaskSheet=(function(prev){return function(id){const t=TASKS[id];if(t&&t.ml80
 
 /* ---- 끼니 하나 창 (캘린더에서 블록을 누르면) ---- */
 function mealItem80(t){const s=t.ms80||'l',k=t.md80||t.due;sheetCtx={m80i:t.id};
-  openSheet(`<div class="sh"><h3>🍱 ${s==='l'?'점심':'저녁'} · ${dayName68(t.due||k)}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+  openSheet(`<div class="sh"><h3>${SI80[s]||'🍱'} ${SN80[s]||'식사'} · ${dayName68(t.due||k)}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
     <label class="small m80l">메뉴<input type="text" id="m80mi" data-m80i="menu" value="${esc(menuOf80(k,s))}" maxlength="60" placeholder="예: 김치볶음밥 · 달걀국" autocomplete="off" enterkeyhint="done"></label>
     <div class="row m80t"><label class="small">시작 <input type="time" data-m80i="time" value="${esc(t.time||'')}"></label><label class="small">길이 <input type="number" data-m80i="dur" min="10" max="240" step="5" value="${+t.dur||40}"> 분</label></div>
     <div class="row"><button type="button" class="btn" data-m80i="done">${t.status===2?'↶ 안 먹었어요':'✓ 먹었어요'}</button><button type="button" class="btn ghost" data-m80i="skip">이 끼니 건너뛰기</button><button type="button" class="btn ghost" data-m80open="${esc(k)}">🍱 식단표</button></div>
     <p class="help" style="margin:6px 0 0">끼니는 점수가 없어요. 시간표에서 끌어 옮기면 그날만 바뀌고, 평소 시간은 식단표의 ⚙에서 바꿔요.</p>`)}
 
 /* ---- 주간 식단표 창 ---- */
-function mealSheet80(k0){const c=ml80cfg();if(c.on==null){c.on=1;save('config')}
-  const td=midKey68(),ws=weekStart(k0||td),days=[...Array(7)].map((_,i)=>addDays(ws,i));sheetCtx={m80:ws};
-  const thisWk=weekStart(td)===ws,rows=days.map(k=>`<div class="m80r${k<td?' past':''}${k===td?' today':''}"><b class="m80d">${dayName68(k)}${k===td?'<small> 오늘</small>':''}</b>${SL80.map(([s,n])=>`<input type="text" data-m80="${k}|${s}" value="${esc(menuOf80(k,s))}" maxlength="60" placeholder="${n}" aria-label="${dayName68(k)} ${n} 메뉴" autocomplete="off" enterkeyhint="next">`).join('')}</div>`).join('');
+function mealSheet80(k0,op){const c=ml80cfg();if(c.on==null){c.on=1;save('config')}
+  const td=midKey68(),ws=weekStart(k0||td),days=[...Array(7)].map((_,i)=>addDays(ws,i)),sl=SL80.filter(([s])=>slOn80(s,c));sheetCtx={m80:ws};
+  const thisWk=weekStart(td)===ws,rows=days.map(k=>`<div class="m80r${sl.length>2?' nx':''}${k<td?' past':''}${k===td?' today':''}"><b class="m80d">${dayName68(k)}${k===td?'<small> 오늘</small>':''}</b>${sl.map(([s,n])=>`<input type="text" data-m80="${k}|${s}" value="${esc(menuOf80(k,s))}" maxlength="60" placeholder="${SI80[s]} ${n}" aria-label="${dayName68(k)} ${n} 메뉴" autocomplete="off" enterkeyhint="next">`).join('')}</div>`).join('');
   openSheet(`<div class="sh"><h3>🍱 식단표</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
     <div class="row m80n"><button type="button" class="btn ghost sm" data-m80w="-7" aria-label="지난 주">‹</button><span class="m80wk">${dayName68(ws)} ~ ${dayName68(days[6])}${thisWk?' · 이번 주':''}</span><button type="button" class="btn ghost sm" data-m80w="7" aria-label="다음 주">›</button></div>
     <div class="m80g">${rows}</div>
     <div class="row m80b"><button type="button" class="btn ghost sm" data-m80copy="1" title="지난주 같은 요일 메뉴를 빈 칸에 채워요">지난주 메뉴 가져오기</button><button type="button" class="btn ghost sm" data-m80clr="1">이 주 비우기</button></div>
-    <details class="m80s"${c.on?'':' open'}><summary>⚙ 켜고 끄기 · 시간 · 길이</summary>
+    <details class="m80s"${c.on&&!op?'':' open'}><summary>⚙ 켜고 끄기 · 시간 · 길이</summary>
       <label class="row small"><input type="checkbox" data-m80c="on" ${c.on?'checked':''} style="width:auto"> 시간표에 식사 블록 자동으로 만들기 <span class="muted">(오늘부터 7일치)</span></label>
-      ${SL80.map(([s,n])=>`<div class="row small m80t">${n} <input type="time" data-m80c="${s}t" value="${esc(c[s].t.padStart(5,'0'))}"> <input type="number" data-m80c="${s}m" min="10" max="240" step="5" value="${+c[s].m}"> 분</div>`).join('')}
+      ${SL80.map(([s,n])=>{const opt=s==='b'||s==='s',on=slOn80(s,c);return `<div class="row small m80t">${opt?`<label class="m80o"><input type="checkbox" data-m80c="${s}:on" ${on?'checked':''} style="width:auto"> ${SI80[s]} ${n} 넣기</label>`:`${SI80[s]} ${n}`}${on?` <input type="time" data-m80c="${s}t" value="${esc(c[s].t.padStart(5,'0'))}"> <input type="number" data-m80c="${s}m" min="10" max="240" step="5" value="${+c[s].m}"> 분`:''}</div>`}).join('')}
     </details>
-    <p class="help" style="margin:6px 0 0">칸에 메뉴를 적으면 시간표 🍱 블록 이름에 붙어요. 블록은 캘린더에서 끌어 옮기거나 눌러서 고치고, 지우면 그 끼니는 다시 안 만들어요. 점수 없음 · 하루 예산에서 빠져요.</p>`)}
+    <p class="help" style="margin:6px 0 0">칸에 메뉴를 적으면 시간표 블록 이름에 붙어요(🥐 아침 · 🍱 점심·저녁 · 🍪 간식 — 아침·간식은 위 ⚙에서 켜요). 블록은 캘린더에서 끌어 옮기거나 눌러서 고치고, 지우면 그 끼니는 다시 안 만들어요. 점수 없음 · 하루 예산에서 빠져요.</p>`)}
 
 /* ---- 입력·단추 (캡처 단계에서 가로채 시트가 다시 그려지지 않게) ---- */
 addEventListener('change',e=>{const T=e.target;if(!T||!T.matches)return;
@@ -88,6 +90,8 @@ addEventListener('change',e=>{const T=e.target;if(!T||!T.matches)return;
     else if(w==='dur'){const v=Math.max(10,Math.min(240,Math.round(+T.value||0)));if(v){t.dur=v;saveTask(t)}}
     render();return}
   if(T.matches('[data-m80c]')){e.stopPropagation();const c=ml80cfg(),w=T.dataset.m80c;
+    if(/^[bs]:on$/.test(w)){const s=w[0];c[s].on=T.checked?1:0;save('config');mealEnsure80();render();mealSheet80((sheetCtx||{}).m80,1);
+      toast(c[s].on?`${SI80[s]} ${SN80[s]} 블록을 만들어요 (오늘부터 7일)`:`${SI80[s]} ${SN80[s]} 블록을 껐어요 — 만든 블록은 지웠어요`);return}
     if(w==='on'){c.on=T.checked?1:0;save('config');if(c.on)toast('🍱 시간표에 식사 블록을 만들어요 (오늘부터 7일)');else{mealEnsure80();toast('🍱 식사 블록을 껐어요 — 만든 블록은 지웠어요')}}
     else{const s=w[0],f=w[1];if(f==='t'){if(hm80(T.value)==null)return;const o=c[s].t;c[s].t=T.value;
         Object.values(TASKS).forEach(t=>{if(t.ml80&&t.ms80===s&&t.status===0&&t.time===t.mt80){t.time=T.value;t.mt80=T.value;saveTask(t)}else if(t.ml80&&t.ms80===s)t.mt80=T.value})}
@@ -103,7 +107,7 @@ addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
   if((b=T.closest('[data-m80open]'))){e.preventDefault();e.stopPropagation();closeSheet();mealSheet80(b.dataset.m80open||undefined);return}
   if((b=T.closest('[data-m80w]'))){e.preventDefault();e.stopPropagation();const ws=(sheetCtx||{}).m80;if(ws)mealSheet80(addDays(ws,+b.dataset.m80w));return}
   if((b=T.closest('[data-m80copy]'))){e.preventDefault();e.stopPropagation();const ws=(sheetCtx||{}).m80;if(!ws)return;let n=0;
-    for(let i=0;i<7;i++){const k=addDays(ws,i),p=addDays(k,-7);SL80.forEach(([s])=>{if(!menuOf80(k,s)&&menuOf80(p,s)){setMenu80(k,s,menuOf80(p,s));n++}})}
+    for(let i=0;i<7;i++){const k=addDays(ws,i),p=addDays(k,-7);SL80.forEach(([s])=>{if(slOn80(s)&&!menuOf80(k,s)&&menuOf80(p,s)){setMenu80(k,s,menuOf80(p,s));n++}})}
     mealEnsure80();mealSheet80(ws);render();toast(n?`🍱 지난주 메뉴 ${n}칸을 가져왔어요`:'가져올 메뉴가 없어요 (지난주가 비었거나 이미 다 찼어요)');return}
   if((b=T.closest('[data-m80clr]'))){e.preventDefault();e.stopPropagation();const ws=(sheetCtx||{}).m80;if(!ws)return;
     if(!b.dataset.arm){b.dataset.arm='1';b.textContent='한 번 더 누르면 비워요';setTimeout(()=>{try{delete b.dataset.arm;b.textContent='이 주 비우기'}catch(e){}},3500);return}
@@ -116,7 +120,7 @@ addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
 // 캘린더 ⋯ 설정 메뉴에 🍱 식단표
 menu61=(function(prev){return function(x,y,title,items){try{if(title==='캘린더 설정'&&Array.isArray(items)&&!items.some(it=>it&&it.l==='🍱 식단표')){
     const i=items.findIndex(it=>it&&typeof it.l==='string'&&/^\? 도움말/.test(it.l));
-    items.splice(i<0?items.length:i,0,{l:'🍱 식단표 (점심·저녁 블록)',f:()=>{mealSheet80((ui&&ui.calSel)||midKey68())}})}}catch(e){console.error(e)}
+    items.splice(i<0?items.length:i,0,{l:'🍱 식단표 (식사·간식 블록)',f:()=>{mealSheet80((ui&&ui.calSel)||midKey68())}})}}catch(e){console.error(e)}
   return prev.call(this,x,y,title,items)}})(menu61);
 // 밀프렙 할 일 상세에서 식단표 열기
 drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{
@@ -127,7 +131,7 @@ drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,argument
 // 데스크톱 캘린더 줄에 🍱 단추 (폰은 ⋯ 설정 메뉴에 있어서 숨김)
 renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);try{
   const bar=document.querySelector('.calbar2'),tr=$('calTrayBtn');
-  if(bar&&tr){let b=$('calMealBtn');if(!b){tr.insertAdjacentHTML('afterend','<button type="button" class="ib" id="calMealBtn" title="식단표 (점심·저녁 블록)" aria-label="식단표">🍱</button>');b=$('calMealBtn')}
+  if(bar&&tr){let b=$('calMealBtn');if(!b){tr.insertAdjacentHTML('afterend','<button type="button" class="ib" id="calMealBtn" title="식단표 (식사·간식 블록)" aria-label="식단표">🍱</button>');b=$('calMealBtn')}
     const ph=$('cal62m')&&$('cal62m').offsetParent;b.hidden=!!ph}
 }catch(e){console.error(e)}return r}})(renderCal);
 addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('#calMealBtn');if(!b)return;e.preventDefault();e.stopPropagation();mealSheet80((ui&&ui.calSel)||midKey68())},true);
@@ -211,5 +215,5 @@ addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closes
 addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.matches&&e.target.matches('.p80f,.p80t')){e.preventDefault();const id=e.target.dataset.p80t;closeSheet();openTaskSheet(id)}});
 // 기능 지도
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['🍱 식단표','캘린더 줄 🍱 (폰은 ⋯ 설정) · 밀프렙 할 일 상세','주간 표에 점심·저녁 메뉴를 적으면 시간표에 식사 블록이 7일치 자동으로 생겨요. 끌어 옮기면 그날만 바뀌고, 점수 없음 · 하루 예산에서 빠져요',()=>{mealSheet80(midKey68())},'식단표 점심 저녁 메뉴 식사 블록 밀프렙'],
+  ['🍱 식단표','캘린더 줄 🍱 (폰은 ⋯ 설정) · 밀프렙 할 일 상세','주간 표에 점심·저녁 메뉴를 적으면 시간표에 식사 블록이 7일치 자동으로 생겨(⚙에서 🥐 아침·🍪 간식도 켤 수 있어요)요. 끌어 옮기면 그날만 바뀌고, 점수 없음 · 하루 예산에서 빠져요',()=>{mealSheet80(midKey68())},'식단표 점심 저녁 메뉴 식사 블록 밀프렙'],
   ['🌙 시간표 짜기','캘린더 줄 🌙 (폰은 ⋯ 설정)','내일(또는 다른 날)의 정해진 것·시간 안 정한 일을 한 화면에 모아, 길이만 적으면 빈 시간에 차례로 넣어 봐요(미리보기 → 이대로 넣기 · 되돌리기)',()=>{planSheet80()},'내일 짜기 시간표 짜기 자동 배치 빈 시간 하루 예산']])}})(F67);

@@ -1,0 +1,9 @@
+/* v11.0 (w109.js · w80.js 아침·간식) */
+.m80o{display:inline-flex;align-items:center;gap:4px}
+.m80r.nx{grid-template-columns:76px 1fr 1fr}
+.m80r.nx .m80d{grid-row:span 2;align-self:start;padding-top:6px}
+.agenda .trow.done.d109{border-radius:8px;cursor:pointer}
+.agenda .trow.done.d109 .tm{opacity:1}
+/* 폰 '일정'(목록) 보기가 화면보다 넓게 그려져 오른쪽(+XP·⏱)이 잘리던 것 — .stack 격자의 자동 칸이 내용 폭(max-content)까지 늘어남 */
+#calPane.stack{grid-template-columns:minmax(0,1fr)}
+#calPane .callay,#calMain{min-width:0}
