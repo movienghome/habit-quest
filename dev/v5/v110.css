@@ -1,0 +1,10 @@
+.im110{display:inline-flex;align-items:baseline;gap:3px;border:1px solid var(--line);background:transparent;color:inherit;border-radius:999px;padding:1px 7px;font:inherit;font-size:11.5px;line-height:1.4;cursor:pointer;white-space:nowrap}
+.im110.no110{border-style:dashed;color:var(--muted)}
+.im110.on110{border-width:2px;font-weight:600}
+.im110h{margin:12px 0 2px;font-size:13px}
+.im110h small{font-weight:400}
+.im110r{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.im110r .nm{flex:1 1 140px;min-width:0;overflow-wrap:anywhere}
+.im110r.done{opacity:.85}
+.im110d{margin:0 0 8px}
+.im110s summary{cursor:pointer}
