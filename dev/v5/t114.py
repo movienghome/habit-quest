@@ -27,14 +27,14 @@ with sync_playwright() as pw:
     it=items(pg);ok(len(it)==1 and it[0]['n']=='치킨' and it[0]['k']=='f' and it[0]['s']=='p' and it[0]['rid'],f'[{W}] 적으면 열린 항목 1개 + 적기 기록',it)
     ok(J(pg,"P.xp")==xp0+1,f'[{W}] 적기 보상은 XP 1(작게)',J(pg,"P.xp")-xp0)
     ok(J(pg,"document.getElementById('imp110N').value")=='' ,f'[{W}] 적은 뒤 입력칸이 비워짐')
-    ok('참는 중' in J(pg,"document.querySelector('#battleBox .im110')?document.querySelector('#battleBox .im110').innerText:''") or '오늘 밤 확정' in J(pg,"document.querySelector('#battleBox .im110').innerText"),f'[{W}] 칩이 참는 중/확정 n으로 바뀜',J(pg,"document.querySelector('#battleBox .im110').innerText"))
+    ok('참는 중' in J(pg,"document.querySelector('#battleBox .im110')?document.querySelector('#battleBox .im110').innerText:''") or '결과 정하기' in J(pg,"document.querySelector('#battleBox .im110').innerText"),f'[{W}] 칩이 참는 중/확정 n으로 바뀜',J(pg,"document.querySelector('#battleBox .im110').innerText"))
     # --- 확정: 안 먹음 (야식 카드 없으면 기본 점수) ---
     xp1=J(pg,"P.xp");nm=J(pg,"card110('f')&&card110('f').name")
     pg.click('#sheetC [data-imh110]',timeout=3000);pg.wait_for_timeout(300);notoast(pg)
     it=items(pg);ok(it[0]['s']=='h' and it[0]['eid'],f'[{W}] ✓ 안 먹음 → 참음 상태',it)
     ok(J(pg,"P.xp")>xp1,f'[{W}] 확정 보상이 적기보다 큼',J(pg,"P.xp")-xp1)
     e=ents(pg);ok(any(x['xp']>1 for x in e),f'[{W}] 확정 기록이 생김',e)
-    ok('오늘 확정' in J(pg,"document.getElementById('sheetC').innerText"),f'[{W}] 창에 오늘 확정 칸')
+    ok('오늘 결과' in J(pg,"document.getElementById('sheetC').innerText"),f'[{W}] 창에 오늘 결과 칸')
     # --- 되돌리기 → 확정 기록 사라지고 열림 ---
     pg.click('#sheetC [data-imu110]',timeout=3000);pg.wait_for_timeout(400);notoast(pg)
     it=items(pg);ok(it[0]['s']=='p' and not it[0]['eid'],f'[{W}] 되돌리기 → 다시 열림',it)

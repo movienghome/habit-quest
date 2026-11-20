@@ -8,3 +8,7 @@
 .im110r.done{opacity:.85}
 .im110d{margin:0 0 8px}
 .im110s summary{cursor:pointer}
+.im110p{flex-basis:100%;margin-top:4px;padding:6px 8px;border:1px dashed var(--line);border-radius:8px}
+.ima110{width:96px;max-width:40%;font-size:12px;padding:2px 6px}
+.im110sum{margin:2px 0 0;padding-left:16px}
+.im110s textarea,.im110s input[type=text]{width:100%;box-sizing:border-box}
