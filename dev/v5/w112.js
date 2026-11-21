@@ -18,9 +18,12 @@ function range112(it,td){return it.lm.p==='w'?[weekStart(td),addDays(weekStart(t
 function used112(it,td){td=td||gk76();const l=lm112(it);if(!l)return 0;const r=range112(it,td);let n=0;
   eachBuy112(r[0],r[1],e=>{if(e.sid112?e.sid112===it.id:e.name===it.name+' 구매')n++});return n}
 function spent112(td){td=td||gk76();let g=0;eachBuy112(td.slice(0,7)+'-01',td.slice(0,7)+'-31',e=>{g+=Math.abs(+e.gold||0)});return g*cfg110().won}
-function over112(it){ens112();const o=[],l=lm112(it),won=cfg110().won;
-  if(l){const u=used112(it);if(u+1>l.n)o.push(`${l.p==='w'?'이번 주':'이번 달'} ${esc(it.name)} 이미 ${u}번 샀어요 — 상한은 ${l.p==='w'?'주':'월'} ${l.n}번`)}
-  const m=cfgC112().m;if(m>0){const sp=spent112(),add=(+it.price||0)*won;if(sp+add>m)o.push(`이번 달 상점에서 이미 ${cm110(sp)||0}원 썼어요 — 이걸 사면 ${cm110(sp+add)}원 (상한 ${cm110(m)}원)`)}
+/* ovc112 = 이 물건을 지금 사면 넘기는 상한 코드('i' 물건별 · 'm' 한 달 전체). v11.5: 확인에서 '그래도 살게요'로 산 구매엔 e.ov112(코드 글자)를 남김 — 기록만, 점수·골드 변화 없음 */
+function ovc112(it){ens112();const c=[],l=lm112(it);if(l&&used112(it)+1>l.n)c.push('i');
+  const m=cfgC112().m;if(m>0&&spent112()+(+it.price||0)*cfg110().won>m)c.push('m');return c}
+function over112(it){const c=ovc112(it),o=[],l=lm112(it),won=cfg110().won;
+  if(c.includes('i')){const u=used112(it);o.push(`${l.p==='w'?'이번 주':'이번 달'} ${esc(it.name)} 이미 ${u}번 샀어요 — 상한은 ${l.p==='w'?'주':'월'} ${l.n}번`)}
+  if(c.includes('m')){const m=cfgC112().m,sp=spent112(),add=(+it.price||0)*won;o.push(`이번 달 상점에서 이미 ${cm110(sp)||0}원 썼어요 — 이걸 사면 ${cm110(sp+add)}원 (상한 ${cm110(m)}원)`)}
   return o}
 function capSheet112(it,o){sheetCtx={cap112:it.id};
   openSheet(`<div class="sh"><h3>🧾 한 번 더 확인</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
@@ -48,15 +51,16 @@ function shopCap112(){ens112();const L=$('shopList');if(!L)return;
 renderShop=(function(prev){return function(){const r=prev.apply(this,arguments);try{shopCap112()}catch(e){console.error(e)}return r}})(renderShop);
 
 /* 사기 → 상한 확인. LAST112 = 이번 구매의 물건 id(applyEntry 감싸개가 기록에 e.sid112로 남김) */
-var BYP112=0,LAST112=null;
-applyEntry=(function(prev){return function(day,e){try{if(e&&e.kind==='buy'&&LAST112){const it=(C.shop||[]).find(z=>z.id===LAST112);if(it&&e.name===it.name+' 구매')e.sid112=it.id}}catch(x){console.error(x)}LAST112=null;return prev.apply(this,arguments)}})(applyEntry);
+var BYP112=0,LAST112=null,OV112=null;
+applyEntry=(function(prev){return function(day,e){try{if(e&&e.kind==='buy'&&LAST112){const it=(C.shop||[]).find(z=>z.id===LAST112);if(it&&e.name===it.name+' 구매'){e.sid112=it.id;if(OV112&&OV112.id===it.id&&OV112.c.length)e.ov112=OV112.c.join('')}}}catch(x){console.error(x)}LAST112=null;return prev.apply(this,arguments)}})(applyEntry);
 addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
   if((b=T.closest('[data-buy]'))){LAST112=b.dataset.buy;setTimeout(()=>{LAST112=null},0);if(BYP112||b.disabled)return;
     const it=(C.shop||[]).find(z=>z.id===b.dataset.buy);if(!it)return;const o=over112(it);if(!o.length)return;
     e.preventDefault();e.stopImmediatePropagation();LAST112=null;capSheet112(it,o);return}
   if((b=T.closest('[data-cap112go]'))){e.preventDefault();e.stopPropagation();const id=b.dataset.cap112go;closeSheet();
     let bb=document.querySelector('#shopList [data-buy="'+id+'"]');let tmp=0;if(!bb||bb.disabled){bb=document.createElement('button');bb.dataset.buy=id;bb.hidden=true;document.body.appendChild(bb);tmp=1}
-    BYP112=1;try{bb.click()}finally{BYP112=0;if(tmp)bb.remove()}return}
+    const it0=(C.shop||[]).find(z=>z.id===id);OV112=it0?{id,c:ovc112(it0)}:null;
+    BYP112=1;try{bb.click()}finally{BYP112=0;OV112=null;if(tmp)bb.remove()}return}
   if((b=T.closest('[data-cp112]'))){e.preventDefault();e.stopPropagation();capItem112(b.dataset.cp112);return}
   if((b=T.closest('[data-cp112s]'))){e.preventDefault();e.stopPropagation();ens112();const it=(C.shop||[]).find(z=>z.id===b.dataset.cp112s);if(!it)return;
     const P=$('cp112P'),N=$('cp112N'),p=P&&P.value,nv=p?{n:Math.max(1,Math.min(99,Math.round(+(N&&N.value))||1)),p}:null,cur=lm112(it);

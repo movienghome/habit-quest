@@ -1,0 +1,8 @@
+/* v11.5 (w113.js) */
+.mo112{margin:6px 0 8px;padding:6px 8px;border:1px solid var(--line);border-radius:10px}
+.mo112 .bar112{height:6px;border-radius:3px;background:var(--line);margin-top:5px;overflow:hidden}
+.mo112 .bar112 i{display:block;height:100%;background:var(--accent)}
+.mo112.over .bar112 i{background:repeating-linear-gradient(45deg,var(--accent) 0 4px,transparent 4px 8px)}
+.ov112d summary{cursor:pointer;margin-top:6px}
+.ov112l{margin:4px 0 0;padding-left:16px}
+.ov112t{white-space:nowrap}
