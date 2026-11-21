@@ -1,0 +1,11 @@
+/* v11.3 (w111.js · w110.js) */
+.im110e{flex-basis:100%;margin-top:4px;padding:6px 8px;border:1px dashed var(--line);border-radius:8px}
+.im110e .chipbtn[aria-pressed=true]{font-weight:600;border-width:2px}
+.im110e .imt110{width:96px;flex:0 0 auto}
+.im110e .imm110{flex:1 1 auto;min-width:0}
+.im110hint{margin:2px 0 4px;padding:4px 6px;border-left:3px solid var(--line)}
+.im110hs{margin-top:10px}.im110hs summary{cursor:pointer}
+.im110r .tiny{flex-basis:100%}
+.wt111p{margin:0 0 8px}.wt111p summary{cursor:pointer}
+.wt111p input[type=text],.wt111p input[type=number]{max-width:140px}
+#imp110C div{margin-top:1px}
