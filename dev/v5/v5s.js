@@ -197,7 +197,7 @@ drawTaskSheet=(function(prev){return function(){const x=prev.apply(this,argument
 /* ---- 4) 사냥 ---- */
 startRun=(function(prev){return function(o){
   try{if(o&&o.routine&&C.mig62){const r=(C.routines||[]).find(x=>x.id===o.routine.id)||o.routine;sync62(r);const h=rtH62(r,false),rep=!!(h&&h.rep&&h.rep.f);reopen62(h,!rep);
-    let st=(r.steps||[]).filter(s=>TASKS[s.tid]);const left=rep?st.filter(s=>!stDone62(TASKS[s.tid])):st;
+    let st=(r.steps||[]).filter(s=>TASKS[s.tid]&&!pOff114(r,s));const left=rep?st.filter(s=>!stDone62(TASKS[s.tid])):st;
     if(rep&&!left.length){toast('오늘 단계를 다 했어요 · 다시 하려면 루틴 창에서 단계를 열어요');return}
     if(rep&&left.length<st.length)toast(`오늘 이미 한 ${st.length-left.length}단계는 건너뛰어요`);
     o={...o,routine:{...r,steps:left}}}}catch(e){console.error(e)}

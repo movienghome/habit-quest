@@ -1,0 +1,9 @@
+/* v11.6 (w114.js) — 루틴 상황별 프리셋 */
+.pe114{margin:8px 0;padding:6px 8px;border:1px solid var(--line);border-radius:10px}
+.pe114 summary{cursor:pointer}
+.pe114 .pr114row{margin-top:6px}
+.pe114l{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px}
+.pe114r{display:flex;align-items:center;gap:4px;font-size:13px}
+.pe114r input{width:auto}
+.pr114[aria-pressed="true"]{font-weight:700;border-width:2px}
+.pr114row{margin:2px 0 4px}

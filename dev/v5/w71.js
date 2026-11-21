@@ -258,7 +258,7 @@ addEventListener('keydown',e=>{if(e.target&&e.target.id==='tsTags'&&e.key==='Ent
 /* ---- 10) 루틴: 하나만 골라 하는 단계(🔀) · 건너뛰어도 되는 단계(◌) · 몇 시쯤(⏰) · 단계만 체크해도 완주 · 카드 쪽 '루틴 없음' 고침 ----
    s.g71 = 묶음 이름(같은 값끼리 '하나만'), s.opt71 = 선택. 완주 = 필수 단계 다 + 묶음마다 하나 이상. */
 function stIsDone71(r,D){const day=DAYS[D];return s=>s.aid==='@weigh'?!!(day&&day.weight):stOn69(TASKS[s.tid],D)}
-function rtNeed71(r,isDone){const st=(r.steps||[]).filter(s=>TASKS[s.tid]);let ok=true,miss=0;const G={};
+function rtNeed71(r,isDone){const st=(r.steps||[]).filter(s=>TASKS[s.tid]&&!pOff114(r,s));let ok=true,miss=0;const G={};
   st.forEach(s=>{if(s.g71){(G[s.g71]=G[s.g71]||[]).push(s);return}if(s.opt71)return;if(!isDone(s)){ok=false;miss++}});
   Object.values(G).forEach(g=>{if(!g.some(isDone)){ok=false;miss++}});return{ok:st.length>0&&ok,miss,st,G}}
 function rtHasPick71(r){return (r.steps||[]).some(s=>s.g71||s.opt71)}
@@ -272,7 +272,7 @@ function rtFull71(r,D,e0){const day=dayOf(D);if((day.entries||[]).some(e=>e.kind
 function rtDone64(r,keepDay){
   if(!r)return;if(!keepDay)RD69=curDay().date;const D=RD69||dateKey(),isT=D===dateKey(),lbl=isT?'오늘':d69lbl(D);
   sync62(r);const head=rtH62(r,false),day=DAYS[D],isD=stIsDone71(r,D);
-  const st=(r.steps||[]).filter(s=>TASKS[s.tid]),full=day&&(day.entries||[]).some(e=>e.kind==='routine'&&e.rid===r.id&&e.full);
+  const st=(r.steps||[]).filter(s=>TASKS[s.tid]&&!pOff114(r,s)),full=day&&(day.entries||[]).some(e=>e.kind==='routine'&&e.rid===r.id&&e.full);
   sheetCtx={rt64:r.id};
   const row=(s,i)=>{const t=TASKS[s.tid],w=s.aid==='@weigh',dn=isD(s),p=stPts62(s),pick=s.g71||s.opt71;
     return `<label class="d64r ${dn?'ok':''}"><input type="${s.g71?'checkbox':'checkbox'}" data-d64="${s.tid}" ${s.g71?`data-g71="${esc(s.g71)}"`:''} ${dn?'checked disabled':pick?'':'checked'}><span class="no">${dn?'✓':i+1}</span><span class="nm">${esc(stName61(s))}${s.opt71?' <small class="muted">◌ 선택</small>':''}${dn?` <small class="muted">${esc(lbl)} 함</small>`:''}</span>
