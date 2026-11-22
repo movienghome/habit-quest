@@ -1,0 +1,5 @@
+/* v11.8 (w116.js) — 루틴 상황: 카드 맨 위 줄 · 시작 전 창 */
+.pt116{margin:6px 0 2px}
+.sit116{display:grid;gap:8px}
+.s116{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:52px;text-align:left;padding:8px 12px}
+.s116 b{font-size:15px}

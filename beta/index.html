@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v11.7</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v11.8</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2428,11 +2428,12 @@ details.dn75.d106:not([open])>summary.lb::after{content:' ▸'}
 .s115 .a115,.s115 .b115{display:flex;flex-direction:row-reverse;align-items:baseline;gap:5px;white-space:nowrap}
 .s115 .a115{font-weight:700}
 .s115 .b115{font-size:11px;font-weight:500;color:var(--muted)}
-.sit115{grid-column:2 / -1;display:flex;gap:6px;margin:3px 0 2px}
-.sb115,.sg115{height:36px;border:1.5px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:10px;font:inherit;font-size:13px;white-space:nowrap;cursor:pointer;padding:0 4px}
-.sb115{flex:1 1 0;min-width:0}
-.sg115{flex:0 0 36px;padding:0;color:var(--muted)}
-.sb115[aria-checked="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--panel));font-weight:700;box-shadow:inset 0 0 0 1px var(--accent)}
+
+/* v11.8 (w116.js) — 루틴 상황: 카드 맨 위 줄 · 시작 전 창 */
+.pt116{margin:6px 0 2px}
+.sit116{display:grid;gap:8px}
+.s116{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:52px;text-align:left;padding:8px 12px}
+.s116 b{font-size:15px}
 </style>
 
 <header class="hud" id="hud">
@@ -16203,7 +16204,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
      **완주 = 켜진 단계 다 함**(완주 보너스는 그대로) · 체크 창에서도 안 보임 ③ `startRun` 감쌈이 타이머 단계에서 뺌(목표 시간도 켜진 단계 합) — RUN.steps에 안 들어가니 루틴 배우기(h76)엔 '건너뜀'이 안 쌓임
      ④ `stDoneHide72`를 다시 선언(오늘 한 단계 + 꺼진 단계는 목록에서 숨김). `rtPart73`(일부 = 오늘 함)은 '한 단계 수'만 보니 그대로.
    · 몸무게 단계(@weigh)도 그냥 단계라서 외근에서 끌 수 있음(끄면 체크 창·완주에서 빠짐. 몸무게는 기록하기에서 언제든 적으면 단계가 체크됨 — 기존 wSync63).
-   · 고르는 곳: ① 루틴 카드 `🧭 상황별` 접힘 칸(오늘 칩 + 상황별 단계 체크칸) ② 루틴 체크 창 위 한 줄 ③ 할 일 목록의 루틴 줄 아래 한 줄 — **② ③은 상황을 하나라도 정한 루틴에만**(공간 아낌).
+   · 고르는 곳: ① 루틴 카드 `🧭 상황별` 접힘 칸(오늘 칩 + 상황별 단계 체크칸) ② 루틴 체크 창 위 한 줄(단계를 끈 루틴에만) ③ ⏱ 시작 전 선택창(w116, 오늘 아직 안 골랐고 끈 단계가 있는 루틴만). v11.8: 목록 줄에는 안 둠(공간).
    · 새 단계를 끄고 켜는 새 길은 `r.pre114`만 바꾸고 `save('config')` 뒤 `redrawRt61()`·`render()`. 단계를 읽는 새 코드가 '오늘 해야 할 단계'를 셀 땐 `pOff114`를 거칠 것. */
 var PRE114=[['n','🌿','일반'],['w','🚗','출근'],['o','🎬','외근']],O114={};
 function preN114(p){const x=PRE114.find(a=>a[0]===p);return x?x[1]+' '+x[2]:''}
@@ -16216,8 +16217,7 @@ function pChips114(r){const p=pk114(r);return PRE114.map(([id,ic,n])=>`<button t
 function blk114(r){
   const e=O114[r.id]||'w',on=pk114(r),live=(r.steps||[]).filter(s=>TASKS[s.tid]);live.forEach(s=>{if(!s.id)s.id=uid()});
   const off=(r.pre114&&r.pre114[e])||[],sum=on==='n'?'오늘은 🌿 일반 · 모든 단계':`오늘은 ${preN114(on)} · ${offCnt114(r,on)}단계 쉬어요`;
-  return `<details class="pe114" data-r="${r.id}" ${O114['o'+r.id]?'open':''}><summary class="small"><b>🧭 상황별 (일반·출근·외근)</b> <span class="tiny muted">${esc(sum)}</span></summary>
-    <div class="row pr114row" style="gap:6px;flex-wrap:wrap"><span class="tiny muted">오늘은</span>${pChips114(r)}</div>
+  return `<div class="row pr114row pt116" style="gap:6px;flex-wrap:wrap"><span class="tiny muted">오늘은</span>${pChips114(r)}</div><details class="pe114" data-r="${r.id}" ${O114['o'+r.id]?'open':''}><summary class="small"><b>🧭 상황별 쉬는 단계 정하기</b> <span class="tiny muted">${esc(sum)}</span></summary>
     <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:6px"><span class="tiny muted">하는 단계 고르기</span>${PRE114.slice(1).map(([id,ic,n])=>`<button type="button" class="chipbtn" data-pe114="${r.id}|${id}" aria-pressed="${e===id}">${ic} ${n}${e===id?' ✓':''}</button>`).join('')}</div>
     <div class="pe114l">${live.map(s=>`<label class="pe114r"><input type="checkbox" data-pc114="${r.id}|${s.id}|${e}" ${off.indexOf(s.id)>=0?'':'checked'}> <span>${esc(stName61(s))}</span></label>`).join('')||'<span class="tiny muted">단계가 없어요</span>'}</div>
     <p class="tiny muted" style="margin:4px 0 0">체크를 끈 단계는 ${esc(preN114(e))}인 날 목록·타이머·체크 창에서 빠지고, 완주는 켜진 단계로 따져요(완주 보너스는 그대로). 🌿 일반은 늘 모든 단계예요. 하루가 지나면 일반으로 돌아와요.</p></details>`}
@@ -16226,7 +16226,7 @@ function blk114(r){
 // 루틴 체크 창: 상황을 정한 루틴이면 위에 한 줄
 (function(prev){rtDone64=function(r,k){const x=prev.apply(this,arguments);try{const box=$('sheetC'),d=box&&box.querySelector('.d64s');
   if(r&&hasPre114(r)&&d&&!box.querySelector('.pr114row'))d.insertAdjacentHTML('beforebegin',`<div class="row pr114row" style="gap:6px;flex-wrap:wrap;margin:0 0 6px"><span class="tiny muted">오늘은</span>${pChips114(r)}</div>`)}catch(e){console.error(e)}return x}})(rtDone64);
-// (v11.7) 할 일 목록 루틴 줄 아래 칩 줄은 w115의 머리줄 칸(.sit115)으로 옮겨감
+// (v11.8) 목록 루틴 줄에는 상황 칸을 안 둠(공간) — 카드 맨 위 줄·시작 전 창(w116)에서 고름
 // 타이머: 꺼진 단계는 빼고 시작
 (function(prev){startRun=function(o){try{if(o&&o.routine){const r=(C.routines||[]).find(x=>x.id===o.routine.id),ss=o.routine.steps||[],st=r?ss.filter(s=>!pOff114(r,s)):ss;
   if(st.length!==ss.length){if(!st.length){toast('오늘 상황에선 할 단계가 없어요 · 🧭 상황별에서 바꿔요');return}o={...o,routine:{...o.routine,steps:st}}}}}catch(e){console.error(e)}return prev.call(this,o)}})(startRun);
@@ -16250,27 +16250,40 @@ addEventListener('change',e=>{const i=e.target;if(!i||!i.dataset||!i.dataset.pc1
 // 접힘 칸 펼침 기억 (다시 그려도 유지)
 addEventListener('toggle',e=>{const d=e.target;if(d&&d.classList&&d.classList.contains('pe114')&&d.dataset.r)O114['o'+d.dataset.r]=d.open?1:0},true);
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['🚗 루틴 상황별(출근·외근)','루틴 카드 → 🧭 상황별 · 루틴 체크 창·할 일 목록 루틴 줄 아래 칩','새벽 출근·외부 촬영처럼 아침 루틴을 다 못 하는 날, 그날만 🌿 일반 / 🚗 출근 / 🎬 외근을 골라요. 꺼 둔 단계는 그날 목록·타이머·체크 창에서 빠지고 완주는 켜진 단계로 따져요. 하루 지나면 일반으로',()=>{location.hash='edit'},'루틴 프리셋 상황 출근 외근 일반 아침 루틴 단계 끄기 모텔 새벽']])}})(F67);
+  ['🚗 루틴 상황별(출근·외근)','루틴 카드 맨 위 오늘은 줄 · ⏱ 시작 전 · 루틴 체크 창','새벽 출근·외부 촬영처럼 아침 루틴을 다 못 하는 날, 그날만 🌿 일반 / 🚗 출근 / 🎬 외근을 골라요. 꺼 둔 단계는 그날 목록·타이머·체크 창에서 빠지고 완주는 켜진 단계로 따져요. 하루 지나면 일반으로',()=>{location.hash='edit'},'루틴 프리셋 상황 출근 외근 일반 아침 루틴 단계 끄기 모텔 새벽']])}})(F67);
 
-/* ---- v11.7 (w115.js): 루틴 머리줄 '오늘 상황' 칸 + 점수 칸 정리 (사용자 11/22: 상황 고르는 곳이 안 보임 · 점수 칸 정렬·2단 쌓임이 지저분함) ----
+/* ---- v11.7 (w115.js): 점수 칸 정리 (v11.8: 머리줄 '오늘 상황' 칸 .sit115는 공간을 차지해 뺌 — 상황은 루틴 카드·시작 전에서 고름, w116.js) (사용자 11/22: 상황 고르는 곳이 안 보임 · 점수 칸 정렬·2단 쌓임이 지저분함) ----
    · 루틴 머리줄(오늘 차례) 맨 아래에 한 줄 `.sit115`: [🌿 일반][🚗 출근][🎬 외근] + ⚙ — 한 번 누르면 바로 바뀜(기존 `data-pk114` 클릭 처리 그대로 재사용).
      선택된 칸 = 굵은 테두리 + 진한 바탕 + ` ✓`(색만으로 구분 안 함). ⚙ = 루틴 카드 🧭 상황별을 펴서 엶(상황마다 쉬는 단계 정하기).
    · 예전 목록 루틴 줄 아래 칩 줄(`dn75` 감쌈, w114)은 없앰 — 이쪽이 대신함. 체크 창(`rtDone64`)·루틴 카드 칸은 그대로.
    · 점수 칸(`.trow>.tx`)은 한 줄·오른쪽 정렬(숫자 맞춤). 점수(+n)는 늘 오른쪽 끝에 두고 골드는 그 왼쪽에 둠(줄마다 +n 자리가 같음). 루틴 머리는 두 줄: `💰 Σ+단계합` / `💰 완주 +보너스`(예전엔 폭 때문에 💰와 숫자가 따로 줄바꿈됨). */
-function sit115(r){const p=pk114(r);
-  return `<div class="sit115" role="radiogroup" aria-label="오늘 상황">${PRE114.map(([id,ic,n])=>`<button type="button" class="sb115" role="radio" aria-checked="${p===id}" data-pk114="${r.id}|${id}">${ic} ${n}${p===id?' ✓':''}</button>`).join('')}<button type="button" class="sg115" data-pg115="${r.id}" aria-label="상황별 단계 정하기" title="상황별 단계 정하기">⚙</button></div>`}
 taskRow=(function(prev){return function(t,o){let h=prev.apply(this,arguments);try{
   const r=t&&t.status===0&&C.mig62&&rtOfT62(t);
   if(r&&typeof h==='string'){
     const S=rtSum62(r),re=/<span class="tx tx65"[^>]*>[\s\S]*?<\/small><\/span>/;
     if(re.test(h))h=h.replace(re,()=>`<span class="tx tx65 s115" title="단계 점수 합 · 다 하면 완주 보너스"><span class="a115"><span>Σ+${S.xp}</span>${S.gold?`<span class="g">💰${S.gold}</span>`:''}</span><span class="b115"><span>완주 +${+r.xp||0}</span>${+r.gold?`<span class="g">💰${+r.gold}</span>`:''}</span></span>`);
-    if(t.due&&t.due<=dateKey()&&/<\/div>\s*$/.test(h)){h=h.replace(/<\/div>\s*$/,()=>sit115(r)+'</div>');h=h.replace('class="trow ','class="trow rt115 ')}}
+    if(t.due&&t.due<=dateKey())h=h.replace('class="trow ','class="trow rt115 ')}
 }catch(e){console.error(e)}return h}})(taskRow);
-// ⚙ → 루틴 카드의 🧭 상황별 칸을 펴서 열기
-addEventListener('click',e=>{const b=e.target.closest('[data-pg115]');if(!b)return;e.preventDefault();e.stopPropagation();
-  const rid=b.dataset.pg115;O114['o'+rid]=1;openRt61(rid)},true);
+
+/* ---- v11.8 (w116.js): 루틴 상황 고르기를 목록 줄에서 빼고 '상세 화면 맨 위 줄 + ⏱ 시작 전'으로 (사용자 11/22: 목록 루틴 줄 맨 아래 상황 칸이 공간을 너무 차지함 — 상세나 실행할 때 먼저 정하고 싶음) ----
+   · 목록·홈 루틴 줄: 상황 칸(.sit115) 없음(w115에서 뺌). 루틴 카드: '오늘은 [🌿 일반][🚗 출근][🎬 외근]' 줄이 접힘 밖 맨 위에 보임(w114 blk114, `.pt116`), 쉬는 단계 고르기는 접힘 안.
+   · ⏱ 시작(startRun)할 때: 끈 단계가 있는 루틴(hasPre114)이고 오늘 아직 상황을 안 골랐으면 작은 창 `sitSheet116`이 먼저 뜸 → 하나 누르면 상황을 정하고(`r.pk114`) 바로 시작.
+     오늘 이미 골랐으면(카드에서든 여기서든) 묻지 않고 바로 시작 — 바꾸려면 루틴 카드 맨 위 줄. 끈 단계가 하나도 없는 루틴은 상황이 의미 없어 묻지 않음.
+   · 이 감쌈은 w71(🔀◌ 고르기)·w114(꺼진 단계 빼기)보다 바깥 — 상황 → 선택 단계 → 시작 순서. 다시 부를 땐 상황이 정해졌으니 다시 안 물음(`needSit116`). */
+function needSit116(r){const k=r&&r.pk114;return !!(r&&hasPre114(r)&&!(k&&k.d===gk76()&&PRE114.some(a=>a[0]===k.p)))}
+var SP116=null;
+function sitSheet116(r,o){SP116={r,o};
+  const sub=id=>id==='n'?'모든 단계':(offCnt114(r,id)?`${offCnt114(r,id)}단계 쉬어요`:'쉬는 단계 없음');
+  openSheet(`<div class="sh"><h3>⏱ ${esc(r.name)}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div><p class="help" style="margin:0 0 8px">오늘은 어떤 날이에요? 고르면 바로 시작해요.</p><div class="sit116" role="group" aria-label="오늘 상황">${PRE114.map(([id,ic,n])=>`<button type="button" class="btn s116" data-sp116="${id}"><b>${ic} ${n}</b><span class="tiny muted">${esc(sub(id))}</span></button>`).join('')}</div>`)}
+startRun=(function(prev){return function(o){
+  try{const r=o&&o.routine&&(C.routines||[]).find(x=>x.id===o.routine.id);if(r&&needSit116(r)){sitSheet116(r,o);return}}catch(e){console.error(e)}
+  return prev.apply(this,arguments)}})(startRun);
+addEventListener('click',e=>{const b=e.target.closest('[data-sp116]');if(!b||!SP116)return;e.preventDefault();e.stopPropagation();
+  const {r,o}=SP116,p=b.dataset.sp116;SP116=null;r.pk114={d:gk76(),p};save('config');closeSheet();render();
+  if(p!=='n'&&!offCnt114(r,p))toast(`${preN114(p)} · 쉬는 단계가 아직 없어요 · 루틴 카드에서 정해요`);
+  startRun(o)},true);
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['🧭 오늘 상황 한 번에 고르기','할 일 목록 → 루틴 줄 맨 아래 [🌿 일반][🚗 출근][🎬 외근] · ⚙ = 상황마다 쉬는 단계 정하기','루틴 줄 맨 아래 칸에서 눌러 바로 오늘 상황을 바꿔요. 하루 지나면 일반으로 돌아와요. ⚙를 누르면 루틴 카드에서 출근·외근 때 쉬는 단계를 정해요',()=>{location.hash='tasks'},'루틴 상황 출근 외근 일반 선택 한 번에 오늘 상황']])}})(F67);
+  ['🧭 오늘 상황 고르기(루틴)','루틴 카드(할 일 → 루틴 이름 누르기) 맨 위 \'오늘은\' 줄 · ⏱ 시작할 때 처음 한 번 묻는 창','루틴 이름을 눌러 열면 맨 위 줄에서 오늘 상황(일반·출근·외근)을 바로 바꿔요. ⏱ 시작할 때 오늘 아직 안 골랐으면 먼저 물어봐요. 하루 지나면 일반으로 돌아와요',()=>{location.hash='tasks'},'루틴 상황 출근 외근 일반 선택 시작 전 오늘 상황']])}})(F67);
 
 route();boot();
 </script>

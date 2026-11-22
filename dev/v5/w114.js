@@ -5,7 +5,7 @@
      **완주 = 켜진 단계 다 함**(완주 보너스는 그대로) · 체크 창에서도 안 보임 ③ `startRun` 감쌈이 타이머 단계에서 뺌(목표 시간도 켜진 단계 합) — RUN.steps에 안 들어가니 루틴 배우기(h76)엔 '건너뜀'이 안 쌓임
      ④ `stDoneHide72`를 다시 선언(오늘 한 단계 + 꺼진 단계는 목록에서 숨김). `rtPart73`(일부 = 오늘 함)은 '한 단계 수'만 보니 그대로.
    · 몸무게 단계(@weigh)도 그냥 단계라서 외근에서 끌 수 있음(끄면 체크 창·완주에서 빠짐. 몸무게는 기록하기에서 언제든 적으면 단계가 체크됨 — 기존 wSync63).
-   · 고르는 곳: ① 루틴 카드 `🧭 상황별` 접힘 칸(오늘 칩 + 상황별 단계 체크칸) ② 루틴 체크 창 위 한 줄 ③ 할 일 목록의 루틴 줄 아래 한 줄 — **② ③은 상황을 하나라도 정한 루틴에만**(공간 아낌).
+   · 고르는 곳: ① 루틴 카드 `🧭 상황별` 접힘 칸(오늘 칩 + 상황별 단계 체크칸) ② 루틴 체크 창 위 한 줄(단계를 끈 루틴에만) ③ ⏱ 시작 전 선택창(w116, 오늘 아직 안 골랐고 끈 단계가 있는 루틴만). v11.8: 목록 줄에는 안 둠(공간).
    · 새 단계를 끄고 켜는 새 길은 `r.pre114`만 바꾸고 `save('config')` 뒤 `redrawRt61()`·`render()`. 단계를 읽는 새 코드가 '오늘 해야 할 단계'를 셀 땐 `pOff114`를 거칠 것. */
 var PRE114=[['n','🌿','일반'],['w','🚗','출근'],['o','🎬','외근']],O114={};
 function preN114(p){const x=PRE114.find(a=>a[0]===p);return x?x[1]+' '+x[2]:''}
@@ -18,8 +18,7 @@ function pChips114(r){const p=pk114(r);return PRE114.map(([id,ic,n])=>`<button t
 function blk114(r){
   const e=O114[r.id]||'w',on=pk114(r),live=(r.steps||[]).filter(s=>TASKS[s.tid]);live.forEach(s=>{if(!s.id)s.id=uid()});
   const off=(r.pre114&&r.pre114[e])||[],sum=on==='n'?'오늘은 🌿 일반 · 모든 단계':`오늘은 ${preN114(on)} · ${offCnt114(r,on)}단계 쉬어요`;
-  return `<details class="pe114" data-r="${r.id}" ${O114['o'+r.id]?'open':''}><summary class="small"><b>🧭 상황별 (일반·출근·외근)</b> <span class="tiny muted">${esc(sum)}</span></summary>
-    <div class="row pr114row" style="gap:6px;flex-wrap:wrap"><span class="tiny muted">오늘은</span>${pChips114(r)}</div>
+  return `<div class="row pr114row pt116" style="gap:6px;flex-wrap:wrap"><span class="tiny muted">오늘은</span>${pChips114(r)}</div><details class="pe114" data-r="${r.id}" ${O114['o'+r.id]?'open':''}><summary class="small"><b>🧭 상황별 쉬는 단계 정하기</b> <span class="tiny muted">${esc(sum)}</span></summary>
     <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:6px"><span class="tiny muted">하는 단계 고르기</span>${PRE114.slice(1).map(([id,ic,n])=>`<button type="button" class="chipbtn" data-pe114="${r.id}|${id}" aria-pressed="${e===id}">${ic} ${n}${e===id?' ✓':''}</button>`).join('')}</div>
     <div class="pe114l">${live.map(s=>`<label class="pe114r"><input type="checkbox" data-pc114="${r.id}|${s.id}|${e}" ${off.indexOf(s.id)>=0?'':'checked'}> <span>${esc(stName61(s))}</span></label>`).join('')||'<span class="tiny muted">단계가 없어요</span>'}</div>
     <p class="tiny muted" style="margin:4px 0 0">체크를 끈 단계는 ${esc(preN114(e))}인 날 목록·타이머·체크 창에서 빠지고, 완주는 켜진 단계로 따져요(완주 보너스는 그대로). 🌿 일반은 늘 모든 단계예요. 하루가 지나면 일반으로 돌아와요.</p></details>`}
@@ -28,7 +27,7 @@ function blk114(r){
 // 루틴 체크 창: 상황을 정한 루틴이면 위에 한 줄
 (function(prev){rtDone64=function(r,k){const x=prev.apply(this,arguments);try{const box=$('sheetC'),d=box&&box.querySelector('.d64s');
   if(r&&hasPre114(r)&&d&&!box.querySelector('.pr114row'))d.insertAdjacentHTML('beforebegin',`<div class="row pr114row" style="gap:6px;flex-wrap:wrap;margin:0 0 6px"><span class="tiny muted">오늘은</span>${pChips114(r)}</div>`)}catch(e){console.error(e)}return x}})(rtDone64);
-// (v11.7) 할 일 목록 루틴 줄 아래 칩 줄은 w115의 머리줄 칸(.sit115)으로 옮겨감
+// (v11.8) 목록 루틴 줄에는 상황 칸을 안 둠(공간) — 카드 맨 위 줄·시작 전 창(w116)에서 고름
 // 타이머: 꺼진 단계는 빼고 시작
 (function(prev){startRun=function(o){try{if(o&&o.routine){const r=(C.routines||[]).find(x=>x.id===o.routine.id),ss=o.routine.steps||[],st=r?ss.filter(s=>!pOff114(r,s)):ss;
   if(st.length!==ss.length){if(!st.length){toast('오늘 상황에선 할 단계가 없어요 · 🧭 상황별에서 바꿔요');return}o={...o,routine:{...o.routine,steps:st}}}}}catch(e){console.error(e)}return prev.call(this,o)}})(startRun);
@@ -52,4 +51,4 @@ addEventListener('change',e=>{const i=e.target;if(!i||!i.dataset||!i.dataset.pc1
 // 접힘 칸 펼침 기억 (다시 그려도 유지)
 addEventListener('toggle',e=>{const d=e.target;if(d&&d.classList&&d.classList.contains('pe114')&&d.dataset.r)O114['o'+d.dataset.r]=d.open?1:0},true);
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['🚗 루틴 상황별(출근·외근)','루틴 카드 → 🧭 상황별 · 루틴 체크 창·할 일 목록 루틴 줄 아래 칩','새벽 출근·외부 촬영처럼 아침 루틴을 다 못 하는 날, 그날만 🌿 일반 / 🚗 출근 / 🎬 외근을 골라요. 꺼 둔 단계는 그날 목록·타이머·체크 창에서 빠지고 완주는 켜진 단계로 따져요. 하루 지나면 일반으로',()=>{location.hash='edit'},'루틴 프리셋 상황 출근 외근 일반 아침 루틴 단계 끄기 모텔 새벽']])}})(F67);
+  ['🚗 루틴 상황별(출근·외근)','루틴 카드 맨 위 오늘은 줄 · ⏱ 시작 전 · 루틴 체크 창','새벽 출근·외부 촬영처럼 아침 루틴을 다 못 하는 날, 그날만 🌿 일반 / 🚗 출근 / 🎬 외근을 골라요. 꺼 둔 단계는 그날 목록·타이머·체크 창에서 빠지고 완주는 켜진 단계로 따져요. 하루 지나면 일반으로',()=>{location.hash='edit'},'루틴 프리셋 상황 출근 외근 일반 아침 루틴 단계 끄기 모텔 새벽']])}})(F67);
