@@ -56,10 +56,10 @@ with sync_playwright() as pw:
     # 저장·다시 읽기에서 보존
     J(pg,f"(()=>{{const r={R};r.pk114={{d:gk76(),p:'o'}};save('config')}})()");pg.wait_for_timeout(300)
     ok(J(pg,f"JSON.stringify(C.routines.find(x=>x.id===window.__rid).pk114)")!='undefined',f'[{W}] 상황 값이 설정에 남음')
-    # 목록 줄 칩: 오늘 차례 루틴 머리
+    # 목록 루틴 줄: v11.7부터 머리줄 칸(.sit115)이 대신함 (자세한 시험은 t120)
     J(pg,"location.hash='tasks';render()");pg.wait_for_timeout(500)
-    n=J(pg,"document.querySelectorAll('.pr114row .pr114').length")
-    ok(n>=3 and n%3==0,f'[{W}] 목록 루틴 줄에 상황 칩(3개씩)',n)
+    n=J(pg,"document.querySelectorAll('.sit115 .sb115').length")
+    ok(n>=3 and n%3==0,f'[{W}] 목록 루틴 줄에 상황 칸(3개씩)',n)
     if W==390:
         ok(J(pg,"document.documentElement.scrollWidth<=window.innerWidth+1"),'[390] 폰에서 가로로 넘치지 않음')
     b.close()

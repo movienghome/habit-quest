@@ -28,9 +28,7 @@ function blk114(r){
 // 루틴 체크 창: 상황을 정한 루틴이면 위에 한 줄
 (function(prev){rtDone64=function(r,k){const x=prev.apply(this,arguments);try{const box=$('sheetC'),d=box&&box.querySelector('.d64s');
   if(r&&hasPre114(r)&&d&&!box.querySelector('.pr114row'))d.insertAdjacentHTML('beforebegin',`<div class="row pr114row" style="gap:6px;flex-wrap:wrap;margin:0 0 6px"><span class="tiny muted">오늘은</span>${pChips114(r)}</div>`)}catch(e){console.error(e)}return x}})(rtDone64);
-// 할 일 목록 루틴 줄 아래: 상황을 정한 루틴이 오늘 차례일 때만 한 줄
-(function(prev){dn75=function(t){let h=prev.apply(this,arguments)||'';try{const r=t&&t.status===0&&C.mig62&&rtOfT62(t);
-  if(r&&hasPre114(r)&&t.due&&t.due<=dateKey())h+=`<div class="row pr114row" role="group" aria-label="오늘 상황" style="gap:6px;flex-wrap:wrap">${pChips114(r)}</div>`}catch(e){}return h}})(dn75);
+// (v11.7) 할 일 목록 루틴 줄 아래 칩 줄은 w115의 머리줄 칸(.sit115)으로 옮겨감
 // 타이머: 꺼진 단계는 빼고 시작
 (function(prev){startRun=function(o){try{if(o&&o.routine){const r=(C.routines||[]).find(x=>x.id===o.routine.id),ss=o.routine.steps||[],st=r?ss.filter(s=>!pOff114(r,s)):ss;
   if(st.length!==ss.length){if(!st.length){toast('오늘 상황에선 할 단계가 없어요 · 🧭 상황별에서 바꿔요');return}o={...o,routine:{...o.routine,steps:st}}}}}catch(e){console.error(e)}return prev.call(this,o)}})(startRun);
@@ -40,7 +38,7 @@ function stDoneHide72(k){return !!(k&&isRtKid71(k)&&k.status===0&&(k.last===gk76
 addEventListener('click',e=>{const b=e.target.closest('[data-pk114]');if(!b)return;e.preventDefault();e.stopPropagation();
   const [rid,p]=b.dataset.pk114.split('|'),r=(C.routines||[]).find(x=>x.id===rid);if(!r)return;
   r.pk114={d:gk76(),p};save('config');
-  toast(p==='n'?'🌿 일반 · 모든 단계를 해요':`${preN114(p)} · ${offCnt114(r,p)}단계는 오늘 쉬어요`);
+  toast(p==='n'?'🌿 일반 · 모든 단계를 해요':offCnt114(r,p)?`${preN114(p)} · ${offCnt114(r,p)}단계는 오늘 쉬어요`:`${preN114(p)} · 쉬는 단계가 아직 없어요 · ⚙에서 정해요`);
   if(sheetCtx&&sheetCtx.rt64===r.id)rtDone64(r,true);else if(sheetCtx&&sheetCtx.rt61===r.id)redrawRt61();
   render()},true);
 // 어느 상황의 단계를 고칠지
