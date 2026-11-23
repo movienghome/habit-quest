@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v11.9</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v12.0</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2452,6 +2452,13 @@ details.dn75.d106:not([open])>summary.lb::after{content:' ▸'}
 .pe117r.off{opacity:.65}
 .pe117r .ops{display:flex;gap:2px}
 .pe117h input{min-height:36px}
+
+/* v12.0 (w118.js) — 프리셋별 분 · 일정 상황 */
+.mn118{display:inline-flex;align-items:center;gap:3px;flex:none;font-size:.85em;color:var(--muted,#888)}
+.mn118 input{width:3.4em;min-height:32px;padding:2px 4px;text-align:right}
+.mn118 input.ov{font-weight:700;border-width:2px}
+.src118{white-space:nowrap}
+.sit118 .s117{min-height:52px}
 </style>
 
 <header class="hud" id="hud">
@@ -16330,9 +16337,11 @@ function ensure117(r){
   if(add){r.sk117=[...known];dirty=1}
   if(dirty)sched117();
   return r.ps117}
-function pset117(r,d){const L=ensure117(r);if(!L.length)return null;const id=(r.pd117||{})[d||gk76()];return L.find(p=>p.id===id)||L.find(p=>p.id===r.pf117)||L[0]}
+function schedP117(d,L){const q=typeof sit118==='function'?sit118(d):null;if(!q||!q.name)return null;const k=String(q.name).trim().toLowerCase();return L.find(p=>String(p.n).trim().toLowerCase()===k)||null}
+function pset117(r,d){const L=ensure117(r);if(!L.length)return null;d=d||gk76();const id=(r.pd117||{})[d];return L.find(p=>p.id===id)||schedP117(d,L)||L.find(p=>p.id===r.pf117)||L[0]}
+function pmin118(p,s){const m=p&&p.m&&p.m[s.id];return m!=null&&m!==''?(+m||0):(+s.min||0)}
 function effSteps117(r,d){if(!r)return [];const p=pset117(r,d);const st=r.steps||[];if(!p)return st.slice();
-  const by={};st.forEach(s=>{by[s.id]=s});return p.s.map(i=>by[i]).filter(Boolean)}
+  const by={};st.forEach(s=>{by[s.id]=s});return p.s.map(i=>{const s=by[i];if(!s)return null;const m=p.m&&p.m[i];return m!=null&&m!==''&&(+m||0)!==(+s.min||0)?Object.assign({},s,{min:+m||0}):s}).filter(Boolean)}
 function dateOf117(t){const d=t&&t.due;return d&&d>midKey68()?d:gk76()}
 function sumMin117(L){return L.reduce((a,s)=>a+(+s.min||0),0)}
 // ---- 옛 상황 함수를 프리셋으로 다시 선언 ----
@@ -16361,11 +16370,11 @@ taskRow=(function(prev){return function(t,o){
 // ---- 날짜별로 고르기 창 ----
 function lbl117(d){return d===gk76()?'오늘':(typeof dueLabel==='function'?dueLabel(d):d)}
 function pickSheet117(rid,d){const r=(C.routines||[]).find(x=>x.id===rid);if(!r)return;const L=ensure117(r),on=pset117(r,d);
-  openSheet(`<div class="sh"><h3>⏱ ${esc(r.name)} · ${esc(lbl117(d))}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div><p class="help" style="margin:0 0 8px">이 날은 어떤 상황으로 할까요? 누르면 골라지고 그 프리셋의 단계·순서대로 해요.</p>
+  openSheet(`<div class="sh"><h3>⏱ ${esc(r.name)} · ${esc(lbl117(d))}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div><p class="help" style="margin:0 0 8px">이 날은 어떤 상황으로 할까요? 누르면 골라지고 그 프리셋의 단계·순서대로 해요.${typeof srcNote118==='function'?srcNote118(r,d):''}</p>
     <div class="sit116 sit117" role="group" aria-label="상황 프리셋">${L.map(p=>{const ss=p.s.map(i=>(r.steps||[]).find(s=>s.id===i)).filter(s=>s&&TASKS[s.tid]);
-      return `<button type="button" class="btn s116 s117 ${p===on?'':'ghost'}" data-pk117="${r.id}|${d}|${p.id}" data-close117="1" aria-pressed="${p===on}"><b>${esc(preN117(p))}${p===on?' ✓':''}${L.length>1&&p.id===(r.pf117||L[0].id)?' <small class="muted">기본</small>':''}</b><span class="tiny muted">${ss.length}단계 · ${sumMin117(ss)}분</span></button>`}).join('')}</div>
+      return `<button type="button" class="btn s116 s117 ${p===on?'':'ghost'}" data-pk117="${r.id}|${d}|${p.id}" data-close117="1" aria-pressed="${p===on}"><b>${esc(preN117(p))}${p===on?' ✓':''}${L.length>1&&p.id===(r.pf117||L[0].id)?' <small class="muted">기본</small>':''}</b><span class="tiny muted">${ss.length}단계 · ${sumMin117(ss.map(s=>({min:pmin118(p,s)})))}분</span></button>`}).join('')}</div>
     <div class="row" style="margin-top:10px"><button type="button" class="btn ghost sm" data-ed117="${r.id}">✎ 프리셋 편집·추가</button></div>`)}
-function redraw117(r){try{if(sheetCtx&&sheetCtx.rt64===r.id)rtDone64(r,true);else if(sheetCtx&&sheetCtx.rt61===r.id)redrawRt61();else if(curView()==='edit')reEdit()}catch(e){console.error(e)}}
+function redraw117(r){try{if(sheetCtx&&sheetCtx.rt64===r.id)rtDone64(r,true);else if(sheetCtx&&sheetCtx.rt61===r.id)redrawRt61();else if(sheetCtx&&sheetCtx.task&&$('tsTitle'))tsRedraw();else if(curView()==='edit')reEdit()}catch(e){console.error(e)}}
 function prune117(r){const t=gk76();Object.keys(r.pd117||{}).forEach(k=>{if(diffDays(k,t)<-7)delete r.pd117[k]})}
 addEventListener('click',e=>{const b=e.target.closest('[data-pc117]');if(!b)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
   const [rid,d]=b.dataset.pc117.split('|');pickSheet117(rid,d)},true);
@@ -16380,25 +16389,25 @@ addEventListener('click',e=>{const b=e.target.closest('[data-ed117]');if(!b)retu
 // ---- 루틴 카드: 맨 위 '오늘/내일' 줄 + 프리셋 편집 접힘 ----
 function blk114(r){
   const L=ensure117(r),e=(O117[r.id]&&L.find(p=>p.id===O117[r.id]))||pset117(r),td=gk76(),h=rtT(r),nx=h&&h.due&&h.due>td?h.due:null,dfl=r.pf117||L[0].id;
-  const rowOf=(d,lab)=>{const on=pset117(r,d);return `<div class="row pr114row pt116 pt117" style="gap:6px;flex-wrap:wrap"><span class="tiny muted pd117">${esc(lab)}</span>${L.map(p=>chip117(r,d,p,p===on)).join('')}</div>`};
+  const rowOf=(d,lab)=>{const on=pset117(r,d);return `<div class="row pr114row pt116 pt117" style="gap:6px;flex-wrap:wrap"><span class="tiny muted pd117">${esc(lab)}</span>${L.map(p=>chip117(r,d,p,p===on)).join('')}${typeof srcChip118==='function'?srcChip118(r,d):''}</div>`};
   const live=(r.steps||[]).filter(s=>TASKS[s.tid]),by={};live.forEach(s=>{by[s.id]=s});
   const inc=e.s.map(i=>by[i]).filter(Boolean),exc=live.filter(s=>e.s.indexOf(s.id)<0);
-  const stRow=(s,i,on)=>`<div class="pe117r ${on?'':'off'}"><label><input type="checkbox" data-pcs117="${r.id}|${e.id}|${s.id}" ${on?'checked':''}> <span class="nm">${on?`<span class="no">${i+1}</span> `:''}${esc(stName61(s))}</span> <span class="tiny muted">${s.min||0}분</span></label>${on?`<span class="ops"><button type="button" class="ib" data-pm117="${r.id}|${e.id}|${s.id}|up" ${i?'':'disabled'} aria-label="위로">↑</button><button type="button" class="ib" data-pm117="${r.id}|${e.id}|${s.id}|dn" ${i<inc.length-1?'':'disabled'} aria-label="아래로">↓</button></span>`:''}</div>`;
+  const stRow=(s,i,on)=>`<div class="pe117r ${on?'':'off'}"><label><input type="checkbox" data-pcs117="${r.id}|${e.id}|${s.id}" ${on?'checked':''}> <span class="nm">${on?`<span class="no">${i+1}</span> `:''}${esc(stName61(s))}</span> ${on?`<label class="mn118" title="이 프리셋에서 이 단계에 쓰는 분 (비우면 공통 ${s.min||0}분)"><input type="number" min="0" max="240" inputmode="numeric" data-pmin118="${r.id}|${e.id}|${s.id}" value="${pmin118(e,s)}" class="${e.m&&e.m[s.id]!=null?'ov':''}" aria-label="${esc(stName61(s))} 분">분</label>`:`<span class="tiny muted">${s.min||0}분</span>`}</label>${on?`<span class="ops"><button type="button" class="ib" data-pm117="${r.id}|${e.id}|${s.id}|up" ${i?'':'disabled'} aria-label="위로">↑</button><button type="button" class="ib" data-pm117="${r.id}|${e.id}|${s.id}|dn" ${i<inc.length-1?'':'disabled'} aria-label="아래로">↓</button></span>`:''}</div>`;
   const sum=L.length>1?`${L.length}개 · 오늘은 ${preN117(pset117(r,td))}`:'지금은 하나(일반) — ＋로 출근·외근처럼 늘려요';
   return rowOf(td,'오늘')+(nx?rowOf(nx,lbl117(nx)):'')+`<details class="pe117" data-r="${r.id}" ${O117['o'+r.id]?'open':''}><summary class="small"><b>🧭 상황 프리셋 편집·추가</b> <span class="tiny muted">${esc(sum)}</span></summary>
     <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:6px">${L.map(p=>`<button type="button" class="chipbtn" data-pt117="${r.id}|${p.id}" aria-pressed="${p===e}">${esc(preN117(p))}${p===e?' ✎':''}${L.length>1&&p.id===dfl?' ·기본':''}</button>`).join('')}<button type="button" class="chipbtn" data-pn117="${r.id}|${e.id}">＋ 새 프리셋</button></div>
     <div class="row pe117h" style="gap:6px;flex-wrap:wrap;margin-top:8px"><input class="pe117i" data-pf117="${r.id}|${e.id}|ic" value="${esc(e.ic||'')}" maxlength="4" aria-label="아이콘" style="width:3.2em;text-align:center"><input class="pe117n" data-pf117="${r.id}|${e.id}|n" value="${esc(e.n)}" maxlength="12" aria-label="프리셋 이름" style="flex:1;min-width:6em">
       <button type="button" class="btn sm ghost" data-pdef117="${r.id}|${e.id}" ${L.length>1&&e.id!==dfl?'':'disabled'}>기본으로</button><button type="button" class="btn sm ghost" data-pdup117="${r.id}|${e.id}">복제</button><button type="button" class="btn sm ghost" data-pdel117="${r.id}|${e.id}" ${L.length>1?'':'disabled'}>삭제</button></div>
-    <p class="tiny muted" style="margin:6px 0 2px"><b>${esc(preN117(e))}</b>에서 할 단계 · ${inc.length}단계 ${sumMin117(inc)}분 <span>(체크 = 함, ↑↓ = 순서)</span></p>
+    <p class="tiny muted" style="margin:6px 0 2px"><b>${esc(preN117(e))}</b>에서 할 단계 · ${inc.length}단계 ${sumMin117(inc.map(s=>({min:pmin118(e,s)})))}분 <span>(체크 = 함, ↑↓ = 순서, 분 = 이 프리셋만)</span></p>
     <div class="pe117l">${inc.map((s,i)=>stRow(s,i,true)).join('')||'<span class="tiny muted">단계가 없어요</span>'}${exc.length?`<div class="tiny muted" style="margin:6px 0 2px">이 프리셋에서 안 하는 단계</div>${exc.map(s=>stRow(s,0,false)).join('')}`:''}</div>
-    <p class="tiny muted" style="margin:4px 0 0">단계 자체(이름·점수·분)는 위 단계 목록에서 고쳐요(모든 프리셋 공통). 새로 넣은 단계는 모든 프리셋 맨 뒤에 붙어요. 아무것도 안 골랐으면 '기본' 프리셋으로 해요. 고른 건 날짜별로 기억해요.</p></details>`}
+    <p class="tiny muted" style="margin:4px 0 0">단계 이름·점수는 위 단계 목록에서 고쳐요(모든 프리셋 공통). 분은 여기서 프리셋마다 따로 정할 수 있고, 안 바꾼 단계는 공통 분이에요. 새로 넣은 단계는 모든 프리셋 맨 뒤에 붙어요. 아무것도 안 골랐으면 '기본' 프리셋으로 해요. 고른 건 날짜별로 기억해요.</p></details>`}
 // ---- 프리셋 편집 동작 ----
 function pOf117(s){const [rid,pid,...x]=s.split('|'),r=(C.routines||[]).find(z=>z.id===rid);return {r,p:r&&ensure117(r).find(z=>z.id===pid),x}}
 function done117(r,keep){save('config');if(keep)O117['o'+r.id]=1;redraw117(r);render()}
 addEventListener('click',e=>{const b=e.target.closest('[data-pt117],[data-pn117],[data-pdef117],[data-pdup117],[data-pdel117],[data-pm117]');if(!b)return;e.preventDefault();e.stopPropagation();
   const k=['pt117','pn117','pdef117','pdup117','pdel117','pm117'].find(x=>b.dataset[x]);const {r,p,x}=pOf117(b.dataset[k]);if(!r||!p)return;const L=r.ps117;
   if(k==='pt117'){O117[r.id]=p.id;done117(r,1);return}
-  if(k==='pn117'||k==='pdup117'){const q={id:'p'+uid(),ic:k==='pdup117'?p.ic:'🧩',n:k==='pdup117'?p.n+' 복사':'새 프리셋',s:p.s.slice()};L.splice(L.indexOf(p)+1,0,q);O117[r.id]=q.id;done117(r,1);toast(`${preN117(q)} 만들었어요 · 이름과 단계를 고쳐요`);return}
+  if(k==='pn117'||k==='pdup117'){const q={id:'p'+uid(),ic:k==='pdup117'?p.ic:'🧩',n:k==='pdup117'?p.n+' 복사':'새 프리셋',s:p.s.slice(),m:Object.assign({},p.m||{})};L.splice(L.indexOf(p)+1,0,q);O117[r.id]=q.id;done117(r,1);toast(`${preN117(q)} 만들었어요 · 이름과 단계를 고쳐요`);return}
   if(k==='pdef117'){r.pf117=p.id;done117(r,1);toast(`${preN117(p)}이(가) 기본이에요 · 안 고른 날은 이걸로 해요`);return}
   if(k==='pdel117'){if(L.length<=1){toast('프리셋은 하나 이상 있어야 해요');return}const snap=clone({ps:r.ps117,pd:r.pd117||{},pf:r.pf117,o:O117[r.id]});
     r.ps117=L.filter(z=>z!==p);Object.keys(r.pd117||{}).forEach(d=>{if(r.pd117[d]===p.id)delete r.pd117[d]});if(r.pf117===p.id)delete r.pf117;delete O117[r.id];done117(r,1);
@@ -16409,13 +16418,62 @@ addEventListener('change',e=>{const i=e.target;if(!i||!i.dataset)return;
   if(i.dataset.pcs117){e.stopPropagation();const {r,p,x}=pOf117(i.dataset.pcs117);if(!r||!p)return;const sid=x[0];
     if(i.checked){if(p.s.indexOf(sid)<0)p.s.push(sid)}else{if(p.s.length<=1){i.checked=true;toast('프리셋에는 단계가 하나 이상 있어야 해요');return}p.s=p.s.filter(z=>z!==sid)}
     done117(r,1);return}
+  if(i.dataset.pmin118){e.stopPropagation();const {r,p,x}=pOf117(i.dataset.pmin118);if(!r||!p)return;const sid=x[0],st=(r.steps||[]).find(z=>z.id===sid);if(!st)return;
+    p.m=p.m||{};const v=i.value.trim();if(v===''||(Math.max(0,Math.min(240,parseInt(v)||0))===(+st.min||0))){delete p.m[sid]}else p.m[sid]=Math.max(0,Math.min(240,parseInt(v)||0));if(!Object.keys(p.m).length)delete p.m;done117(r,1);return}
   if(i.dataset.pf117){e.stopPropagation();const {r,p,x}=pOf117(i.dataset.pf117);if(!r||!p)return;const f=x[0],v=i.value.trim();
     if(f==='n'){if(!v){i.value=p.n;return}p.n=v}else p.ic=v||'🧩';done117(r,1)}},true);
 // 한글 조합 중 Enter 방지: 이름 칸 Enter = 저장
-addEventListener('keydown',e=>{const i=e.target;if(i&&i.dataset&&i.dataset.pf117&&e.key==='Enter'&&!e.isComposing&&e.keyCode!==229){e.preventDefault();i.blur()}},true);
+addEventListener('keydown',e=>{const i=e.target;if(i&&i.dataset&&(i.dataset.pf117||i.dataset.pmin118)&&e.key==='Enter'&&!e.isComposing&&e.keyCode!==229){e.preventDefault();i.blur()}},true);
 addEventListener('toggle',e=>{const d=e.target;if(d&&d.classList&&d.classList.contains('pe117')&&d.dataset.r)O117['o'+d.dataset.r]=d.open?1:0},true);
 F67=(function(prev){return function(){return prev.apply(this,arguments).filter(x=>!/^(🚗 루틴 상황별|🧭 오늘 상황 고르기)/.test(x[0])).concat([
   ['🧭 루틴 상황 프리셋','할 일 → 루틴 줄의 ⏱ n단계 · m분 글자 누르기 · 루틴 카드 맨 위 줄','한 루틴을 일반·출근·외근처럼 프리셋 여러 개로 나눠요(프리셋마다 하는 단계와 순서가 달라요, 추가·이름 바꾸기·복제·삭제 가능). 목록의 오늘·내일 루틴 줄에서 날짜별로 골라 두면 그대로 해요. 안 골랐으면 기본 프리셋으로 바로 시작해요',()=>{location.hash='tasks'},'루틴 프리셋 상황 출근 외근 일반 아침 루틴 단계 순서 모텔 새벽 날짜별']])}})(F67);
+
+/* ---- v12.0 (w118.js): 루틴 프리셋을 '할 일 상세의 루틴 칸'에서도 · 며칠짜리 일정에 루틴 상황 걸기 · 프리셋마다 단계 분 (사용자 11/23: 상세 화면에서 프리셋을 못 찾겠음 · '장편 영화 촬영' 3일 일정이면 그 날들은 루틴도 촬영 상황으로 한번에) ----
+   · 할 일 상세(루틴 머리)의 루틴 칸 = `rtPanel62`가 `rtCard62(r,true)`를 그대로 씀 → w114는 `rtCard61`만 감싸서 상세에는 프리셋 줄이 없었음. 여기서 `rtCard62`도 감싸 같은 `blk114(r)`을 넣음(이미 있으면 안 넣음).
+   · 일정 상황: `t.rsit118`=프리셋 **이름**(예 '촬영'). 일정(한 번짜리·`t.due`~`t.end71`)이 덮는 날에는 모든 루틴이 **이름이 같은 프리셋**으로 돌아감(그 이름 프리셋이 없는 루틴은 기본대로).
+     우선순위: 그날 직접 고른 프리셋(`r.pd117[날짜]`) > 일정 상황 > 루틴 기본(`r.pf117`). 읽기는 `sit118(날짜)`(w117 `pset117`이 부름). 겹치면 기간이 짧은(더 구체적인) 일정이 이김.
+     입구: 일정 상세 칩 `🧭 루틴 상황`(여러 날이면 칩 줄 앞쪽에 보임 · 아니면 `＋ 더` 안) · ⋯ 메뉴 `🧭 루틴 상황` · 고르기 창 `sitSheet118`.
+   · 프리셋별 분: `p.m={단계 id:분}`(없으면 공통 분). 읽기는 `effSteps117`이 분을 덮어쓴 복사본을 돌려줌(`pmin118(p,s)`) — 시작·체크·합계·캘린더 길이가 모두 따름. */
+var IDX118=null;
+function elig118(t){return !!(t&&t.due&&!t.rid&&!t.rstep&&!t.hab&&!t.cb76&&!(t.rep&&t.rep.f))}
+function idx118(){const n=Date.now();if(IDX118&&n-IDX118.at<1500)return IDX118.m;const m=[];try{Object.values(TASKS).forEach(t=>{if(t&&t.rsit118&&elig118(t))m.push(t)})}catch(e){}IDX118={at:n,m};return m}
+function sit118(d){if(!d)return null;const c=idx118().filter(t=>t.due<=d&&d<=(t.end71&&t.end71>t.due?t.end71:t.due));if(!c.length)return null;
+  const len=t=>t.end71&&t.end71>t.due?Math.abs(diffDays(t.end71,t.due)):0;c.sort((a,b)=>len(a)-len(b)||(a.id<b.id?-1:1));return {t:c[0],name:c[0].rsit118}}
+function srcNote118(r,d){const L=ensure117(r);if((r.pd117||{})[d]&&L.some(p=>p.id===r.pd117[d]))return '';const q=sit118(d);if(!q)return '';const hit=L.find(p=>String(p.n).trim().toLowerCase()===String(q.name).trim().toLowerCase());
+  return hit?` <b>일정 '${esc(q.t.title)}'</b>가 이 날을 ${esc(preN117(hit))}로 정해 뒀어요.`:''}
+function srcChip118(r,d){const L=ensure117(r);if((r.pd117||{})[d]&&L.some(p=>p.id===r.pd117[d]))return '';const q=sit118(d);if(!q)return '';const hit=L.find(p=>String(p.n).trim().toLowerCase()===String(q.name).trim().toLowerCase());
+  return hit?`<button type="button" class="chipbtn src118" data-rs118c="${q.t.id}" title="이 날은 일정이 정해 둔 상황이에요 · 눌러서 일정의 상황을 바꿔요">📅 ${esc(q.t.title.length>10?q.t.title.slice(0,10)+'…':q.t.title)}</button>`:''}
+saveTask=(function(prev){return function(){IDX118=null;return prev.apply(this,arguments)}})(saveTask);
+// ---- 1) 할 일 상세의 루틴 칸에도 프리셋 줄 ----
+rtCard62=(function(prev){return function(r,inSheet){let h=prev.apply(this,arguments);
+  try{if(typeof h==='string'&&h.indexOf('pr114row')<0){const m='<div class="sum62">',i=h.indexOf(m);if(i>=0)h=h.slice(0,i)+blk114(r)+h.slice(i)}}catch(e){console.error(e)}return h}})(rtCard62);
+// ---- 2) 일정에 루틴 상황 걸기 ----
+function names118(){const m=new Map();(C.routines||[]).forEach(r=>ensure117(r).forEach(p=>{const n=String(p.n||'').trim();if(!n)return;const k=n.toLowerCase(),o=m.get(k)||{n,ic:p.ic||'🧩',c:0};o.c++;m.set(k,o)}));return [...m.values()]}
+function rng118(t){const a=t.due,b=t.end71&&t.end71>t.due?t.end71:t.due,f=x=>x.slice(5).replace('-','/');return a===b?f(a):f(a)+'~'+f(b)}
+function sitSheet118(id){const t=TASKS[id];if(!t)return;const L=names118(),cur=String(t.rsit118||'').trim().toLowerCase();
+  openSheet(`<div class="sh"><h3>🧭 루틴 상황 · ${esc(t.title)}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <p class="help" style="margin:0 0 8px">${esc(rng118(t))} 동안 모든 루틴을 아래 이름의 상황 프리셋으로 해요. 그 이름의 프리셋이 없는 루틴은 평소대로 해요. 그 날 루틴에서 직접 고른 프리셋이 있으면 그게 먼저예요.</p>
+    <div class="sit116 sit117 sit118" role="group" aria-label="루틴 상황">${L.map(o=>`<button type="button" class="btn s116 s117 ${String(o.n).toLowerCase()===cur?'':'ghost'}" data-rs118="${esc(t.id)}" data-nm="${esc(o.n)}" aria-pressed="${String(o.n).toLowerCase()===cur}"><b>${esc((o.ic||'')+' '+o.n)}${String(o.n).toLowerCase()===cur?' ✓':''}</b><span class="tiny muted">루틴 ${o.c}개에 있어요</span></button>`).join('')||'<p class="tiny muted">아직 프리셋이 없어요 · 루틴 카드에서 ＋ 새 프리셋을 만들어요</p>'}</div>
+    <div class="row" style="gap:6px;margin-top:10px;flex-wrap:wrap"><input id="rs118n" placeholder="새 이름 (예: 촬영)" maxlength="12" autocomplete="off" aria-label="상황 이름" style="flex:1;min-width:7em"><button type="button" class="btn sm" data-rs118new="${esc(t.id)}">이 이름으로</button>${t.rsit118?`<button type="button" class="btn sm ghost" data-rs118="${esc(t.id)}" data-nm="">상황 빼기</button>`:''}</div>
+    <p class="tiny muted" style="margin:8px 0 0">새 이름은 같은 이름의 프리셋을 루틴 카드의 🧭 상황 프리셋 편집에서 만들어야 루틴에 적용돼요.</p>`)}
+function setSit118(id,nm){const t=TASKS[id];if(!t)return;nm=String(nm||'').trim();if(nm)t.rsit118=nm;else delete t.rsit118;IDX118=null;saveTask(t);closeSheet();
+  setTimeout(()=>{try{openTaskSheet(id)}catch(e){}render()},30);
+  toast(nm?`🧭 ${t.title} · ${rng118(t)} · 루틴은 '${nm}' 상황으로 해요`:`🧭 ${t.title} · 루틴 상황을 뺐어요`)}
+addEventListener('click',e=>{let b=e.target.closest&&e.target.closest('[data-rs118c]');if(b){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();sitSheet118(b.dataset.rs118c);return}
+  b=e.target.closest&&e.target.closest('[data-rs118]');if(b){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();setSit118(b.dataset.rs118,b.dataset.nm);return}
+  b=e.target.closest&&e.target.closest('[data-rs118new]');if(b){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();const v=($('rs118n')||{}).value;if(!String(v||'').trim()){toast('이름을 적어요');return}setSit118(b.dataset.rs118new,v)}},true);
+addEventListener('keydown',e=>{const i=e.target;if(i&&i.id==='rs118n'&&e.key==='Enter'&&!e.isComposing&&e.keyCode!==229){e.preventDefault();e.stopPropagation();const b=document.querySelector('[data-rs118new]');if(b)b.click()}},true);
+if(typeof CH79D!=='undefined'&&CH79D.indexOf('rsit118')<0)CH79D.push('rsit118');
+drawTaskSheet=(function(prev){return function(){const x=prev.apply(this,arguments);try{const sc=$('sheetC'),t=TASKS[(sheetCtx||{}).task];
+  if(sc&&t&&$('tsTitle')&&elig118(t)){const ch=sc.querySelector('.tchips');if(ch&&!ch.querySelector('[data-rs118c]')){
+    const on=!!t.rsit118;ch.insertAdjacentHTML('beforeend',`<button type="button" class="tch ${on?'':'off'}" data-k79="rsit118" data-rs118c="${esc(t.id)}" title="이 일정이 있는 날엔 루틴을 이 상황 프리셋으로 해요">🧭 ${on?esc(t.rsit118):'루틴 상황'}</button>`);
+    const e=ch.querySelector('[data-rs118c]'),more=ch.querySelector('.more79'),dv=ch.querySelector('.div79');
+    if(more)more.before(e);if(dv&&span71(t))dv.before(e);
+    try{vis79(sc,t)}catch(_){}}}}catch(e){console.error(e)}return x}})(drawTaskSheet);
+menu61=(function(prev){return function(x,y,title,items){try{const t=TASKS[(sheetCtx||{}).task];if(Array.isArray(items)&&t&&elig118(t)&&!items.some(it=>it&&/루틴 상황/.test(it.l||''))){
+  const i=items.findIndex(it=>it&&/삭제/.test(it.l||''));if(i>=0)items.splice(i,0,{l:'🧭 루틴 상황'+(t.rsit118?' · '+t.rsit118:'')+'…',f:()=>{const id=t.id;try{tsRead()}catch(_){}closeSheet();setTimeout(()=>sitSheet118(id),30)}})}}catch(e){console.error(e)}return prev.apply(this,arguments)}})(menu61);
+F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
+  ['📅 일정에 루틴 상황 걸기','할 일(일정) 상세 → 칩 줄의 🧭 루틴 상황 (안 보이면 ＋ 더) · ⋯ 메뉴','며칠짜리 일정(예: 장편 영화 촬영 3일)에 상황 이름(촬영)을 걸어 두면 그 날들은 모든 루틴이 같은 이름의 프리셋으로 돌아가요. 그 날 루틴에서 직접 고른 게 있으면 그게 먼저예요',()=>{location.hash='tasks'},'일정 루틴 상황 프리셋 촬영 출근 외근 며칠 연속']])}})(F67);
 
 route();boot();
 </script>

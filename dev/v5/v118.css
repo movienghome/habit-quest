@@ -1,0 +1,6 @@
+/* v12.0 (w118.js) — 프리셋별 분 · 일정 상황 */
+.mn118{display:inline-flex;align-items:center;gap:3px;flex:none;font-size:.85em;color:var(--muted,#888)}
+.mn118 input{width:3.4em;min-height:32px;padding:2px 4px;text-align:right}
+.mn118 input.ov{font-weight:700;border-width:2px}
+.src118{white-space:nowrap}
+.sit118 .s117{min-height:52px}
