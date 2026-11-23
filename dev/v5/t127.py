@@ -68,7 +68,7 @@ with sync_playwright() as pw:
     pg.locator('[data-d120="hg"]').click();pg.wait_for_timeout(900)
     chk('날 정함 빠짐',J("!(TASKS[window.__a].sl91&&TASKS[window.__a].sl91[window.__k]!==undefined)"))
     hid=J("Object.values(TASKS).find(t=>t.hg119===window.__a)&&Object.values(TASKS).find(t=>t.hg119===window.__a).id")
-    chk('하그둘 고정 일정 생김',bool(hid) and J("(()=>{const h=Object.values(TASKS).find(t=>t.hg119===window.__a);return h.title==='하나 그리고 둘'&&h.list==='fixed'&&h.due===window.__k&&h.time==='14:30'&&h.dur===75})()"))
+    chk('하그둘 고정 일정 생김',bool(hid) and J("(()=>{const h=Object.values(TASKS).find(t=>t.hg119===window.__a);return h.title==='하나 그리고 둘'&&h.list===fixId122()&&h.list!=='fixed'&&h.due===window.__k&&h.time==='14:30'&&h.dur===75})()"))
     chk('캘린더에 하그둘',J("document.body.innerText.includes('하나 그리고 둘')"))
     # 되돌리기
     J("hgBack120(Object.values(TASKS).find(t=>t.hg119===window.__a).id)");pg.wait_for_timeout(700)

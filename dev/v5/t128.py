@@ -57,7 +57,7 @@ with sync_playwright() as pw:
         J("daySheet120(window.__a,window.__k)");pg.wait_for_timeout(500)
         pg.locator('[data-d120="hg"]').click();pg.wait_for_timeout(900)
         hid=J("(()=>{const h=Object.values(TASKS).find(t=>t.hg119===window.__a);return h&&h.id})()")
-        chk(name+': 이름 하나 그리고 둘 · 정해진 일정(fixed)',J("(()=>{const h=TASKS['%s'];return !!h&&h.title==='하나 그리고 둘'&&h.list==='fixed'&&h.time==='10:00'})()"%hid))
+        chk(name+': 이름 하나 그리고 둘 · 정해진 일정(fixed)',J("(()=>{const h=TASKS['%s'];return !!h&&h.title==='하나 그리고 둘'&&h.list===fixId122()&&h.list!=='fixed'&&h.time==='10:00'})()"%hid))
         chk(name+': 캘린더(시간표)에 남음',pg.locator('.blk[data-ctask="%s"]'%hid).count()>=1)
         chk(name+': 시나리오 쓰기 칸은 빠짐',pg.locator('.blk[data-ctask="%s"]'%J("window.__a")).count()==0)
         if name=='반복만 보이기':

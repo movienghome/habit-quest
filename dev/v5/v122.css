@@ -1,0 +1,8 @@
+/* v12.4 — 끝낸 칩·막대 점선 복구 · 며칠짜리 막대 희미하게 · 하나 그리고 둘 점 모양 */
+/* v12.3이 칩·막대 크기를 맞추려 테두리를 0으로 만들며 점선도 사라졌음 → outline은 자리를 안 차지해서 크기는 그대로 */
+.cchip.done.d84,.mgrid>.bar83.d119{outline:1px dashed color-mix(in srgb,var(--lc70,var(--good)) 60%,var(--muted));outline-offset:-1px}
+/* 며칠짜리 끝낸 막대: 다른 끝낸 칩처럼 배경이 회색빛으로 가라앉게(막대 안에 넣던 목록 색 34%가 그대로라 선명했음). 취소선·✓·점선은 그대로 — 색만으로 구분 안 함 */
+.mgrid>.bar83.d119{background:var(--panel2)!important;text-decoration-color:var(--muted)}
+/* 하나 그리고 둘 만난 날 점: 네모 */
+.d99.s-hgd::before,.d99.s-hg::before{width:calc(var(--ds,11px)*.78);height:calc(var(--ds,11px)*.78);border-radius:2px;border:1.5px solid currentColor}
+.d99.s-hgd::before{background:currentColor}

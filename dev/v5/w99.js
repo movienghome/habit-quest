@@ -80,7 +80,7 @@ addEventListener('click',ev=>{const T=ev.target;if(!T||!T.closest)return;const b
 completeTask=(function(prev){return function(t,ctx){
   let day=null,before=null;try{day=curDay();before=new Set(day.entries||[])}catch(x){}
   const r=prev.apply(this,arguments);
-  try{if(day&&t&&t.list==='fixed'&&t.aid){const e=(day.entries||[]).find(z=>!before.has(z)&&z.tid===t.id);
+  try{if(day&&t&&isFx122(t)&&t.aid){const e=(day.entries||[]).find(z=>!before.has(z)&&z.tid===t.id);
     if(e&&!e.hg99&&Object.values(TASKS).some(x=>x.hg99&&x.rep&&x.rep.f==='x'&&x.aid===t.aid)){const n=clone(e);n.hg99=1;replaceEntry(day.date,e,n)}}}catch(x){console.error(x)}
   return r}})(completeTask);
 

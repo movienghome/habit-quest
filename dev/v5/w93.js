@@ -16,7 +16,7 @@
   /* ---- 단계별 내용 ---- */
   function fx93(k){
     const open=Object.values(TASKS).filter(t=>t.status===0&&!t.cb76&&!t.ml80&&!t.rstep&&t.due===k&&!t.end71&&!hid76(t));
-    const nt=open.filter(t=>t.list==='fixed'&&!t.time);
+    const nt=open.filter(t=>isFx122(t)&&!t.time);
     const timed=tasksOn(k).filter(t=>t.status===0&&t.time&&hm80(t.time)!=null&&!t.cb76).sort(byTime);
     return {nt,timed};
   }
@@ -51,7 +51,7 @@
   const mvOk93=t=>!!t&&!t.cb76&&!t.rstep;   // v10.6: 루틴 머리(이 날만)·끼니도 옮김
   const tm93=(t,k)=>t.rid?((t.tx83&&t.tx83.d===k&&t.due===k)?t.tx83.m:t.time):t.time;   // 루틴은 '이 날만'(tx83) 시각이 먼저
   const rtDay93=(t,k)=>!!(t&&t.rid&&t.due===k);
-  const mem93=k=>({fx:new Set(fx93(k).nt.map(t=>t.id).concat(tasksOn(k).filter(t=>t.list==='fixed'&&t.status===0&&t.time).map(t=>t.id))),
+  const mem93=k=>({fx:new Set(fx93(k).nt.map(t=>t.id).concat(tasksOn(k).filter(t=>isFx122(t)&&t.status===0&&t.time).map(t=>t.id))),
     wk:new Set(wk93(k).map(x=>x.t.id)),ad:new Set(ad93(k).map(t=>t.id)),care:new Set(care93(k).map(t=>t.id))});
   function bl93(k){   // 내일 시간표에 그릴 블록(시각 있는 일 + 주 N회 자리)
     const by={};

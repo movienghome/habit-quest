@@ -78,8 +78,8 @@ function card121(g,ws,td){const t=g.t,N=g.N,mn=minOf121(t,N),n=wkCnt91(t,ws),cur
     else if(s.slack===0){tag='⚠ 매일';txt=`⚠ ${w} 남은 ${s.need}번 · 쉬는 날 없이 남은 날마다 한 번씩`;warn=1}
     else{tag='⚠ 하루 두 번';txt=`⚠ ${w} 남은 ${s.need}번 · 남은 날 ${s.days}일이라 하루 두 번이 필요해요`;warn=1}}
   else{tag=mn&&n<mn?'최소 못 채움':'지난 주';txt=`그 주에 ${n}번 했어요`}
-  const days=[...Array(7)].map((_,i)=>{const k=addDays(ws,i),st=stOf121(t,k,td),c=dayCnt99(t,k),sl=t.sl91&&t.sl91[k],hp=Object.values(TASKS).find(x=>x&&x.hg119===t.id&&x.status===0&&x.due===k);
-    const sub=c.n?(c.n>1?'×'+c.n:'✓'):hp?'🤝'+(hp.time||''):sl!==undefined?(sl||'종일'):'';
+  const days=[...Array(7)].map((_,i)=>{const k=addDays(ws,i),st=stOf121(t,k,td),c=dayCnt99(t,k),sl=t.sl91&&t.sl91[k],hp=Object.values(TASKS).find(x=>x&&x.hg119===t.id&&x.status===0&&x.due===k),hm=hgMet122(t,k);
+    const sub=hm?'🤝'+(c.n||hm===2?'✓':(hp&&hp.time)||''):c.n?(c.n>1?'×'+c.n:'✓'):hp?'🤝'+(hp.time||''):sl!==undefined?(sl||'종일'):'';
     const inner=`<span class="dl121">${wdOf(k)}</span><i class="d99 s-${st}" aria-hidden="true"></i><small>${esc(sub)}</small>`;
     const lab=`${fmtD(k)}(${wdOf(k)}) ${DOT121[st]}${sub&&sub!=='✓'?' · '+sub:''}`;
     return sl!==undefined&&!c.n&&k>=td?`<button type="button" class="wd121${k===td?' now':''}" data-day120="${esc(t.id)}|${esc(k)}" title="눌러서 시각·길이 고치기" aria-label="${esc(lab)} · 눌러서 고치기">${inner}</button>`
