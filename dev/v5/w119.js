@@ -95,3 +95,33 @@ function barsDone119(){const m=$('calMain');if(!m)return;
       else b.insertBefore(mk,b.firstChild)}});
   try{if(typeof place83==='function')place83()}catch(e){}}
 renderCal=(function(prev){return function(){const x=prev.apply(this,arguments);try{if(calShown()&&(C.ui.cal||{}).mode==='month')barsDone119()}catch(e){console.error(e)}return x}})(renderCal);
+/* ---- v12.1 ③: 끝낸 할 일도 날짜 바꾸기 (사용자 11/23) ----
+   · 끝낸(status 2) 한 번짜리 할 일 상세의 날짜 칩 `📅 오늘`은 눌러도 마감일만 바뀌어 아무 일도 안 일어난 것처럼 보였음 → **`✓ 어제 끝냄`**(끝낸 날) 칩으로 바꾸고 누르면 기존 `mvSheet69`(오늘·어제·그저께·다른 날 고르기 —
+     점수 합계는 그대로, 그날 기록 보너스(✍)만 빠지는 v6.9 기록 옮기기 `moveEntry69`)가 뜸. 기록이 없는 끝낸 일(체크리스트 승격 등)은 `t.doneAt`만 바꾸는 작은 창(`mvDone119`).
+   · 캘린더: 1일·3일·주 보기에서 끝낸 칩(`done105`)을 **다른 날** 칸으로 끌면 같은 길(`moveEntry69`)로 옮기고 '되돌리기' 알림 — 예전엔 '그날 안에서만 옮겨요'로 막았음(w105). 오늘보다 뒤 날짜로는 못 옮김.
+   · 반복 할 일의 한 회차 기록은 이 칩 대상이 아님(기록하기에서 기존 📅 날짜 바꾸기). */
+function mvDone119(id){const t=TASKS[id];if(!t||t.status!==2)return;const k=t.doneAt||dateKey();try{tsRead()}catch(e){}
+  const e=((DAYS[k]||{}).entries||[]).find(x=>x.tid===id);
+  if(e){mvSheet69(k,e.id);return}
+  sheetCtx={mv119:id};openSheet(`<div class="sh"><h3>📅 언제 끝낸 일인가요?</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <p class="small" style="margin:0 0 8px"><b>${esc(t.title)}</b> <span class="muted">· 지금 ${esc(d69lbl(k))}</span></p>
+    <div class="row" style="gap:6px"><input type="date" id="mv119d" max="${esc(dateKey())}" value="${esc(k)}" aria-label="끝낸 날"><button type="button" class="btn sm" data-mv119go="${esc(id)}">옮기기</button></div>
+    <p class="help" style="margin:8px 0 0">이 일은 점수 기록이 없어서 끝낸 날짜만 바뀌어요.</p>`)}
+addEventListener('click',e=>{let b=e.target.closest&&e.target.closest('[data-mv119]');if(b){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();mvDone119(b.dataset.mv119);return}
+  b=e.target.closest&&e.target.closest('[data-mv119go]');if(b){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();const t=TASKS[b.dataset.mv119go],v=($('mv119d')||{}).value;
+    if(!t||!/^\d{4}-\d\d-\d\d$/.test(v||''))return;if(v>dateKey()){toast('끝낸 일은 오늘보다 뒤 날짜로 못 옮겨요');return}const from=t.doneAt;t.doneAt=v;saveTask(t);closeSheet();render();
+    toastAct(`${t.title} · ${d69lbl(v)} 끝낸 걸로 옮겼어요`,'되돌리기',()=>{t.doneAt=from;saveTask(t);render()})}},true);
+drawTaskSheet=(function(prev){return function(){const x=prev.apply(this,arguments);try{const sc=$('sheetC'),t=TASKS[(sheetCtx||{}).task];
+  if(sc&&t&&$('tsTitle')&&t.status===2&&!(t.rep&&t.rep.f)&&t.doneAt){const ch=sc.querySelector('.tchips [data-x56panel="when"]');
+    if(ch){ch.removeAttribute('data-x56panel');ch.removeAttribute('aria-expanded');ch.dataset.mv119=t.id;ch.title='언제 끝낸 일인지 바꾸기 (오늘·어제·그저께·다른 날)';ch.textContent=`✓ ${d69lbl(t.doneAt)} 끝냄`}}}catch(e){console.error(e)}return x}})(drawTaskSheet);
+function crossDone119(id,k0,drop){const to=drop.date,t=TASKS[id];if(!t)return;
+  if(to>midKey68()){toast('끝낸 일은 오늘보다 뒤 날짜로 못 옮겨요');return}
+  const e=typeof entOf105==='function'?entOf105(k0,id):((DAYS[k0]||{}).entries||[]).find(x=>x.tid===id);
+  if(!e){toast('이 일의 끝낸 기록을 찾지 못했어요 · 상세 → ✓ 끝낸 날 칩에서 바꿔요');return}
+  const eid=e.id,nm=t.title;moveEntry69(k0,eid,to);
+  try{if(drop.type==='time')setCt105(to,id,hm(drop.min));else if(drop.type==='allday')setCt105(to,id,'')}catch(_){}
+  setTimeout(()=>toastAct(`${nm} · ${d69lbl(to)} 끝낸 걸로 옮겼어요`,'되돌리기',()=>{moveEntry69(to,eid,k0)}),80)}
+dndEnd=(function(prev){return function(x,y){
+  if(DND&&DND.kind==='done105'){const id=DND.id,drop=DND.drop,k0=typeof d105==='function'?d105(DND.el):null;
+    if(drop&&k0&&drop.date&&drop.date!==k0&&TASKS[id]){dndAbort();crossDone119(id,k0,drop);return}}
+  return prev.apply(this,arguments)}})(dndEnd);
