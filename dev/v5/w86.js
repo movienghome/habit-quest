@@ -17,7 +17,7 @@ tasksOn=(function(prev){return function(k){
     const base=a.filter(t=>!(wx91(t)&&t.sl91&&slotKeys91(t,ws).length));
     openTasks().forEach(t=>{if(!wx91(t)||!t.sl91||t.sl91[k]===undefined||!calPass(t))return;
       if(k<td||slotDoneOn91(t,k)||wkCnt91(t,ws)>=(+t.rep.n||3))return;
-      const c=Object.assign({},t,{due:k,time:t.sl91[k]||null});base.push(c)});
+      const c=Object.assign({},t,{due:k,time:t.sl91[k]||null});if(t.sd119&&+t.sd119[k]>0)c.dur=+t.sd119[k];base.push(c)});   // v12.2: 날마다 다른 길이(t.sd119)
     return base}catch(e){console.error(e);return a}}})(tasksOn);
 
 function srcDate91(el){const q=el&&el.closest&&el.closest('[data-drop^="col:"],[data-drop^="allday:"],[data-drop^="day:"]');

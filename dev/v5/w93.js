@@ -56,7 +56,7 @@
   function bl93(k){   // 내일 시간표에 그릴 블록(시각 있는 일 + 주 N회 자리)
     const by={};
     tasksOn(k).forEach(x=>{if(x.status!==0||!x.time||hm80(x.time)==null)return;by[x.id]={id:x.id,t:TASKS[x.id]||x,s:hm80(x.time),d:Math.max(10,+x.dur||30)}});
-    wk93(k).forEach(x=>{const sl=x.on&&x.t.sl91[k];if(sl&&hm80(sl)!=null)by[x.t.id]={id:x.t.id,t:x.t,s:hm80(sl),d:Math.max(10,+x.t.dur||30)}});
+    wk93(k).forEach(x=>{const sl=x.on&&x.t.sl91[k];if(sl&&hm80(sl)!=null)by[x.t.id]={id:x.t.id,t:x.t,s:hm80(sl),d:Math.max(10,+(x.t.sd119&&x.t.sd119[k])||+x.t.dur||30)}});
     return Object.values(by);
   }
   function lane93(L){   // 겹치는 블록은 나란히
@@ -76,7 +76,7 @@
   }
   function sel93(k){
     const t=W.sel&&TASKS[W.sel];if(!t)return '';
-    const wk=isWk(t),sl=wk?(t.sl91&&t.sl91[k]):tm93(t,k),placed=!!sl&&hm80(sl)!=null,rt=!!t.rid,ml=!!t.ml80,d=rt?(view83(t,k).dur||+t.dur||30):(+t.dur||30),rep=t.rep&&t.rep.f&&!wk&&!(rt&&rtDay93(t,k));
+    const wk=isWk(t),sl=wk?(t.sl91&&t.sl91[k]):tm93(t,k),placed=!!sl&&hm80(sl)!=null,rt=!!t.rid,ml=!!t.ml80,d=rt?(view83(t,k).dur||+t.dur||30):((wk&&t.sd119&&+t.sd119[k])||+t.dur||30),rep=t.rep&&t.rep.f&&!wk&&!(rt&&rtDay93(t,k));
     const tm=placed?`<input type="time" data-w93seltm="1" aria-label="시각" value="${esc(fmt80(hm80(sl)))}">`:'';
     return `<div class="sel93"><div class="s1"><b>${esc(t.title)}</b> <span class="tiny muted">${placed?fmt80(hm80(sl))+'–'+fmt80(hm80(sl)+d):'아직 시간 안 정함 — 아래 시간표를 눌러 놓아요'}</span></div>
       <div class="s2">${rt||ml?'':durOpt(t)}${placed?`${rt||ml?'':'<button type="button" class="chipbtn" data-w93len="-15" aria-label="15분 줄이기">−15분</button><button type="button" class="chipbtn" data-w93len="15" aria-label="15분 늘리기">＋15분</button>'}${tm}${rt||ml?'':`<button type="button" class="chipbtn" data-w93off="1">${wk?'종일 칸으로':'시간 빼기'}</button>`}`:`<button type="button" class="chipbtn" data-w93q="1">빈 시간에 놓기</button>`}${wk&&t.sl91&&t.sl91[k]!==undefined?'<button type="button" class="chipbtn" data-w93del="1">날 정함 빼기</button>':''}${ml?'':'<button type="button" class="chipbtn" data-w93opt="1" aria-haspopup="menu">⋯ 옵션</button>'}<button type="button" class="chipbtn" data-w93det="1">상세</button><button type="button" class="ib" data-w93desel="1" aria-label="선택 끝">×</button></div>
@@ -195,7 +195,7 @@
       if(!mvOk93(t)){go93(id);return}
       W.sel=W.sel===id?null:id;wiz93();return}
     if((b=T.closest('[data-w93g]'))&&W.sel&&TASKS[W.sel]){stop();if(Date.now()-(W.drg||0)<350)return;put93(TASKS[W.sel],min93(b,e.clientY));return}
-    if((b=T.closest('[data-w93len]'))){stop();const t=TASKS[W.sel];if(t)mut93(t,`'${t.title}' 길이`,()=>{t.dur=Math.max(10,(+t.dur||30)+(+b.dataset.w93len))});return}
+    if((b=T.closest('[data-w93len]'))){stop();const t=TASKS[W.sel];if(t)mut93(t,`'${t.title}' 길이`,()=>{const dd=+b.dataset.w93len;if(isWk(t)&&t.sd119&&+t.sd119[W.k]>0)t.sd119[W.k]=Math.max(10,+t.sd119[W.k]+dd);else t.dur=Math.max(10,(+t.dur||30)+dd)});return}   // v12.2: 날마다 다른 길이(sd119)가 있으면 그 날 것을 고침
     if((b=T.closest('[data-w93off]'))){stop();const t=TASKS[W.sel];if(t)put93(t,null);return}
     if((b=T.closest('[data-w93del]'))){stop();const t=TASKS[W.sel];if(!t||!t.sl91)return;mut93(t,`'${t.title}' 날 정함 뺌`,()=>{delete t.sl91[W.k];if(!Object.keys(t.sl91).length)delete t.sl91});W.sel=null;return}
     if((b=T.closest('[data-w93det]'))){stop();const id=W.sel;if(id)go93(id);return}

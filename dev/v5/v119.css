@@ -18,8 +18,15 @@
 .pbar119,.pbar119 .pr119{min-width:0;max-width:100%;box-sizing:border-box}
 .jarcard>.pbar119{width:100%}
 /* v12.1 ② 끝낸 며칠짜리 일정 막대 */
-.bar83.d119{text-decoration:line-through;text-decoration-thickness:1.5px;border-style:dashed;opacity:.8}
-.bar83.d119 .ck119{display:inline-block;text-decoration:none;font-weight:700}
+/* v12.2: 끝낸 막대 크기·보이기 고침 — 예전 `border-style:dashed`가 위·아래 테두리(기본 굵기 3px)까지 살려 막대 속이 7px로 눌리고 글자가 안 보였음.
+   이제 테두리 굵기를 명시(위·아래·오른쪽 1px 점선, 왼쪽 3px 실선)하고 높이는 열린 막대와 같은 13px 그대로, 글자는 진하게 + 얇은 취소선 */
+.bar83.d119{box-sizing:border-box;height:13px;line-height:11px;padding:0 4px;opacity:1;color:var(--ink);font-weight:600;
+  text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:var(--ink);
+  border-style:dashed;border-width:1px;border-left:3px solid var(--lc70,var(--good));
+  border-color:color-mix(in srgb,var(--lc70,var(--good)) 70%,var(--line));border-left-color:var(--lc70,var(--good));
+  background:color-mix(in srgb,var(--lc70,var(--good)) 14%,var(--panel))}
+.bar83.d119.cl83{border-left-width:0;border-left-style:none}
+.bar83.d119 .ck119{display:inline-block;text-decoration:none;font-weight:800;margin-right:1px}
 .wk91 .c91.dr119{cursor:grab;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .wk91 .c91.dr119:active{cursor:grabbing}
 .wk91 .c91 .pl119{font-style:normal;margin-left:2px}

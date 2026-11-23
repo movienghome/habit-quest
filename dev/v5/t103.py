@@ -88,7 +88,7 @@ def run_t(pg,W):
     g=J(pg,"""(()=>{const a=TASKS[__mk(5)],b=newTask({title:"'하나 그리고 둘'",rep:{f:'x',n:3},due:null});b.rep={f:'x',n:3};b.aid=a.aid;b.due=a.due;saveTask(b);a.title='시나리오 쓰기 합침시험';saveTask(a);render();return 1})()""");pg.wait_for_timeout(900)
     g2=J(pg,"""(()=>{const c=[...document.querySelectorAll('.wk91 .k105[data-wk105]:not(.all)')];return {n:c.length,txt:c.map(e=>e.title+e.textContent).join('|')}})()""")
     ok(g2['n']==1,f'[{W}] 같은 카드(시나리오 쓰기·하나 그리고 둘)는 위 줄에 한 칩',g2)
-    ok("합침시험" in g2['txt'] and "하나 그리고 둘" in g2['txt'] and ' + ' in g2['txt'],f'[{W}] 칩 이름이 두 할 일을 + 로 같이 보여 줌',g2['txt'])
+    ok("시나리오 쓰기" in g2['txt'] and ' + ' not in g2['txt'],f'[{W}] (v12.2) 칩 이름은 대표 할 일 하나만 — 이어 붙이지 않음',g2['txt'])
     # 메뉴 항목
     m=J(pg,"""(()=>{const id=__mk(5);sheetCtx={task:id};let got=null;const _m=menu61;
       try{menu61(10,10,'t',[{l:'🗑 삭제',keep:1,f(){}}])}catch(e){return 'ERR '+e}

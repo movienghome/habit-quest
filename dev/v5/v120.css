@@ -1,0 +1,6 @@
+/* v12.2 (w120.js) — 주 N회 최소 표시 · 그 날 창 · 끝낸 칩 끌기 */
+.wk91 .c91 .mn120{font-style:normal;font-size:10.5px;margin-left:3px;padding:0 4px;border:1px dashed var(--line);border-radius:6px;white-space:nowrap}
+.wk91 .c91.min120 .mn120{border-style:solid;font-weight:700}
+.cchip.done.d84[data-drag]{cursor:grab}
+.aug120 .chipbtn{min-height:30px;padding:2px 10px;font-size:12.5px}
+#sheetC [data-d120sheet] input[type=time],#sheetC [data-d120sheet] input[type=number]{min-height:36px}
