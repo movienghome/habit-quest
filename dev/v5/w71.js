@@ -258,7 +258,7 @@ addEventListener('keydown',e=>{if(e.target&&e.target.id==='tsTags'&&e.key==='Ent
 /* ---- 10) 루틴: 하나만 골라 하는 단계(🔀) · 건너뛰어도 되는 단계(◌) · 몇 시쯤(⏰) · 단계만 체크해도 완주 · 카드 쪽 '루틴 없음' 고침 ----
    s.g71 = 묶음 이름(같은 값끼리 '하나만'), s.opt71 = 선택. 완주 = 필수 단계 다 + 묶음마다 하나 이상. */
 function stIsDone71(r,D){const day=DAYS[D];return s=>s.aid==='@weigh'?!!(day&&day.weight):stOn69(TASKS[s.tid],D)}
-function rtNeed71(r,isDone){const st=(r.steps||[]).filter(s=>TASKS[s.tid]&&!pOff114(r,s));let ok=true,miss=0;const G={};
+function rtNeed71(r,isDone,D){const st=effSteps117(r,D||gk76()).filter(s=>TASKS[s.tid]);let ok=true,miss=0;const G={};
   st.forEach(s=>{if(s.g71){(G[s.g71]=G[s.g71]||[]).push(s);return}if(s.opt71)return;if(!isDone(s)){ok=false;miss++}});
   Object.values(G).forEach(g=>{if(!g.some(isDone)){ok=false;miss++}});return{ok:st.length>0&&ok,miss,st,G}}
 function rtHasPick71(r){return (r.steps||[]).some(s=>s.g71||s.opt71)}
@@ -272,14 +272,14 @@ function rtFull71(r,D,e0){const day=dayOf(D);if((day.entries||[]).some(e=>e.kind
 function rtDone64(r,keepDay){
   if(!r)return;if(!keepDay)RD69=curDay().date;const D=RD69||dateKey(),isT=D===dateKey(),lbl=isT?'오늘':d69lbl(D);
   sync62(r);const head=rtH62(r,false),day=DAYS[D],isD=stIsDone71(r,D);
-  const st=(r.steps||[]).filter(s=>TASKS[s.tid]&&!pOff114(r,s)),full=day&&(day.entries||[]).some(e=>e.kind==='routine'&&e.rid===r.id&&e.full);
+  const st=effSteps117(r,D).filter(s=>TASKS[s.tid]),full=day&&(day.entries||[]).some(e=>e.kind==='routine'&&e.rid===r.id&&e.full);
   sheetCtx={rt64:r.id};
   const row=(s,i)=>{const t=TASKS[s.tid],w=s.aid==='@weigh',dn=isD(s),p=stPts62(s),pick=s.g71||s.opt71;
     return `<label class="d64r ${dn?'ok':''}"><input type="${s.g71?'checkbox':'checkbox'}" data-d64="${s.tid}" ${s.g71?`data-g71="${esc(s.g71)}"`:''} ${dn?'checked disabled':pick?'':'checked'}><span class="no">${dn?'✓':i+1}</span><span class="nm">${esc(stName61(s))}${s.opt71?' <small class="muted">◌ 선택</small>':''}${dn?` <small class="muted">${esc(lbl)} 함</small>`:''}</span>
       ${w&&!dn?`<input class="w64" type="number" step="0.1" min="30" max="250" inputmode="decimal" placeholder="kg" value="${day&&day.weight?day.weight:''}" aria-label="몸무게">`:''}<span class="tiny muted pt">${pts62(p,{zero:''})}</span></label>`};
   let rows='',i=0;while(i<st.length){const s=st[i];if(s.g71){const g=[];let j=i;while(j<st.length&&st[j].g71===s.g71){g.push([st[j],j]);j++}
       rows+=`<div class="g71box"><div class="g71h">🔀 하나만 골라요 <small class="muted">그날 컨디션대로</small></div>${g.map(([x,k])=>row(x,k)).join('')}</div>`;i=j}else{rows+=row(s,i);i++}}
-  const need=rtNeed71(r,isD);
+  const need=rtNeed71(r,isD,D);
   openSheet(`<div class="sh"><h3>✓ ${esc(r.name)}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>${dayRow69(D,'rd69')}
     <p class="help" style="margin:0 0 8px">한 걸 체크해요. 체크한 단계 점수가 들어가고, <b>${rtHasPick71(r)?'필수 단계를 다 하고 🔀 묶음에서 하나씩 하면':'모든 단계를 하면'} 완주 보너스</b> ${pts62({xp:r.xp,gold:r.gold},{zero:'0'})}도 받아요.${full?` <b>${esc(lbl)}은 이미 완주했어요</b>(보너스는 하루 한 번).`:''}</p>
     <div class="row" style="gap:6px;margin-bottom:6px"><button type="button" class="chipbtn" data-d64all="1">모두 체크</button><button type="button" class="chipbtn" data-d64all="0">모두 해제</button><span style="flex:1"></span><span class="tiny muted">${st.filter(isD).length}/${st.length} ${esc(lbl)} 함${need.ok?'':` · 완주까지 ${need.miss}개`}</span></div>
@@ -296,7 +296,7 @@ function rtDoneGo64(r){
     if(s.aid==='@weigh'){const v=(box.querySelector(`[data-d64="${tid}"]`).closest('.d64r').querySelector('.w64')||{}).value;if(v&&!wSave63(v,D))return;if(D>=(t.last||''))t.last=D;t.cnt=(t.cnt||0)+1;saveTask(t);did++;return}
     if(t.status!==0)return;const p=taskBase(t);got.xp+=+p.xp||0;got.gold+=+p.gold||0;const pl=t.last;
     completeTask(t,{direct:true});if(t.status===2){t.status=0;delete t.doneAt}t.last=pl&&pl>D?pl:D;saveTask(t);did++});
-  const need=rtNeed71(r,stIsDone71(r,D)),all=need.ok;
+  const need=rtNeed71(r,stIsDone71(r,D),D),all=need.ok;
   const full=(dayOf(D).entries||[]).some(e=>e.kind==='routine'&&e.rid===r.id&&e.full);
   let bonus=0;if(all&&!full)bonus=rtFull71(r,D);
   closeSheet();render();

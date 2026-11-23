@@ -13,7 +13,7 @@ function stAfter74(r,D){
   if(!day.weight&&D===td)wStepsOf74(r).forEach(s=>{const t=TASKS[s.tid];if(t&&t.last===D){t.last=null;t.cnt=Math.max(0,(t.cnt||1)-1);saveTask(t);ch=true}});
   // 완주 보너스: 이제 완주가 아니면 같이 뺌
   const fulls=(day.entries||[]).filter(e=>e.kind==='routine'&&e.rid===r.id&&e.full);
-  if(fulls.length&&!rtNeed71(r,stIsDone71(r,D)).ok){
+  if(fulls.length&&!rtNeed71(r,stIsDone71(r,D),D).ok){
     fulls.forEach(e=>{lost+=+e.xp||0;removeEntry(D,e.id)});
     if(h){h.cnt=Math.max(0,(h.cnt||0)-fulls.length);saveTask(h)}ch=true}
   // 오늘 한 단계가 하나도 없으면 반복 루틴은 다시 오늘 몫

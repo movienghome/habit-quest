@@ -16,7 +16,7 @@ function rtPart73(){if(!ready72()||typeof tasksReady==='undefined'||!tasksReady)
     if(h.pd73&&h.pd73.d===D){if(!rtDoneN73(r,D,true)&&h.pd73.from&&h.due!==h.pd73.from){h.due=h.pd73.from;delete h.pd73;saveTask(h)}return}
     if(!h.due||h.due>D||!(h.rep&&h.rep.f))return;
     let kk=null;for(let k=D,i=0;k>=h.due&&i<8;k=addDays(k,-1),i++)if(rtGo73(r,k)){kk=k;break}if(!kk)return;
-    if(kk===D){if(rtNeed71(r,stIsDone71(r,D)).ok)return;   // 다 했으면 완주(보너스)가 처리해요
+    if(kk===D){if(rtNeed71(r,stIsDone71(r,D),D).ok)return;   // 다 했으면 완주(보너스)가 처리해요
       const left=(+h.pt73||0)+GR73-Date.now();if(left>0&&!NOW73.has(r.id)){clearTimeout(PT73);PT73=setTimeout(()=>{try{render()}catch(e){}},Math.min(left+800,GR73+800));return}}
     NOW73.delete(r.id);let nx=nextDue(h.rep,h.due);while(nx&&nx<=kk)nx=nextDue(h.rep,nx);if(!nx)return;
     const n=rtDoneN73(r,kk),all=(r.steps||[]).filter(s=>TASKS[s.tid]).length;
