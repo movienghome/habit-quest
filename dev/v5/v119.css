@@ -17,3 +17,6 @@
 .pbar119.run .c119{min-height:30px;padding:2px 10px;font-size:12.5px}
 .pbar119,.pbar119 .pr119{min-width:0;max-width:100%;box-sizing:border-box}
 .jarcard>.pbar119{width:100%}
+/* v12.1 ② 끝낸 며칠짜리 일정 막대 */
+.bar83.d119{text-decoration:line-through;text-decoration-thickness:1.5px;border-style:dashed;opacity:.8}
+.bar83.d119 .ck119{display:inline-block;text-decoration:none;font-weight:700}

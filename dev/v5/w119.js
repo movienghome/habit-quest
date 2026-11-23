@@ -81,3 +81,17 @@ startRun=(function(prev){return function(o){try{const r=o&&o.routine&&(C.routine
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['🛌 쉬는 날 프리셋','루틴 카드·할 일 상세 맨 위 상황 줄 → ✎ → 프리셋에서 단계를 전부 빼기','단계를 다 뺀 프리셋(예: 일/일정)을 그 날의 상황으로 고르면 그 날 루틴은 미룸(☠) 없이 저절로 건너뛰어요. 며칠짜리 일정에 상황 이름을 걸어 두면 그 날들이 모두 쉬는 날이에요',()=>{location.hash='tasks'},'쉬는 날 건너뛰기 루틴 프리셋 일정 촬영 상황 단계 없음'],
   ['⏱ 실행 중 프리셋 바꾸기','루틴 ⏱ 실행 화면 단계 줄 위 상황 칩','하던 중에도 상황(프리셋)을 바꿔요. 끝낸 단계는 그대로, 남은 단계만 새 프리셋 순서로 다시 짜요(하던 단계가 새 프리셋에도 있으면 쓴 시간 이어서)',()=>{location.hash='tasks'},'루틴 실행 프리셋 상황 바꾸기 타이머 도중']])}})(F67);
+/* ---- v12.1 ②: 며칠짜리 일정을 끝내도 월 막대가 그대로(전체 취소선 + ✓ + 점선) (사용자 11/23) ----
+   예전: 끝내면 막대(.bar83)가 사라지고 끝낸 날 칸에 칩 하나(취소선)로 줄어듦. 이제: `doneSpans119()`(끝낸 며칠짜리 할 일)를 w83 `bars83` 목록에 넣어 **일정 전체 기간 막대**를 그대로 그리고,
+   그 막대에 `.d119`(취소선·점선·✓ — 색만으로 구분 안 함). 월 칸 끝낸 칩(`month84`→`doneTasks84(k,1)`)에서는 며칠짜리를 뺌(막대와 겹침 방지). 1일·3일·주 보기 종일 칸(`allday84`)은 끝낸 뒤에도 **기간 날마다** 끝낸 칩.
+   끝낸 막대도 눌러서 상세·꾹 눌러 끌기 그대로(`data-ctask`·`data-drag`). 보이기·숨기기(calPass)는 열린 막대와 같이 적용. */
+function doneSpans119(){try{const keep=t=>typeof fOn77!=='function'||!fOn77()||calPass(t);
+  return Object.values(TASKS).filter(t=>t&&t.status===2&&t.due&&span71(t)&&!t.cb76&&!t.ml80&&!isStep62(t)&&keep(t))}catch(e){console.error(e);return []}}
+function barsDone119(){const m=$('calMain');if(!m)return;
+  m.querySelectorAll('.bar83').forEach(b=>{const t=TASKS[b.dataset.ctask];if(!t||t.status!==2)return;
+    b.classList.add('done','d119');b.classList.remove('late');b.title='✓ 끝냄 · '+b.title.replace(/^✓ 끝냄 · /,'');
+    if(!b.querySelector('.ck119')){const mk=document.createElement('span');mk.className='ck119';mk.textContent='✓ ';const f=b.firstChild;
+      if(f&&f.nodeType===3&&/^‹ /.test(f.nodeValue)){f.nodeValue=f.nodeValue.slice(2);b.insertBefore(mk,f);b.insertBefore(document.createTextNode('‹ '),mk)}
+      else b.insertBefore(mk,b.firstChild)}});
+  try{if(typeof place83==='function')place83()}catch(e){}}
+renderCal=(function(prev){return function(){const x=prev.apply(this,arguments);try{if(calShown()&&(C.ui.cal||{}).mode==='month')barsDone119()}catch(e){console.error(e)}return x}})(renderCal);

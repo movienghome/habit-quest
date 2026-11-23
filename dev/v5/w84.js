@@ -28,7 +28,7 @@ function allday84(){const pane=$('calPane');if(!pane||!calShown())return;
 function month84(){const g=$('calMain')&&$('calMain').querySelector('.mgrid');if(!g)return;
   g.querySelectorAll('.mc[data-calday]').forEach(mc=>{const k=mc.dataset.calday;
     mc.querySelectorAll('.dc84').forEach(x=>x.remove());
-    const old=[...mc.querySelectorAll('.cchip.done:not(.d84)')],{list,raw}=doneTasks84(k);
+    const old=[...mc.querySelectorAll('.cchip.done:not(.d84)')],{list,raw}=doneTasks84(k,1);
     if(!old.length&&!list.length)return;
     // 칸 +n 기준 값에서 '아직 안 그려진 끝낸 일' 만큼 빼고, 끝낸 일은 전부 다시 그려 칸 맞춤(cal62fit)이 넘치는 것을 세게 함
     const mr=mc.querySelector('.more');let base=mc.dataset.b62!=null?+mc.dataset.b62:(mr?(parseInt(mr.textContent.replace(/\D/g,''))||0):0);

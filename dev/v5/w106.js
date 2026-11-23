@@ -131,10 +131,13 @@ function doneBlk77(k){const out=[],seen=new Set(),p=CAL77;CAL77=1;let es=[];try{
   es.forEach(e=>{const t=TASKS[e.tid];if(!t||seen.has(t.id)||t.cb76||isStep62(t))return;const tm=tm106(t,k);if(!tm)return;
     const once=t.status===2&&t.doneAt===k,rep=repDone106(t,k);if(!once&&!rep)return;seen.add(t.id);out.push({t:tm===t.time?t:Object.assign({},t,{time:tm}),e,once})});
   return out}
-function doneTasks84(k){const p=CAL77;CAL77=1;let es=[];try{es=doneOn(k)}finally{CAL77=p}
+function doneTasks84(k,noSpan){const p=CAL77;CAL77=1;let es=[];try{es=doneOn(k)}finally{CAL77=p}
   const seen=new Set(),out=[];
   es.forEach(e=>{const t=TASKS[e.tid];if(!t||seen.has(t.id)||t.cb76||t.ml80||isStep62(t))return;
-    const once=t.status===2&&t.doneAt===k,rep=repDone106(t,k);if(!once&&!rep)return;seen.add(t.id);out.push({t,e,once})});
+    const once=t.status===2&&t.doneAt===k,rep=repDone106(t,k);if(!once&&!rep)return;
+    if(noSpan&&once&&span71(t))return;   // v12.1: 며칠짜리 끝낸 일은 월 막대(.bar83)가 그림 — 월 칸 칩을 또 그리지 않음
+    seen.add(t.id);out.push({t,e,once})});
+  if(!noSpan&&typeof doneSpans119==='function')doneSpans119().forEach(t=>{if(!seen.has(t.id)&&t.due<=k&&k<=t.end71){seen.add(t.id);out.push({t,e:null,once:true})}});   // v12.1: 며칠 일정은 끝낸 뒤에도 기간 날마다 끝낸 칩(종일 칸)
   return {list:out,raw:es.length}}
 function allday84(){const pane=$('calPane');if(!pane||!calShown())return;
   let most=0;

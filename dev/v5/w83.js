@@ -10,7 +10,7 @@ function bars83(){
   g.querySelectorAll('.sp83,.bar83').forEach(x=>x.remove());
   const mcs=[...g.querySelectorAll('.mc[data-calday]')];if(!mcs.length)return;
   const first=mcs[0].dataset.calday,last=mcs[mcs.length-1].dataset.calday,td=dateKey();
-  const list=openTasks().filter(t=>t.due&&span71(t)&&calPass(t)&&t.due<=last&&t.end71>=first)
+  const list=openTasks().concat(typeof doneSpans119==='function'?doneSpans119():[]).filter(t=>t.due&&span71(t)&&calPass(t)&&t.due<=last&&t.end71>=first)
     .sort((a,b)=>a.due<b.due?-1:a.due>b.due?1:(diffDays(b.end71,b.due)-diffDays(a.end71,a.due))||String(a.id).localeCompare(String(b.id)));
   if(!list.length)return;
   const NL=innerWidth<760?2:3,rows=Math.ceil(mcs.length/7),need=mcs.map(()=>0),segs=[],over=[];
