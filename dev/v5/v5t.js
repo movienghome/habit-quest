@@ -52,7 +52,7 @@ function qHome63(){try{
   const day=today(),left=C.dailies.filter(q=>!questDone(day,q));let s=b.querySelector('.q63left');if(!s){s=document.createElement('div');s.className='q63left tiny muted';b.appendChild(s)}
   s.textContent=!C.dailies.length?'일퀘가 없어요 · 눌러서 만들기':left.length?`남은 것 ${left.length}개`:'오늘 일퀘를 다 했어요';
   if(sheetCtx&&sheetCtx.q63&&!$('sheet').hidden)qSheet63()}catch(e){console.error(e)}}
-addEventListener('click',e=>{const p=e.target.closest('.hblock[data-hid="quests"] .panel.q63');if(!p||e.target.closest('.colbtn,.qbtn,[data-sheet]'))return;e.preventDefault();e.stopPropagation();lastPt={x:e.clientX,y:e.clientY};qSheet63()},true);
+addEventListener('click',e=>{const p=e.target.closest('.hblock[data-hid="quests"] .panel.q63');if(!p||e.target.closest('.colbtn,.qbtn,[data-sheet],.brv126'))return;e.preventDefault();e.stopPropagation();lastPt={x:e.clientX,y:e.clientY};qSheet63()},true);
 addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('.q63row')){e.preventDefault();qSheet63()}});
 closeSheet=(function(prev){return function(){if(sheetCtx&&sheetCtx.q63)sheetCtx=null;return prev.apply(this,arguments)}})(closeSheet);
 function bossSay63(){try{const b=document.querySelector('#battleBox .boss2');if(!b||b.querySelector('.say62'))return;const nm=(b.querySelector('b')||{}).textContent||'';const d=document.createElement('div');d.className='say62';d.textContent='「'+bossLine62(nm,b.classList.contains('dead'))+'」';const t=b.querySelector('b');t&&t.after(d)}catch(e){}}

@@ -125,7 +125,7 @@ addEventListener('change',e=>{const s=e.target;if(!s||!s.dataset||s.dataset.p106
   const c=pset88(),k=c.kinds.find(z=>z.id===s.dataset.p106);if(!k)return;if(s.value==='')delete k.tid106;else k.tid106=s.value;save('config');pOpen88(true)},true);
 
 /* ---- ⑤ 캘린더: 주 N회 자리를 끝내면 그 시각에 ✓ 블록 ---- */
-function tm106(t,k){return t.time||(t.sl91&&t.sl91[k])||''}
+function tm106(t,k){return t.time||(t.sl91&&t.sl91[k])||(t.cs126&&t.cs126.d===k&&t.cs126.m)||''}   // v12.8: 관리를 놓은 시각(t.cs126)도
 function repDone106(t,k){return t.status===0&&t.rep&&t.rep.f&&(t.due!==k||t.rep.f==='x')}
 function doneBlk77(k){const out=[],seen=new Set(),p=CAL77;CAL77=1;let es=[];try{es=doneOn(k)}finally{CAL77=p}
   es.forEach(e=>{const t=TASKS[e.tid];if(!t||seen.has(t.id)||t.cb76||isStep62(t))return;const tm=tm106(t,k);if(!tm)return;

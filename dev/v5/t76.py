@@ -9,6 +9,7 @@ FAILS=[]
 def ok(c,msg,extra=''):
     print(('PASS ' if c else 'FAIL ')+msg+(' · '+str(extra) if extra!='' else ''))
     if not c:FAILS.append(msg)
+def opn(pg):pg.evaluate("(()=>{const d=document.querySelector('#sheetC details.set126');if(d)d.open=true})()");pg.wait_for_timeout(100)
 def vis(pg,sel):return pg.locator(sel).locator('visible=true').first
 def cnt(pg,sel):return pg.locator(sel).locator('visible=true').count()
 def clk(pg,sel,w=500):
@@ -78,7 +79,7 @@ with sync_playwright() as pw:
     ok(cnt(pg,f'#calPane [data-ctask="{ids["plan"]}"]')>=1,'캘린더: 보통 할 일은 종일 칸에')
     ok(cnt(pg,f'#calPane [data-ctask="{ids["tank"]}"]')==0 and cnt(pg,f'#calPane [data-ctask="{ids["walk"]}"]')==0,'캘린더: 관리·일퀘 할 일은 종일 칸에 없음')
     ok(J(pg,"cfg76().blk")==30 and J(pg,"Object.values(TASKS).filter(t=>t.cb76).length")==3,'처음 관리로 옮기면 블록 30분이 기본으로 켜짐(차례 있는 오늘·내일·모레)',J(pg,"Object.values(TASKS).filter(t=>t.cb76).map(t=>t.due).join()"))
-    J(pg,"careSheet76()");pg.wait_for_timeout(400);clk(pg,'#sheetC [data-c76blk="0"]',700);J(pg,"closeSheet()");pg.wait_for_timeout(300)
+    J(pg,"careSheet76()");pg.wait_for_timeout(400);opn(pg);clk(pg,'#sheetC [data-c76blk="0"]',700);J(pg,"closeSheet()");pg.wait_for_timeout(300)
     ok(J(pg,"Object.values(TASKS).filter(t=>t.cb76).length")==0 and cnt(pg,'#calPane [data-ctask^="cb76_"]')==0,'블록 없음을 고르면 다 지워짐')
     # 서랍
     if cnt(pg,'#calTray')==0:clk(pg,'#calTrayBtn',400)
@@ -86,7 +87,7 @@ with sync_playwright() as pw:
     ok(cnt(pg,f'#calTray [data-ctask="{ids["plan"]}"]')==1 and cnt(pg,f'#calTray [data-ctask="{ids["clean"]}"]')==0,'서랍 모든 할 일: 관리는 없음')
     # 관리 블록 켜기
     J(pg,"careSheet76()");pg.wait_for_timeout(400)
-    clk(pg,'#sheetC [data-c76blk="30"]',700)
+    opn(pg);clk(pg,'#sheetC [data-c76blk="30"]',700)
     bid='cb76_'+J(pg,"midKey68()")
     ok(J(pg,f"!!TASKS['{bid}']&&TASKS['{bid}'].dur===30"),'블록 30분 → 오늘 관리 블록 생김')
     ok(J(pg,"Object.values(TASKS).filter(t=>t.cb76).length")==3,'오늘·내일·모레 블록(차례 있는 날)',J(pg,"Object.values(TASKS).filter(t=>t.cb76).map(t=>t.due).join()"))
@@ -133,7 +134,7 @@ with sync_playwright() as pw:
     ok(cnt(pg,ROW(ids['tank']))==0,'우클릭 → 관리로 → 다음 7일 목록에서 빠짐')
     # 일퀘 스위치 끄기 → 다시 목록에
     J(pg,"careSheet76()");pg.wait_for_timeout(300)
-    vis(pg,'#sheetC [data-c76q]').click();pg.wait_for_timeout(500)
+    opn(pg);vis(pg,'#sheetC [data-c76q]').click();pg.wait_for_timeout(500)
     J(pg,"closeSheet();C.ui.tasks.sel='today';render()");pg.wait_for_timeout(400)
     ok(cnt(pg,ROW(ids['walk']))==1,'일퀘 스위치를 끄면 일퀘 할 일이 다시 목록 줄로')
     # 저장: 설정 키가 normConfig를 지나도 남나 · 서버 저장이 거절되지 않나

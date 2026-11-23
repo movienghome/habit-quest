@@ -79,7 +79,7 @@ openTaskSheet=(function(prev){return function(id){const t=TASKS[id];if(t&&t.cb76
 
 /* ---- 3) 관리 줄(칩) ---- */
 function chip76(t,k,q){const n=q?0:late76(t,k);
-  return `<span class="c76c ${n?'late':''} ${q?'q':''}"><button type="button" class="tchk" data-tdone="${t.id}" aria-label="${esc(t.title)} 했어요"></button><span class="c76n" data-ctask="${t.id}" role="button" tabindex="0" title="${esc(t.title)} · ${q?'일퀘':esc(repLabel(t.rep))+(n?' · 때 지남 '+n+'일':'')} (눌러서 열기)">${q?'☑ ':''}${esc(t.title)}${n?` <small>⏳${n}일</small>`:''}</span></span>`}
+  return `<span class="c76c ${n?'late':''} ${q?'q':''}"><button type="button" class="tchk" data-tdone="${t.id}" aria-label="${esc(t.title)} 했어요"></button><span class="c76n" data-ctask="${t.id}" role="button" tabindex="0" title="${esc(t.title)} · ${q?'일퀘':esc(repLabel(t.rep))+(n?' · 때 지남 '+n+'일':'')} (눌러서 열기)">${q?'☑ ':''}${esc(t.title)}${n?` <small>⏳${n}일</small>`:''}${q?'':pb126(t)}</span></span>`}
 function careRow76(){const k=midKey68(),all=careAll76(),due=careDue76(k),qs=questDue76(),c=cfg76();
   if(!all.length&&!qs.length){const n=careCand76().length;if(c.seen||!n||!tasksReady)return '';
     return `<div class="care76 hint"><span>🧽 반복 할 일 ${n}개 — 집안일·몸 돌봄 같은 <b>관리</b>는 따로 두면 목록·캘린더가 가벼워져요</span><button type="button" class="btn sm" data-c76pick="1">고르기</button><button type="button" class="x" data-c76x="1" aria-label="이 안내 닫기">×</button></div>`}
@@ -128,10 +128,10 @@ function blkEnsure76(){const c=C.care76;if(!c||typeof ready==='undefined'||!read
   const td=midKey68();let any=false;AUTO76=1;
   try{
     Object.values(TASKS).forEach(t=>{if(!t.cb76)return;any=true;
-      if(!c.blk||!t.due||t.due<td||t.status!==0||(t.due===td&&!careDue76(td).length))deleteTask(t.id)});   // 지난 날 · 끔 · 오늘 차례를 다 끝냄
+      if(!c.blk||!t.due||t.due<td||t.status!==0||!careRest126(t.due).length)deleteTask(t.id)});   // 지난 날 · 끔 · 오늘 차례를 다 끝냄
     if(!c.blk)return;
     if(Array.isArray(c.no)&&c.no.some(k=>k<td)){c.no=c.no.filter(k=>k>=td);save('config')}
-    for(let i=0;i<3;i++){const k=addDays(td,i),id='cb76_'+k;if(TASKS[id]||(c.no||[]).includes(k)||!careDue76(k).length)continue;
+    for(let i=0;i<3;i++){const k=addDays(td,i),id='cb76_'+k;if(TASKS[id]||(c.no||[]).includes(k)||!careRest126(k).length)continue;
       const t=newTask({title:'🧽 관리',due:k,dur:+c.blk||30});t.id=id;t.cb76=1;t.dupok65=1;saveTask(t)}
   }finally{AUTO76=0}}
 deleteTask=(function(prev){return function(id){try{const t=TASKS[id];if(t&&t.cb76&&!AUTO76&&t.due){const c=cfg76();c.no=[...new Set([...(c.no||[]),t.due])];save('config')}}catch(e){}return prev.apply(this,arguments)}})(deleteTask);
@@ -149,7 +149,7 @@ function calAfter76(){const pane=$('calPane');if(!pane)return;const td=midKey68(
   if(bud76().off!==1)pane.querySelectorAll('.dh[data-calday]').forEach(h=>{const k=h.dataset.calday;if(k<td||h.querySelector('.bud76'))return;const m=placed76(k);if(!m)return;const B=budOf76(k)*60,over=m>B;
     h.insertAdjacentHTML('beforeend',`<button type="button" class="bud76 ${over?'over':''}" data-bud76="${k}" title="놓은 시간 ${hmK76(m)} / 쓸 수 있는 시간 ${hmK76(B)}${over?' — '+hmK76(m-B)+' 넘침':''} · 눌러서 바꾸기" aria-label="${dayName68(k)} 놓은 시간 ${hmK76(m)}, 쓸 수 있는 시간 ${hmK76(B)}${over?', 넘침':''}">${over?'⚠':''}${hm76(m)}<small>/${+(B/60).toFixed(1)}h</small></button>`)});
   // 관리 블록에 그날 차례 개수
-  pane.querySelectorAll('[data-ctask^="cb76_"]').forEach(el=>{const t=TASKS[el.dataset.ctask];if(!t||el.querySelector('.n76'))return;const n=careDue76(t.due>td?t.due:td).length;el.classList.add('cb76');
+  pane.querySelectorAll('[data-ctask^="cb76_"]').forEach(el=>{const t=TASKS[el.dataset.ctask];if(!t||el.querySelector('.n76'))return;const n=careRest126(t.due>td?t.due:td).length;el.classList.add('cb76');
     if(el.classList.contains('cchip'))el.innerHTML=`🧽 <b class="n76">${n}</b><span class="t76"> 관리</span>`;else (el.querySelector('.bt')||el).insertAdjacentHTML('beforeend',` <b class="n76">${n}</b>`)});
   // I1: 좁은 화면 캘린더 → 할 일
   const bar=pane.querySelector('.calbar2');if(bar){let b=$('c76tasks');if(!b){b=document.createElement('button');b.id='c76tasks';b.type='button';b.className='ib';b.textContent='📋';b.title='할 일 목록으로';b.setAttribute('aria-label','할 일 목록으로');bar.insertBefore(b,bar.firstChild)}b.hidden=splitOn()||innerWidth>=1200}}
