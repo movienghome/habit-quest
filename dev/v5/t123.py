@@ -21,24 +21,22 @@ with sync_playwright() as pw:
     J(pg,"location.hash='tasks';render()");pg.wait_for_timeout(600);notoast(pg)
     # 프리셋 하나일 땐 작은 단추만
     J(pg,f"openRt61(window.__rid)");pg.wait_for_timeout(500)
-    ok(J(pg,"!!document.querySelector('#sheetC .pbar119.one [data-pe119]')"),f'[{W}] 프리셋 하나면 작은 🧭 단추 하나')
+    ok(J(pg,"!!document.querySelector('#sheetC .pbar119.one [data-pn117]')"),f'[{W}] 프리셋 하나면 작은 🧭 단추 하나')
     J(pg,"closeSheet()");pg.wait_for_timeout(300)
     addp(pg)
     J(pg,f"openRt61(window.__rid)");pg.wait_for_timeout(500)
-    ok(J(pg,"(()=>{const w=document.querySelector('#sheetC .when60');const f=w&&w.previousElementSibling;return !!f&&f.classList.contains('pbar119')&&!f.classList.contains('one')})()"),f'[{W}] 카드: 상황 줄이 📅 언제 바로 위(v12.5)')
+    ok(J(pg,"(()=>{const w=document.querySelector('#sheetC .when124');const f=w&&w.previousElementSibling;return !!f&&f.classList.contains('pbar119')&&!f.classList.contains('one')})()"),f'[{W}] 카드: 상황 줄이 📅 언제 바로 위(v12.5)')
     ok(J(pg,"document.querySelectorAll('#sheetC .pbar119 .c119').length")>=3,f'[{W}] 칩 3개')
     ok(J(pg,"document.querySelectorAll('#sheetC .pr114row').length")==0,f'[{W}] 예전 아래쪽 줄은 없음')
-    ok(J(pg,"!!document.querySelector('#sheetC details.pe117')"),f'[{W}] 편집 접힘은 그대로')
+    ok(J(pg,"!document.querySelector('#sheetC details.pe117') && !!document.querySelector('#sheetC .pt124')"),f'[{W}] 편집 접힘 없음(v12.6: 단계 목록이 편집기)')
     y=J(pg,"(()=>{const e=document.querySelector('#sheetC .pbar119');const s=document.getElementById('sheetC');return e.getBoundingClientRect().top-s.getBoundingClientRect().top})()")
     ok(J(pg,"document.documentElement.scrollWidth<=innerWidth+1"),f'[{W}] 가로로 안 넘침')
     pg.screenshot(path=f'/tmp/t123_card_{W}.png')
     # ✎ 단추 = 편집 접힘 펴기
-    J(pg,"document.querySelector('#sheetC [data-pe119]').click()");pg.wait_for_timeout(500)
-    ok(J(pg,"document.querySelector('#sheetC details.pe117').open"),f'[{W}] ✎ 누르면 편집 칸이 펴짐')
     J(pg,"closeSheet()");pg.wait_for_timeout(300)
     # 할 일 상세
     J(pg,f"openTaskSheet(rtT({R}).id)");pg.wait_for_timeout(700)
-    ok(J(pg,"(()=>{const w=document.querySelector('#sheetC .when60');const b=w&&w.previousElementSibling;return !!b&&b.classList.contains('pbar119')})()"),f'[{W}] 할 일 상세: 상황 줄이 📅 언제 바로 위(v12.5)')
+    ok(J(pg,"(()=>{const w=document.querySelector('#sheetC .when124');const b=w&&w.previousElementSibling;return !!b&&b.classList.contains('pbar119')})()"),f'[{W}] 할 일 상세: 상황 줄이 📅 언제 바로 위(v12.5)')
     ok(J(pg,"document.querySelectorAll('#sheetC .pbar119').length")==1,f'[{W}] 상세에 상황 줄 하나만')
     pg.screenshot(path=f'/tmp/t123_detail_{W}.png')
     # 상세에서 고르면 반영
@@ -95,7 +93,6 @@ with sync_playwright() as pw:
     # 편집: 마지막 단계도 뺄 수 있음 + 새 단계가 생겨도 안 붙음
     J(pg,f"(()=>{{const r={R};r.ps117.push({{id:'q',ic:'🛌',n:'쉼',s:[r.steps[0].id]}});save('config')}})()")
     J(pg,f"O117[{R}.id]='q';openRt61(window.__rid)");pg.wait_for_timeout(500)
-    J(pg,"document.querySelector('#sheetC details.pe117').open=true")
     pg.locator('#sheetC [data-pcs117$=\"|'+J(pg,f"{R}.steps[0].id")+'\"]').nth(0).uncheck();pg.wait_for_timeout(500);notoast(pg)
     ok(J(pg,f"{R}.ps117.find(p=>p.id==='q').s.length")==0 and J(pg,f"{R}.ps117.find(p=>p.id==='q').z119")==1,f'[{W}] 마지막 단계도 빼면 쉬는 날 프리셋')
     J(pg,f"(()=>{{const r={R};const t=newTask?0:0}})()")

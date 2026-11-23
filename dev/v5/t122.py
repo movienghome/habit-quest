@@ -24,10 +24,10 @@ with sync_playwright() as pw:
     ok(J(pg,f"ensure117({R}).length")==1 and J(pg,NM)=='산책>명상>세수',f'[{W}] 처음엔 일반 하나(전체 단계)')
     # 카드에서 프리셋 만들기
     J(pg,f"openRt61(window.__rid)");pg.wait_for_timeout(500)
-    ok(J(pg,"!!document.querySelector('#sheetC .pbar119') && !document.querySelector('#sheetC details.pe117').open"),f'[{W}] 카드 맨 위에 오늘 줄, 편집 칸은 접힘')
-    J(pg,"document.querySelector('#sheetC details.pe117 summary').click()");pg.wait_for_timeout(300)
+    ok(J(pg,"!!document.querySelector('#sheetC .pbar119') && !document.querySelector('#sheetC details.pe117')"),f'[{W}] 카드에 프리셋 줄, 편집 접힘은 없음(v12.6)')
     pg.locator('#sheetC [data-pn117]').click();pg.wait_for_timeout(500);notoast(pg)
     ok(J(pg,f"{R}.ps117.length")==2,f'[{W}] ＋ 새 프리셋 → 2개')
+    J(pg,"document.querySelector('#sheetC details.pm124').open=true");pg.wait_for_timeout(200)
     pg.locator('#sheetC input.pe117n').fill('출근');pg.locator('#sheetC input.pe117n').press('Enter');pg.wait_for_timeout(500);notoast(pg)
     ok(J(pg,f"{R}.ps117[1].n")=='출근',f'[{W}] 이름 바꾸기')
     pg.locator('#sheetC [data-pcs117$="|'+J(pg,f"{R}.steps[0].id")+'"]').uncheck();pg.wait_for_timeout(400);notoast(pg)
@@ -81,7 +81,7 @@ with sync_playwright() as pw:
     ok(J(pg,"document.documentElement.scrollWidth<=window.innerWidth+1"),f'[{W}] 가로로 넘치지 않음')
     # 프리셋 삭제·되돌리기
     J(pg,f"openRt61(window.__rid)");pg.wait_for_timeout(500)
-    J(pg,"document.querySelector('#sheetC details.pe117').open=true");pg.wait_for_timeout(300)
+    J(pg,"document.querySelector('#sheetC details.pm124').open=true");pg.wait_for_timeout(300)
     pg.locator('#sheetC [data-pdel117]').click();pg.wait_for_timeout(500)
     ok(J(pg,f"{R}.ps117.length")==1,f'[{W}] 프리셋 삭제')
     b.close()

@@ -19,7 +19,7 @@ with sync_playwright() as pw:
     J(pg,"location.hash='tasks';render()");pg.wait_for_timeout(600);notoast(pg)
     # ① 카드: 프리셋 줄이 📅 언제 바로 위
     J(pg,"openRt61(window.__rid)");pg.wait_for_timeout(600)
-    ok(J(pg,"(()=>{const w=document.querySelector('#sheetC .when60');const p=w&&w.previousElementSibling;return !!p&&p.classList.contains('pbar119')})()"),f'[{W}] 카드: 프리셋 줄이 📅 언제 바로 위')
+    ok(J(pg,"(()=>{const w=document.querySelector('#sheetC .when124');const p=w&&w.previousElementSibling;return !!p&&p.classList.contains('pbar119')})()"),f'[{W}] 카드: 프리셋 줄이 📅 언제 바로 위')
     ok(J(pg,"(()=>{const c=document.querySelector('#sheetC .jarcard');return !c.firstElementChild.classList.contains('pbar119')})()"),f'[{W}] 카드 맨 위는 이제 프리셋 줄이 아님')
     ok(J(pg,"document.querySelectorAll('#sheetC .pbar119').length")==1,f'[{W}] 카드에 프리셋 줄 하나')
     # ② 프리셋별 시각·요일 줄
@@ -47,7 +47,7 @@ with sync_playwright() as pw:
     J(pg,"closeSheet()");pg.wait_for_timeout(300)
     # ③ 할 일 상세
     J(pg,f"openTaskSheet(rtT({R}).id)");pg.wait_for_timeout(800)
-    ok(J(pg,"(()=>{const w=document.querySelector('#sheetC .when60');const p=w&&w.previousElementSibling;return !!p&&p.classList.contains('pbar119')})()"),f'[{W}] 할 일 상세: 프리셋 줄이 📅 언제 바로 위')
+    ok(J(pg,"(()=>{const w=document.querySelector('#sheetC .when124');const p=w&&w.previousElementSibling;return !!p&&p.classList.contains('pbar119')})()"),f'[{W}] 할 일 상세: 프리셋 줄이 📅 언제 바로 위')
     ok(J(pg,"document.querySelectorAll('#sheetC .pbar119').length")==1,f'[{W}] 상세에 프리셋 줄 하나')
     ok(J(pg,"!document.querySelector('#sheetC > .pbar119.mv')"),f'[{W}] 머리줄 밑으로 옮겨진 줄 없음')
     pg.screenshot(path=f'/tmp/t130_detail_{W}.png')
