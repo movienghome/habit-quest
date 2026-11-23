@@ -1,0 +1,26 @@
+/* v12.7 — 루틴 상세 군더더기 걷어내기(R5) */
+/* ① 루틴 머리 상세: 카드가 이미 하는 일을 하는 맨 위 칩은 숨김 */
+.tchips .dup125{display:none!important}
+.rt62p>.spread>.tiny.muted{display:none}
+/* ② 단계 한 줄 — 번호 · 이름 · 분 · ↑ ↓ · ⋯ (나머지는 ⋯ 줄) */
+.jarcard.slim125 .st62.c125{display:flex!important;flex-wrap:wrap;align-items:center;gap:4px 6px;padding:5px 8px}
+.jarcard.slim125 .st62.c125>.no{flex:0 0 24px}
+.jarcard.slim125 .st62.c125>.st62n{flex:1 1 0;min-width:2.5em}
+.jarcard.slim125 .st62.c125:not(.off124)>.ctl71,.jarcard.slim125 .st62.c125:not(.off124) .ctl71 .ops{display:contents!important}
+.jarcard.slim125 .st62.c125 .mn input{width:46px;padding:0 4px;text-align:center}
+.jarcard.slim125 .st62.c125 .ib{min-width:26px;height:28px}
+.jarcard.slim125 .st62.c125>.mo125{flex:none}
+.jarcard.slim125 .st62.c125>.mo125[aria-expanded="true"]{background:color-mix(in srgb,var(--accent) 18%,transparent)}
+.jarcard.slim125 .st62.c125>.x125{flex:1 0 100%;display:none;flex-wrap:wrap;align-items:center;gap:4px 6px;padding:2px 0 0 30px}
+.jarcard.slim125 .st62.c125.open125>.x125{display:flex}
+.jarcard.slim125 .st62.c125>.x125>.why{flex:1 0 100%}
+.jarcard.slim125 .st62.c125.off124>.mo125,.jarcard.slim125 .st62.c125.off124>.x125{display:none!important}
+/* 📅 언제 상자: 시각 줄에 목록 단추 */
+.when124 .when123,.when124 .when71{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.when124 .lb125{margin-left:auto}
+/* 맨 아래 접힘 */
+.more125{margin-top:6px}
+.more125>summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;min-height:32px;padding:2px 8px;border-radius:8px;color:var(--muted);font-size:12px}
+.more125>summary::-webkit-details-marker{display:none}
+.more125[open]>summary{color:inherit}
+.more125r{gap:6px;flex-wrap:wrap;margin:4px 0}
