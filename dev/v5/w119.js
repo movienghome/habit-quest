@@ -125,3 +125,13 @@ dndEnd=(function(prev){return function(x,y){
   if(DND&&DND.kind==='done105'){const id=DND.id,drop=DND.drop,k0=typeof d105==='function'?d105(DND.el):null;
     if(drop&&k0&&drop.date&&drop.date!==k0&&TASKS[id]){dndAbort();crossDone119(id,k0,drop);return}}
   return prev.apply(this,arguments)}})(dndEnd);
+/* ---- v12.1 ④: 캘린더 위 주 N회 칩 끌어 놓기 + 실제/계획 같이 (사용자 11/23) ----
+   · 칩(`.c91.k99`)을 시간표·종일 칸·월 칸으로 끌면 w86 dndEnd가 그 날을 `t.sl91`(날 정함)에 넣음 — 시각 칸이면 그 시각, 종일/월 칸이면 종일. 묶음(grp99)은 대표 할 일(g.t) 기준. 칩 자체는 안 움직임(원본 유지).
+   · 글자: 굵은 `n/N`=이번 주 실제로 한 횟수(점 ●), `📌 계획 k일`=정해 둔 날 수(◇). 끌어 놓을 때마다 계획이 늘고, 하면 실제가 늘어 서로 비교됨. 색 없이 글자·기호로만. */
+strip91=(function(prev){return function(){prev.apply(this,arguments);try{const m=$('calMain'),w=m&&m.parentElement&&m.parentElement.querySelector(':scope > .wk91');if(!w)return;
+  const md=(C.ui.cal||{}).mode,td=midKey68(),ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td));
+  grp99(openTasks().filter(t=>wx91(t)&&calPass(t))).forEach(g=>{const c=w.querySelector('.c91.k105[data-wk105="'+g.t.id+'"]');if(!c)return;
+    const ks=[...new Set([].concat(...g.ts.map(x=>slotKeys91(x,ws))))],n=wkCnt91(g.t,ws);
+    c.dataset.drag='task:'+g.t.id;c.dataset.dragmode='hold';c.classList.add('dr119');
+    c.title+=' · 끌어서 시간표·캘린더에 놓으면 그 날을 계획에 넣어요 · 굵은 n/N=실제 한 횟수, 📌=계획한 날';
+    if(ks.length){const b=c.querySelector('b');if(b)b.insertAdjacentHTML('afterend',`<i class="pl119" title="이번 주 계획한 날 ${ks.length}일 · 실제 ${n}회">📌${ks.length}</i>`)}})}catch(e){console.error(e)}}})(strip91);

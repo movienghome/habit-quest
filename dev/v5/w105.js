@@ -118,7 +118,7 @@ dndEnd=(function(prev){return function(x,y){
         <div class="small" style="margin:4px 0">${dots99(t,ws,td)} ${s?(s.slack>0?`남은 ${s.need}번 · 쉬어도 되는 날 ${s.slack}일`:`⚠ 남은 ${s.need}번 · 쉬는 날 없이`):(n>=N?'✓ 이번 주 목표를 채웠어요':'')}</div>
         ${g.ts.some(x=>x.hg99)?`<div class="tiny">🤝 이번 주 하그둘 만남 ${hgCnt99(t,ws)}회</div>`:''}<div class="tiny muted">셈에 들어간 기록 ${R.length}개 (한 주 = ${fmtD(ws)}(월) ~ ${fmtD(addDays(ws,6))}(일))</div>
         ${R.length?`<ul class="l105">${R.map(r=>`<li>${fmtD(r.k)}(${wdOf(r.k)}) ${esc(r.e.t||'')} · ${esc((r.e.name||'').slice(0,30))} <span class="muted">· ${esc(r.why)}</span></li>`).join('')}</ul>`:'<div class="tiny muted">아직 기록이 없어요</div>'}
-        ${ks.length?`<div class="tiny">정한 날: ${ks.map(k=>fmtD(k)+'('+wdOf(k)+')').join(', ')}</div>`:''}
+        ${ks.length?`<div class="tiny">📌 계획한 날 ${ks.length}일 · 실제 ${n}회: ${ks.map(k=>fmtD(k)+'('+wdOf(k)+')').join(', ')}</div>`:''}
         <div class="row" style="gap:6px;margin-top:6px;flex-wrap:wrap">${g.ts.map(x=>`<button type="button" class="btn sm ghost" data-wk105open="${x.id}">✎ ${esc(g.ts.length>1?x.title:'할 일 열기')}</button>`).join('')}</div></div>`};
     sheetCtx={wk105:tid||'*'};
     openSheet(`<div class="sh"><h3>🔁 주 N회${one.length===1?' · '+esc(one[0].title):''}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>${one.map(card).join('')}${one.length===1&&G.length>1?`<button type="button" class="btn sm ghost" data-wk105="*">🔁 전체 ${G.length}개 보기</button>`:''}<p class="help">주는 <b>월요일</b>부터예요 (캘린더 보기만 일요일이 맨 앞). 횟수 = 이 할 일 기록 + 같은 카드로 이은 할 일 기록 + 🌱10분만(하루 1번). 잘못 센 기록은 위 '셈에 들어간 기록'에서 날짜를 보고 캘린더에서 체크 해제하세요.</p>`)}

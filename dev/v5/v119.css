@@ -20,3 +20,6 @@
 /* v12.1 ② 끝낸 며칠짜리 일정 막대 */
 .bar83.d119{text-decoration:line-through;text-decoration-thickness:1.5px;border-style:dashed;opacity:.8}
 .bar83.d119 .ck119{display:inline-block;text-decoration:none;font-weight:700}
+.wk91 .c91.dr119{cursor:grab;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.wk91 .c91.dr119:active{cursor:grabbing}
+.wk91 .c91 .pl119{font-style:normal;margin-left:2px}
