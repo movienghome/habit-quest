@@ -25,12 +25,11 @@ with sync_playwright() as pw:
     J(pg,"closeSheet()");pg.wait_for_timeout(300)
     addp(pg)
     J(pg,f"openRt61(window.__rid)");pg.wait_for_timeout(500)
-    ok(J(pg,"(()=>{const c=document.querySelector('#sheetC .jarcard');const f=c&&c.firstElementChild;return !!f&&f.classList.contains('pbar119')&&!f.classList.contains('one')})()"),f'[{W}] 카드 맨 위(이름 칸 앞)에 상황 줄')
+    ok(J(pg,"(()=>{const w=document.querySelector('#sheetC .when60');const f=w&&w.previousElementSibling;return !!f&&f.classList.contains('pbar119')&&!f.classList.contains('one')})()"),f'[{W}] 카드: 상황 줄이 📅 언제 바로 위(v12.5)')
     ok(J(pg,"document.querySelectorAll('#sheetC .pbar119 .c119').length")>=3,f'[{W}] 칩 3개')
     ok(J(pg,"document.querySelectorAll('#sheetC .pr114row').length")==0,f'[{W}] 예전 아래쪽 줄은 없음')
     ok(J(pg,"!!document.querySelector('#sheetC details.pe117')"),f'[{W}] 편집 접힘은 그대로')
     y=J(pg,"(()=>{const e=document.querySelector('#sheetC .pbar119');const s=document.getElementById('sheetC');return e.getBoundingClientRect().top-s.getBoundingClientRect().top})()")
-    ok(y<140,f'[{W}] 카드 상황 줄이 위쪽(시트 맨 위에서 {y:.0f}px)')
     ok(J(pg,"document.documentElement.scrollWidth<=innerWidth+1"),f'[{W}] 가로로 안 넘침')
     pg.screenshot(path=f'/tmp/t123_card_{W}.png')
     # ✎ 단추 = 편집 접힘 펴기
@@ -39,13 +38,13 @@ with sync_playwright() as pw:
     J(pg,"closeSheet()");pg.wait_for_timeout(300)
     # 할 일 상세
     J(pg,f"openTaskSheet(rtT({R}).id)");pg.wait_for_timeout(700)
-    ok(J(pg,"(()=>{const b=document.querySelector('#sheetC .pbar119.mv');const h=document.getElementById('tsTitle').closest('.sh');return !!b&&h.nextElementSibling===b})()"),f'[{W}] 할 일 상세: 머리줄 바로 아래에 상황 줄')
+    ok(J(pg,"(()=>{const w=document.querySelector('#sheetC .when60');const b=w&&w.previousElementSibling;return !!b&&b.classList.contains('pbar119')})()"),f'[{W}] 할 일 상세: 상황 줄이 📅 언제 바로 위(v12.5)')
     ok(J(pg,"document.querySelectorAll('#sheetC .pbar119').length")==1,f'[{W}] 상세에 상황 줄 하나만')
     pg.screenshot(path=f'/tmp/t123_detail_{W}.png')
     # 상세에서 고르면 반영
     J(pg,"document.querySelector('#sheetC .pbar119 [data-pk117$=\"|w\"]').click()");pg.wait_for_timeout(500);notoast(pg)
     ok(J(pg,f"pset117({R},gk76()).id")=='w',f'[{W}] 상세 줄에서 출근 고르기')
-    ok(J(pg,"!!document.querySelector('#sheetC .pbar119.mv [aria-pressed=true][data-pk117$=\"|w\"]')"),f'[{W}] 다시 그려도 줄 하나·출근 ✓')
+    ok(J(pg,"!!document.querySelector('#sheetC .pbar119 [aria-pressed=true][data-pk117$=\"|w\"]')"),f'[{W}] 다시 그려도 줄 하나·출근 ✓')
     J(pg,"closeSheet()");pg.wait_for_timeout(300)
     # 실행 화면 칩
     J(pg,f"{R}.pd117={{}};save('config')")
