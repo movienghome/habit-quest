@@ -21,7 +21,7 @@ function ensure117(r){
     r.pd117=r.pd117||{};const k=r.pk114;if(k&&k.d&&r.ps117.some(p=>p.id===k.p)&&k.p!=='n')r.pd117[k.d]=k.p;
     r.sk117=ids.slice();dirty=1}
   const known=new Set(r.sk117||[]);let add=0;
-  st.forEach(s=>{if(!known.has(s.id)){known.add(s.id);r.ps117.forEach(p=>{if(p.s.indexOf(s.id)<0)p.s.push(s.id)});add=1}});
+  st.forEach(s=>{if(!known.has(s.id)){known.add(s.id);r.ps117.forEach(p=>{if(p.s.indexOf(s.id)<0&&!p.z119)p.s.push(s.id)});add=1}});
   if(add){r.sk117=[...known];dirty=1}
   if(dirty)sched117();
   return r.ps117}
@@ -53,14 +53,14 @@ taskRow=(function(prev){return function(t,o){
   const r=t&&t.status===0&&C.mig62&&typeof rtOfT62==='function'?rtOfT62(t):null;const d=r?dateOf117(t):null;
   CTX117=d;let h;try{h=prev.apply(this,arguments)}finally{CTX117=null}
   try{if(r&&typeof h==='string'){const p=pset117(r,d),L=effSteps117(r,d).filter(s=>TASKS[s.tid]),many=ensure117(r).length>1;
-    h=h.replace(/(<span class="kcount" title="묶인 할 일">)⏱ \d+단계 · \d+분/,(m,a)=>`${a}<button type="button" class="pc117" data-pc117="${r.id}|${d}" title="이 날 어떤 상황으로 할지 고르기">⏱ ${many?esc(preN117(p))+' · ':''}${L.length}단계 · ${sumMin117(L)}분 ▾</button>`)}}catch(e){console.error(e)}
+    h=h.replace(/(<span class="kcount" title="묶인 할 일">)⏱ \d+단계 · \d+분/,(m,a)=>`${a}<button type="button" class="pc117" data-pc117="${r.id}|${d}" title="이 날 어떤 상황으로 할지 고르기">⏱ ${many?esc(preN117(p))+' · ':''}${p&&!p.s.length?'쉬는 날 · 건너뜀':`${L.length}단계 · ${sumMin117(L)}분`} ▾</button>`)}}catch(e){console.error(e)}
   return h}})(taskRow);
 // ---- 날짜별로 고르기 창 ----
 function lbl117(d){return d===gk76()?'오늘':(typeof dueLabel==='function'?dueLabel(d):d)}
 function pickSheet117(rid,d){const r=(C.routines||[]).find(x=>x.id===rid);if(!r)return;const L=ensure117(r),on=pset117(r,d);
   openSheet(`<div class="sh"><h3>⏱ ${esc(r.name)} · ${esc(lbl117(d))}</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div><p class="help" style="margin:0 0 8px">이 날은 어떤 상황으로 할까요? 누르면 골라지고 그 프리셋의 단계·순서대로 해요.${typeof srcNote118==='function'?srcNote118(r,d):''}</p>
     <div class="sit116 sit117" role="group" aria-label="상황 프리셋">${L.map(p=>{const ss=p.s.map(i=>(r.steps||[]).find(s=>s.id===i)).filter(s=>s&&TASKS[s.tid]);
-      return `<button type="button" class="btn s116 s117 ${p===on?'':'ghost'}" data-pk117="${r.id}|${d}|${p.id}" data-close117="1" aria-pressed="${p===on}"><b>${esc(preN117(p))}${p===on?' ✓':''}${L.length>1&&p.id===(r.pf117||L[0].id)?' <small class="muted">기본</small>':''}</b><span class="tiny muted">${ss.length}단계 · ${sumMin117(ss.map(s=>({min:pmin118(p,s)})))}분</span></button>`}).join('')}</div>
+      return `<button type="button" class="btn s116 s117 ${p===on?'':'ghost'}" data-pk117="${r.id}|${d}|${p.id}" data-close117="1" aria-pressed="${p===on}"><b>${esc(preN117(p))}${p===on?' ✓':''}${L.length>1&&p.id===(r.pf117||L[0].id)?' <small class="muted">기본</small>':''}</b><span class="tiny muted">${p.s.length?`${ss.length}단계 · ${sumMin117(ss.map(s=>({min:pmin118(p,s)})))}분`:'쉬는 날 · 루틴을 건너뛰어요'}</span></button>`}).join('')}</div>
     <div class="row" style="margin-top:10px"><button type="button" class="btn ghost sm" data-ed117="${r.id}">✎ 프리셋 편집·추가</button></div>`)}
 function redraw117(r){try{if(sheetCtx&&sheetCtx.rt64===r.id)rtDone64(r,true);else if(sheetCtx&&sheetCtx.rt61===r.id)redrawRt61();else if(sheetCtx&&sheetCtx.task&&$('tsTitle'))tsRedraw();else if(curView()==='edit')reEdit()}catch(e){console.error(e)}}
 function prune117(r){const t=gk76();Object.keys(r.pd117||{}).forEach(k=>{if(diffDays(k,t)<-7)delete r.pd117[k]})}
@@ -104,7 +104,7 @@ addEventListener('click',e=>{const b=e.target.closest('[data-pt117],[data-pn117]
 },true);
 addEventListener('change',e=>{const i=e.target;if(!i||!i.dataset)return;
   if(i.dataset.pcs117){e.stopPropagation();const {r,p,x}=pOf117(i.dataset.pcs117);if(!r||!p)return;const sid=x[0];
-    if(i.checked){if(p.s.indexOf(sid)<0)p.s.push(sid)}else{if(p.s.length<=1){i.checked=true;toast('프리셋에는 단계가 하나 이상 있어야 해요');return}p.s=p.s.filter(z=>z!==sid)}
+    if(i.checked){if(p.s.indexOf(sid)<0)p.s.push(sid);delete p.z119}else{p.s=p.s.filter(z=>z!==sid);if(!p.s.length){p.z119=1;toast(`${preN117(p)} · 단계를 다 뺐어요 → 이 상황인 날은 쉬는 날이라 루틴을 건너뛰어요`)}}
     done117(r,1);return}
   if(i.dataset.pmin118){e.stopPropagation();const {r,p,x}=pOf117(i.dataset.pmin118);if(!r||!p)return;const sid=x[0],st=(r.steps||[]).find(z=>z.id===sid);if(!st)return;
     p.m=p.m||{};const v=i.value.trim();if(v===''||(Math.max(0,Math.min(240,parseInt(v)||0))===(+st.min||0))){delete p.m[sid]}else p.m[sid]=Math.max(0,Math.min(240,parseInt(v)||0));if(!Object.keys(p.m).length)delete p.m;done117(r,1);return}

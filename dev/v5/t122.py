@@ -24,7 +24,7 @@ with sync_playwright() as pw:
     ok(J(pg,f"ensure117({R}).length")==1 and J(pg,NM)=='산책>명상>세수',f'[{W}] 처음엔 일반 하나(전체 단계)')
     # 카드에서 프리셋 만들기
     J(pg,f"openRt61(window.__rid)");pg.wait_for_timeout(500)
-    ok(J(pg,"!!document.querySelector('#sheetC .pt117') && !document.querySelector('#sheetC details.pe117').open"),f'[{W}] 카드 맨 위에 오늘 줄, 편집 칸은 접힘')
+    ok(J(pg,"!!document.querySelector('#sheetC .pbar119') && !document.querySelector('#sheetC details.pe117').open"),f'[{W}] 카드 맨 위에 오늘 줄, 편집 칸은 접힘')
     J(pg,"document.querySelector('#sheetC details.pe117 summary').click()");pg.wait_for_timeout(300)
     pg.locator('#sheetC [data-pn117]').click();pg.wait_for_timeout(500);notoast(pg)
     ok(J(pg,f"{R}.ps117.length")==2,f'[{W}] ＋ 새 프리셋 → 2개')
