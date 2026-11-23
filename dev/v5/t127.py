@@ -36,7 +36,7 @@ with sync_playwright() as pw:
     o=J(M);J("completeTask(TASKS[window.__id])");pg.wait_for_timeout(900);closepops(pg);d=J(M)
     print(o,d)
     chk('끝낸 막대 높이 같음',o and d and abs(o['h']-d['h'])<0.6 and abs(o['w']-d['w'])<1.5)
-    chk('끝낸 막대 위 테두리 1px',d and d['bt']=='1px' and d['bl']=='3px')
+    chk('끝낸 막대 위 테두리 없음·왼쪽 4px (v12.3: 안 한 칩과 같은 크기)',d and d['bt']=='0px' and d['bl']=='4px')
     chk('끝낸 막대 불투명',d and float(d['op'])>=0.95)
     b.close()
     # ---- ③ 칩 제목 · ④ 그 날 창 · ⑤ 하그둘 · 최소 ----
@@ -68,8 +68,8 @@ with sync_playwright() as pw:
     pg.locator('[data-d120="hg"]').click();pg.wait_for_timeout(900)
     chk('날 정함 빠짐',J("!(TASKS[window.__a].sl91&&TASKS[window.__a].sl91[window.__k]!==undefined)"))
     hid=J("Object.values(TASKS).find(t=>t.hg119===window.__a)&&Object.values(TASKS).find(t=>t.hg119===window.__a).id")
-    chk('하그둘 고정 일정 생김',bool(hid) and J("(()=>{const h=Object.values(TASKS).find(t=>t.hg119===window.__a);return h.title==='하그둘'&&h.list==='fixed'&&h.due===window.__k&&h.time==='14:30'&&h.dur===75})()"))
-    chk('캘린더에 하그둘',J("document.body.innerText.includes('하그둘')"))
+    chk('하그둘 고정 일정 생김',bool(hid) and J("(()=>{const h=Object.values(TASKS).find(t=>t.hg119===window.__a);return h.title==='하나 그리고 둘'&&h.list==='fixed'&&h.due===window.__k&&h.time==='14:30'&&h.dur===75})()"))
+    chk('캘린더에 하그둘',J("document.body.innerText.includes('하나 그리고 둘')"))
     # 되돌리기
     J("hgBack120(Object.values(TASKS).find(t=>t.hg119===window.__a).id)");pg.wait_for_timeout(700)
     chk('되돌림: 날 정함 복귀',J("TASKS[window.__a].sl91&&TASKS[window.__a].sl91[window.__k]==='14:30'&&(TASKS[window.__a].sd119||{})[window.__k]===75"))

@@ -43,7 +43,7 @@ def run_t(pg,W):
         J(pg,"document.querySelector('.wk91 .k105[data-wk105]:not(.all)').click()");pg.wait_for_timeout(400)
         st=J(pg,"(document.querySelector('.w105c')||{}).innerText||''")
         ok('남은' in st and '쉬어도' in st or '쉬는 날 없이' in st,f'[{W}] 칩을 누르면 남은 횟수·쉬는 날이 글자로 보임(색만 X)',st[:120]);J(pg,"closeSheet()")
-        ok('●' in w['txt'] and '◐' in w['txt'],f'[{W}] ● 한 날 · ◐ 10분만 한 날이 글자로 구분됨',w['txt'])
+        ok('한 날' in (w['aria'] or '') and '10분만 한 날' in (w['aria'] or ''),f'[{W}] 한 날 · 10분만 한 날이 글자(읽기 문구)로 구분됨 — v12.3부터 점은 CSS 모양',w['aria'])
         ok(w['aria'] and '10분만' in w['aria'],f'[{W}] 점 줄에 읽어 주는 설명(aria-label)',w['aria'])
     # 4) 내일 짜기 맨 위 줄 경보(여유 0일)
     J(pg,"""(()=>{const id='%s',T=TASKS[id],k=addDays(midKey68(),1),ws=weekStart(k);

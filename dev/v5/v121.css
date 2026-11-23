@@ -1,0 +1,44 @@
+/* v12.3 — 칩 점 모양 · 칩 상세 화면 · 월 칩·막대 크기 통일 */
+/* ④ 점: 같은 크기 틀(11px)에 CSS 모양 — 글자 ● ◐ ○ ◇ · 는 크기가 제각각이라 점이 안 보였음. 색만으로 구분하지 않음(모양이 다름) */
+.dd99{display:inline-flex;align-items:center;gap:3px;line-height:1}
+.d99{position:relative;display:inline-block;flex:none;width:var(--ds,11px);height:var(--ds,11px);min-width:0;font-size:0;font-style:normal;color:var(--ink);border-bottom:0!important;vertical-align:middle}
+.d99::before{content:"";position:absolute;left:50%;top:50%;box-sizing:border-box;width:100%;height:100%;transform:translate(-50%,-50%)}
+.d99.s-done::before{border-radius:50%;background:currentColor}
+.d99.s-tr::before{border-radius:50%;border:1.5px solid currentColor;background:linear-gradient(90deg,currentColor 50%,transparent 50%)}
+.d99.s-miss::before{border-radius:50%;border:1.5px solid currentColor}
+.d99.s-plan::before{width:calc(var(--ds,11px)*.72);height:calc(var(--ds,11px)*.72);border:1.5px solid currentColor;transform:translate(-50%,-50%) rotate(45deg)}
+.d99.s-fut::before{width:calc(var(--ds,11px)*.6);height:calc(var(--ds,11px)*.6);border-radius:50%;background:currentColor;opacity:.5}
+.d99.now::after{content:"";position:absolute;left:-1px;right:-1px;bottom:-4px;height:2px;border-radius:1px;background:currentColor}
+.wk91 .dd99{gap:3px;font-size:0}
+.wk91 .dd99 .d99{color:var(--ink)}
+/* ⑤ 칩 상세 화면 */
+.w121c{padding:12px 12px 10px}
+.w121c .h121{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.w121c .t121{font-size:16px}
+.w121c .r121{margin-left:auto;font-size:12px;color:var(--muted)}
+.w121c .big121{display:flex;align-items:baseline;gap:6px;margin:6px 0 0}
+.w121c .n121{font-size:36px;font-weight:800;line-height:1}
+.w121c .of121{font-size:15px;color:var(--muted)}
+.w121c .tag121{margin-left:auto;align-self:center;font-size:12px;font-weight:700;padding:2px 9px;border:1px solid var(--line);border-radius:999px;white-space:nowrap}
+.w121c .tag121.warn{border:2px solid var(--ink)}
+.w121c .bar121{position:relative;height:10px;margin:9px 0 2px;border:1px solid var(--line);border-radius:6px;background:var(--panel2)}
+.w121c .bar121 .f121{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--accent)}
+.w121c .bar121 .m121{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--ink)}
+.w121c .lg121{position:relative;height:15px;margin-bottom:2px;font-size:11px;color:var(--muted)}
+.w121c .lg121 span{position:absolute;top:1px;transform:translateX(-50%);white-space:nowrap}
+.w121c .week121{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;margin:6px 0 4px}
+.w121c .wd121{display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 0 3px;border:1px solid transparent;border-radius:9px;background:none;color:var(--ink);font:inherit;min-width:0}
+button.wd121{cursor:pointer;border-color:var(--line)}
+.w121c .wd121.now{border-color:var(--ink)}
+.w121c .wd121 .dl121{font-size:12px;font-weight:600}
+.w121c .wd121 .d99{--ds:15px;margin:2px 0 3px}
+.w121c .wd121 small{min-height:13px;font-size:10px;line-height:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.w121c .st121{margin:4px 0 8px;font-size:13px;font-weight:600}
+.w121c .set121{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding-top:8px;border-top:1px solid var(--line);font-size:13px}
+.w121c details.rec121{margin-top:8px;font-size:12px}
+.w121c details.rec121 summary{cursor:pointer;color:var(--muted);padding:2px 0}
+/* ⑥ 월 칩·막대 크기: 안 한 할 일 칩(.cchip)과 같게 — 값은 fit121()이 칩을 재서 --bh121·--bf121·--bp121로 넣음 */
+.cchip.done.d84{border-top-width:0;border-right-width:0;border-bottom-width:0}
+.mgrid>.bar83,.mgrid>.bar83.d119{box-sizing:border-box;height:var(--bh121,16.85px);font-size:var(--bf121,11px);padding:var(--bp121,1px) 4px;line-height:calc(var(--bh121,16.85px) - 2*var(--bp121,1px));border-radius:5px;border-top-width:0;border-bottom-width:0;border-right-width:0;border-left-width:4px}
+.mgrid>.bar83.cl83,.mgrid>.bar83.d119.cl83{border-left-width:0;border-top-left-radius:0;border-bottom-left-radius:0}
+.mgrid>.bar83.cr83,.mgrid>.bar83.d119.cr83{border-top-right-radius:0;border-bottom-right-radius:0}
