@@ -27,11 +27,12 @@ function calPass(t){const f=flt77();if(!t||!fOn77(f))return true;const L=listOk(
   if(f.kinds.length){const ks=kinds77(t);m.kinds=ks.some(k=>f.kinds.includes(k))}
   if(f.inv)return !Object.values(m).some(Boolean);            // 고른 것 숨기기: 하나라도 맞으면 숨김
   if(m.lists===false&&Array.isArray(f.known)&&!f.known.includes(L))m.lists=true;   // 거르기를 정한 뒤 생긴 목록은 안 거름(v7.2)
-  return Object.values(m).every(Boolean)}                     // 고른 것만: 줄끼리는 '그리고', 줄 안은 '또는'
+  return f.and?Object.values(m).every(Boolean):Object.values(m).some(Boolean)}   // v12.9: 고른 것 보이기 = 고른 칩 중 하나라도 맞으면 보임(합쳐서). '겹치는 것만'(f.and)은 줄끼리 '그리고'(예전 방식)
 function calFilterN(){return fOn77()}
 function passWith72(cfg,t){return calPass(t)}
 function calUnhide72(t){const f=flt77();if(calPass(t))return 0;const L=listOk(t.list)?t.list:'inbox',ar=areaOfTask(t),ks=kinds77(t);let n=0;
   if(f.inv){const a=f.lists.length;f.lists=f.lists.filter(x=>x!==L);f.areas=f.areas.filter(x=>x!==ar);f.tags=f.tags.filter(g=>!(t.tags||[]).some(x=>x===g||String(x).startsWith(g+'/')));f.kinds=f.kinds.filter(k=>!ks.includes(k));n=1}
+  else if(!f.and){if(f.lists.length){f.lists.push(L);n=1}else if(f.areas.length&&ar){f.areas.push(ar);n=1}else if(f.tags.length&&(t.tags||[])[0]){f.tags.push(t.tags[0]);n=1}else if(f.kinds.length&&ks[0]){f.kinds.push(ks[0]);n=1}else{f.lists=[];f.areas=[];f.tags=[];f.kinds=[];n=1}}
   else{if(f.lists.length&&!f.lists.includes(L)){f.lists.push(L);n++}
     if(f.areas.length&&!f.areas.includes(ar)){if(ar)f.areas.push(ar);else f.areas=[];n++}
     if(f.tags.length&&!(t.tags||[]).some(x=>f.tags.includes(x))){f.tags=[];n++}
@@ -45,18 +46,20 @@ function calFilterSheet(){const f=flt77(),tags={};Object.values(TASKS).forEach(t
   openSheet(`<div class="sh"><h3>캘린더 보이기·숨기기</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
     <div class="row" style="gap:6px"><span class="seg3 sm"><button type="button" data-f77m="0" aria-pressed="${!f.inv}">고른 것 보이기</button><button type="button" data-f77m="1" aria-pressed="${!!f.inv}">고른 것 숨기기</button></span>
       <span class="small ${on&&hid?'':'muted'}" id="f77n">${on?`날짜 있는 할 일 ${dated.length}개 중 <b>${dated.length-hid}개 보임</b>${hid?` · 🙈 ${hid}개 숨김`:''}`:'아무것도 안 골라서 전부 보여요'}</span></div>
+    ${(!f.inv&&['lists','areas','tags','kinds'].filter(k=>f[k].length).length>=2)?`<div class="row" style="gap:6px;align-items:center"><span class="seg3 sm" role="group" aria-label="여러 줄을 고르면"><button type="button" data-f77a="0" aria-pressed="${!f.and}">합쳐서 보기</button><button type="button" data-f77a="1" aria-pressed="${!!f.and}">겹치는 것만</button></span></div>`:''}
     ${sec('종류',KIND77.map(([k,l])=>ch('kinds',k,l)).join(''))}
     ${sec('목록',[{id:'inbox',name:listName('inbox')},...C.lists.filter(l=>l.id!=='inbox')].map(l=>ch('lists',l.id,esc(l.name),l.color)).join(''))}
     ${sec('영역',C.areas.map(a=>ch('areas',a.id,esc(a.name))).join(''))}
     ${Object.keys(tags).length?sec('태그',Object.keys(tags).sort().map(t=>ch('tags',t,'#'+esc(t))).join('')):''}
-    <p class="help" style="margin:4px 0 0">${f.inv?'고른 것 중 <b>하나라도</b> 맞으면 숨겨요.':'같은 줄에서는 <b>하나라도</b>, 다른 줄끼리는 <b>둘 다</b> 맞아야 보여요 (목록 Limen + 종류 루틴 = Limen의 루틴만).'} 캘린더 화면·할 일 옆 캘린더가 같이 쓰고, <b>끝낸 일·지난 날</b>에도 똑같이 적용돼요.</p>
+    <p class="help" style="margin:4px 0 0">${f.inv?'고른 것 중 <b>하나라도</b> 맞으면 숨겨요.':f.and?'<b>겹치는 것만</b> 보여요 — 같은 줄에서는 하나라도, 다른 줄끼리는 둘 다 맞아야 해요 (목록 Limen + 종류 루틴 = Limen의 루틴만).':'고른 것 <b>중 하나라도</b> 맞으면 보여요 (목록 Limen + 종류 관리 = Limen 목록의 일 + 모든 관리).'} 관리는 평소 캘린더에서 빠져 있어서 <b>🧽 n 관리 블록과 놓은 관리</b>만 보여요. 캘린더 화면·할 일 옆 캘린더가 같이 쓰고, <b>끝낸 일·지난 날</b>에도 똑같이 적용돼요.</p>
     <div class="row" style="justify-content:space-between"><button type="button" class="btn ghost sm" data-f77x="1"${on?'':' disabled'}>모두 풀기</button><button class="btn" data-sheet="close">닫기</button></div>`)}
 function fApply77(){save('config');calFilterSheet();ui.calKeepScroll=true;try{if(calShown())renderCal()}catch(e){console.error(e)}}
 addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
   if((b=T.closest('[data-f77]'))){e.preventDefault();e.stopPropagation();const f=flt77(),k=b.dataset.f77,v=b.dataset.v;if(!Array.isArray(f[k]))return;
     f[k]=f[k].includes(v)?f[k].filter(x=>x!==v):[...f[k],v];if(k==='lists')f.known=['inbox',...C.lists.map(l=>l.id)];fApply77();return}
   if((b=T.closest('[data-f77m]'))){e.preventDefault();e.stopPropagation();flt77().inv=+b.dataset.f77m?1:0;fApply77();return}
-  if((b=T.closest('[data-f77x]'))){e.preventDefault();e.stopPropagation();C.calf77={lists:[],areas:[],tags:[],kinds:[],inv:flt77().inv?1:0};fApply77();return}
+  if((b=T.closest('[data-f77x]'))){e.preventDefault();e.stopPropagation();const o=flt77();C.calf77={lists:[],areas:[],tags:[],kinds:[],inv:o.inv?1:0,and:o.and?1:0};fApply77();return}
+  if((b=T.closest('[data-f77a]'))){e.preventDefault();e.stopPropagation();flt77().and=+b.dataset.f77a?1:0;fApply77();return}
 },true);
 // 끝낸 일(기록)도 같은 거르기로 — 캘린더를 그리는 동안만
 doneOn=(function(prev){return function(k){const a=prev.apply(this,arguments);if(!CAL77||!fOn77())return a;const inv=!!flt77().inv;return a.filter(e=>{const t=TASKS[e.tid];return t?calPass(t):inv})}})(doneOn);

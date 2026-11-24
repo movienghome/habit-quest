@@ -13,6 +13,13 @@
   const at93=()=>hm80(C.tm93at)!=null?C.tm93at:'21:00';
   const ord93=()=>{const o=Array.isArray(C.tm93ord)?C.tm93ord.filter(x=>ALL.some(a=>a[0]===x)):[];ALL.forEach(a=>{if(!o.includes(a[0]))o.push(a[0])});return o};
   const byTime=(a,b)=>hm80(a.time)-hm80(b.time);
+  /* v12.9: 목록 색(캘린더 시간표처럼 왼쪽 띠+옅은 배경)·목록 이모지 — 색만으로 구분하지 않게 이모지도 같이. C.tm127col===0이면 끔(⚙ 설정) */
+  const colOn93=()=>C.tm127col!==0;
+  function lc93(t){if(!colOn93()||!t)return {c:'',e:''};const id=listOk(t.list)?t.list:'inbox',l=(C.lists||[]).find(z=>z.id===id);let e='';try{e=listEmoji(id)||''}catch(_){}
+    if(e&&(t.care76||t.cb76)&&e==='🧽')e='';return {c:(l&&l.color)||'',e}}
+  const lcCls93=t=>{const o=lc93(t);return o.c?' lc93':''};
+  const lcSty93=t=>{const o=lc93(t);return o.c?` --lc93:${o.c};`:''};
+  const lcEm93=t=>{const o=lc93(t);return o.e?o.e+' ':''};
 
   /* ---- 단계별 내용 ---- */
   function fx93(k){
@@ -75,7 +82,7 @@
     const cur=(W.mem&&W.mem[W.step])||new Set();lane93(L);
     let h='';for(let m=s0;m<e0;m+=60)h+=`<div class="hl93" style="top:${(m-s0)*PX93}px"><span>${String(Math.floor(m/60)).padStart(2,'0')}</span></div><div class="hl93 half" style="top:${(m-s0+30)*PX93}px"></div>`;
     const bs=L.map(b=>{const t=b.t,mv=mvOk93(t),isC=cur.has(b.id),sel=W.sel===b.id;
-      return `<div class="b93${isC?' cur':''}${sel?' sel':''}${mv?' mv':''}" data-w93b="${b.id}" role="button" tabindex="0" aria-pressed="${sel}" title="${esc(t.title)} ${fmt80(b.s)}–${fmt80(b.s+b.d)}" style="top:${(b.s-s0)*PX93}px;height:${Math.max(20,b.d*PX93)-2}px;left:calc(${b.l/b.n*100}% + 1px);width:calc(${100/b.n}% - 3px)"><b>${fmt80(b.s)}</b> ${t.ml80?'🍱 ':''}${isCP(t)?'🧽 ':''}${esc(t.title)}${t.rep&&t.rep.f&&!isWk(t)?' ↻':''}</div>`}).join('');
+      return `<div class="b93${isC?' cur':''}${sel?' sel':''}${mv?' mv':''}${lcCls93(t)}" data-w93b="${b.id}"${mv?` data-drag="task:${b.id}"`:''} role="button" tabindex="0" aria-pressed="${sel}" title="${esc(t.title)} ${fmt80(b.s)}–${fmt80(b.s+b.d)}${mv?' · 끌어서 옮겨요':''}" style="${lcSty93(t)}top:${(b.s-s0)*PX93}px;height:${Math.max(20,b.d*PX93)-2}px;left:calc(${b.l/b.n*100}% + 1px);width:calc(${100/b.n}% - 3px)"><b>${fmt80(b.s)}</b> ${t.ml80?'🍱 ':''}${isCP(t)?'🧽 ':''}${lcEm93(t)}${esc(t.title)}${t.rep&&t.rep.f&&!isWk(t)?' ↻':''}</div>`}).join('');
     return `<div class="tt93s" data-w93sc="1"><div class="tt93g" data-w93g="1" data-s0="${s0}" style="height:${(e0-s0)*PX93}px">${h}${bs}</div></div>`;
   }
   function sel93(k){
@@ -98,7 +105,7 @@
     else if(id==='care')L=care93(k).filter(t=>!placed93(t,k));
     const lab={fx:'시각을 정해야 해요',wk:'이번 주 남은 횟수',ad:'시각 안 정한 일',care:'시간 안 정한 관리 차례'}[id];
     const chip=t=>{const on=W.sel===t.id,x=id==='wk'?wk93(k).find(z=>z.t.id===t.id):null;
-      return `<button type="button" class="chipbtn t93${on?' on':''}" data-w93s="${t.id}" aria-pressed="${on}">${(t.prio||0)>=3?'<b>!</b> ':''}${esc(t.title)}${x?` <small>${x.n}/${x.N}${x.on?' · 종일':''}</small>`:''}${t.dur?` <small>${t.dur}분</small>`:''}${id==='care'?` <small>${esc(when76(t,k))}</small>`:t.rep&&t.rep.f&&id!=='wk'?' ↻':''}</button>`};
+      return `<button type="button" class="chipbtn t93${on?' on':''}${lcCls93(t)}" data-w93s="${t.id}" data-drag="task:${t.id}" aria-pressed="${on}" title="누르면 고르고 · 끌어서 시간표에 놓아요"${lcSty93(t)?` style="${lcSty93(t)}"`:''}>${(t.prio||0)>=3?'<b>!</b> ':''}${lcEm93(t)}${esc(t.title)}${x?` <small>${x.n}/${x.N}${x.on?' · 종일':''}</small>`:''}${t.dur?` <small>${t.dur}분</small>`:''}${id==='care'?` <small>${esc(when76(t,k))}</small>`:t.rep&&t.rep.f&&id!=='wk'?' ↻':''}</button>`};
     const auto=id==='care'?L.length:L.filter(autoOk80).length;
     return `<div class="p80g">${lab} <small>${L.length}</small></div>`+(L.length?`<div class="tray93">${L.map(chip).join('')}</div>`:`<p class="help" style="margin:2px 0">${id==='care'?'차례인 관리는 모두 시간표에 놓았어요 ✓':'시각을 정할 일이 없어요.'}</p>`)
       +(W.sel?'':`<p class="help" style="margin:2px 0 4px">일을 누르고 → 시간표 빈 곳을 눌러 놓아요. 놓인 일도 눌러서 옮겨요.</p>`)
@@ -126,7 +133,7 @@
   function body93(id,k){
     if(id==='care'){   // v12.8: 모두 칩으로(자르지 않음) → 고르고 → 시간표에 놓기 · 아직 차례 아닌 관리도 '미리 하기'
       const L=care93(k),m=L.reduce((s,t)=>s+(+t.dur||0),0),nx=careAll76().filter(t=>!t.due||t.due>k).sort((a,b)=>String(a.due||'9').localeCompare(String(b.due||'9')));
-      const chip=t=>{const on=W.sel===t.id;return `<button type="button" class="chipbtn t93${on?' on':''}" data-w93s="${t.id}" aria-pressed="${on}">${esc(t.title)}${t.dur?` <small>${t.dur}분</small>`:''} <small>${esc(when76(t,k))}</small></button>`};
+      const chip=t=>{const on=W.sel===t.id;return `<button type="button" class="chipbtn t93${on?' on':''}${lcCls93(t)}" data-w93s="${t.id}" data-drag="task:${t.id}" aria-pressed="${on}" title="누르면 고르고 · 끌어서 시간표에 놓아요"${lcSty93(t)?` style="${lcSty93(t)}"`:''}>${lcEm93(t)}${esc(t.title)}${t.dur?` <small>${t.dur}분</small>`:''} <small>${esc(when76(t,k))}</small></button>`};
       return `<div class="p80g">관리 차례 <small>${L.length}${m?' · '+hmK76(m):''}</small></div><p class="help" style="margin:0 0 4px">미뤄도 괜찮은 일이라 남는 틈에 해요 — 하고 싶은 것만 골라 시간표에 놓아요.</p>`+tray93('care',k).replace(/^<div class="p80g">[\s\S]*?<\/div>/,'')
         +(nx.length?`<details class="c93nx"${nx.some(t=>W.sel===t.id)?' open':''}><summary>미리 하기 · 다음 차례 ${nx.length}개</summary><div class="tray93">${nx.slice(0,30).map(chip).join('')}</div></details>`:'')
         +`<div class="row" style="margin-top:6px"><button type="button" class="chipbtn" data-w93care="1">🧽 관리 창 열기</button></div>`}
@@ -145,7 +152,7 @@
       const n=tasksOn(k).filter(t=>t.status===0&&!t.cb76&&!t.ml80).length,untimed=ad93(k).length,fxn=fx93(k).nt.length;
       main=`${sel93(k)}${tt93(k)}${line}${und}<p class="small" style="margin:6px 0">${esc(lab)} 할 일 ${n}개${fxn?` · ⚠ 시각 안 정한 정해진 일정 ${fxn}개`:''}${untimed?` · 종일 칸 ${untimed}개`:''}</p>
         <div class="row" style="gap:8px;flex-wrap:wrap">${done93()[k]?'<span class="small">✓ 내일 짜기 끝냈어요</span>':'<button type="button" class="btn" data-w93fin="1">내일 짜기 끝</button>'}<button type="button" class="btn ghost" data-sheet="close">닫기</button></div>`}
-    else main=body93(cur,k)+sel93(k)+tt93(k)+line+und;
+    else main=`<div class="w93tray" data-w93tray="1">${body93(cur,k)}</div>`+sel93(k)+tt93(k)+line+und;
     const nav=`<div class="row w93nav" style="gap:8px;margin-top:8px">${W.i>0?'<button type="button" class="btn ghost sm" data-w93nav="-1">‹ 이전</button>':''}${cur==='end'?'':`<button type="button" class="btn sm" data-w93nav="1">${W.i===steps.length-2?'마무리 ›':'다음 ›'}</button>`}</div>`;
     const ord=ord93();
     sheetCtx={w93:k};
@@ -155,6 +162,7 @@
       ${main}${cur==='end'?'':nav}
       <details class="m80s"><summary>⚙ 설정</summary>
         <div class="row small" style="gap:6px;flex-wrap:wrap">밤에 알려 줄 시각 <input type="time" data-w93at="1" value="${esc(at93())}"></div>
+        <label class="row small" style="gap:6px;margin-top:6px"><input type="checkbox" data-w93col="1"${colOn93()?' checked':''}> 목록 색·이모지 입히기 <small class="muted">(캘린더 시간표와 같게)</small></label>
         <div class="small" style="margin-top:6px">단계 순서 <small class="muted">(위가 먼저)</small></div>
         ${ord.map((id,i)=>`<div class="row small" style="gap:6px"><span style="flex:1">${ALL.find(a=>a[0]===id)[1]}</span><button type="button" class="ib" data-w93o="${id}:-1"${i===0?' disabled':''} aria-label="위로">▲</button><button type="button" class="ib" data-w93o="${id}:1"${i===ord.length-1?' disabled':''} aria-label="아래로">▼</button></div>`).join('')}
         <div style="margin-top:6px"><button type="button" class="linkbtn" data-w93old="1">예전 시간표 짜기 화면 열기</button></div></details>`);
@@ -239,6 +247,7 @@
     if(T.matches('[data-w93seltm]')){e.stopPropagation();const t=TASKS[W.sel];if(t&&hm80(T.value)!=null)put93(t,hm80(T.value));return}
     if(T.matches('[data-w93d]')){e.stopPropagation();const t=TASKS[T.dataset.w93d],v=+T.value;if(t&&v){t.dur=v;saveTask(t)}redo93();return}
     if(T.matches('[data-w93at]')){e.stopPropagation();if(hm80(T.value)!=null){C.tm93at=T.value;save('config');line93()}return}
+    if(T.matches('[data-w93col]')){e.stopPropagation();C.tm127col=T.checked?1:0;save('config');W.y=($('sheetC')||{}).scrollTop;wiz93();const d=document.querySelector('#sheetC details.m80s');if(d)d.open=true;return}
   },true);
   addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.matches&&e.target.matches('.w93n')){e.preventDefault();go93(e.target.dataset.w93t)}
     else if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.matches&&e.target.matches('.b93')&&W&&sheetCtx&&sheetCtx.w93){e.preventDefault();e.target.click()}});
@@ -249,19 +258,29 @@
   function ghost93(g,m,d,txt){let h=g.querySelector('.gh93');if(!h){h=document.createElement('div');h.className='gh93';g.appendChild(h)}
     h.style.top=(m-(+g.dataset.s0))*PX93+'px';h.style.height=Math.max(20,d*PX93)-2+'px';h.textContent=fmt80(m)+' '+txt}
   const noGhost93=()=>document.querySelectorAll('.gh93').forEach(x=>x.remove());
-  addEventListener('pointerdown',e=>{if(!inW()||e.pointerType!=='mouse'||e.button!==0)return;const b=e.target.closest&&e.target.closest('.b93.mv');if(!b)return;
-    G={id:b.dataset.w93b,x:e.clientX,y:e.clientY,on:false}},true);
-  addEventListener('pointermove',e=>{if(!inW()||e.pointerType!=='mouse')return;
+  /* v12.9: 끌기는 앱 공통 엔진(DND — 마우스는 6px 움직이면, 터치·펜은 0.3초 꾹 누르면 시작)으로 — 칩(할 일·관리 …)도 놓인 블록도 같은 길.
+     시간표 위 = 놓기(`DND.drop={type:'w93',min}`), 놓인 블록을 위 칸(보관함)으로 = 시간 빼기(`w93off`). 시간표 밖에 놓으면 아무 일도 안 일어남(날짜가 바뀌지 않게). */
+  addEventListener('pointermove',e=>{if(!inW()||e.pointerType!=='mouse'||DND.on)return;   // 마우스: 고른 일이 놓일 자리 올려 보기
     const g=document.querySelector('#sheetC [data-w93g]');if(!g)return;
-    if(G){const t=TASKS[G.id];if(!t){G=null;return}
-      if(!G.on&&Math.hypot(e.clientX-G.x,e.clientY-G.y)>6)G.on=true;
-      if(G.on){e.preventDefault();const r=g.getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<=r.right)ghost93(g,min93(g,e.clientY),+t.dur||30,t.title);else noGhost93()}return}
     if(W.sel&&TASKS[W.sel]&&e.target.closest&&e.target.closest('[data-w93g]')&&!e.target.closest('.b93')){const t=TASKS[W.sel];ghost93(g,min93(g,e.clientY),+t.dur||30,t.title)}
     else noGhost93()},true);
-  addEventListener('pointerup',e=>{if(!G)return;const d=G;G=null;noGhost93();if(!d.on||!inW())return;
-    W.drg=Date.now();const g=document.querySelector('#sheetC [data-w93g]'),t=TASKS[d.id];if(!g||!t)return;
-    const r=g.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)return;
-    W.sel=d.id;put93(t,min93(g,e.clientY))},true);
+  const dragK93=()=>inW()&&DND.on&&(DND.kind==='task'||DND.kind==='block')&&!!TASKS[DND.id];
+  dndMove=(function(prev){return function(x,y){prev.apply(this,arguments);
+    try{if(!dragK93())return;const t=TASKS[DND.id],g=document.querySelector('#sheetC [data-w93g]');if(!g)return;
+      const sc=g.closest('.tt93s')||g,r=sc.getBoundingClientRect(),tr=document.querySelector('#sheetC .w93tray'),trr=tr&&tr.getBoundingClientRect(),fromB=!!(DND.el&&DND.el.classList&&DND.el.classList.contains('b93'));
+      noGhost93();if(tr)tr.classList.remove('drop-hi');DND.drop=null;
+      if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom){const m=min93(g,y-(fromB?(DND.grabOff||0):0));DND.drop={type:'w93',min:m};ghost93(g,m,+t.dur||30,t.title)}
+      else if(fromB&&trr&&x>=trr.left&&x<=trr.right&&y>=trr.top&&y<=trr.bottom){DND.drop={type:'w93off'};tr.classList.add('drop-hi')}
+    }catch(e){console.error(e)}}})(dndMove);
+  dndEnd=(function(prev){return function(x,y){
+    if(dragK93()){const d=DND.drop,id=DND.id,t=TASKS[id];dndAbort();noGhost93();const tr=document.querySelector('#sheetC .w93tray');if(tr)tr.classList.remove('drop-hi');W.drg=Date.now();
+      if(!d||!t)return;W.sel=id;
+      if(d.type==='w93off'){put93(t,null);return}
+      if(d.type==='w93')put93(t,d.min);return}
+    return prev.apply(this,arguments)}})(dndEnd);
+  dndAutoScroll=(function(prev){return function(){prev.apply(this,arguments);   // 끄는 동안 시간표 위·아래 끝에 대면 저절로 움직임
+    try{if(!dragK93())return;const sc=document.querySelector('#sheetC .tt93s');if(!sc)return;const r=sc.getBoundingClientRect(),y=DND.lastY,x=DND.lastX;
+      if(x>=r.left&&x<=r.right){if(y>r.top&&y<r.top+40)sc.scrollTop-=12;else if(y<r.bottom&&y>r.bottom-40)sc.scrollTop+=12}}catch(e){}}})(dndAutoScroll);
 
   /* ---- 홈 오늘 칸 한 줄 (밤 시각 이후 · 내일 짜기를 안 끝냈을 때만 · 오늘 밤은 × 로 닫기) ---- */
   function line93(){

@@ -1,0 +1,10 @@
+/* v12.9: 내일 짜기 목록 색(캘린더 시간표처럼 왼쪽 띠+옅은 배경) · 보관함 드롭 표시 · 폰 화면 딱 맞춤(방어) */
+.lc93{border-left:4px solid var(--lc93,var(--edge))!important;background:color-mix(in srgb,var(--lc93,transparent) 16%,var(--panel))!important}
+.b93.lc93{background:color-mix(in srgb,var(--lc93,transparent) 20%,var(--panel))!important}
+.w93tray.drop-hi{outline:3px dashed var(--ink);outline-offset:2px;border-radius:12px}
+.b93[data-drag],.chipbtn.t93[data-drag]{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+/* 폰: 가로로 삐져나와 '살짝 축소'해야 했던 걸 막는 안전망 — 시트·시간표·상세가 화면 너비를 못 넘게 */
+html,body{max-width:100%;overflow-x:clip}
+#sheetC,#sheet,.sheet,#calPane,#tt84slot,.tt93s{max-width:100vw;box-sizing:border-box}
+#sheetC img,#sheetC table,#sheetC pre{max-width:100%}
+#sheetC input,#sheetC select,#sheetC textarea{max-width:100%;min-width:0}

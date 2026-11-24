@@ -74,7 +74,10 @@ with sync_playwright() as pw:
     clk(pg,'#sheetC [data-f77x]',300)
     # 목록 + 종류 = 둘 다
     clk(pg,'#sheetC [data-f77="lists"][data-v="Llimen"]',300);clk(pg,'#sheetC [data-f77="kinds"][data-v="once"]',500)
-    a=J(pg,TITLES);ok(sorted(a)==['리멘 일','어제 리멘'],'목록 Limen + 종류 한 번 = 둘 다 맞는 것만',a)
+    a=J(pg,TITLES);ok('리멘 일' in a and '어제 리멘' in a and len(a)>2,'목록 Limen + 종류 한 번 = 합쳐서(v12.9: 하나라도 맞으면 보임)',a)
+    clk(pg,'#sheetC [data-f77a="1"]',500)
+    a=J(pg,TITLES);ok(sorted(a)==['리멘 일','어제 리멘'],'겹치는 것만 = 둘 다 맞는 것만(예전 방식)',a)
+    clk(pg,'#sheetC [data-f77a="0"]',300)
     clk(pg,'#sheetC [data-f77="kinds"][data-v="once"]',300)
     J(pg,"closeSheet()");pg.wait_for_timeout(300)
     ok(J(pg,"JSON.stringify(normConfig(JSON.parse(JSON.stringify(C))).calf77.lists)")=='["Llimen"]','거르기가 설정 정리(normConfig)를 거쳐도 남음')
