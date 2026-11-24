@@ -20,7 +20,7 @@ def run2(pw,W,H,touch=False):
     pg=ctx.new_page();pg.on('pageerror',lambda e:errs.append('PAGEERR '+str(e)));pg.on('console',lambda m:errs.append('CON '+m.text) if m.type=='error' else None)
     pg.goto(URL);pg.wait_for_timeout(2300);closepops(pg);notoast(pg);return b,pg
 def tap(pg,loc,touch):
-    loc.scroll_into_view_if_needed();bb=loc.bounding_box()
+    loc.wait_for(state='attached',timeout=8000);loc.evaluate("e=>e.scrollIntoView({block:'center'})");pg.wait_for_timeout(120);bb=loc.bounding_box()
     if touch:pg.touchscreen.tap(*ctr(bb))
     else:pg.mouse.click(*ctr(bb))
 def T(pg,id):return json.loads(J(pg,f"JSON.stringify(TASKS[{json.dumps(id)}]||null)"))
@@ -31,7 +31,7 @@ SEED3="""(()=>{const old=addDays(gk76(),-12);DAYS[old]={date:old,entries:[{id:'x
   C.dailies=C.dailies.filter(q=>!['g1','g9','g13','g16'].includes(q.action));syncDailies&&syncDailies(C);
   const h=newTask({title:'운동',aid:'g1',rep:{f:'w',i:1,wd:[0,1,2,3,4,5,6]},due:midKey68()});saveTask(h);
   const c=newTask({title:'가계부 정리',aid:'g13'});careOn77(c,7);c.due=midKey68();saveTask(c);
-  nlClear69();render();return {h:h.id,c:c.id}})()"""
+  C.tc131={care:1};nlClear69();render();return {h:h.id,c:c.id}})()"""
 with sync_playwright() as pw:
   # ---------- U3 ----------
   if want('U3'):
@@ -71,5 +71,60 @@ with sync_playwright() as pw:
     ok('일째' in J(pg,f"(document.querySelector('#sheetC .d128r[data-d128r=\"{ids['c']}\"] .a131')||{{}}).textContent||''"),f'[{W}] U3 관리 창 줄에 경보 꼬리표')
     J(pg,"closeSheet()")
     e=[x for x in errs if 'favicon' not in x];ok(not e,f'[{W}] U3 오류 없음',e[:3]);errs.clear()
+    b.close()
+  # ---------- U4 ----------
+  if want('U4'):
+   SEED4="""(()=>{const td=midKey68();const mk=(n,d)=>{const t=newTask({title:n,due:d==null?null:addDays(td,d)});saveTask(t);return t};
+     const L=[1,2,3,4,5].map(i=>mk('밀린'+i,-i).id);mk('오늘A',0);mk('오늘B',0);const nd=mk('마감만',null);nd.deadline=td;saveTask(nd);
+     const c=newTask({title:'빨래'});careOn77(c,3);c.due=td;saveTask(c);
+     const dn=mk('끝낸 일',-9);dn.status=2;dn.doneAt=td;saveTask(dn);const D=DAYS[td]=DAYS[td]||{date:td,entries:[]};D.entries=D.entries||[];
+     D.entries.push({id:'e131',kind:'task',tid:dn.id,name:'끝낸 일',xp:0,gold:0,cond:0,t:Date.now()});
+     delete C.tc131;render();return {late:L,care:c.id}})()"""
+   for W,H,touch in SIZES:
+    b,pg=run2(pw,W,H,touch);ids=J(pg,SEED4)
+    J(pg,"location.hash='tasks'");pg.wait_for_timeout(700);notoast(pg)
+    chips=J(pg,"[...document.querySelectorAll('#tList .tc131 [data-tc131]')].map(x=>x.dataset.tc131+':'+x.textContent.replace(/[▸▾]/g,'').trim())")
+    ok([c.split(':')[0] for c in chips]==['late','care','nd','done'],f'[{W}] U4 칩 한 줄 순서 ⏳·🧽·📥·✓',chips)
+    ok('밀린 5' in chips[0] and '날짜 없음 1' in chips[2] and '끝냄 1' in chips[3],f'[{W}] U4 칩 숫자',chips)
+    ok(J(pg,"document.querySelectorAll('#tList .tc131').length")==1 and J(pg,"document.querySelectorAll('#tList .tc131 button').length")==4,f'[{W}] U4 칩은 한 줄만')
+    vis=J(pg,"[...document.querySelectorAll('#tList .trow[data-task]')].map(x=>x.querySelector('.tt')?x.querySelector('.tt').textContent.trim():'')")
+    ok(not any('밀린' in v or '마감만' in v for v in vis) and any('오늘A' in v for v in vis),f'[{W}] U4 기본은 오늘만 펼침',vis)
+    ok(J(pg,"!document.querySelector('#tList > .care76') && !document.querySelector('#tList .tcomp')"),f'[{W}] U4 관리 줄·끝냄도 기본은 접힘')
+    bb=J(pg,"(()=>{const r=document.querySelector('#tList .tc131').getBoundingClientRect();return [r.height,document.querySelector('#tList .tc131').scrollWidth<=document.querySelector('#tList .tc131').clientWidth+1]})()")
+    ok(bb[0]<48,f'[{W}] U4 칩 줄 높이 한 줄',bb)
+    # ⏳ 펼치기
+    tap(pg,pg.locator('#tList [data-tc131="late"]').first,touch);pg.wait_for_timeout(500)
+    ok(J(pg,"document.querySelectorAll('#tList .tp131[data-tp131=\"late\"] .trow[data-task]').length")==5,f'[{W}] U4 ⏳ 누르면 그 자리에서 밀린 5개 펼침')
+    ok(J(pg,"(()=>{const b=document.querySelector('#tList .tc131'),p=document.querySelector('#tList .tp131');return !!(b&&p&&b.nextElementSibling===p)})()"),f'[{W}] U4 펼친 칸은 칩 줄 바로 밑')
+    ok(J(pg,"C.tc131&&C.tc131.late===1&&normConfig(JSON.parse(JSON.stringify(C))).tc131.late===1"),f'[{W}] U4 펼침 상태 저장(normConfig가 보존)')
+    J(pg,"render()");pg.wait_for_timeout(400)
+    ok(J(pg,"document.querySelectorAll('#tList .tp131[data-tp131=\"late\"] .trow[data-task]').length")==5,f'[{W}] U4 다시 그려도 펼친 채')
+    # 펼친 밀린 줄 체크 → 끝냄 숫자 +1
+    tap(pg,pg.locator(f'#tList .tp131 .trow[data-task="{ids["late"][0]}"] .tchk').first,touch);pg.wait_for_timeout(1900);notoast(pg)
+    ok(J(pg,f"TASKS['{ids['late'][0]}'].status")!=0 or J(pg,"(document.querySelector('#tList [data-tc131=\"late\"]')||{}).textContent||''").find('밀린 4')>=0,f'[{W}] U4 펼친 칸에서 체크 됨')
+    # 🧽 펼치기 → 관리 칩, 머리 누르면 관리 창
+    tap(pg,pg.locator('#tList [data-tc131="care"]').first,touch);pg.wait_for_timeout(500)
+    ok(J(pg,f"!!document.querySelector('#tList .tp131[data-tp131=\"care\"] .c76c [data-ctask=\"{ids['care']}\"]')"),f'[{W}] U4 🧽 펼치면 관리 줄(○로 바로 체크)')
+    tap(pg,pg.locator('#tList .tp131 .c76h[data-c76open]:not(.hid131)').first,touch);pg.wait_for_timeout(600)
+    ok(J(pg,"!!(sheetCtx&&sheetCtx.d128)"),f'[{W}] U4 펼친 관리 줄 머리 → 하나로 합친 관리 창')
+    J(pg,"closeSheet()");pg.wait_for_timeout(300)
+    # 📥·✓
+    tap(pg,pg.locator('#tList [data-tc131="nd"]').first,touch);pg.wait_for_timeout(400)
+    tap(pg,pg.locator('#tList [data-tc131="done"]').first,touch);pg.wait_for_timeout(400)
+    ok(J(pg,"!!document.querySelector('#tList .tp131[data-tp131=\"nd\"] .trow[data-task]') && !!document.querySelector('#tList .tp131[data-tp131=\"done\"] .trow.done')"),f'[{W}] U4 📥·✓ 펼침')
+    order=J(pg,"[...document.querySelectorAll('#tList .tp131')].map(x=>x.dataset.tp131)")
+    ok(order==['late','care','nd','done'],f'[{W}] U4 펼친 칸 순서 = 칩 순서',order)
+    # 접기
+    tap(pg,pg.locator('#tList [data-tc131="late"]').first,touch);pg.wait_for_timeout(400)
+    ok(J(pg,"!document.querySelector('#tList .tp131[data-tp131=\"late\"]') && !C.tc131.late"),f'[{W}] U4 다시 누르면 접힘')
+    # 밀린 ≤3 → 칩 없이 오늘 맨 위
+    J(pg,f"(()=>{{{json.dumps(ids['late'])}.slice(1,3).forEach(id=>{{const t=TASKS[id];t.due=midKey68();saveTask(t)}});render()}})()");pg.wait_for_timeout(500)
+    first=J(pg,"(()=>{const g=document.querySelector('#tList > .tgroup');return g?g.querySelector('.ghead').dataset.tgcollapse:''})()")
+    ok(first=='d0' and J(pg,"!document.querySelector('#tList [data-tc131=\"late\"]')"),f'[{W}] U4 밀린 3개 이하 → 칩 없이 오늘 맨 위',first)
+    # 다른 목록은 그대로
+    J(pg,"C.ui.tasks.sel='overdue';render()");pg.wait_for_timeout(400)
+    ok(J(pg,"!document.querySelector('#tList .tc131')"),f'[{W}] U4 다른 목록(지난 것)엔 칩 줄 없음')
+    J(pg,"C.ui.tasks.sel='today';render()")
+    e=[x for x in errs if 'favicon' not in x];ok(not e,f'[{W}] U4 오류 없음',e[:3]);errs.clear()
     b.close()
 print('FAILS',len(FAILS),FAILS)

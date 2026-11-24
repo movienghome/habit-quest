@@ -38,3 +38,47 @@ function tag131(){if(!document.querySelector('.trow[data-task]:not([data-a131]),
     const sm=el.querySelector('small');if(sm)sm.insertAdjacentHTML('beforeend',` · <span class="a131${x.over?' o':''}" title="${esc(alTip131(x))}">${alTxt131(x)}</span>`)})}
 {let q=0;const go=()=>{q=0;try{tag131()}catch(e){console.error(e)}};
   new MutationObserver(()=>{if(!q)q=requestAnimationFrame(go)}).observe(document.body,{childList:true,subtree:true})}
+
+/* ---------- U4 할 일 '오늘': 오늘만 펼치고 나머지는 칩 한 줄 [⏳ 밀린][🧽 관리][📥 날짜 없음][✓ 끝냄] ---------- */
+// 펼침 기억 C.tc131={late,care,nd,done}(C 최상위 — normConfig가 안 버림). 밀린 것 ≤3이면 칩 없이 오늘 맨 위에 펼친 채
+const TC131=()=>{let c=C.tc131;if(!c||typeof c!=='object'||Array.isArray(c))c=C.tc131={};return c};
+const LATEMAX131=3;
+function tcOn131(){const T=(C.ui&&C.ui.tasks)||{};return curView()==='tasks'&&(T.sel||'today')==='today'&&!(ui.tq71&&ui.tq71.trim())}
+renderTasks=(function(prev){return function(){
+  if(!tcOn131())return prev.apply(this,arguments);
+  // 칩 속으로 들어갈 묶음은 접힘과 상관없이 줄을 다 그려 둠(접힘은 칩이 맡음) — 끝나면 원래 값으로
+  const cl=C.ui.collapsed||(C.ui.collapsed={}),K=['tgd0','tgd9','tcompl','twont'],keep={};K.forEach(k=>keep[k]=cl[k]);const cf=cfg76(),fk=cf.fold;
+  K.forEach(k=>cl[k]=false);cf.fold=0;let x;
+  try{x=prev.apply(this,arguments)}finally{K.forEach(k=>{if(keep[k]===undefined)delete cl[k];else cl[k]=keep[k]});if(fk===undefined)delete cf.fold;else cf.fold=fk}
+  try{tcBuild131(keep)}catch(e){console.error(e)}return x}})(renderTasks);
+function tcBuild131(keep){const L=$('tList');if(!L)return;const c=TC131();
+  const grp=k=>{const h=L.querySelector(`:scope>.tgroup>.ghead[data-tgcollapse="${k}"]`);return h?h.parentElement:null};
+  const rows=g=>g?g.querySelectorAll('.trow[data-task]').length:0;
+  const g0=grp('d0'),g1=grp('d1'),g9=grp('d9'),care=L.querySelector(':scope>.care76:not(.hint):not(.bar)'),
+    comp=L.querySelector(':scope>.tgroup.tcomp:not(.twont)'),wont=L.querySelector(':scope>.tgroup.twont');
+  const n0=rows(g0),n9=rows(g9),nd=comp?comp.querySelectorAll('.trow.done').length:0,nw=wont?wont.querySelectorAll('.trow').length:0;
+  let nc=0;if(care){const b=care.querySelector('.c76h[data-c76open] b');nc=b?+b.textContent||0:0}
+  // 밀린 것 ≤3: 오늘 맨 위에 펼친 채(원래 접어 둔 사람은 접힌 채)
+  const inl=g0&&n0<=LATEMAX131;
+  if(inl){L.prepend(g0);if(keep.tgd0){const h=g0.querySelector(':scope>.ghead');h.classList.add('shut');[...g0.children].forEach(x=>{if(x!==h)x.remove()})}}
+  const items=[
+    !inl&&g0&&{k:'late',l:`⏳ 밀린 ${n0}`,t:'날짜가 지난 할 일',els:[g0]},
+    care&&{k:'care',l:`🧽 관리${nc?' '+nc:''}`,t:'때 되면 하는 관리 — 펼친 줄의 「🧽 관리」를 누르면 관리 창',els:[care]},
+    g9&&n9&&{k:'nd',l:`📥 날짜 없음 ${n9}`,t:'날짜 없이 마감만 있는 할 일',els:[g9]},
+    (nd||nw)&&{k:'done',l:`✓ 끝냄 ${nd}${nw?` <small>· ✕${nw}</small>`:''}`,t:'오늘 끝낸 할 일'+(nw?' · ✕ 하지 않기로 한 것':''),els:[comp,wont].filter(Boolean)}
+  ].filter(Boolean);
+  if(!items.length)return;
+  const bar=document.createElement('div');bar.className='tc131';bar.setAttribute('role','group');bar.setAttribute('aria-label','오늘 말고 나머지');
+  bar.innerHTML=items.map(it=>`<button type="button" class="chipbtn tc131b${c[it.k]?' on':''}" data-tc131="${it.k}" aria-pressed="${!!c[it.k]}" aria-expanded="${!!c[it.k]}" title="${esc(it.t)} · 눌러서 ${c[it.k]?'접기':'펼치기'}">${it.l}<span class="ar131" aria-hidden="true">${c[it.k]?'▾':'▸'}</span></button>`).join('');
+  // 줄 자리: 오늘 묶음(없으면 맨 위 묶음·빈 안내) 바로 뒤
+  const anchor=g1||(inl?g0:null)||L.querySelector(':scope>.empty');
+  if(anchor)anchor.after(bar);else L.prepend(bar);
+  let at=bar;
+  items.forEach(it=>{const box=document.createElement('div');box.className='tp131';box.dataset.tp131=it.k;
+    it.els.forEach(el=>{el.remove();if(c[it.k])box.appendChild(el)});
+    if(c[it.k]&&box.childNodes.length){at.after(box);at=box}});
+  // 칩 속 묶음 머리 접기 단추는 숨김(칩이 대신) · 관리 줄 접기 ▾ 도
+  bar.parentElement.querySelectorAll('.tp131 > .tgroup > .ghead[data-tgcollapse],.tp131 .c76h.f106').forEach(h=>h.classList.add('hid131'));
+  bar.parentElement.querySelectorAll('.tp131 > .tgroup.tcomp .ghead[data-tcompl],.tp131 > .tgroup.twont .ghead[data-twont]').forEach(h=>h.classList.add('hid131'))}
+addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-tc131]');if(!b)return;e.preventDefault();e.stopPropagation();
+  const c=TC131(),k=b.dataset.tc131;if(c[k])delete c[k];else c[k]=1;save('config');renderTasks()},true);

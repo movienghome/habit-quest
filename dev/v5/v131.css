@@ -3,3 +3,13 @@
 .c76c small.a131,.d128r .a131{color:var(--muted);font-weight:700}
 .c76c small.a131.o,.d128r .a131.o{color:var(--bad)}
 .trow .tm .c131{margin-left:2px}
+/* U4 할 일 오늘 칩 한 줄 */
+.tc131{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;margin-top:4px;border-top:1px dashed var(--line)}
+.tc131::-webkit-scrollbar{display:none}
+.tc131 .tc131b{flex:none;white-space:nowrap;font-size:13px;padding:4px 10px}
+.tc131 .tc131b.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.tc131 .tc131b small{opacity:.75}
+.tp131{margin-top:4px}
+.tp131 .care76{margin-top:0}
+.hid131{display:none!important}
+.tc131 .ar131{margin-left:4px;font-size:11px}
