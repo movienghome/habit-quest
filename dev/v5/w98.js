@@ -149,8 +149,8 @@ addEventListener('change',e=>{const b=e.target&&e.target.closest&&e.target.close
 /* ---- 연결: 클릭 · 렌더 뒤 다듬기 ---- */
 addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
   if((b=T.closest('[data-chain98]'))){e.preventDefault();e.stopPropagation();chainSheet98();return}
-  if((b=T.closest('[data-c98a]'))){e.preventDefault();e.stopPropagation();rec98(b.dataset.c98a);return}
-  if((b=T.closest('[data-c98t]'))){e.preventDefault();e.stopPropagation();const t=TASKS[b.dataset.c98t];closeSheet();if(t)completeTask(t);return}
+  if((b=T.closest('[data-c98a]'))){e.preventDefault();e.stopPropagation();if(!(window.bk128&&window.bk128('a',b.dataset.c98a)))rec98(b.dataset.c98a);return}
+  if((b=T.closest('[data-c98t]'))){e.preventDefault();e.stopPropagation();if(window.bk128&&window.bk128('t',b.dataset.c98t))return;const t=TASKS[b.dataset.c98t];closeSheet();if(t)completeTask(t);return}
   if((b=T.closest('[data-c98brave]'))||(b=T.closest('[data-sugbrave]'))){e.preventDefault();e.stopPropagation();closeSheet();bravePick98();return}
   if((b=T.closest('[data-c98go]'))){e.preventDefault();e.stopPropagation();closeSheet();goBrave();return}
   if((b=T.closest('[data-c98more]'))){e.preventDefault();e.stopPropagation();LOGALL98=!LOGALL98;homeLog98();return}

@@ -21,14 +21,20 @@ function deck127(){
     <h4 class="d127h">🧽 관리 <small class="muted">${care.length}개</small></h4>${care.length?care.slice(0,60).map(crow).join(''):'<div class="empty tiny">아직 관리로 옮긴 할 일이 없어요.</div>'}
     <h4 class="d127h">🔁 주 N회 <small class="muted">${esc(fmtD(ws))}(월) ~ ${esc(fmtD(addDays(ws,6)))}(일)</small></h4>${wk.length?wk.map(wrow).join(''):'<div class="empty tiny">주 N회 할 일이 없어요.</div>'}`)}
 window.deck127=deck127;
+window.wkSection127=function(){const td=midKey68(),ws=wsK(),days=[...Array(7)].map((_,i)=>addDays(ws,i)),wk=wkAll();
+  const wrow=t=>{const N=(+(t.rep&&t.rep.n)||0);return `<div class="d127row col"><div class="d127t"><b>🔁 ${esc(t.title)}</b><small class="muted">이번 주 ${wkCnt91(t,ws)}${N?'/'+N:''}회 · 날을 눌러 정하고, 다시 누르면 빼요</small></div>
+      <div class="d127d">${days.map(k=>{const pl=t.sl91&&t.sl91[k]!==undefined,past=k<td&&!pl;
+        return `<button type="button" class="chipbtn d127day" data-d127w="${esc(t.id)}|${esc(k)}" aria-pressed="${pl}"${past?' disabled':''} aria-label="${esc(fmtD(k)+'('+wdOf(k)+') '+(pl?'계획함 — 누르면 뺌':'계획 안 함 — 누르면 넣음'))}"><span>${wdOf(k)}</span><small>${esc(k.slice(8))}</small><b>${pl?'📌✕':'＋'}</b></button>`}).join('')}</div></div>`};
+  return `<h4 class="d127h">🔁 주 N회 <small class="muted">${esc(fmtD(ws))}(월) ~ ${esc(fmtD(addDays(ws,6)))}(일)</small></h4>${wk.length?wk.map(wrow).join(''):'<div class="empty tiny">주 N회 할 일이 없어요.</div>'}`};
+function redraw127(){(window.deck128||deck127)()}
 function keepY(f){const sc=$('sheetC'),y=sc?sc.scrollTop:0;f();const s2=$('sheetC');if(s2)s2.scrollTop=y}
 document.addEventListener('click',e=>{const T=e.target;if(!T.closest)return;let b;
-  if((b=T.closest('[data-deck127]'))){e.preventDefault();e.stopPropagation();deck127();return}
+  if((b=T.closest('[data-deck127]'))){e.preventDefault();e.stopPropagation();redraw127();return}
   if((b=T.closest('[data-d127p]'))){e.preventDefault();e.stopPropagation();plSheet126(b.dataset.d127p);return}
   if((b=T.closest('[data-d127u]'))){e.preventDefault();e.stopPropagation();const t=TASKS[b.dataset.d127u];if(!t)return;const sn=snap126(t);unplace126(t);render();
-    toastAct(`${t.title} · 놓은 자리를 뺐어요`,'되돌리기',()=>{try{restore126(t,sn)}catch(_){}render();deck127()});keepY(deck127);return}
+    toastAct(`${t.title} · 놓은 자리를 뺐어요`,'되돌리기',()=>{try{restore126(t,sn)}catch(_){}render();redraw127()});keepY(redraw127);return}
   if((b=T.closest('[data-d127w]'))){e.preventDefault();e.stopPropagation();const [id,k]=b.dataset.d127w.split('|'),t=TASKS[id];if(!t)return;
-    if(t.sl91&&t.sl91[k]!==undefined)unplan127(id,k,()=>{render();keepY(deck127)});else{plan127(id,k);render();keepY(deck127)}return}
+    if(t.sl91&&t.sl91[k]!==undefined)unplan127(id,k,()=>{render();keepY(redraw127)});else{plan127(id,k);render();keepY(redraw127)}return}
   if((b=T.closest('[data-pl127]'))){e.preventDefault();e.stopPropagation();const [id,k]=b.dataset.pl127.split('|');
     unplan127(id,k,()=>{const row=b.closest('.pl127');b.remove();if(row&&!row.querySelector('[data-pl127]'))row.remove();render()});return}
 },true);
