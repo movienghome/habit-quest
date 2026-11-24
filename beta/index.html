@@ -2796,6 +2796,10 @@ details.wk130>summary,details.set126>summary{cursor:pointer;font-weight:700;font
 .sk131 input{width:16px;height:16px;margin:0;flex:none}
 .sk131 small{overflow:hidden;text-overflow:ellipsis}
 .pp57 .sk131{padding:4px 0;flex-basis:100%}
+/* U6 보이기·숨기기 둘로 */
+.sh h3 .sd131{font-size:12px;font-weight:400}
+.q131{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px;padding-top:7px;border-top:1px dashed var(--line)}
+.q131 .q131h{font-size:13px;font-weight:700;color:var(--muted);padding:3px 4px 3px 0}
 </style>
 
 <header class="hud" id="hud">
@@ -18409,6 +18413,9 @@ function tcBuild131(keep){const L=$('tList');if(!L)return;const c=TC131();
     comp=L.querySelector(':scope>.tgroup.tcomp:not(.twont)'),wont=L.querySelector(':scope>.tgroup.twont');
   const n0=rows(g0),n9=rows(g9),nd=comp?comp.querySelectorAll('.trow.done').length:0,nw=wont?wont.querySelectorAll('.trow').length:0;
   let nc=0;if(care){const b=care.querySelector('.c76h[data-c76open] b');nc=b?+b.textContent||0:0}
+  // 관리 줄 속 일퀘 칩(☑)은 '오늘' 것 → 관리 칩으로 접지 않고 오늘 바로 밑 한 줄 .q131로(칩은 그대로라 ○ 체크·열기 같음. .care76 이름은 안 씀 — 관리 줄을 찾는 코드가 헷갈림)
+  let qrow=null;if(care){const qs=[...care.querySelectorAll(':scope>.c76c.q')];if(qs.length){qrow=document.createElement('div');qrow.className='q131';
+    qrow.innerHTML='<span class="c76h q131h" title="오늘의 일퀘">☑ 일퀘</span>';qs.forEach(x=>qrow.appendChild(x))}}
   // 밀린 것 ≤3: 오늘 맨 위에 펼친 채(원래 접어 둔 사람은 접힌 채)
   const inl=g0&&n0<=LATEMAX131;
   if(inl){L.prepend(g0);if(keep.tgd0){const h=g0.querySelector(':scope>.ghead');h.classList.add('shut');[...g0.children].forEach(x=>{if(x!==h)x.remove()})}}
@@ -18418,12 +18425,13 @@ function tcBuild131(keep){const L=$('tList');if(!L)return;const c=TC131();
     g9&&n9&&{k:'nd',l:`📥 날짜 없음 ${n9}`,t:'날짜 없이 마감만 있는 할 일',els:[g9]},
     (nd||nw)&&{k:'done',l:`✓ 끝냄 ${nd}${nw?` <small>· ✕${nw}</small>`:''}`,t:'오늘 끝낸 할 일'+(nw?' · ✕ 하지 않기로 한 것':''),els:[comp,wont].filter(Boolean)}
   ].filter(Boolean);
-  if(!items.length)return;
+  if(!items.length){if(qrow&&care)care.before(qrow);return}
   const bar=document.createElement('div');bar.className='tc131';bar.setAttribute('role','group');bar.setAttribute('aria-label','오늘 말고 나머지');
   bar.innerHTML=items.map(it=>`<button type="button" class="chipbtn tc131b${c[it.k]?' on':''}" data-tc131="${it.k}" aria-pressed="${!!c[it.k]}" aria-expanded="${!!c[it.k]}" title="${esc(it.t)} · 눌러서 ${c[it.k]?'접기':'펼치기'}">${it.l}<span class="ar131" aria-hidden="true">${c[it.k]?'▾':'▸'}</span></button>`).join('');
   // 줄 자리: 오늘 묶음(없으면 맨 위 묶음·빈 안내) 바로 뒤
   const anchor=g1||(inl?g0:null)||L.querySelector(':scope>.empty');
   if(anchor)anchor.after(bar);else L.prepend(bar);
+  if(qrow)bar.before(qrow);
   let at=bar;
   items.forEach(it=>{const box=document.createElement('div');box.className='tp131';box.dataset.tp131=it.k;
     it.els.forEach(el=>{el.remove();if(c[it.k])box.appendChild(el)});
@@ -18465,6 +18473,23 @@ drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,argument
   const bx=document.querySelector('#sheetC .pp57'),t=TASKS[(sheetCtx||{}).task];
   if(PK131&&PK131!==(t&&t.id))PK131=null;
   if(bx&&t&&!bx.querySelector('#sk131p')&&t.due&&t.due<=midKey68()){bx.insertAdjacentHTML('beforeend',skRow131('sk131p'));if(PK131===t.id)$('sk131p').checked=true}}catch(e){console.error(e)}return r}})(drawTaskSheet);
+
+/* ---------- U6 보이기·숨기기 둘로: 캘린더 화면 = C.calf77, 할 일 화면 시간표(PC 3단 옆·폰 독) = C.calf77t ---------- */
+// v7.7(J1)이 둘을 C.calf77 하나로 합친 것을 되돌리되, v7.7이 고친 것(끝낸 블록 doneOn·지난 날·kinds·inv·and)은 그대로 —
+// flt77()만 '지금 어느 쪽인가'를 보고 고름. 할 일 쪽 캘린더는 늘 curView()==='tasks'일 때만 보임(splitOn·tt84On) → 그걸로 구분(폰도 독이 할 일 화면에만 있음)
+// C.calf77t는 C 최상위(normConfig 보존), 처음엔 그때의 C.calf77 복사본(지금 보이는 모습 유지)
+function side131(){try{return curView()==='tasks'?'t':'c'}catch(e){return 'c'}}
+var REF131=null;   // 마지막으로 본 C.calf77 객체 — '모두 풀기'(w77)가 할 일 쪽에서 C.calf77을 새 객체로 갈아 끼우면 fApply77에서 되돌림
+flt77=(function(prev){return function(){const f=prev.apply(this,arguments);REF131=f;   // 원래 것: mig77f 이주·C.calf77 다듬기(지우지 말 것)
+  let t=C.calf77t;if(!t||typeof t!=='object'||Array.isArray(t))t=C.calf77t=JSON.parse(JSON.stringify(f));
+  ['lists','areas','tags','kinds'].forEach(k=>{if(!Array.isArray(t[k]))t[k]=[]});
+  return side131()==='t'?t:f}})(flt77);
+// '모두 풀기'(w77 [data-f77x])는 C.calf77을 바로 새 값으로 바꿈 → 할 일 쪽이면 캘린더 화면 것을 되돌리고 할 일 쪽만 비움 · 제목에 어느 쪽인지
+fApply77=(function(prev){return function(){try{if(side131()==='t'&&REF131&&C.calf77!==REF131){C.calf77=REF131;const t=C.calf77t;if(t)['lists','areas','tags','kinds'].forEach(k=>{t[k]=[]})}}catch(e){console.error(e)}
+  return prev.apply(this,arguments)}})(fApply77);
+calFilterSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{const sc=$('sheetC');if(!sc)return r;
+  const h=sc.querySelector('.sh h3');if(h&&!h.querySelector('.sd131')){const T=side131()==='t';
+    h.innerHTML=(T?'할 일 시간표 보이기·숨기기':'캘린더 보이기·숨기기')+`<small class="sd131 muted"> · ${T?'캘린더 화면과 따로':'할 일 화면 시간표와 따로'}</small>`}}catch(e){console.error(e)}return r}})(calFilterSheet);
 
 route();boot();
 </script>

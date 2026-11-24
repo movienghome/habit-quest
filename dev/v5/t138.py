@@ -9,7 +9,7 @@ def ok(c,msg,extra=''):
     print(('PASS ' if c else 'FAIL ')+msg+(' · '+str(extra)[:300] if extra!='' else ''))
     if not c:FAILS.append(msg)
 J=lambda pg,x:pg.evaluate(x)
-def notoast(pg):J(pg,"(()=>{const t=document.getElementById('toast');if(t){t.classList.remove('on');t.style.pointerEvents=''}})()")
+def notoast(pg):J(pg,"(()=>{const t=document.getElementById('toast');if(t){t.classList.remove('on');t.style.pointerEvents=''}const s=document.getElementById('snack');if(s)s.hidden=true})()")
 def run2(pw,W,H,touch=False):
     b=pw.chromium.launch();kw=dict(viewport={'width':W,'height':H})
     if touch:kw.update(has_touch=True,is_mobile=True)
@@ -90,6 +90,8 @@ with sync_playwright() as pw:
     vis=J(pg,"[...document.querySelectorAll('#tList .trow[data-task]')].map(x=>x.querySelector('.tt')?x.querySelector('.tt').textContent.trim():'')")
     ok(not any('밀린' in v or '마감만' in v for v in vis) and any('오늘A' in v for v in vis),f'[{W}] U4 기본은 오늘만 펼침',vis)
     ok(J(pg,"!document.querySelector('#tList > .care76') && !document.querySelector('#tList .tcomp')"),f'[{W}] U4 관리 줄·끝냄도 기본은 접힘')
+    q=J(pg,"(()=>{const r=document.querySelector('#tList > .q131'),b=document.querySelector('#tList .tc131');return [!!r,r?r.querySelectorAll('.c76c.q [data-tdone]').length:0,!!(r&&b&&r.nextElementSibling===b),r?!!r.querySelector('.c76c:not(.q)'):1]})()")
+    ok(q[0] and q[1]>0 and q[2] and not q[3],f'[{W}] U4 일퀘 칩(☑)은 접지 않고 오늘 바로 밑 한 줄(관리 칩 없이)',q)
     bb=J(pg,"(()=>{const r=document.querySelector('#tList .tc131').getBoundingClientRect();return [r.height,document.querySelector('#tList .tc131').scrollWidth<=document.querySelector('#tList .tc131').clientWidth+1]})()")
     ok(bb[0]<48,f'[{W}] U4 칩 줄 높이 한 줄',bb)
     # ⏳ 펼치기
@@ -105,7 +107,7 @@ with sync_playwright() as pw:
     # 🧽 펼치기 → 관리 칩, 머리 누르면 관리 창
     tap(pg,pg.locator('#tList [data-tc131="care"]').first,touch);pg.wait_for_timeout(500)
     ok(J(pg,f"!!document.querySelector('#tList .tp131[data-tp131=\"care\"] .c76c [data-ctask=\"{ids['care']}\"]')"),f'[{W}] U4 🧽 펼치면 관리 줄(○로 바로 체크)')
-    tap(pg,pg.locator('#tList .tp131 .c76h[data-c76open]:not(.hid131)').first,touch);pg.wait_for_timeout(600)
+    notoast(pg);tap(pg,pg.locator('#tList .tp131 .c76h[data-c76open]:not(.hid131)').first,touch);pg.wait_for_timeout(600)
     ok(J(pg,"!!(sheetCtx&&sheetCtx.d128)"),f'[{W}] U4 펼친 관리 줄 머리 → 하나로 합친 관리 창')
     J(pg,"closeSheet()");pg.wait_for_timeout(300)
     # 📥·✓
@@ -171,5 +173,49 @@ with sync_playwright() as pw:
     J(pg,"document.querySelector('#sheetC .pp57 [data-x57pp]:not([data-x57pp=\"open\"])').click()");pg.wait_for_timeout(500)
     ok(not T(pg,ids['e']).get('skull') and T(pg,ids['e'])['due']>td,f'[{W}] U5 상세에서 그냥 미루기 → ☠ 안 셈')
     e=[x for x in errs if 'favicon' not in x];ok(not e,f'[{W}] U5 오류 없음',e[:3]);errs.clear()
+    b.close()
+  # ---------- U6 ----------
+  if want('U6'):
+   SEED6="""(()=>{const td=midKey68();if(!C.lists.some(l=>l.id==='l131'))C.lists.push({id:'l131',name:'다른목록'});
+     const a=newTask({title:'받은편지 일',due:td,time:'10:00',dur:30});saveTask(a);const b=newTask({title:'다른목록 일',due:td,time:'11:00',dur:30,list:'l131'});saveTask(b);
+     C.calf77={lists:[],areas:[],tags:['옛거르기'],kinds:[],inv:1};delete C.calf77t;C.mig77f=1;C.tt84=1;C.ui.calMode='day';ui.calAnchor=td;render();return {a:a.id,b:b.id}})()"""
+   def vis(pg,id):return J(pg,f"!!document.querySelector('#calPane [data-ctask=\"{id}\"]')")
+   def go(pg,h):J(pg,f"location.hash='{h}'");pg.wait_for_timeout(700);notoast(pg)
+   for W,H,touch in [(1400,950,False),(390,860,True)]:
+    b,pg=run2(pw,W,H,touch);ids=J(pg,SEED6)
+    t0=json.loads(J(pg,"JSON.stringify(C.calf77t||null)"))
+    ok(t0 and t0.get('tags')==['옛거르기'] and t0.get('inv')==1,f'[{W}] U6 처음엔 C.calf77 복사본',t0)
+    go(pg,'tasks')
+    where=J(pg,"(()=>{const p=$('calPane');return p?(p.closest('#tt84slot')?'dock':p.closest('.view')?p.closest('.view').id:'?'):'none'})()")
+    ok(J(pg,"curView()")=='tasks' and J(pg,"calShown()"),f'[{W}] U6 할 일 화면에 시간표 보임',where)
+    ok(vis(pg,ids['a']) and vis(pg,ids['b']),f'[{W}] U6 처음엔 둘 다 보임')
+    # 할 일 쪽에서 '받은편지만 보이기'
+    tap(pg,pg.locator('#calFilterBtn').first,touch);pg.wait_for_timeout(500)
+    h3=J(pg,"(document.querySelector('#sheetC .sh h3')||{}).textContent||''")
+    ok('할 일 시간표' in h3 and '따로' in h3,f'[{W}] U6 거르기 창 제목에 어느 쪽인지',h3)
+    J(pg,"document.querySelector('#sheetC [data-f77m=\"0\"]').click()");pg.wait_for_timeout(200)
+    J(pg,"document.querySelector('#sheetC [data-f77=\"tags\"][data-v=\"옛거르기\"]').click()");pg.wait_for_timeout(200)
+    J(pg,"document.querySelector('#sheetC [data-f77=\"lists\"][data-v=\"inbox\"]').click()");pg.wait_for_timeout(300)
+    J(pg,"closeSheet()");pg.wait_for_timeout(300)
+    ok(vis(pg,ids['a']) and not vis(pg,ids['b']),f'[{W}] U6 할 일 쪽 거르기 적용(다른목록 숨김)')
+    c=json.loads(J(pg,"JSON.stringify(C.calf77)"));ok(c['lists']==[] and c['tags']==['옛거르기'] and c.get('inv')==1,f'[{W}] U6 캘린더 화면 설정은 그대로',c)
+    go(pg,'cal')
+    ok(J(pg,"curView()")=='cal' and vis(pg,ids['a']) and vis(pg,ids['b']),f'[{W}] U6 캘린더 화면은 안 변함(둘 다 보임)')
+    # 캘린더 화면에서 '다른목록 숨기기'
+    tap(pg,pg.locator('#calFilterBtn').first,touch);pg.wait_for_timeout(500)
+    h3=J(pg,"(document.querySelector('#sheetC .sh h3')||{}).textContent||''");ok(h3.startswith('캘린더'),f'[{W}] U6 캘린더 화면 창 제목',h3)
+    J(pg,"document.querySelector('#sheetC [data-f77=\"tags\"][data-v=\"옛거르기\"]').click()");pg.wait_for_timeout(200)
+    J(pg,"document.querySelector('#sheetC [data-f77=\"lists\"][data-v=\"inbox\"]').click()");pg.wait_for_timeout(300)
+    J(pg,"closeSheet()");pg.wait_for_timeout(300)
+    ok(not vis(pg,ids['a']) and vis(pg,ids['b']),f'[{W}] U6 캘린더 화면 거르기 적용(받은편지 숨김)')
+    tt=json.loads(J(pg,"JSON.stringify(C.calf77t)"));ok(tt['lists']==['inbox'] and not tt.get('inv'),f'[{W}] U6 할 일 쪽 설정은 그대로',tt)
+    go(pg,'tasks')
+    ok(vis(pg,ids['a']) and not vis(pg,ids['b']),f'[{W}] U6 할 일 화면으로 돌아오면 할 일 쪽 거르기 그대로')
+    # 모두 풀기는 지금 쪽만
+    tap(pg,pg.locator('#calFilterBtn').first,touch);pg.wait_for_timeout(500)
+    J(pg,"document.querySelector('#sheetC [data-f77x]').click()");pg.wait_for_timeout(300);J(pg,"closeSheet()");pg.wait_for_timeout(300)
+    ok(vis(pg,ids['a']) and vis(pg,ids['b']) and J(pg,"C.calf77.lists.join()")=='inbox' and J(pg,"C.calf77.inv")==1,f'[{W}] U6 모두 풀기 → 할 일 쪽만 풀림')
+    ok(J(pg,"normConfig(JSON.parse(JSON.stringify(C))).calf77t.lists.length===0 && normConfig(JSON.parse(JSON.stringify(C))).calf77.lists[0]==='inbox'"),f'[{W}] U6 두 설정 다 저장됨(normConfig 보존)')
+    e=[x for x in errs if 'favicon' not in x];ok(not e,f'[{W}] U6 오류 없음',e[:3]);errs.clear()
     b.close()
 print('FAILS',len(FAILS),FAILS)

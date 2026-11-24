@@ -61,7 +61,7 @@ with sync_playwright() as pw:
     # A11: 방금 정한 날짜 고친 건 ☠ 아님 / 오래된 건 ☠ + 알림 단추
     f1=J(pg,"(()=>{const t=addTaskFrom('오늘 할 72',{});t.due=dateKey();saveTask(t);render();postpone(t,addDays(dateKey(),3));return t.id})()")
     ok(not J(pg,f"TASKS['{f1}'].skull"),'방금 정한 날짜 고침 → ☠ 없음',J(pg,f"TASKS['{f1}'].skull"))
-    f2=J(pg,"(()=>{const t=newTask({title:'오래된 72',due:dateKey()});t.order=Date.now()-86400e3;t.created=addDays(dateKey(),-3);saveTask(t);t.dset72=Date.now()-86400e3;render();postpone(t,addDays(dateKey(),1));return t.id})()")
+    f2=J(pg,"(()=>{const t=newTask({title:'오래된 72',due:dateKey()});t.order=Date.now()-86400e3;t.created=addDays(dateKey(),-3);saveTask(t);t.dset72=Date.now()-86400e3;render();if(typeof SK131!=='undefined')SK131=Date.now();postpone(t,addDays(dateKey(),1));return t.id})()")   # v13.3(U5): 미루기 기본은 중립 — '☠ 미룸으로 기록'을 켠 경로로
     pg.wait_for_timeout(300)
     ok(J(pg,f"TASKS['{f2}'].skull")==1,'오래된 할 일 미룸 ☠1')
     ok(J(pg,"!!document.querySelector('#toast .tbtn55')") and '사정상' in J(pg,"$('toast').textContent"),'사정상 옮김 단추',J(pg,"$('toast').textContent"))

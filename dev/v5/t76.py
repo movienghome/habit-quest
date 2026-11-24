@@ -26,7 +26,7 @@ with sync_playwright() as pw:
     ids=J(pg,MK);pg.wait_for_timeout(600)
     td=J(pg,"dateKey()")
     ok(cnt(pg,ROW(ids['plan']))==1,'보통 할 일은 오늘 목록에 그대로')
-    ok(cnt(pg,ROW(ids['walk']))==0 and cnt(pg,f'#tList .care76 .c76c.q [data-tdone="{ids["walk"]}"]')==1,'일퀘 할 일은 목록 줄 대신 관리 줄 칩으로')
+    ok(cnt(pg,ROW(ids['walk']))==0 and cnt(pg,f'#tList .q131 .c76c.q [data-tdone="{ids["walk"]}"]')==1,'일퀘 할 일은 목록 줄 대신 오늘 밑 일퀘 칩 줄로(v13.3 U4: 관리 줄과 따로)')
     ok(cnt(pg,ROW(ids['dish']))==1,'표시 전: 반복 할 일은 아직 목록에')
     pg.screenshot(path=SP+'t76_before.png')
     # 홈 안내 → 고르기

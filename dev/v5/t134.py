@@ -81,6 +81,7 @@ with sync_playwright() as pw:
   J(pg,"""(()=>{const a=addTaskFrom('청소 %7');window.__care=a.id;const b=addTaskFrom('일반할일 #기본함');window.__t=b.id;window.__L=b.list;
     C.lists.push({id:'lx',name:'Limen',color:'#c0392b'});const c=addTaskFrom('리멘할일');c.list='lx';saveTask(c);window.__c=c.id;save('config')})()""")
   pg.wait_for_timeout(600);notoast(pg)
+  J(pg,"location.hash='cal'");pg.wait_for_timeout(600);notoast(pg)   # v13.3(U6): C.calf77은 캘린더 화면 것 — 할 일 화면에선 C.calf77t
   J(pg,"C.calf77={lists:['lx'],areas:[],tags:[],kinds:['care'],inv:0};")
   v=J(pg,"(()=>{const f=flt77();return [calPass(TASKS[window.__c]),calPass(TASKS[window.__care]),calPass(TASKS[window.__t])]})()")
   ok(v==[True,True,False],'③ 목록(Limen)+종류(관리) → 합쳐서: Limen 일 + 관리 모두 보임, 나머지는 안 보임',v)
@@ -91,7 +92,7 @@ with sync_playwright() as pw:
   v=J(pg,"[calPass(TASKS[window.__c]),calPass(TASKS[window.__t])]");ok(v==[True,False],'③ 한 줄만 고르면 그대로(목록만)',v)
   J(pg,"C.calf77={lists:['lx'],areas:[],tags:[],kinds:['care'],inv:1}")
   v=J(pg,"[calPass(TASKS[window.__c]),calPass(TASKS[window.__care]),calPass(TASKS[window.__t])]");ok(v==[False,False,True],'③ 숨기기는 그대로(하나라도 맞으면 숨김)',v)
-  J(pg,"C.calf77={lists:['lx'],areas:[],tags:[],kinds:['care'],inv:0};save('config');location.hash='calendar';render()");pg.wait_for_timeout(600);notoast(pg)
+  J(pg,"C.calf77={lists:['lx'],areas:[],tags:[],kinds:['care'],inv:0};save('config');location.hash='cal';render()");pg.wait_for_timeout(600);notoast(pg)   # v13.3: 'calendar'는 없는 주소(예전엔 거르기가 하나라 상관없었음)
   J(pg,"document.getElementById('calFilterBtn').click()");pg.wait_for_timeout(500)
   ok(J(pg,"!!document.querySelector('#sheetC [data-f77a]')"),'③ 창에 합쳐서 보기/겹치는 것만 선택이 보임(줄 2개 이상일 때)')
   J(pg,"document.querySelector('#sheetC [data-f77a=\"1\"]').click()");pg.wait_for_timeout(400)

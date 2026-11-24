@@ -81,11 +81,12 @@ with sync_playwright() as pw:
     clk(pg,'#sheetC [data-f77="kinds"][data-v="once"]',300)
     J(pg,"closeSheet()");pg.wait_for_timeout(300)
     ok(J(pg,"JSON.stringify(normConfig(JSON.parse(JSON.stringify(C))).calf77.lists)")=='["Llimen"]','거르기가 설정 정리(normConfig)를 거쳐도 남음')
-    # 할 일 옆 캘린더도 같은 거르기
+    ok('1' in vis(pg,'#calFilterBtn').inner_text(),'깔때기 단추에 고른 개수')
+    # v13.3(U6): 할 일 옆 캘린더는 캘린더 화면과 따로(C.calf77t) — 캘린더 화면의 'Limen만'이 안 먹음 (예전: 같은 거르기)
     J(pg,"location.hash='tasks'");pg.wait_for_timeout(700);notoast(pg)
     clk(pg,'#calPane [data-calmode="3day"]',300);J(pg,ANCH);pg.wait_for_timeout(400)
-    a=J(pg,TITLES);ok(len(a)>0 and all(x in ['리멘 일','끝낸 반복','어제 리멘'] for x in a),'할 일 옆 캘린더도 같은 거르기(Limen만)',a)
-    ok('1' in vis(pg,'#calFilterBtn').inner_text(),'깔때기 단추에 고른 개수')
+    a=J(pg,TITLES);ok(len(a)>0 and any(x not in ['리멘 일','끝낸 반복','어제 리멘'] for x in a),'할 일 옆 캘린더는 따로(캘린더 화면의 Limen만이 안 먹음)',a)
+    J(pg,"location.hash='cal'");pg.wait_for_timeout(700);notoast(pg)
     # 월 보기 끝낸 칩도 걸러짐
     clk(pg,'#calPane [data-calmode="month"]',400)
     dn=J(pg,"[...document.querySelectorAll('#calMain .cchip.done')].map(x=>x.textContent)")
@@ -101,7 +102,7 @@ with sync_playwright() as pw:
     b,pg=run(pw,W=1400,H=900);closepops(pg);pg.wait_for_timeout(300)
     ids=J(pg,"""(()=>{const td=midKey68(),mk=(title,o)=>{const t=newTask({title,list:o.list});Object.assign(t,o);saveTask(t);return t.id};
       const r={toil:mk('변기청소',{list:'Lpersonal',due:td}),house:mk('집 청소',{list:'Lpersonal',due:td}),book:mk('가계부',{list:'Lpersonal',due:td,rep:{f:'d',i:7}}),plan:mk('기획안 쓰기',{list:'Lpersonal',due:td})};
-      location.hash='tasks';C.ui.tasks.sel='today';render();return r})()""");pg.wait_for_timeout(800);notoast(pg)
+      C.tc131={care:1};location.hash='tasks';C.ui.tasks.sel='today';render();return r})()""");pg.wait_for_timeout(800);notoast(pg)   # v13.3(U4): 관리 줄은 🧽 칩 속 — 펼친 채로
     ROW=lambda i:f'#tList .trow[data-task="{i}"]'
     # 우클릭 → 관리로 (반복 없는 할 일)
     vis(pg,ROW(ids['toil'])).click(button='right');pg.wait_for_timeout(400)

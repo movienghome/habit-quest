@@ -18,3 +18,7 @@
 .sk131 input{width:16px;height:16px;margin:0;flex:none}
 .sk131 small{overflow:hidden;text-overflow:ellipsis}
 .pp57 .sk131{padding:4px 0;flex-basis:100%}
+/* U6 보이기·숨기기 둘로 */
+.sh h3 .sd131{font-size:12px;font-weight:400}
+.q131{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px;padding-top:7px;border-top:1px dashed var(--line)}
+.q131 .q131h{font-size:13px;font-weight:700;color:var(--muted);padding:3px 4px 3px 0}
