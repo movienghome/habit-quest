@@ -130,6 +130,7 @@ with sync_playwright() as pw:
     # 줄 이름 → 상세 → 닫으면 관리 창으로
     J(pg,"document.querySelector('#sheetC .c76r .c76t[data-ctask]').click()");pg.wait_for_timeout(700)
     ok(J(pg,"!!(sheetCtx&&sheetCtx.task)"),f'[{W}] ⑤ 줄 이름 → 할 일 상세')
+    ok(J(pg,"!!document.querySelector('#sheetC .tchips .pl129[data-pl126]')"),f'[{W}] ⑤ 관리 상세에 📌 이번 차례 놓기 칩',J(pg,"(document.querySelector('#sheetC .pl129')||{}).textContent"))
     J(pg,"closeSheet()");pg.wait_for_timeout(400)
     ok(J(pg,"!$('sheet').hidden&&!!(sheetCtx&&sheetCtx.c76)"),f'[{W}] ⑤ 상세 닫으면 관리 창으로 돌아옴')
     tap(pg,pg.locator('#sheetC [data-fl129]'),touch);pg.wait_for_timeout(400)
@@ -149,4 +150,9 @@ with sync_playwright() as pw:
   J(pg,"(()=>{const i=document.getElementById('d128q');i.value='나';i.dispatchEvent(new Event('input',{bubbles:true}))})()");pg.wait_for_timeout(400)
   ok(J(pg,"document.querySelectorAll('#sheetC .d128r .tchk').length")==J(pg,"document.querySelectorAll('#sheetC .d128r').length"),'⑥ 찾기로 다시 그려도 ○')
   ok(not errs,'⑥ 오류 없음',errs[:3]);errs.clear();b.close()
+  # ---------- ⑦ 예전 꼬인 '마지막 한 날' 바로잡기(한 번) ----------
+  b,pg=run2(pw,1200,900)
+  r=J(pg,"""(()=>{const t=addTaskFrom('거울 닦기 %7');t.last=midKey68();saveTask(t);const u=addTaskFrom('일반 반복 할 일');u.rep={f:'d',i:1};u.last=midKey68();saveTask(u);C.mig129=0;render();return JSON.stringify([t.last||null,u.last||null,C.mig129])})()""")
+  r=json.loads(r);ok(r[0] is None and r[1] is not None and r[2]==1,'⑦ 관리만 기록 없는 마지막 한 날을 지움(일반 할 일은 그대로)',r)
+  ok(not errs,'⑦ 오류 없음',errs[:3]);errs.clear();b.close()
 print('FAILS',len(FAILS),FAILS)

@@ -36,13 +36,17 @@ completeTask=(function(prev){return function(t){const cs=t&&t.status===0&&t.cs12
   return r}})(completeTask);
 
 /* ---------- ③ 체크 풀면 t.last도 ---------- */
-removeEntry=(function(prev){return function(date,id){const d=DAYS[date],e=d&&(d.entries||[]).find(x=>x.id===id),tid=e&&e.tid,cs=e&&e.cs129;
+const hasT129=(dd,tid)=>(dd&&dd.entries||[]).some(x=>x.tid===tid||x.htid62===tid);
+function lastFix129(t,skip){let best=null;Object.values(DAYS).forEach(dd=>{if(dd&&dd.date&&dd.date!==skip&&hasT129(dd,t.id)&&(!best||dd.date>best))best=dd.date});if(best)t.last=best;else delete t.last}
+removeEntry=(function(prev){return function(date,id){const d=DAYS[date],e=d&&(d.entries||[]).find(x=>x.id===id),tid=e&&(e.tid||e.htid62),cs=e&&e.cs129;
   const r=prev.apply(this,arguments);
   try{const t=tid&&TASKS[tid];if(t&&cs&&!t.cs126&&t.status===0&&t.due===cs.d){t.cs126=clone(cs);saveTask(t);render()}}catch(x){console.error(x)}   // 놓은 관리 체크를 풀면 놓은 자리도 되살림
-  try{const t=tid&&TASKS[tid];if(t&&t.last===date&&!t.rid&&!isStep62(t)&&!((DAYS[date]||{}).entries||[]).some(x=>x.tid===tid)){
-    let best=null;Object.values(DAYS).forEach(dd=>{if(dd&&dd.date&&dd.date!==date&&(dd.entries||[]).some(x=>x.tid===tid)&&(!best||dd.date>best))best=dd.date});
-    if(best)t.last=best;else delete t.last;saveTask(t)}}catch(x){console.error(x)}
+  try{const t=tid&&TASKS[tid];if(t&&t.last===date&&!t.rid&&!isStep62(t)&&!hasT129(DAYS[date],tid)){lastFix129(t,date);saveTask(t)}}catch(x){console.error(x)}
   return r}})(removeEntry);
+// 예전에 체크를 풀어 '마지막 한 날'만 남은 관리(거울 닦기·빨래 …)를 한 번 바로잡음 — 관리만, 그 날 기록이 정말 없을 때만
+render=(function(prev){return function(){try{if(!C.mig129&&ready72()&&(typeof tOK64!=='function'||tOK64())){let n=0;
+  Object.values(TASKS).forEach(t=>{if(t&&t.care76&&t.last&&!t.rid&&!isStep62(t)&&!hasT129(DAYS[t.last],t.id)&&DAYS[t.last]){const o=t.last;lastFix129(t,o);if(t.last!==o){saveTask(t);n++}}});
+  C.mig129=1;save('config');if(n)console.log('mig129 last',n)}}catch(e){console.error(e)}return prev.apply(this,arguments)}})(render);
 function unDone129(tid,k){const t=TASKS[tid];if(!t)return;k=k||gK();let e=entToday(t,k);
   if(!e){const p=CAL77;CAL77=1;try{e=doneOn(k).filter(x=>x.tid===tid).pop()||null}finally{CAL77=p}}
   if(!e){toast('지울 기록을 못 찾았어요');return}
@@ -89,12 +93,19 @@ function decoDeck(){const sc=$('sheetC');if(!sc||!(sheetCtx&&sheetCtx.d128))retu
     const lab=r.querySelector('.d128c');if(lab)lab.after(c);else r.prepend(c)})}
 /* 머리줄: 📌 띄우기 단추 + 끌기 손잡이 표시 */
 function decoHead(){const sc=$('sheetC');if(!sc||!isCareCtx())return;const h=sc.querySelector(':scope > .sh');if(!h||h.querySelector('[data-fl129]'))return;
-  h.classList.add('mv129');const b=document.createElement('button');b.type='button';b.className='ib fl129b';b.setAttribute('data-fl129','1');
+  h.classList.add('mv129');const b=document.createElement('button');b.type='button';b.className='chipbtn fl129b';b.setAttribute('data-fl129','1');
   b.textContent=FL.on?'📌 붙이기':'📌 띄우기';b.title=FL.on?'가운데 창으로 되돌리기':'창을 띄워 시간표를 보며 끌어 놓기 (머리를 끌어 옮겨요)';
   const x=h.querySelector('.x');if(x)h.insertBefore(b,x);else h.appendChild(b);
-  if(!sc.querySelector('.hint129')){const p=document.createElement('p');p.className='hint129 tiny muted';p.textContent=FL.on?'줄을 꾹 눌러(PC는 그냥) 시간표로 끌면 그 자리에 놓여요 · 창 머리를 끌어 옮겨요':'줄을 꾹 눌러(PC는 그냥) 캘린더 시간표로 끌어 놓을 수 있어요 · 📌 띄우기 = 시간표를 보며 놓기';h.after(p)}}
+  if(FL.on&&!sc.querySelector('.hint129')){const p=document.createElement('p');p.className='hint129 tiny muted';p.textContent=matchMedia('(pointer:coarse)').matches?'줄을 꾹 눌러 시간표로 끌면 놓여요':'줄을 시간표로 끌면 놓여요 · 머리를 끌어 창 옮기기';h.after(p)}}
 function deco(){try{decoCare()}catch(e){console.error(e)}try{decoDeck()}catch(e){console.error(e)}try{decoHead()}catch(e){console.error(e)}}
 window.deco129=deco;
+/* 할 일 상세(관리): 칩 줄 끝에 '📌 이번 차례 놓기' — 시각은 이 차례만(w126 놓기 창). 반복 칸의 시각은 모든 차례라서 따로 둠 */
+function careChip(){const t=sheetCtx&&sheetCtx.task&&TASKS[sheetCtx.task.id||sheetCtx.task];if(!t||!isCare76(t))return;const sc=$('sheetC'),row=sc&&sc.querySelector('.tchips');
+  if(!row||row.querySelector('.pl129'))return;const on=plOn126(t),td=mK();
+  const b=document.createElement('button');b.type='button';b.className='chipbtn pl129';b.setAttribute('data-pl126',t.id);
+  b.textContent=on?'📌 '+(t.cs126.d===td?'오늘':t.cs126.d===addDays(td,1)?'내일':fmtD(t.cs126.d))+(t.cs126.m?' '+t.cs126.m:'')+' 놓음':'📌 이번 차례 시간표에 놓기';
+  b.title='이 차례만 날짜·시각을 정해요(다음 차례는 그대로)';const m=row.querySelector('.more79');if(m)row.insertBefore(b,m);else row.appendChild(b)}
+drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{careChip()}catch(e){console.error(e)}return r}})(drawTaskSheet);
 
 /* ---------- ⑤-2 띄운 창 ---------- */
 const FL={on:false,pos:null,ret:null,cur:null,jc:null};

@@ -6,7 +6,7 @@
 .c76r.dg129,.d128r.dg129{touch-action:pan-y}
 .d128r .tchk{margin-left:-2px}
 #sheetC>.sh.mv129{cursor:grab;touch-action:none;user-select:none}
-.fl129b{flex:none;font-size:12px;white-space:nowrap;padding:0 8px;min-height:30px;margin-left:auto;margin-right:6px}
+.fl129b{flex:none;font-size:12px;white-space:nowrap;padding:2px 8px;min-height:28px}
 #sheetC>.sh.mv129{display:flex;align-items:center;gap:6px}
 #sheetC>.sh.mv129 h3{flex:1;min-width:0}
 .hint129{margin:-6px 0 0}
