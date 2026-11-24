@@ -122,49 +122,83 @@ try{if(typeof renderCal==='function')renderCal=(function(prev){return function()
 const C128=()=>{let c=C.care128;if(!c||typeof c!=='object'||Array.isArray(c))c=C.care128={};if(!c.s)c.s='due';if(!c.f)c.f='all';return c};
 const SORTS=[['due','차례 빠른 순'],['late','오래 밀린 순'],['short','짧은 것 먼저'],['long','긴 것 먼저'],['name','이름순'],['list','목록별']];
 const FILT=[['all','전체'],['due','차례인 것'],['un','안 놓은 것'],['pl','놓은 것']];
-const D={sel:new Set(),q:'',bd:null};
+const D={sel:new Set(),q:'',bd:null,k:null,multi:false,set:false};
+/* v13.2: 관리 창 하나로 — 이 창이 🧽 관리 창(careSheet76)이자 놓기 시트. k = 어느 날 기준 '차례'인지(기본 오늘, 내일 짜기에서 열면 그 날) */
+const kK=()=>{const td=tdK();return D.k&&D.k>td?D.k:td};
 const dL=m=>m>=60&&m%60===0?m/60+'시간':m+'분';
 function lname(t){const l=C.lists.find(z=>z.id===(t.list||'inbox'));return l?l.name:''}
-function listOf(){const c=C128(),td=tdK(),q=D.q.trim().toLowerCase();
-  let a=careAll76().filter(t=>!q||String(t.title).toLowerCase().includes(q));
-  if(c.f==='due')a=a.filter(t=>t.due&&t.due<=td);else if(c.f==='un')a=a.filter(t=>!plOn126(t));else if(c.f==='pl')a=a.filter(t=>plOn126(t));
-  const due=t=>String(t.due||'9999'),late=t=>t.due?diffDays(t.due,td):-999;
+function sortCare128(a,s){const td=tdK(),due=t=>String(t.due||'9999'),late=t=>t.due?diffDays(t.due,td):-999;
   const by={due:(x,y)=>due(x).localeCompare(due(y))||(x.order||0)-(y.order||0),
     late:(x,y)=>late(x)-late(y)||(x.order||0)-(y.order||0),
     short:(x,y)=>(+x.dur||30)-(+y.dur||30)||due(x).localeCompare(due(y)),
     long:(x,y)=>(+y.dur||30)-(+x.dur||30)||due(x).localeCompare(due(y)),
     name:(x,y)=>String(x.title).localeCompare(String(y.title),'ko'),
     list:(x,y)=>lname(x).localeCompare(lname(y),'ko')||due(x).localeCompare(due(y))};
-  return a.sort(by[c.s]||by.due)}
+  return a.slice().sort(by[s]||by.due)}
+window.sortCare128=(a,s)=>sortCare128(a,s||C128().s);window.SORTS128=SORTS;window.C128=C128;
+function listOf(){const c=C128(),k=kK(),q=D.q.trim().toLowerCase();
+  let a=careAll76().filter(t=>!q||String(t.title).toLowerCase().includes(q));
+  if(c.f==='due')a=a.filter(t=>t.due&&t.due<=k);else if(c.f==='un')a=a.filter(t=>!plOn126(t));else if(c.f==='pl')a=a.filter(t=>plOn126(t));
+  return sortCare128(a,c.s)}
 const sumMin=ts=>ts.reduce((s,t)=>s+(+t.dur||30),0);
-function rowH(t,c,prevL){const td=tdK(),on=plOn126(t),sel=D.sel.has(t.id),dueNow=t.due&&t.due<=td;
+const wkT=t=>t.rep&&t.rep.f==='x'?`이번 주 ${wkCnt91(t,weekStart(tdK()))}/${+t.rep.n||3}`:'';
+const plTxt=t=>{const td=tdK();return (t.cs126.d===td?'오늘':t.cs126.d===addDays(td,1)?'내일':fmtD(t.cs126.d))+(t.cs126.m?' '+t.cs126.m:'')};
+function rowH(t,c,prevL){const td=tdK(),k=kK(),on=plOn126(t),sel=D.sel.has(t.id),dueNow=t.due&&t.due<=k,late=late76(t,k),id=esc(t.id);
   const head=c.s==='list'&&lname(t)!==prevL?`<div class="tgh66"><span>📂 ${esc(lname(t)||'목록 없음')}</span></div>`:'';
-  const sub=[on?'📅 '+(t.cs126.d===td?'오늘':t.cs126.d===addDays(td,1)?'내일':fmtD(t.cs126.d))+(t.cs126.m?' '+t.cs126.m:'')+' 에 놓음':(when76(t,td)||'날짜 없음'),t.dur?'⏱'+dL(+t.dur):'',repLabel(t.rep)].filter(Boolean).join(' · ');
-  return head+`<div class="d128r${sel?' sel':''}${dueNow&&!on?' due':''}" data-d128r="${esc(t.id)}"><label class="d128c"><input type="checkbox" data-d128s="${esc(t.id)}"${sel?' checked':''} aria-label="${esc(t.title)} 고르기"></label>
-    <div class="d128t"><b>🧽 ${esc(t.title)}</b><small class="muted">${esc(sub)}</small></div>
-    <div class="d128b"><button type="button" class="chipbtn" data-d128q="${esc(t.id)}|0" aria-label="${esc(t.title)} 오늘로 놓기">오늘</button><button type="button" class="chipbtn" data-d128q="${esc(t.id)}|1" aria-label="${esc(t.title)} 내일로 놓기">내일</button><button type="button" class="chipbtn" data-d127p="${esc(t.id)}" aria-label="${esc(t.title)} 날짜·시각 정하기">📅</button>${on?`<button type="button" class="chipbtn" data-d127u="${esc(t.id)}" aria-label="${esc(t.title)} 놓은 자리 빼기">✕</button>`:''}</div></div>`}
-function listH(){const c=C128(),L=listOf();let pl=null;
-  const rows=L.map(t=>{const h=rowH(t,c,pl);pl=lname(t);return h}).join('');
-  return rows||`<div class="empty tiny">${careAll76().length?'조건에 맞는 관리가 없어요.':'아직 관리로 옮긴 할 일이 없어요.'}</div>`}
-function barH(){const td=tdK(),c=C128(),ids=[...D.sel].filter(id=>TASKS[id]&&isCare76(TASKS[id])),ts=ids.map(id=>TASKS[id]);
-  if(!ts.length)return `<div class="d128bar off">아래에서 여러 개를 고르면 한꺼번에 놓을 수 있어요</div>`;
+  const st=on?'놓음':late?'⏳ 때 지남 '+late+'일':dueNow?(k===td?'오늘 차례':dayName68(k)+' 차례'):(when76(t,td)||'날짜 없음');
+  const sub=[wkT(t),st,t.dur?'⏱'+dL(+t.dur):'',repLabel(t.rep)].filter(Boolean).join(' · ');
+  return head+`<div class="d128r dg129${sel?' sel':''}${dueNow&&!on?' due':''}${late?' late':''}" data-d128r="${id}" data-k129="1" data-drag="task:${id}" data-dragmode="hold">
+    <button type="button" class="tchk" data-tdone="${id}" aria-label="${esc(t.title)} 했어요"></button>
+    ${D.multi?`<label class="d128c"><input type="checkbox" data-d128s="${id}"${sel?' checked':''} aria-label="${esc(t.title)} 고르기"></label>`:''}
+    <div class="d128t" data-ctask="${id}" role="button" tabindex="0" title="눌러서 열기 · 꾹 눌러 시간표로 끌기"><b>${esc(t.title)}</b><small class="muted">${esc(sub)}</small></div>
+    <div class="d128b">${on?`<button type="button" class="chipbtn on" data-pl126="${id}" aria-label="${esc(t.title)} 놓은 자리 바꾸기" title="놓은 자리 바꾸기·빼기">📅 ${esc(plTxt(t))}</button><button type="button" class="chipbtn" data-d127u="${id}" aria-label="${esc(t.title)} 놓은 자리 빼기" title="놓은 자리 빼기 (원래 차례로)">✕</button>`:`<button type="button" class="chipbtn" data-d128q="${id}|0" aria-label="${esc(t.title)} 오늘로 놓기">오늘</button><button type="button" class="chipbtn" data-d128q="${id}|1" aria-label="${esc(t.title)} 내일로 놓기">내일</button><button type="button" class="chipbtn" data-pl126="${id}" aria-label="${esc(t.title)} 날짜·시각 정해 놓기" title="날짜·시각 정해 시간표에 놓기 (이 차례만)">📅</button>`}<button type="button" class="ib" data-c76m="${id}" aria-label="${esc(t.title)} 더 보기" title="건너뛰기 · 다른 날짜로 · 열기 · 주기 · 관리에서 빼기">⋯</button></div></div>`}
+function listH(){const c=C128(),L=listOf(),k=kK();let pl=null;
+  const grp=c.s==='due'&&c.f==='all'&&!D.q.trim(),nd=L.filter(t=>t.due&&t.due<=k).length,iN=grp?L.findIndex(t=>!(t.due&&t.due<=k)):-1;
+  const rows=L.map((t,i)=>{let g='';
+    if(grp&&i===0&&nd)g=`<div class="tgh66 g130"><span>🧽 차례 ${nd}개</span></div>`;
+    if(grp&&i===iN)g=`<div class="tgh66 g130"><span>다음 차례 ${L.length-nd}개 <small class="muted">· 미리 해도 돼요</small></span></div>`;
+    const h=g+rowH(t,c,pl);pl=lname(t);return h}).join('');
+  return rows||`<div class="empty tiny">${careAll76().length?(c.f==='due'&&!D.q.trim()?'차례인 관리가 없어요 ✓':'조건에 맞는 관리가 없어요.'):'아직 관리로 옮긴 할 일이 없어요.'}</div>`}
+function barH(){if(!D.multi)return '';const td=tdK(),c=C128(),ids=[...D.sel].filter(id=>TASKS[id]&&isCare76(TASKS[id])),ts=ids.map(id=>TASKS[id]);
+  const pick=`<span class="row" style="gap:4px;flex-wrap:wrap"><button type="button" class="chipbtn" data-d128all="due">차례인 것 모두</button><button type="button" class="chipbtn" data-d128all="vis">보이는 것 모두</button>${ts.length?'<button type="button" class="chipbtn" data-d128all="none">해제</button>':''}</span>`;
+  if(!ts.length)return `<div class="d128bar off">줄 왼쪽 칸을 고르면 한꺼번에 놓아요 ${pick}</div>`;
   const dn=[['오늘',0],['내일',1],['모레',2]].map(([l,i])=>{const k=addDays(td,i);return `<button type="button" class="chipbtn" data-d128d="${k}" aria-pressed="${D.bd===k}">${l}</button>`}).join('');
   const hasPl=ts.some(plOn126);
-  return `<div class="d128bar"><div class="d128n"><b>${ts.length}개 고름</b> <small class="muted">⏱ ${esc(hmK76(sumMin(ts)))}</small></div>
+  return `<div class="d128bar"><div class="d128n"><b>${ts.length}개 고름</b> <small class="muted">⏱ ${esc(hmK76(sumMin(ts)))}</small> ${pick}</div>
     <div class="row" style="gap:6px;flex-wrap:wrap;align-items:center">${dn}<input type="date" data-d128dv="1" value="${esc(D.bd||'')}" min="${esc(td)}" aria-label="다른 날"></div>
     <label class="small d128a"><input type="checkbox" data-d128auto="1"${c.auto===0?'':' checked'}> 시각도 빈 시간에 알아서 넣기</label>
     <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn sm" data-d128go="1"${D.bd?'':' disabled'}>${D.bd?esc(dueLabel(D.bd))+'에 놓기':'날짜를 골라요'}</button>${hasPl?'<button type="button" class="btn sm ghost" data-d128off="1">놓은 것 빼기</button>':''}<button type="button" class="btn sm ghost" data-d128done="1">✓ 끝냄</button></div></div>`}
-function sheetH(){const c=C128(),td=tdK(),all=careAll76(),pl=all.filter(plOn126).length,dn=all.filter(t=>t.due&&t.due<=td).length;
-  return `<div class="sh"><h3>🧽 관리 놓기</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
-    <p class="small muted" style="margin:0 0 6px">전체 ${all.length}개 · 차례 ${dn}개 · 놓음 ${pl}개 — 하나씩은 <b>오늘·내일·📅</b>, 여러 개는 칸을 골라 한꺼번에 놓아요. 시각은 시간표에서 꾹 눌러 끌어도 돼요.</p>
-    <div class="row d128f" style="gap:6px;flex-wrap:wrap"><label class="small">정렬 <select data-d128sort="1" aria-label="정렬">${SORTS.map(([k,l])=>`<option value="${k}"${c.s===k?' selected':''}>${l}</option>`).join('')}</select></label>
-      ${FILT.map(([k,l])=>`<button type="button" class="chipbtn" data-d128f="${k}" aria-pressed="${c.f===k}">${l}</button>`).join('')}</div>
-    <div class="row d128f" style="gap:6px;align-items:center;margin-top:6px"><input type="search" id="d128q" placeholder="관리 찾기" value="${esc(D.q)}" aria-label="관리 찾기" style="flex:1;min-width:0"><button type="button" class="chipbtn" data-d128all="due">차례인 것 모두</button><button type="button" class="chipbtn" data-d128all="vis">보이는 것 모두</button><button type="button" class="chipbtn" data-d128all="none">해제</button></div>
+/* 오늘 한 관리 · 일퀘 · 주 N회 · ⚙ */
+function doneH(){const g=gk76(),day=DAYS[g],es=(day&&day.entries)||[],seen=new Set(),out=[];
+  es.forEach(e=>{const t=e.tid&&TASKS[e.tid];if(!t||seen.has(t.id)||!t.care76||t.rid||isStep62(t))return;if(!(isCare76(t)||(t.status===2&&t.doneAt===g)))return;seen.add(t.id);out.push({t,e:es.filter(x=>x.tid===t.id).pop()})});
+  if(!out.length)return '<div class="dn129w"></div>';
+  return `<div class="dn129w"><div class="c76g">✓ 오늘 한 관리 ${out.length}개 <small class="muted">· ✓를 누르면 체크가 풀려요</small></div><div class="c76l">${out.map(({t,e})=>{const nx=t.status===0?when76(t,tdK()):'';
+    return `<div class="c76r dn129"><button type="button" class="tchk on129" data-un129="${esc(t.id)}|${g}" aria-label="${esc(t.title)} 체크 풀기">✓</button><span class="c76t" data-ctask="${esc(t.id)}" role="button" tabindex="0"><b>${esc(t.title)}</b><small>✓ ${esc(e.ct105||e.t||'')}${wkT(t)?' · '+wkT(t):''}${nx?' · 다음 '+esc(nx):''}</small></span></div>`}).join('')}</div></div>`}
+function questH(){if(kK()!==tdK())return '';const qs=questDue76();if(!qs.length)return '';
+  return `<div class="c76g">☑ 일퀘 할 일 ${qs.length}개</div><div class="c76l">${qs.map(t=>`<div class="c76r"><button type="button" class="tchk" data-tdone="${t.id}" aria-label="${esc(t.title)} 했어요"></button><span class="c76t" data-ctask="${t.id}" role="button" tabindex="0"><b>${esc(t.title)}</b><small>${esc(repLabel(t.rep))} · 일퀘</small></span></div>`).join('')}</div>`}
+function wkH(){if(typeof wkSection127!=='function')return '';const n=openTasks().filter(t=>wx91(t)).length;if(!n)return '';
+  return `<details class="wk130" data-d130w="1"${C128().wk?' open':''}><summary>🔁 주 N회 날 정하기 <small class="muted">${n}개</small></summary>${wkSection127()}</details>`}
+function setH(){const c=cfg76(),cand=careCand76().length,hs=(C.careHist105||[]).filter(h=>TASKS[h.id]&&TASKS[h.id].care76&&Date.now()-h.at<30*864e5).slice(-10).reverse();
+  return `<details class="set126" data-d130s="1"${D.set?' open':''}><summary>⚙ 관리로 옮기기 · 캘린더 블록 · 일퀘 · 도움말</summary>
+    <div class="row c76o"><button type="button" class="btn sm" data-c76pick="1"${cand?'':' disabled'}>＋ 관리로 옮기기${cand?` (반복 할 일 ${cand}개)`:''}</button><button type="button" class="btn ghost sm" data-c76list="1">📋 할 일 화면 관리 목록</button></div>
+    ${hs.length?`<div class="c76g">↶ 최근에 관리로 넣은 것 ${hs.length}개 <small class="muted">· 잘못 넣었으면 되돌리기</small></div><div class="c76l">${hs.map(h=>{const t=TASKS[h.id];return `<div class="c76r"><span class="c76t"><b>${esc(t.title)}</b><small>${esc(repLabel(t.rep))}로 바뀌었어요</small></span><button type="button" class="btn sm ghost" data-ch105="${h.id}">↶ 되돌리기</button></div>`}).join('')}</div>`:''}
+    <div class="row c76o"><span class="small">🗓 캘린더 관리 블록</span><span class="seg3 sm">${[[0,'없음'],[30,'30분'],[60,'1시간']].map(([v,l])=>`<button type="button" data-c76blk="${v}" aria-pressed="${(+c.blk||0)===v}">${l}</button>`).join('')}</span></div>
+    <label class="row small c76o"><input type="checkbox" data-c76q="1" ${c.q!==0?'checked':''} style="width:auto"> ☑ 일퀘 할 일도 목록·종일 칸에서 빼고 관리 줄에 칩으로</label>
+    <p class="help" style="margin:6px 0 0">관리 = 반복 할 일 중 🧽 표시한 것. 할 일 목록·캘린더 종일 칸에 안 뜨고, 늦어도 ☠ 없이 '때 지남'으로만 보여요. 'n일마다'는 한 날부터 다시 세요. ○ = 했어요 · <b>오늘·내일·📅</b> = 이 차례만 시간표에 놓기 · <b>⋯</b> = 이번 차례 건너뛰기·다른 날짜로·주기 바꾸기. 줄을 꾹 눌러(PC는 그냥) 시간표로 끌어도 놓여요.</p></details>`}
+function sheetH(){const c=C128(),td=tdK(),k=kK(),all=careAll76(),pl=all.filter(plOn126).length,dn=all.filter(t=>t.due&&t.due<=k).length;
+  return `<div class="sh"><h3>🧽 관리${k!==td?' · '+esc(dayName68(k)):''} · 차례 ${dn}개</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <div class="row d128f" style="gap:6px;flex-wrap:wrap;align-items:center"><select data-d128sort="1" aria-label="정렬">${SORTS.map(([s,l])=>`<option value="${s}"${c.s===s?' selected':''}>↕ ${l}</option>`).join('')}</select>
+      ${FILT.map(([f,l])=>`<button type="button" class="chipbtn" data-d128f="${f}" aria-pressed="${c.f===f}">${l}</button>`).join('')}</div>
+    <div class="row d128f" style="gap:6px;align-items:center;margin-top:6px"><input type="search" id="d128q" placeholder="관리 찾기 · 전체 ${all.length}개${pl?' · 놓음 '+pl+'개':''}" value="${esc(D.q)}" aria-label="관리 찾기" style="flex:1;min-width:0"><button type="button" class="chipbtn" data-d130m="1" aria-pressed="${D.multi}" title="여러 개 골라 한꺼번에 놓기·빼기·끝내기">☑ 여러 개</button></div>
     <div id="d128bar">${barH()}</div>
     <div id="d128list">${listH()}</div>
-    ${typeof wkSection127==='function'?wkSection127():''}`}
-function open128(){sheetCtx={deck127:1,d128:1};D.sel=new Set([...D.sel].filter(id=>TASKS[id]&&isCare76(TASKS[id])));openSheet(sheetH())}
-window.deck128=function(){const sc=$('sheetC'),keep=sheetCtx&&sheetCtx.d128&&sc?sc.scrollTop:0;open128();const s2=$('sheetC');if(s2&&keep)s2.scrollTop=keep};
+    ${doneH()}${questH()}${wkH()}${setH()}`}
+function open128(){sheetCtx={deck127:1,d128:1,c76:kK()};D.sel=new Set([...D.sel].filter(id=>TASKS[id]&&isCare76(TASKS[id])));if(D.sel.size)D.multi=true;openSheet(sheetH())}
+window.deck128=function(k){if(k!==undefined)D.k=k||null;const sc=$('sheetC'),keep=sheetCtx&&sheetCtx.d128&&!$('sheet').hidden&&sc?sc.scrollTop:0;open128();const s2=$('sheetC');if(s2&&keep)s2.scrollTop=keep};
+/* 🧽 관리 창 = 이 창 (홈·할 일 관리 줄·캘린더 관리 블록·내일 짜기 → 모두 여기) */
+careSheet76=function(k){window.deck128(k||null)};
+addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-deck127]'))D.k=null},true);   // 캘린더 🧽 단추 = 오늘 기준으로
+addEventListener('toggle',e=>{const d=e.target;if(!d||!d.matches)return;if(d.matches('details[data-d130w]')){C128().wk=d.open?1:0;save('config')}else if(d.matches('details[data-d130s]'))D.set=d.open},true);
 function refresh(){const l=$('d128list'),b=$('d128bar');if(l)l.innerHTML=listH();if(b)b.innerHTML=barH()}
 /* 놓기 */
 function busy(k,skip){const out=[];try{tasksOn(k).forEach(t=>{if(!t||t.status!==0||skip.has(t.id)||!t.time||hm80(t.time)==null)return;const s=hm80(t.time);out.push([s,s+Math.max(10,+t.dur||30)])})}catch(e){console.error(e)}return out}
@@ -184,9 +218,10 @@ addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
   const stop=()=>{e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()};
   if((b=T.closest('[data-d128q]'))){stop();const [id,i]=b.dataset.d128q.split('|'),t=TASKS[id];if(!t)return;const k=addDays(tdK(),+i),sn=snap126(t);
     place126(t,k,'');render();window.deck128();toastAct(`🧽 ${t.title} → ${dueLabel(k)}`,'되돌리기',()=>{restore126(t,sn);render();if(sheetCtx&&sheetCtx.d128)window.deck128()});return}
+  if((b=T.closest('[data-d130m]'))){stop();D.multi=!D.multi;if(!D.multi){D.sel.clear();D.bd=null}window.deck128();return}
   if((b=T.closest('[data-d128f]'))){stop();C128().f=b.dataset.d128f;save('config');window.deck128();return}
   if((b=T.closest('[data-d128all]'))){stop();const w=b.dataset.d128all;
-    if(w==='none')D.sel.clear();else{const td=tdK();(w==='due'?careAll76().filter(t=>t.due&&t.due<=td):listOf()).forEach(t=>D.sel.add(t.id))}
+    if(w==='none')D.sel.clear();else{const td=kK();(w==='due'?careAll76().filter(t=>t.due&&t.due<=td):listOf()).forEach(t=>D.sel.add(t.id))}
     window.deck128();return}
   if((b=T.closest('[data-d128d]'))){stop();D.bd=b.dataset.d128d;const bar=$('d128bar');if(bar)bar.innerHTML=barH();return}
   if((b=T.closest('[data-d128go]'))){stop();const k=D.bd;if(!k||k<tdK())return;const ts=[...D.sel].map(id=>TASKS[id]).filter(t=>t&&isCare76(t)).sort((x,y)=>listOf().indexOf(x)-listOf().indexOf(y)),auto=C128().auto!==0;

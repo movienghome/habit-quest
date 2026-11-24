@@ -107,7 +107,7 @@ with sync_playwright() as pw:
     L=f'[dock={dock}] '
     ok(J(pg,"(()=>{const b=document.querySelector('.deck127b');if(!b)return false;const r=b.getBoundingClientRect(),cs=getComputedStyle(b);return r.width>20&&r.height>20&&cs.display!=='none'&&cs.visibility!=='hidden'&&r.right<=innerWidth+1&&r.left>=-1})()"),L+'④ 🧽 관리 단추가 화면 안에 보임',J(pg,"(()=>{const b=document.querySelector('.deck127b');return b&&JSON.stringify(b.getBoundingClientRect())})()"))
     J(pg,"document.querySelector('.deck127b').click()");pg.wait_for_timeout(500)
-    ok(J(pg,"!!document.querySelector('#sheetC [data-d127p]')&&!!document.querySelector('#sheetC [data-d127w]')"),L+'④ 시트에 관리 놓기·주 N회 요일 단추가 있음')
+    ok(J(pg,"!!document.querySelector('#sheetC [data-pl126]')&&!!document.querySelector('#sheetC [data-d127w]')"),L+'④ 시트에 관리 놓기·주 N회 요일 단추가 있음')
     ok(J(pg,"(()=>{const e=document.getElementById('sheetC');return e.scrollWidth<=e.clientWidth+1})()"),L+'④ 시트가 가로로 넘치지 않음')
     # 주 N회: 날 넣기 → 빼기
     k=J(pg,"addDays(midKey68(),1)>weekStart(midKey68())&&weekStart(addDays(midKey68(),1))===weekStart(midKey68())?addDays(midKey68(),1):midKey68()")
@@ -117,7 +117,7 @@ with sync_playwright() as pw:
     J(pg,f"document.querySelector('#sheetC [data-d127w=\"'+window.__wk+'|{k}\"]').click()");pg.wait_for_timeout(500)
     ok(J(pg,f"!(TASKS[window.__wk].sl91&&TASKS[window.__wk].sl91['{k}']!==undefined)"),L+'④ 다시 누르면 계획 칸이 빠짐(✕)')
     # 관리 놓기 → 빼기
-    J(pg,"document.querySelector('#sheetC [data-d127p]').click()");pg.wait_for_timeout(500)
+    J(pg,"document.querySelector('#sheetC [data-pl126]').click()");pg.wait_for_timeout(500)
     ok(J(pg,"/📅/.test(document.querySelector('#sheetC .sh h3').textContent)"),L+'④ 📅 놓기가 관리 날짜·시각 창을 엶')
     J(pg,"TASKS[window.__care].cs126=null;delete TASKS[window.__care].cs126;place126(TASKS[window.__care],addDays(midKey68(),1),'10:00');render();deck127()");pg.wait_for_timeout(400)
     ok(J(pg,"!!document.querySelector('#sheetC [data-d127u]')"),L+'④ 놓은 관리엔 ✕ 빼기가 보임')

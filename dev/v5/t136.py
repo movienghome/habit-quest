@@ -1,4 +1,4 @@
-# t136 (v13.1): ○ 체크 고침(정한 날 칸) · 끝낸 자리(ct105·놓은 관리) · 체크 풀기 t.last · 관리 창 ✓ 오늘 한 관리·주 N회 n/N · 모든 블록 ○/✓ · 관리 창 띄우기·끌어 놓기·돌아오기
+# t136 (v13.1 · v13.2에서 관리 창 줄 선택자를 합친 창 .d128r로 고침): ○ 체크 고침(정한 날 칸) · 끝낸 자리(ct105·놓은 관리) · 체크 풀기 t.last · 관리 창 ✓ 오늘 한 관리·주 N회 n/N · 모든 블록 ○/✓ · 관리 창 띄우기·끌어 놓기·돌아오기
 import os,json
 os.environ.setdefault('HQURL','file:///home/claude/habit-quest/beta/index.html')
 exec(open('/home/claude/habit-quest/dev/v5/h61.py').read())
@@ -79,12 +79,12 @@ with sync_playwright() as pw:
     b,pg=run2(pw,W,H,touch);lid=J(pg,LAUNDRY)
     oid=J(pg,"(()=>{const t=addTaskFrom('옷장 정리 %7');t.due=addDays(midKey68(),-10);saveTask(t);location.hash='home';render();return t.id})()")
     pg.wait_for_timeout(500);J(pg,"careSheet76()");pg.wait_for_timeout(500)
-    tap(pg,pg.locator('#sheetC .c76r',has_text='옷장').locator('.tchk').first,touch);pg.wait_for_timeout(900)
+    tap(pg,pg.locator('#sheetC .d128r',has_text='옷장').locator('.tchk').first,touch);pg.wait_for_timeout(900)
     ok(J(pg,"!$('sheet').hidden&&!!sheetCtx.c76"),f'[{W}] ④ 체크해도 관리 창은 그대로')
     ok(J(pg,"[...document.querySelectorAll('#sheetC .dn129 b')].some(b=>/옷장/.test(b.textContent))"),f'[{W}] ④ ✓ 오늘 한 관리 칸에 옷장 정리')
     J(pg,"document.querySelectorAll('#sheetC details').forEach(d=>d.open=true)")
-    tap(pg,pg.locator('#sheetC .c76r:not(.dn129)',has_text='빨래').locator('.tchk').first,touch);pg.wait_for_timeout(900)
-    ok(J(pg,"[...document.querySelectorAll('#sheetC .c76r:not(.dn129)')].some(r=>/빨래/.test(r.textContent)&&/이번 주 1\\/2/.test(r.textContent))"),f'[{W}] ④ 주 N회 줄에 이번 주 1/2',J(pg,"[...document.querySelectorAll('#sheetC .c76r')].map(r=>r.innerText.replace(/\\n/g,' ')).join(' // ')"))
+    tap(pg,pg.locator('#sheetC .d128r',has_text='빨래').locator('.tchk').first,touch);pg.wait_for_timeout(900)
+    ok(J(pg,"[...document.querySelectorAll('#sheetC .d128r')].some(r=>/빨래/.test(r.textContent)&&/이번 주 1\\/2/.test(r.textContent))"),f'[{W}] ④ 주 N회 줄에 이번 주 1/2',J(pg,"[...document.querySelectorAll('#sheetC .c76r')].map(r=>r.innerText.replace(/\\n/g,' ')).join(' // ')"))
     ok(J(pg,"[...document.querySelectorAll('#sheetC .dn129 b')].some(b=>/빨래/.test(b.textContent))"),f'[{W}] ④ 빨래도 오늘 한 관리에')
     tap(pg,pg.locator('#sheetC .dn129',has_text='옷장').locator('[data-un129]').first,touch);pg.wait_for_timeout(900)
     t=T(pg,oid);ok(t['due']==J(pg,"addDays(midKey68(),-10)") and t.get('last') is None,f'[{W}] ④ ✓ 누르면 체크 풀림(차례·마지막 한 날 되돌림)',(t['due'],t.get('last')))
@@ -112,7 +112,7 @@ with sync_playwright() as pw:
     # 시간표가 띄운 창 밖에서 눌림(바깥 눌러도 안 닫힘) — 창을 아래로 다시 옮겨 시간표 자리 확보
     J(pg,"(()=>{const sc=$('sheetC');sc.style.top=(innerHeight-260)+'px';sc.style.height='250px'})()");pg.wait_for_timeout(200)
     J(pg,"(()=>{const s=document.getElementById('tgScroll');if(s)s.scrollTop=yOf(toMin('09:00'))})()");pg.wait_for_timeout(200)
-    row=pg.locator('#sheetC .c76r',has_text='옷장').first;row.scroll_into_view_if_needed();rb=row.locator('.c76t').bounding_box()
+    row=pg.locator('#sheetC .d128r',has_text='옷장').first;row.scroll_into_view_if_needed();rb=row.locator('.d128t').bounding_box()
     col=J(pg,"(()=>{const c=document.querySelector('#calPane .tgcol');const r=c.getBoundingClientRect();return [r.left+r.width/2,r.top+yOf(toMin('10:00'))+4,r.top,r.bottom]})()")
     a=ctr(rb)
     if touch:
@@ -128,7 +128,7 @@ with sync_playwright() as pw:
     ok(J(pg,"!$('sheet').hidden&&!!(sheetCtx&&sheetCtx.c76)"),f'[{W}] ⑤ 놓은 뒤에도 관리 창 열림')
     ok(J(pg,"!document.body.classList.contains('dg129')"),f'[{W}] ⑤ 끌기 뒤 창 투명 풀림')
     # 줄 이름 → 상세 → 닫으면 관리 창으로
-    J(pg,"document.querySelector('#sheetC .c76r .c76t[data-ctask]').click()");pg.wait_for_timeout(700)
+    J(pg,"document.querySelector('#sheetC .d128r .d128t[data-ctask]').click()");pg.wait_for_timeout(700)
     ok(J(pg,"!!(sheetCtx&&sheetCtx.task)"),f'[{W}] ⑤ 줄 이름 → 할 일 상세')
     ok(J(pg,"!!document.querySelector('#sheetC .tchips .pl129[data-pl126]')"),f'[{W}] ⑤ 관리 상세에 📌 이번 차례 놓기 칩',J(pg,"(document.querySelector('#sheetC .pl129')||{}).textContent"))
     J(pg,"closeSheet()");pg.wait_for_timeout(400)

@@ -37,7 +37,7 @@
     return tasksOn(k).filter(t=>t.status===0&&!t.time&&!t.cb76&&!t.ml80&&!t.rstep&&!hid76(t)&&!wx91(t)&&!t.rid)
       .sort((a,b)=>(b.prio||0)-(a.prio||0)||(a.order||0)-(b.order||0));
   }
-  const care93=k=>(typeof careDue76==='function'?careDue76(k):[]);
+  const care93=k=>{const L=typeof careDue76==='function'?careDue76(k):[];return window.sortCare128?window.sortCare128(L):L};   // v13.2: 관리 창과 같은 정렬
   const cnt93=(id,k)=>id==='fx'?(fx93(k).nt.length+fx93(k).timed.length):id==='wk'?wk93(k).length:id==='ad'?ad93(k).length:care93(k).length;
 
   /* ---- 빈 시간 찾기(주 N회 자리·종일 칸 일도 피함) ---- */
@@ -90,7 +90,7 @@
     const wk=isWk(t),cp=isCP(t),sl=slot93(t,k),placed=!!sl&&hm80(sl)!=null,rt=!!t.rid,ml=!!t.ml80,d=rt?(view83(t,k).dur||+t.dur||30):((wk&&t.sd119&&+t.sd119[k])||+t.dur||30),rep=t.rep&&t.rep.f&&!wk&&!(rt&&rtDay93(t,k));
     const tm=placed?`<input type="time" data-w93seltm="1" aria-label="시각" value="${esc(fmt80(hm80(sl)))}">`:'';
     return `<div class="sel93"><div class="s1"><b>${esc(t.title)}</b> <span class="tiny muted">${placed?fmt80(hm80(sl))+'–'+fmt80(hm80(sl)+d):'아직 시간 안 정함 — 아래 시간표를 눌러 놓아요'}</span></div>
-      <div class="s2">${rt||ml?'':durOpt(t)}${placed?`${rt||ml?'':'<button type="button" class="chipbtn" data-w93len="-15" aria-label="15분 줄이기">−15분</button><button type="button" class="chipbtn" data-w93len="15" aria-label="15분 늘리기">＋15분</button>'}${tm}${rt||ml?'':`<button type="button" class="chipbtn" data-w93off="1">${wk?'종일 칸으로':cp?'배치 빼기':'시간 빼기'}</button>`}`:`<button type="button" class="chipbtn" data-w93q="1">빈 시간에 놓기</button>${cp&&cpDay(t,k)?'<button type="button" class="chipbtn" data-w93off="1">배치 빼기</button>':''}`}${wk&&t.sl91&&t.sl91[k]!==undefined?'<button type="button" class="chipbtn" data-w93del="1">날 정함 빼기</button>':''}${ml?'':'<button type="button" class="chipbtn" data-w93opt="1" aria-haspopup="menu">⋯ 옵션</button>'}<button type="button" class="chipbtn" data-w93det="1">상세</button><button type="button" class="ib" data-w93desel="1" aria-label="선택 끝">×</button></div>
+      <div class="s2">${rt||ml?'':durOpt(t)}${placed?`${rt||ml?'':'<button type="button" class="chipbtn" data-w93len="-15" aria-label="15분 줄이기">−15분</button><button type="button" class="chipbtn" data-w93len="15" aria-label="15분 늘리기">＋15분</button>'}${tm}${rt||ml?'':`<button type="button" class="chipbtn" data-w93off="1">${wk?'종일 칸으로':cp?'배치 빼기':'시간 빼기'}</button>`}`:`<button type="button" class="chipbtn" data-w93q="1">빈 시간에 놓기</button>${cp&&cpDay(t,k)?'<button type="button" class="chipbtn" data-w93off="1">배치 빼기</button>':''}`}${wk&&t.sl91&&t.sl91[k]!==undefined?'<button type="button" class="chipbtn" data-w93del="1">날 정함 빼기</button>':''}${cp?'<button type="button" class="chipbtn" data-w93skip="1">⏭ 이번 차례 건너뛰기</button><button type="button" class="chipbtn" data-w93mv="1" aria-haspopup="menu">📆 다른 날로</button>':''}${ml?'':'<button type="button" class="chipbtn" data-w93opt="1" aria-haspopup="menu">⋯ 옵션</button>'}<button type="button" class="chipbtn" data-w93det="1">상세</button><button type="button" class="ib" data-w93desel="1" aria-label="선택 끝">×</button></div>
       ${W.dp===t.id?`<div class="row dp93" style="gap:6px;margin-top:6px"><input type="date" data-w93dpv="1" value="${esc(k)}" min="${esc(midKey68())}" aria-label="새 날짜"><button type="button" class="btn sm" data-w93dpok="1">이 날로 옮기기</button><button type="button" class="btn ghost sm" data-w93dpx="1">취소</button></div>`:''}
       ${rt&&rtDay93(t,k)?'<div class="tiny muted">⏱ 루틴 — 이 날만 옮겨요 (평소 ⏰ 몇 시쯤은 그대로)</div>':''}
       ${ml?'<div class="tiny muted">🍱 끼니 — 그날만 바뀌어요</div>':''}
@@ -132,9 +132,10 @@
   function seq93(k){return ord93().filter(id=>cnt93(id,k)>0)}
   function body93(id,k){
     if(id==='care'){   // v12.8: 모두 칩으로(자르지 않음) → 고르고 → 시간표에 놓기 · 아직 차례 아닌 관리도 '미리 하기'
-      const L=care93(k),m=L.reduce((s,t)=>s+(+t.dur||0),0),nx=careAll76().filter(t=>!t.due||t.due>k).sort((a,b)=>String(a.due||'9').localeCompare(String(b.due||'9')));
+      const L=care93(k),m=L.reduce((s,t)=>s+(+t.dur||0),0),nx0=careAll76().filter(t=>!t.due||t.due>k),nx=window.sortCare128?window.sortCare128(nx0):nx0.sort((a,b)=>String(a.due||'9').localeCompare(String(b.due||'9')));
+      const so=window.SORTS128&&window.C128?`<select class="so93" data-w93cs="1" aria-label="관리 정렬">${window.SORTS128.map(([v,l])=>`<option value="${v}"${window.C128().s===v?' selected':''}>↕ ${l}</option>`).join('')}</select>`:'';
       const chip=t=>{const on=W.sel===t.id;return `<button type="button" class="chipbtn t93${on?' on':''}${lcCls93(t)}" data-w93s="${t.id}" data-drag="task:${t.id}" aria-pressed="${on}" title="누르면 고르고 · 끌어서 시간표에 놓아요"${lcSty93(t)?` style="${lcSty93(t)}"`:''}>${lcEm93(t)}${esc(t.title)}${t.dur?` <small>${t.dur}분</small>`:''} <small>${esc(when76(t,k))}</small></button>`};
-      return `<div class="p80g">관리 차례 <small>${L.length}${m?' · '+hmK76(m):''}</small></div><p class="help" style="margin:0 0 4px">미뤄도 괜찮은 일이라 남는 틈에 해요 — 하고 싶은 것만 골라 시간표에 놓아요.</p>`+tray93('care',k).replace(/^<div class="p80g">[\s\S]*?<\/div>/,'')
+      return `<div class="p80g">관리 차례 <small>${L.length}${m?' · '+hmK76(m):''}</small>${so}</div><p class="help" style="margin:0 0 4px">미뤄도 괜찮은 일이라 남는 틈에 해요 — 하고 싶은 것만 골라 시간표에 놓아요.</p>`+tray93('care',k).replace(/^<div class="p80g">[\s\S]*?<\/div>/,'')
         +(nx.length?`<details class="c93nx"${nx.some(t=>W.sel===t.id)?' open':''}><summary>미리 하기 · 다음 차례 ${nx.length}개</summary><div class="tray93">${nx.slice(0,30).map(chip).join('')}</div></details>`:'')
         +`<div class="row" style="margin-top:6px"><button type="button" class="chipbtn" data-w93care="1">🧽 관리 창 열기</button></div>`}
     return tray93(id,k);
@@ -185,10 +186,19 @@
     act93(t,`'${t.title}' 이번엔 건너뜀`,()=>{
       t.skip61=[...new Set([...(t.skip61||[]).filter(d=>d>=addDays(td,-14)),k])];
       if(t.due&&t.due<=k){const nd=nextDue(t.rep,k);if(nd)t.due=nd}
-      delete t.skull;if(t.rid)delete t.tx83},true)}
+      else if(isCP(t)&&t.due){const nd=nextDue(t.rep,t.due);if(nd)t.due=nd}   // v13.2: 아직 차례 아닌 관리도 다음 차례로
+      if(isCP(t))delete t.cs126;delete t.skull;if(t.rid)delete t.tx83},true)}
   function drop93(t){const k=W.k,td=midKey68();
     act93(t,`'${t.title}' ${t.rep&&t.rep.f?'반복 그만둠':'안 하기'}`,()=>{t.status=-1;t.doneAt=td},true)}
-  function opt93(t,x,y){const k=W.k,wk=isWk(t),rep=!!(t.rep&&t.rep.f)&&!wk,nx=addDays(k,1),mon=addDays(weekStart(k),7);
+  function mvPick93(t,x,y){if(!window.dayMenu130){W.dp=t.id;redo93();return}window.dayMenu130(x,y,{title:`📆 '${esc(t.title.slice(0,16))}' 이번 차례`,base:W.k,cur:W.k,min0:1,onPick:nd=>{if(nd===W.k){toast('같은 날이에요');return}if(isCP(t)&&t.cs126)delete t.cs126;moveTo93(t,nd)}})}
+  function optCare93(t,x,y){const nd=nextDue(t.rep,t.due&&t.due>W.k?t.due:W.k);
+    menu61(x,y,`🧽 ${esc(t.title.length>20?t.title.slice(0,20)+'…':t.title)}`,[
+      {l:`⏭ 이번 차례 건너뛰기 <small class="muted">${nd?'다음 '+esc(fmtD(nd)):''}</small>`,f:()=>skip93(t)},
+      {l:'📆 다른 날짜로 지정하기… <small class="muted">이 차례만</small>',keep:1,f:()=>{const r=($('m61')||document.body).getBoundingClientRect();closeMenu61();mvPick93(t,r.left,r.top)}},
+      '-',
+      {l:'✎ 상세 열기 (반복·점수)',f:()=>go93(t.id)},
+      {l:'🧽 관리 창 열기',f:()=>{const k=W.k;closeSheet();careSheet76(k)}}])}
+  function opt93(t,x,y){if(isCP(t)){optCare93(t,x,y);return}const k=W.k,wk=isWk(t),rep=!!(t.rep&&t.rep.f)&&!wk,nx=addDays(k,1),mon=addDays(weekStart(k),7);
     menu61(x,y,`📋 ${esc(t.title.length>20?t.title.slice(0,20)+'…':t.title)}`,[
       {l:'📅 날짜 다시 정하기…',f:()=>{W.dp=t.id;redo93()}},
       {l:`⏩ 하루 뒤로 (${fmtD(nx)})`,f:()=>moveTo93(t,nx)},
@@ -200,6 +210,7 @@
       {l:'✎ 상세 열기',f:()=>go93(t.id)}])}
   function open93(k){const nk=k||KEY();W={k:nk,i:0,undo:null,seq:seq93(nk),mem:mem93(nk),sel:null,scTop:null,step:null};wiz93()}   // 단계 목록은 열 때 한 번만 정함(알아서 넣기로 비어도 단계가 사라져 화면이 밀리지 않게)
   const redo93=()=>{const e=$('sheetC');W.y=e?e.scrollTop:null;render();wiz93()};
+  addEventListener('change',e=>{const T=e.target;if(!T||!T.matches||!T.matches('[data-w93cs]')||!(sheetCtx&&sheetCtx.w93&&W))return;e.stopPropagation();e.stopImmediatePropagation();if(window.C128){window.C128().s=T.value;save('config')}redo93()},true);   // v13.2 관리 정렬
 
   /* ---- 동작 ---- */
   addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;
@@ -223,6 +234,8 @@
     if((b=T.closest('[data-w93det]'))){stop();const id=W.sel;if(id)go93(id);return}
     if((b=T.closest('[data-w93desel]'))){stop();W.sel=null;W.dp=null;wiz93();return}
     if((b=T.closest('[data-w93opt]'))){stop();const t=TASKS[W.sel];if(!t)return;const r=b.getBoundingClientRect();opt93(t,r.left,r.bottom+4);return}
+    if((b=T.closest('[data-w93skip]'))){stop();const t=TASKS[W.sel];if(t)skip93(t);return}
+    if((b=T.closest('[data-w93mv]'))){stop();const t=TASKS[W.sel];if(!t)return;const r=b.getBoundingClientRect();mvPick93(t,r.left,r.bottom+4);return}
     if((b=T.closest('[data-w93dpx]'))){stop();W.dp=null;redo93();return}
     if((b=T.closest('[data-w93dpok]'))){stop();const t=TASKS[W.sel],v=($('sheetC').querySelector('[data-w93dpv]')||{}).value;W.dp=null;if(!t||!v){redo93();return}if(v===W.k){toast('같은 날이에요');redo93();return}moveTo93(t,v);return}
     if((b=T.closest('[data-w93q]'))){stop();const t=TASKS[W.sel];if(!t)return;const p=free93(W.k,+t.dur||30,busy93(W.k,[t.id]));if(p==null){toast('빈 시간이 없어요 — 시간표를 눌러 직접 놓아요');return}put93(t,p);return}

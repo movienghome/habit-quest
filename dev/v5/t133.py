@@ -71,7 +71,7 @@ with sync_playwright() as pw:
   ok(J(pg,f"openTasks().some(t=>t.id===window.__w)")==False or True,'③ (목록 숨김은 그대로)')
   # 관리 창 📅
   J(pg,"careSheet76(midKey68())");pg.wait_for_timeout(500)
-  ok(J(pg,"document.querySelectorAll('#sheetC .c76r [data-pl126]').length")>=1,'③ 관리 창 줄에 📅 있음')
+  ok(J(pg,"document.querySelectorAll('#sheetC .d128r [data-pl126]').length")>=1,'③ 관리 창 줄에 📅 있음')
   ok(J(pg,"!!document.querySelector('#sheetC details.set126')"),'③ 관리 창 설정은 접힘 한 곳으로')
   J(pg,"document.querySelector('#sheetC [data-pl126=\"'+window.__w+'\"]').click()");pg.wait_for_timeout(400)
   ok(J(pg,"!!document.querySelector('#sheetC [data-pl126off]')"),'③ 놓은 건 놓기 창에 "배치 빼기"가 있음')

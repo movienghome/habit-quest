@@ -55,6 +55,7 @@ with sync_playwright() as pw:
   J(pg,"(()=>{const s=document.querySelector('#sheetC [data-d128f=\"un\"]');s.click()})()");pg.wait_for_timeout(400)
   ok(J(pg,"document.querySelectorAll('#sheetC .d128r').length")==3,'② 거르기: 안 놓은 것 3개')
   # 여러 개 고르기 → 모레, 자동 시각
+  J(pg,"document.querySelector('#sheetC [data-d130m]').click()");pg.wait_for_timeout(300)   # v13.2: 여러 개 고르기는 ☑ 여러 개를 켜야 보임
   J(pg,"document.querySelectorAll('#sheetC [data-d128s]').forEach(c=>{c.click()})");pg.wait_for_timeout(300)
   ok(J(pg,"/3개 고름/.test(document.querySelector('#d128bar').textContent)"),'② 3개 고름 막대')
   J(pg,"document.querySelectorAll('#sheetC [data-d128d]')[2].click()");pg.wait_for_timeout(300)
