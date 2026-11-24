@@ -127,4 +127,49 @@ with sync_playwright() as pw:
     J(pg,"C.ui.tasks.sel='today';render()")
     e=[x for x in errs if 'favicon' not in x];ok(not e,f'[{W}] U4 오류 없음',e[:3]);errs.clear()
     b.close()
+  # ---------- U5 ----------
+  if want('U5'):
+   SEED5="""(()=>{const td=midKey68();const mk=(n,d)=>{const t=newTask({title:n,due:addDays(td,d)});t.order=1;t.created=addDays(td,-20);saveTask(t);return t.id};
+     return {a:mk('미룰 일 가',-2),b:mk('미룰 일 나',-1),c:mk('나중 일',3),d:mk('상세 미루기',0),e:mk('상세 미루기 둘',-3)}})()"""
+   def ppmenu(pg,id,touch):
+     J(pg,f"(()=>{{const r=document.querySelector('#tList .trow[data-task=\"{id}\"]');r.scrollIntoView({{block:'center'}});const b=r.getBoundingClientRect();taskMenu61(TASKS['{id}'],b.left+60,b.top+10)}})()");pg.wait_for_timeout(300)
+     tap(pg,pg.locator('#m61 [data-m61]',has_text='미루기').first,touch);pg.wait_for_timeout(350)
+   for W,H,touch in SIZES:
+    b,pg=run2(pw,W,H,touch);ids=J(pg,SEED5);td=J(pg,"midKey68()");tm=J(pg,"addDays(midKey68(),1)")
+    J(pg,"C.tc131={late:1};location.hash='tasks'");pg.wait_for_timeout(700);notoast(pg)
+    ppmenu(pg,ids['a'],touch)
+    ok(J(pg,"!!document.querySelector('#m61 #sk131') && !document.querySelector('#m61 #sk131').checked"),f'[{W}] U5 ⏩ 미루기 창 맨 아래 ☠ 칸(기본 꺼짐)')
+    ok(J(pg,"(()=>{const m=document.querySelector('#m61'),l=m.querySelector('.sk131');return l===m.lastElementChild&&l.getBoundingClientRect().height<40})()"),f'[{W}] U5 ☠ 칸은 맨 아래 한 줄')
+    tap(pg,pg.locator('#m61 [data-m61]',has_text='내일').first,touch);pg.wait_for_timeout(500)
+    t=T(pg,ids['a']);ok(t['due']==tm and not t.get('skull'),f'[{W}] U5 칸 꺼짐 → 날짜만 옮김(☠ 안 셈)',(t['due'],t.get('skull')))
+    ok('☠ 안 셈' in J(pg,"$('toast').innerText") and J(pg,"!!document.querySelector('#toast .tbtn55')"),f'[{W}] U5 알림에 ☠ 미룸으로 단추',J(pg,"$('toast').innerText"))
+    J(pg,"document.querySelector('#toast .tbtn55').click()");pg.wait_for_timeout(400)
+    ok(T(pg,ids['a']).get('skull')==1,f'[{W}] U5 알림 ☠ 미룸으로 → 나중에 셈')
+    # 켜고 미루기
+    ppmenu(pg,ids['b'],touch)
+    tap(pg,pg.locator('#m61 .sk131').first,touch);pg.wait_for_timeout(200)
+    ok(J(pg,"!$('m61').hidden && document.querySelector('#m61 #sk131').checked"),f'[{W}] U5 ☠ 칸 눌러도 창은 그대로·켜짐')
+    tap(pg,pg.locator('#m61 [data-m61]',has_text='내일').first,touch);pg.wait_for_timeout(500)
+    t=T(pg,ids['b']);ok(t['due']==tm and t.get('skull')==1,f'[{W}] U5 칸 켬 → 미룸(☠ 1)',(t['due'],t.get('skull')))
+    # 다시 열면 꺼져 있음 · 미래 할 일엔 칸 없음
+    J(pg,"C.ui.tasks.sel='all';C.ui.collapsed={};render()");pg.wait_for_timeout(400)
+    ppmenu(pg,ids['b'],touch)
+    ok(not J(pg,"!!document.querySelector('#m61 #sk131')"),f'[{W}] U5 앞으로 날짜인 할 일(원래 ☠ 없음)엔 칸 없음')
+    J(pg,"closeMenu61()")
+    ppmenu(pg,ids['e'],touch)
+    ok(J(pg,"!!document.querySelector('#m61 #sk131') && !document.querySelector('#m61 #sk131').checked"),f'[{W}] U5 다시 열면 칸은 꺼진 채')
+    J(pg,"closeMenu61()")
+    # 상세 미루기 칸
+    J(pg,f"openTaskSheet('{ids['d']}')");pg.wait_for_timeout(500)
+    J(pg,"(()=>{const b=document.querySelector('#sheetC [data-x57pp=\"open\"]');if(b&&document.querySelector('#sheetC .pp57').hidden)b.click()})()");pg.wait_for_timeout(300)
+    ok(J(pg,"!!document.querySelector('#sheetC .pp57 #sk131p')"),f'[{W}] U5 상세 미루기 칸에도 ☠ 칸')
+    J(pg,"document.querySelector('#sheetC .pp57 #sk131p').click()");pg.wait_for_timeout(100)
+    J(pg,"document.querySelector('#sheetC .pp57 [data-x57pp]:not([data-x57pp=\"open\"])').click()");pg.wait_for_timeout(500)
+    ok(T(pg,ids['d']).get('skull')==1,f'[{W}] U5 상세에서 켜고 미루기 → ☠ 1')
+    J(pg,f"openTaskSheet('{ids['e']}')");pg.wait_for_timeout(500)
+    J(pg,"(()=>{const b=document.querySelector('#sheetC [data-x57pp=\"open\"]');if(b&&document.querySelector('#sheetC .pp57').hidden)b.click()})()");pg.wait_for_timeout(300)
+    J(pg,"document.querySelector('#sheetC .pp57 [data-x57pp]:not([data-x57pp=\"open\"])').click()");pg.wait_for_timeout(500)
+    ok(not T(pg,ids['e']).get('skull') and T(pg,ids['e'])['due']>td,f'[{W}] U5 상세에서 그냥 미루기 → ☠ 안 셈')
+    e=[x for x in errs if 'favicon' not in x];ok(not e,f'[{W}] U5 오류 없음',e[:3]);errs.clear()
+    b.close()
 print('FAILS',len(FAILS),FAILS)

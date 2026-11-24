@@ -13,3 +13,8 @@
 .tp131 .care76{margin-top:0}
 .hid131{display:none!important}
 .tc131 .ar131{margin-left:4px;font-size:11px}
+/* U5 ☠ 미룸으로 기록 칸 */
+.sk131{display:flex;align-items:center;gap:6px;padding:6px 10px;font-size:13px;cursor:pointer;white-space:nowrap}
+.sk131 input{width:16px;height:16px;margin:0;flex:none}
+.sk131 small{overflow:hidden;text-overflow:ellipsis}
+.pp57 .sk131{padding:4px 0;flex-basis:100%}
