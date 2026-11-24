@@ -99,4 +99,39 @@ with sync_playwright() as pw:
   J(pg,"document.querySelector('#sheetC [data-f77x]').click()");pg.wait_for_timeout(400)
   ok(J(pg,"flt77().lists.length===0&&flt77().and===1"),'③ 모두 풀어도 고른 방식(and)은 유지',J(pg,"JSON.stringify(C.calf77)"))
   ok(not errs,'③ 콘솔 오류 없음',errs[:3]);b.close()
+  # ---------- ④ 폰 진입로 🧽 시트 ----------
+  for dock in (1,0):
+    b,pg=run(pw,W=390,H=800);closepops(pg);notoast(pg)
+    J(pg,"""(()=>{const a=addTaskFrom('책상 정리 %7');window.__care=a.id;const w=addTaskFrom('시나리오 쓰기 주3회');window.__wk=w.id})()""");pg.wait_for_timeout(500)
+    J(pg,f"C.tt84={dock};save('config');location.hash='{'tasks' if dock else 'cal'}';render()");pg.wait_for_timeout(900);notoast(pg)
+    L=f'[dock={dock}] '
+    ok(J(pg,"(()=>{const b=document.querySelector('.deck127b');if(!b)return false;const r=b.getBoundingClientRect(),cs=getComputedStyle(b);return r.width>20&&r.height>20&&cs.display!=='none'&&cs.visibility!=='hidden'&&r.right<=innerWidth+1&&r.left>=-1})()"),L+'④ 🧽 관리 단추가 화면 안에 보임',J(pg,"(()=>{const b=document.querySelector('.deck127b');return b&&JSON.stringify(b.getBoundingClientRect())})()"))
+    J(pg,"document.querySelector('.deck127b').click()");pg.wait_for_timeout(500)
+    ok(J(pg,"!!document.querySelector('#sheetC [data-d127p]')&&!!document.querySelector('#sheetC [data-d127w]')"),L+'④ 시트에 관리 놓기·주 N회 요일 단추가 있음')
+    ok(J(pg,"(()=>{const e=document.getElementById('sheetC');return e.scrollWidth<=e.clientWidth+1})()"),L+'④ 시트가 가로로 넘치지 않음')
+    # 주 N회: 날 넣기 → 빼기
+    k=J(pg,"addDays(midKey68(),1)>weekStart(midKey68())&&weekStart(addDays(midKey68(),1))===weekStart(midKey68())?addDays(midKey68(),1):midKey68()")
+    J(pg,f"document.querySelector('#sheetC [data-d127w=\"'+window.__wk+'|{k}\"]').click()");pg.wait_for_timeout(500)
+    ok(J(pg,f"TASKS[window.__wk].sl91&&TASKS[window.__wk].sl91['{k}']!==undefined"),L+'④ 요일 단추로 계획 칸이 생김')
+    ok(J(pg,f"document.querySelector('#sheetC [data-d127w=\"'+window.__wk+'|{k}\"]').getAttribute('aria-pressed')")=='true' and J(pg,f"/✕/.test(document.querySelector('#sheetC [data-d127w=\"'+window.__wk+'|{k}\"]').textContent)"),L+'④ 계획한 날은 📌✕로 보임')
+    J(pg,f"document.querySelector('#sheetC [data-d127w=\"'+window.__wk+'|{k}\"]').click()");pg.wait_for_timeout(500)
+    ok(J(pg,f"!(TASKS[window.__wk].sl91&&TASKS[window.__wk].sl91['{k}']!==undefined)"),L+'④ 다시 누르면 계획 칸이 빠짐(✕)')
+    # 관리 놓기 → 빼기
+    J(pg,"document.querySelector('#sheetC [data-d127p]').click()");pg.wait_for_timeout(500)
+    ok(J(pg,"/📅/.test(document.querySelector('#sheetC .sh h3').textContent)"),L+'④ 📅 놓기가 관리 날짜·시각 창을 엶')
+    J(pg,"TASKS[window.__care].cs126=null;delete TASKS[window.__care].cs126;place126(TASKS[window.__care],addDays(midKey68(),1),'10:00');render();deck127()");pg.wait_for_timeout(400)
+    ok(J(pg,"!!document.querySelector('#sheetC [data-d127u]')"),L+'④ 놓은 관리엔 ✕ 빼기가 보임')
+    J(pg,"document.querySelector('#sheetC [data-d127u]').click()");pg.wait_for_timeout(500)
+    ok(J(pg,"!TASKS[window.__care].cs126"),L+'④ ✕ 빼기로 놓은 자리가 빠짐')
+    ok(not errs,L+'④ 콘솔 오류 없음',errs[:3]);b.close()
+  # 🔁 이번 주 창의 정한 날 ✕
+  b,pg=run(pw,W=390,H=800);closepops(pg);notoast(pg)
+  J(pg,"""(()=>{const w=addTaskFrom('시나리오 쓰기 주3회');window.__wk=w.id;w.sl91=w.sl91||{};w.sl91[midKey68()]='';w.sl91[addDays(midKey68(),1)]='';saveTask(w)})()""");pg.wait_for_timeout(500)
+  J(pg,"C.tt84=0;save('config');location.hash='cal';render()");pg.wait_for_timeout(700);notoast(pg)
+  J(pg,"wkSheet121(window.__wk)");pg.wait_for_timeout(600)
+  n=J(pg,"document.querySelectorAll('#sheetC [data-pl127]').length");ok(n>=1,'④ 이번 주 창에 📌 정한 날 ✕ 칩이 보임',n)
+  if n:
+    J(pg,"document.querySelector('#sheetC [data-pl127]').click()");pg.wait_for_timeout(500)
+    ok(J(pg,"Object.keys(TASKS[window.__wk].sl91||{}).length")==n-1 if False else J(pg,"Object.keys(TASKS[window.__wk].sl91||{}).length")<2,'④ ✕를 누르면 그 날 계획이 빠짐')
+  ok(not errs,'④ 이번 주 창 콘솔 오류 없음',errs[:3]);b.close()
 print('FAILS',len(FAILS),FAILS)

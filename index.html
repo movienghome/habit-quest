@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v12.8</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v12.9</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2662,6 +2662,40 @@ details.set126>.c76o{margin-top:8px}
 details.c93nx{margin-top:8px}
 details.c93nx>summary{cursor:pointer;font-size:13px;font-weight:700;padding:4px 0}
 @media(max-width:430px){.brv126 .b small{display:none}.brv126 .chipbtn.o{max-width:9em}}
+
+/* v12.9: 내일 짜기 목록 색(캘린더 시간표처럼 왼쪽 띠+옅은 배경) · 보관함 드롭 표시 · 폰 화면 딱 맞춤(방어) */
+.lc93{border-left:4px solid var(--lc93,var(--edge))!important;background:color-mix(in srgb,var(--lc93,transparent) 16%,var(--panel))!important}
+.b93.lc93{background:color-mix(in srgb,var(--lc93,transparent) 20%,var(--panel))!important}
+.w93tray.drop-hi{outline:3px dashed var(--ink);outline-offset:2px;border-radius:12px}
+.b93[data-drag],.chipbtn.t93[data-drag]{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+/* 폰: 가로로 삐져나와 '살짝 축소'해야 했던 걸 막는 안전망 — 시트·시간표·상세가 화면 너비를 못 넘게 */
+html,body{max-width:100%;overflow-x:clip}
+#sheetC,#sheet,.sheet,#calPane,#tt84slot,.tt93s{max-width:100vw;box-sizing:border-box}
+#sheetC img,#sheetC table,#sheetC pre{max-width:100%}
+#sheetC input,#sheetC select,#sheetC textarea{max-width:100%;min-width:0}
+/* 🧽 관리·주 N회 시트, 🧽 단추, 📌 정한 날 줄 */
+.deck127b{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05;min-width:44px;min-height:40px;white-space:nowrap;flex:none}
+.deck127b small{font-size:10px;margin-top:1px}
+.d127h{margin:12px 0 4px;font-size:14px}
+.d127row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.d127row.col{flex-direction:column;align-items:stretch}
+.d127t{display:flex;flex-direction:column;min-width:0;flex:1}.d127t b{overflow-wrap:anywhere}
+.d127b{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+.d127d{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.chipbtn.d127day{display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 0;min-height:52px;line-height:1.15}
+.chipbtn.d127day small{font-size:10px}.chipbtn.d127day b{font-size:12px}
+.chipbtn.d127day[aria-pressed="true"]{border-color:var(--ink);border-width:2px;font-weight:700}
+.chipbtn.d127day[disabled]{opacity:.4}
+.pl127{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.pl127 .chipbtn{min-height:36px}
+/* 폰 캘린더 바: 단추가 많아 제목(11월…)이 거의 안 보이던 걸 — 좁으면 두 줄로 접어 제목을 읽히게 */
+@media (max-width:480px){body:not(.tt84) #calPane .calbar2{flex-wrap:wrap;row-gap:4px}
+  body:not(.tt84) #calPane .calbar2 #calTitle{flex:1 0 5.5em;min-width:5.5em;white-space:nowrap}}
+/* 폰 주소창이 오르내려도 화면에 딱 맞게: vh 대신 dvh(지원하는 브라우저에서만) */
+@supports (height:100dvh){.tt93s{height:min(46dvh,380px)}
+  @media (min-width:700px){.tt93s{height:min(52dvh,460px)}}
+  body.tt84 #tt84slot{height:var(--tt84h,42dvh)}body.tt84 [data-view="tasks"]{padding-bottom:calc(var(--tt84h,42dvh) + 8px)}}
+#sheetC{overscroll-behavior:contain}
 </style>
 
 <header class="hud" id="hud">
@@ -12242,11 +12276,12 @@ function calPass(t){const f=flt77();if(!t||!fOn77(f))return true;const L=listOk(
   if(f.kinds.length){const ks=kinds77(t);m.kinds=ks.some(k=>f.kinds.includes(k))}
   if(f.inv)return !Object.values(m).some(Boolean);            // 고른 것 숨기기: 하나라도 맞으면 숨김
   if(m.lists===false&&Array.isArray(f.known)&&!f.known.includes(L))m.lists=true;   // 거르기를 정한 뒤 생긴 목록은 안 거름(v7.2)
-  return Object.values(m).every(Boolean)}                     // 고른 것만: 줄끼리는 '그리고', 줄 안은 '또는'
+  return f.and?Object.values(m).every(Boolean):Object.values(m).some(Boolean)}   // v12.9: 고른 것 보이기 = 고른 칩 중 하나라도 맞으면 보임(합쳐서). '겹치는 것만'(f.and)은 줄끼리 '그리고'(예전 방식)
 function calFilterN(){return fOn77()}
 function passWith72(cfg,t){return calPass(t)}
 function calUnhide72(t){const f=flt77();if(calPass(t))return 0;const L=listOk(t.list)?t.list:'inbox',ar=areaOfTask(t),ks=kinds77(t);let n=0;
   if(f.inv){const a=f.lists.length;f.lists=f.lists.filter(x=>x!==L);f.areas=f.areas.filter(x=>x!==ar);f.tags=f.tags.filter(g=>!(t.tags||[]).some(x=>x===g||String(x).startsWith(g+'/')));f.kinds=f.kinds.filter(k=>!ks.includes(k));n=1}
+  else if(!f.and){if(f.lists.length){f.lists.push(L);n=1}else if(f.areas.length&&ar){f.areas.push(ar);n=1}else if(f.tags.length&&(t.tags||[])[0]){f.tags.push(t.tags[0]);n=1}else if(f.kinds.length&&ks[0]){f.kinds.push(ks[0]);n=1}else{f.lists=[];f.areas=[];f.tags=[];f.kinds=[];n=1}}
   else{if(f.lists.length&&!f.lists.includes(L)){f.lists.push(L);n++}
     if(f.areas.length&&!f.areas.includes(ar)){if(ar)f.areas.push(ar);else f.areas=[];n++}
     if(f.tags.length&&!(t.tags||[]).some(x=>f.tags.includes(x))){f.tags=[];n++}
@@ -12260,18 +12295,20 @@ function calFilterSheet(){const f=flt77(),tags={};Object.values(TASKS).forEach(t
   openSheet(`<div class="sh"><h3>캘린더 보이기·숨기기</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
     <div class="row" style="gap:6px"><span class="seg3 sm"><button type="button" data-f77m="0" aria-pressed="${!f.inv}">고른 것 보이기</button><button type="button" data-f77m="1" aria-pressed="${!!f.inv}">고른 것 숨기기</button></span>
       <span class="small ${on&&hid?'':'muted'}" id="f77n">${on?`날짜 있는 할 일 ${dated.length}개 중 <b>${dated.length-hid}개 보임</b>${hid?` · 🙈 ${hid}개 숨김`:''}`:'아무것도 안 골라서 전부 보여요'}</span></div>
+    ${(!f.inv&&['lists','areas','tags','kinds'].filter(k=>f[k].length).length>=2)?`<div class="row" style="gap:6px;align-items:center"><span class="seg3 sm" role="group" aria-label="여러 줄을 고르면"><button type="button" data-f77a="0" aria-pressed="${!f.and}">합쳐서 보기</button><button type="button" data-f77a="1" aria-pressed="${!!f.and}">겹치는 것만</button></span></div>`:''}
     ${sec('종류',KIND77.map(([k,l])=>ch('kinds',k,l)).join(''))}
     ${sec('목록',[{id:'inbox',name:listName('inbox')},...C.lists.filter(l=>l.id!=='inbox')].map(l=>ch('lists',l.id,esc(l.name),l.color)).join(''))}
     ${sec('영역',C.areas.map(a=>ch('areas',a.id,esc(a.name))).join(''))}
     ${Object.keys(tags).length?sec('태그',Object.keys(tags).sort().map(t=>ch('tags',t,'#'+esc(t))).join('')):''}
-    <p class="help" style="margin:4px 0 0">${f.inv?'고른 것 중 <b>하나라도</b> 맞으면 숨겨요.':'같은 줄에서는 <b>하나라도</b>, 다른 줄끼리는 <b>둘 다</b> 맞아야 보여요 (목록 Limen + 종류 루틴 = Limen의 루틴만).'} 캘린더 화면·할 일 옆 캘린더가 같이 쓰고, <b>끝낸 일·지난 날</b>에도 똑같이 적용돼요.</p>
+    <p class="help" style="margin:4px 0 0">${f.inv?'고른 것 중 <b>하나라도</b> 맞으면 숨겨요.':f.and?'<b>겹치는 것만</b> 보여요 — 같은 줄에서는 하나라도, 다른 줄끼리는 둘 다 맞아야 해요 (목록 Limen + 종류 루틴 = Limen의 루틴만).':'고른 것 <b>중 하나라도</b> 맞으면 보여요 (목록 Limen + 종류 관리 = Limen 목록의 일 + 모든 관리).'} 관리는 평소 캘린더에서 빠져 있어서 <b>🧽 n 관리 블록과 놓은 관리</b>만 보여요. 캘린더 화면·할 일 옆 캘린더가 같이 쓰고, <b>끝낸 일·지난 날</b>에도 똑같이 적용돼요.</p>
     <div class="row" style="justify-content:space-between"><button type="button" class="btn ghost sm" data-f77x="1"${on?'':' disabled'}>모두 풀기</button><button class="btn" data-sheet="close">닫기</button></div>`)}
 function fApply77(){save('config');calFilterSheet();ui.calKeepScroll=true;try{if(calShown())renderCal()}catch(e){console.error(e)}}
 addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
   if((b=T.closest('[data-f77]'))){e.preventDefault();e.stopPropagation();const f=flt77(),k=b.dataset.f77,v=b.dataset.v;if(!Array.isArray(f[k]))return;
     f[k]=f[k].includes(v)?f[k].filter(x=>x!==v):[...f[k],v];if(k==='lists')f.known=['inbox',...C.lists.map(l=>l.id)];fApply77();return}
   if((b=T.closest('[data-f77m]'))){e.preventDefault();e.stopPropagation();flt77().inv=+b.dataset.f77m?1:0;fApply77();return}
-  if((b=T.closest('[data-f77x]'))){e.preventDefault();e.stopPropagation();C.calf77={lists:[],areas:[],tags:[],kinds:[],inv:flt77().inv?1:0};fApply77();return}
+  if((b=T.closest('[data-f77x]'))){e.preventDefault();e.stopPropagation();const o=flt77();C.calf77={lists:[],areas:[],tags:[],kinds:[],inv:o.inv?1:0,and:o.and?1:0};fApply77();return}
+  if((b=T.closest('[data-f77a]'))){e.preventDefault();e.stopPropagation();flt77().and=+b.dataset.f77a?1:0;fApply77();return}
 },true);
 // 끝낸 일(기록)도 같은 거르기로 — 캘린더를 그리는 동안만
 doneOn=(function(prev){return function(k){const a=prev.apply(this,arguments);if(!CAL77||!fOn77())return a;const inv=!!flt77().inv;return a.filter(e=>{const t=TASKS[e.tid];return t?calPass(t):inv})}})(doneOn);
@@ -14063,6 +14100,13 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   const at93=()=>hm80(C.tm93at)!=null?C.tm93at:'21:00';
   const ord93=()=>{const o=Array.isArray(C.tm93ord)?C.tm93ord.filter(x=>ALL.some(a=>a[0]===x)):[];ALL.forEach(a=>{if(!o.includes(a[0]))o.push(a[0])});return o};
   const byTime=(a,b)=>hm80(a.time)-hm80(b.time);
+  /* v12.9: 목록 색(캘린더 시간표처럼 왼쪽 띠+옅은 배경)·목록 이모지 — 색만으로 구분하지 않게 이모지도 같이. C.tm127col===0이면 끔(⚙ 설정) */
+  const colOn93=()=>C.tm127col!==0;
+  function lc93(t){if(!colOn93()||!t)return {c:'',e:''};const id=listOk(t.list)?t.list:'inbox',l=(C.lists||[]).find(z=>z.id===id);let e='';try{e=listEmoji(id)||''}catch(_){}
+    if(e&&(t.care76||t.cb76)&&e==='🧽')e='';return {c:(l&&l.color)||'',e}}
+  const lcCls93=t=>{const o=lc93(t);return o.c?' lc93':''};
+  const lcSty93=t=>{const o=lc93(t);return o.c?` --lc93:${o.c};`:''};
+  const lcEm93=t=>{const o=lc93(t);return o.e?o.e+' ':''};
 
   /* ---- 단계별 내용 ---- */
   function fx93(k){
@@ -14125,7 +14169,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
     const cur=(W.mem&&W.mem[W.step])||new Set();lane93(L);
     let h='';for(let m=s0;m<e0;m+=60)h+=`<div class="hl93" style="top:${(m-s0)*PX93}px"><span>${String(Math.floor(m/60)).padStart(2,'0')}</span></div><div class="hl93 half" style="top:${(m-s0+30)*PX93}px"></div>`;
     const bs=L.map(b=>{const t=b.t,mv=mvOk93(t),isC=cur.has(b.id),sel=W.sel===b.id;
-      return `<div class="b93${isC?' cur':''}${sel?' sel':''}${mv?' mv':''}" data-w93b="${b.id}" role="button" tabindex="0" aria-pressed="${sel}" title="${esc(t.title)} ${fmt80(b.s)}–${fmt80(b.s+b.d)}" style="top:${(b.s-s0)*PX93}px;height:${Math.max(20,b.d*PX93)-2}px;left:calc(${b.l/b.n*100}% + 1px);width:calc(${100/b.n}% - 3px)"><b>${fmt80(b.s)}</b> ${t.ml80?'🍱 ':''}${isCP(t)?'🧽 ':''}${esc(t.title)}${t.rep&&t.rep.f&&!isWk(t)?' ↻':''}</div>`}).join('');
+      return `<div class="b93${isC?' cur':''}${sel?' sel':''}${mv?' mv':''}${lcCls93(t)}" data-w93b="${b.id}"${mv?` data-drag="task:${b.id}"`:''} role="button" tabindex="0" aria-pressed="${sel}" title="${esc(t.title)} ${fmt80(b.s)}–${fmt80(b.s+b.d)}${mv?' · 끌어서 옮겨요':''}" style="${lcSty93(t)}top:${(b.s-s0)*PX93}px;height:${Math.max(20,b.d*PX93)-2}px;left:calc(${b.l/b.n*100}% + 1px);width:calc(${100/b.n}% - 3px)"><b>${fmt80(b.s)}</b> ${t.ml80?'🍱 ':''}${isCP(t)?'🧽 ':''}${lcEm93(t)}${esc(t.title)}${t.rep&&t.rep.f&&!isWk(t)?' ↻':''}</div>`}).join('');
     return `<div class="tt93s" data-w93sc="1"><div class="tt93g" data-w93g="1" data-s0="${s0}" style="height:${(e0-s0)*PX93}px">${h}${bs}</div></div>`;
   }
   function sel93(k){
@@ -14148,7 +14192,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
     else if(id==='care')L=care93(k).filter(t=>!placed93(t,k));
     const lab={fx:'시각을 정해야 해요',wk:'이번 주 남은 횟수',ad:'시각 안 정한 일',care:'시간 안 정한 관리 차례'}[id];
     const chip=t=>{const on=W.sel===t.id,x=id==='wk'?wk93(k).find(z=>z.t.id===t.id):null;
-      return `<button type="button" class="chipbtn t93${on?' on':''}" data-w93s="${t.id}" aria-pressed="${on}">${(t.prio||0)>=3?'<b>!</b> ':''}${esc(t.title)}${x?` <small>${x.n}/${x.N}${x.on?' · 종일':''}</small>`:''}${t.dur?` <small>${t.dur}분</small>`:''}${id==='care'?` <small>${esc(when76(t,k))}</small>`:t.rep&&t.rep.f&&id!=='wk'?' ↻':''}</button>`};
+      return `<button type="button" class="chipbtn t93${on?' on':''}${lcCls93(t)}" data-w93s="${t.id}" data-drag="task:${t.id}" aria-pressed="${on}" title="누르면 고르고 · 끌어서 시간표에 놓아요"${lcSty93(t)?` style="${lcSty93(t)}"`:''}>${(t.prio||0)>=3?'<b>!</b> ':''}${lcEm93(t)}${esc(t.title)}${x?` <small>${x.n}/${x.N}${x.on?' · 종일':''}</small>`:''}${t.dur?` <small>${t.dur}분</small>`:''}${id==='care'?` <small>${esc(when76(t,k))}</small>`:t.rep&&t.rep.f&&id!=='wk'?' ↻':''}</button>`};
     const auto=id==='care'?L.length:L.filter(autoOk80).length;
     return `<div class="p80g">${lab} <small>${L.length}</small></div>`+(L.length?`<div class="tray93">${L.map(chip).join('')}</div>`:`<p class="help" style="margin:2px 0">${id==='care'?'차례인 관리는 모두 시간표에 놓았어요 ✓':'시각을 정할 일이 없어요.'}</p>`)
       +(W.sel?'':`<p class="help" style="margin:2px 0 4px">일을 누르고 → 시간표 빈 곳을 눌러 놓아요. 놓인 일도 눌러서 옮겨요.</p>`)
@@ -14176,7 +14220,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   function body93(id,k){
     if(id==='care'){   // v12.8: 모두 칩으로(자르지 않음) → 고르고 → 시간표에 놓기 · 아직 차례 아닌 관리도 '미리 하기'
       const L=care93(k),m=L.reduce((s,t)=>s+(+t.dur||0),0),nx=careAll76().filter(t=>!t.due||t.due>k).sort((a,b)=>String(a.due||'9').localeCompare(String(b.due||'9')));
-      const chip=t=>{const on=W.sel===t.id;return `<button type="button" class="chipbtn t93${on?' on':''}" data-w93s="${t.id}" aria-pressed="${on}">${esc(t.title)}${t.dur?` <small>${t.dur}분</small>`:''} <small>${esc(when76(t,k))}</small></button>`};
+      const chip=t=>{const on=W.sel===t.id;return `<button type="button" class="chipbtn t93${on?' on':''}${lcCls93(t)}" data-w93s="${t.id}" data-drag="task:${t.id}" aria-pressed="${on}" title="누르면 고르고 · 끌어서 시간표에 놓아요"${lcSty93(t)?` style="${lcSty93(t)}"`:''}>${lcEm93(t)}${esc(t.title)}${t.dur?` <small>${t.dur}분</small>`:''} <small>${esc(when76(t,k))}</small></button>`};
       return `<div class="p80g">관리 차례 <small>${L.length}${m?' · '+hmK76(m):''}</small></div><p class="help" style="margin:0 0 4px">미뤄도 괜찮은 일이라 남는 틈에 해요 — 하고 싶은 것만 골라 시간표에 놓아요.</p>`+tray93('care',k).replace(/^<div class="p80g">[\s\S]*?<\/div>/,'')
         +(nx.length?`<details class="c93nx"${nx.some(t=>W.sel===t.id)?' open':''}><summary>미리 하기 · 다음 차례 ${nx.length}개</summary><div class="tray93">${nx.slice(0,30).map(chip).join('')}</div></details>`:'')
         +`<div class="row" style="margin-top:6px"><button type="button" class="chipbtn" data-w93care="1">🧽 관리 창 열기</button></div>`}
@@ -14195,7 +14239,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
       const n=tasksOn(k).filter(t=>t.status===0&&!t.cb76&&!t.ml80).length,untimed=ad93(k).length,fxn=fx93(k).nt.length;
       main=`${sel93(k)}${tt93(k)}${line}${und}<p class="small" style="margin:6px 0">${esc(lab)} 할 일 ${n}개${fxn?` · ⚠ 시각 안 정한 정해진 일정 ${fxn}개`:''}${untimed?` · 종일 칸 ${untimed}개`:''}</p>
         <div class="row" style="gap:8px;flex-wrap:wrap">${done93()[k]?'<span class="small">✓ 내일 짜기 끝냈어요</span>':'<button type="button" class="btn" data-w93fin="1">내일 짜기 끝</button>'}<button type="button" class="btn ghost" data-sheet="close">닫기</button></div>`}
-    else main=body93(cur,k)+sel93(k)+tt93(k)+line+und;
+    else main=`<div class="w93tray" data-w93tray="1">${body93(cur,k)}</div>`+sel93(k)+tt93(k)+line+und;
     const nav=`<div class="row w93nav" style="gap:8px;margin-top:8px">${W.i>0?'<button type="button" class="btn ghost sm" data-w93nav="-1">‹ 이전</button>':''}${cur==='end'?'':`<button type="button" class="btn sm" data-w93nav="1">${W.i===steps.length-2?'마무리 ›':'다음 ›'}</button>`}</div>`;
     const ord=ord93();
     sheetCtx={w93:k};
@@ -14205,6 +14249,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
       ${main}${cur==='end'?'':nav}
       <details class="m80s"><summary>⚙ 설정</summary>
         <div class="row small" style="gap:6px;flex-wrap:wrap">밤에 알려 줄 시각 <input type="time" data-w93at="1" value="${esc(at93())}"></div>
+        <label class="row small" style="gap:6px;margin-top:6px"><input type="checkbox" data-w93col="1"${colOn93()?' checked':''}> 목록 색·이모지 입히기 <small class="muted">(캘린더 시간표와 같게)</small></label>
         <div class="small" style="margin-top:6px">단계 순서 <small class="muted">(위가 먼저)</small></div>
         ${ord.map((id,i)=>`<div class="row small" style="gap:6px"><span style="flex:1">${ALL.find(a=>a[0]===id)[1]}</span><button type="button" class="ib" data-w93o="${id}:-1"${i===0?' disabled':''} aria-label="위로">▲</button><button type="button" class="ib" data-w93o="${id}:1"${i===ord.length-1?' disabled':''} aria-label="아래로">▼</button></div>`).join('')}
         <div style="margin-top:6px"><button type="button" class="linkbtn" data-w93old="1">예전 시간표 짜기 화면 열기</button></div></details>`);
@@ -14289,6 +14334,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
     if(T.matches('[data-w93seltm]')){e.stopPropagation();const t=TASKS[W.sel];if(t&&hm80(T.value)!=null)put93(t,hm80(T.value));return}
     if(T.matches('[data-w93d]')){e.stopPropagation();const t=TASKS[T.dataset.w93d],v=+T.value;if(t&&v){t.dur=v;saveTask(t)}redo93();return}
     if(T.matches('[data-w93at]')){e.stopPropagation();if(hm80(T.value)!=null){C.tm93at=T.value;save('config');line93()}return}
+    if(T.matches('[data-w93col]')){e.stopPropagation();C.tm127col=T.checked?1:0;save('config');W.y=($('sheetC')||{}).scrollTop;wiz93();const d=document.querySelector('#sheetC details.m80s');if(d)d.open=true;return}
   },true);
   addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.matches&&e.target.matches('.w93n')){e.preventDefault();go93(e.target.dataset.w93t)}
     else if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.matches&&e.target.matches('.b93')&&W&&sheetCtx&&sheetCtx.w93){e.preventDefault();e.target.click()}});
@@ -14299,19 +14345,29 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   function ghost93(g,m,d,txt){let h=g.querySelector('.gh93');if(!h){h=document.createElement('div');h.className='gh93';g.appendChild(h)}
     h.style.top=(m-(+g.dataset.s0))*PX93+'px';h.style.height=Math.max(20,d*PX93)-2+'px';h.textContent=fmt80(m)+' '+txt}
   const noGhost93=()=>document.querySelectorAll('.gh93').forEach(x=>x.remove());
-  addEventListener('pointerdown',e=>{if(!inW()||e.pointerType!=='mouse'||e.button!==0)return;const b=e.target.closest&&e.target.closest('.b93.mv');if(!b)return;
-    G={id:b.dataset.w93b,x:e.clientX,y:e.clientY,on:false}},true);
-  addEventListener('pointermove',e=>{if(!inW()||e.pointerType!=='mouse')return;
+  /* v12.9: 끌기는 앱 공통 엔진(DND — 마우스는 6px 움직이면, 터치·펜은 0.3초 꾹 누르면 시작)으로 — 칩(할 일·관리 …)도 놓인 블록도 같은 길.
+     시간표 위 = 놓기(`DND.drop={type:'w93',min}`), 놓인 블록을 위 칸(보관함)으로 = 시간 빼기(`w93off`). 시간표 밖에 놓으면 아무 일도 안 일어남(날짜가 바뀌지 않게). */
+  addEventListener('pointermove',e=>{if(!inW()||e.pointerType!=='mouse'||DND.on)return;   // 마우스: 고른 일이 놓일 자리 올려 보기
     const g=document.querySelector('#sheetC [data-w93g]');if(!g)return;
-    if(G){const t=TASKS[G.id];if(!t){G=null;return}
-      if(!G.on&&Math.hypot(e.clientX-G.x,e.clientY-G.y)>6)G.on=true;
-      if(G.on){e.preventDefault();const r=g.getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<=r.right)ghost93(g,min93(g,e.clientY),+t.dur||30,t.title);else noGhost93()}return}
     if(W.sel&&TASKS[W.sel]&&e.target.closest&&e.target.closest('[data-w93g]')&&!e.target.closest('.b93')){const t=TASKS[W.sel];ghost93(g,min93(g,e.clientY),+t.dur||30,t.title)}
     else noGhost93()},true);
-  addEventListener('pointerup',e=>{if(!G)return;const d=G;G=null;noGhost93();if(!d.on||!inW())return;
-    W.drg=Date.now();const g=document.querySelector('#sheetC [data-w93g]'),t=TASKS[d.id];if(!g||!t)return;
-    const r=g.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)return;
-    W.sel=d.id;put93(t,min93(g,e.clientY))},true);
+  const dragK93=()=>inW()&&DND.on&&(DND.kind==='task'||DND.kind==='block')&&!!TASKS[DND.id];
+  dndMove=(function(prev){return function(x,y){prev.apply(this,arguments);
+    try{if(!dragK93())return;const t=TASKS[DND.id],g=document.querySelector('#sheetC [data-w93g]');if(!g)return;
+      const sc=g.closest('.tt93s')||g,r=sc.getBoundingClientRect(),tr=document.querySelector('#sheetC .w93tray'),trr=tr&&tr.getBoundingClientRect(),fromB=!!(DND.el&&DND.el.classList&&DND.el.classList.contains('b93'));
+      noGhost93();if(tr)tr.classList.remove('drop-hi');DND.drop=null;
+      if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom){const m=min93(g,y-(fromB?(DND.grabOff||0):0));DND.drop={type:'w93',min:m};ghost93(g,m,+t.dur||30,t.title)}
+      else if(fromB&&trr&&x>=trr.left&&x<=trr.right&&y>=trr.top&&y<=trr.bottom){DND.drop={type:'w93off'};tr.classList.add('drop-hi')}
+    }catch(e){console.error(e)}}})(dndMove);
+  dndEnd=(function(prev){return function(x,y){
+    if(dragK93()){const d=DND.drop,id=DND.id,t=TASKS[id];dndAbort();noGhost93();const tr=document.querySelector('#sheetC .w93tray');if(tr)tr.classList.remove('drop-hi');W.drg=Date.now();
+      if(!d||!t)return;W.sel=id;
+      if(d.type==='w93off'){put93(t,null);return}
+      if(d.type==='w93')put93(t,d.min);return}
+    return prev.apply(this,arguments)}})(dndEnd);
+  dndAutoScroll=(function(prev){return function(){prev.apply(this,arguments);   // 끄는 동안 시간표 위·아래 끝에 대면 저절로 움직임
+    try{if(!dragK93())return;const sc=document.querySelector('#sheetC .tt93s');if(!sc)return;const r=sc.getBoundingClientRect(),y=DND.lastY,x=DND.lastX;
+      if(x>=r.left&&x<=r.right){if(y>r.top&&y<r.top+40)sc.scrollTop-=12;else if(y<r.bottom&&y>r.bottom-40)sc.scrollTop+=12}}catch(e){}}})(dndAutoScroll);
 
   /* ---- 홈 오늘 칸 한 줄 (밤 시각 이후 · 내일 짜기를 안 끝냈을 때만 · 오늘 밤은 × 로 닫기) ---- */
   function line93(){
@@ -17613,6 +17669,55 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
 
 /* 끝내면(또는 건너뛰면) 놓은 자리 표시는 지움 — due가 다음 차례로 넘어가 이미 효력이 없음 */
 completeTask=(function(prev){return function(t){const had=!!(t&&t.cs126);const r=prev.apply(this,arguments);try{if(had&&t.cs126&&t.cs126.d!==t.due){delete t.cs126;saveTask(t)}}catch(e){}return r}})(completeTask);
+
+/* v12.9 (w127): 폰에서도 보이는 진입로 — ① 캘린더 바 🧽 단추 → '🧽 관리 · 📌 주 N회' 시트(관리 골라 놓기·빼기, 주 N회 날 정하기·빼기를 글자·✕로 보이게)
+   ② 주 N회 카드(🔁 이번 주 창)에 '📌 정한 날 ✕' 줄. 폰 독(body.tt84)은 서랍(#calTray)을 숨기므로 이 시트가 그 대신이에요. */
+{
+const wsK=()=>{try{return wsNow120()}catch(e){return weekStart(midKey68())}};
+const wkAll=()=>openTasks().filter(t=>wx91(t));
+function unplan127(id,k,after){const t=TASKS[id];if(!t||!t.sl91||t.sl91[k]===undefined)return;
+  const had=t.sl91[k],hl=t.sd119&&t.sd119[k];delete t.sl91[k];if(t.sd119)delete t.sd119[k];if(!Object.keys(t.sl91).length)delete t.sl91;saveTask(t);
+  toastAct(`${t.title} · ${fmtD(k)} 계획을 뺐어요`,'되돌리기',()=>{t.sl91=t.sl91||{};t.sl91[k]=had;if(hl){t.sd119=t.sd119||{};t.sd119[k]=hl}saveTask(t);render();if(after)after()});if(after)after()}
+function plan127(id,k){const t=TASKS[id];if(!t||!wx91(t))return;t.sl91=t.sl91||{};if(t.sl91[k]===undefined){t.sl91[k]='';saveTask(t)}}
+function deck127(){
+  const td=midKey68(),ws=wsK(),days=[...Array(7)].map((_,i)=>addDays(ws,i));
+  const care=careAll76().sort((a,b)=>String(a.due||'9').localeCompare(String(b.due||'9'))||(a.order||0)-(b.order||0)),wk=wkAll();
+  const crow=t=>{const on=plOn126(t);return `<div class="d127row"><div class="d127t"><b>🧽 ${esc(t.title)}</b><small class="muted">${on?esc(fmtD(t.cs126.d)+(t.cs126.m?' '+t.cs126.m:'')+' 에 놓았어요'):esc(when76(t,td)||'날짜 없음')}</small></div>
+      <div class="d127b"><button type="button" class="btn sm" data-d127p="${esc(t.id)}">📅 ${on?'다시 놓기':'놓기'}</button>${on?`<button type="button" class="btn sm ghost" data-d127u="${esc(t.id)}" aria-label="${esc(t.title)} 놓은 자리 빼기">✕ 빼기</button>`:''}</div></div>`};
+  const wrow=t=>{const N=(+(t.rep&&t.rep.n)||0);return `<div class="d127row col"><div class="d127t"><b>🔁 ${esc(t.title)}</b><small class="muted">이번 주 ${wkCnt91(t,ws)}${N?'/'+N:''}회 · 날을 눌러 정하고, 다시 누르면 빼요</small></div>
+      <div class="d127d">${days.map(k=>{const pl=t.sl91&&t.sl91[k]!==undefined,past=k<td&&!pl;
+        return `<button type="button" class="chipbtn d127day" data-d127w="${esc(t.id)}|${esc(k)}" aria-pressed="${pl}"${past?' disabled':''} aria-label="${esc(fmtD(k)+'('+wdOf(k)+') '+(pl?'계획함 — 누르면 뺌':'계획 안 함 — 누르면 넣음'))}"><span>${wdOf(k)}</span><small>${esc(k.slice(8))}</small><b>${pl?'📌✕':'＋'}</b></button>`}).join('')}</div></div>`};
+  sheetCtx={deck127:1};
+  openSheet(`<div class="sh"><h3>🧽 관리 · 📌 주 N회 놓기</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
+    <p class="small muted" style="margin:0 0 8px">관리는 <b>📅 놓기</b>로 날짜·시각을, 주 N회는 <b>요일 단추</b>로 날을 정해요. <b>✕</b>를 누르면 빼요. 시각은 시간표에서 꾹 눌러 끌어 놓아도 돼요.</p>
+    <h4 class="d127h">🧽 관리 <small class="muted">${care.length}개</small></h4>${care.length?care.slice(0,60).map(crow).join(''):'<div class="empty tiny">아직 관리로 옮긴 할 일이 없어요.</div>'}
+    <h4 class="d127h">🔁 주 N회 <small class="muted">${esc(fmtD(ws))}(월) ~ ${esc(fmtD(addDays(ws,6)))}(일)</small></h4>${wk.length?wk.map(wrow).join(''):'<div class="empty tiny">주 N회 할 일이 없어요.</div>'}`)}
+window.deck127=deck127;
+function keepY(f){const sc=$('sheetC'),y=sc?sc.scrollTop:0;f();const s2=$('sheetC');if(s2)s2.scrollTop=y}
+document.addEventListener('click',e=>{const T=e.target;if(!T.closest)return;let b;
+  if((b=T.closest('[data-deck127]'))){e.preventDefault();e.stopPropagation();deck127();return}
+  if((b=T.closest('[data-d127p]'))){e.preventDefault();e.stopPropagation();plSheet126(b.dataset.d127p);return}
+  if((b=T.closest('[data-d127u]'))){e.preventDefault();e.stopPropagation();const t=TASKS[b.dataset.d127u];if(!t)return;const sn=snap126(t);unplace126(t);render();
+    toastAct(`${t.title} · 놓은 자리를 뺐어요`,'되돌리기',()=>{try{restore126(t,sn)}catch(_){}render();deck127()});keepY(deck127);return}
+  if((b=T.closest('[data-d127w]'))){e.preventDefault();e.stopPropagation();const [id,k]=b.dataset.d127w.split('|'),t=TASKS[id];if(!t)return;
+    if(t.sl91&&t.sl91[k]!==undefined)unplan127(id,k,()=>{render();keepY(deck127)});else{plan127(id,k);render();keepY(deck127)}return}
+  if((b=T.closest('[data-pl127]'))){e.preventDefault();e.stopPropagation();const [id,k]=b.dataset.pl127.split('|');
+    unplan127(id,k,()=>{const row=b.closest('.pl127');b.remove();if(row&&!row.querySelector('[data-pl127]'))row.remove();render()});return}
+},true);
+/* 캘린더 바에 보이는 🧽 단추 (폰 독 안의 바에도) */
+function bar127(){document.querySelectorAll('.calbar2').forEach(bar=>{if(bar.querySelector('[data-deck127]'))return;const a=bar.querySelector('#calPlanBtn')||bar.querySelector('#calMealBtn');
+  const b=document.createElement('button');b.type='button';b.className='ib deck127b';b.setAttribute('data-deck127','1');b.setAttribute('aria-label','관리·주 N회 놓기');b.title='관리 고르기 · 주 N회 날 정하기·빼기';b.innerHTML='🧽<small>관리</small>';
+  if(a)a.before(b);else bar.appendChild(b)})}
+render=(function(prev){return function(){const r=prev.apply(this,arguments);try{bar127()}catch(e){console.error(e)}return r}})(render);
+try{bar127()}catch(e){}
+/* 🔁 이번 주 창: 정한 날을 글자와 ✕로 */
+card121=(function(prev){return function(g,ws,td){const h=prev.apply(this,arguments);try{const t=g.t,pl=Object.keys(t.sl91||{}).filter(k=>weekStart(k)===ws&&k>=td&&!dayCnt99(t,k).n).sort();
+  const row=pl.length?`<div class="pl127"><span class="tiny muted">📌 정한 날 — ✕로 빼요</span>${pl.map(k=>`<button type="button" class="chipbtn" data-pl127="${esc(t.id)}|${esc(k)}" aria-label="${esc(fmtD(k)+'('+wdOf(k)+') 계획 빼기')}">📌 ${esc(wdOf(k))} ${esc(fmtD(k))}${t.sl91[k]?' '+esc(t.sl91[k]):''} ✕</button>`).join('')}</div>`:'';
+  return row?h.replace('<div class="st121">',row+'<div class="st121">'):h}catch(e){console.error(e);return h}}})(card121);
+F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
+  ['🧽 관리·주 N회 놓기 시트','캘린더·시간표 위쪽 🧽 관리 단추','관리 목록(📅 놓기·✕ 빼기)과 주 N회 요일 단추(눌러 정하고 다시 누르면 빼요)가 한 시트에 있어요. 폰 시간표(독)에서도 같은 단추로 열려요.'],
+  ['⚲ 고른 것 보이기 합쳐서 보기','캘린더 위 깔때기 → 보이기','목록·영역·태그·종류를 여러 줄 고르면 하나라도 맞는 것이 보여요(관리 포함). 〈겹치는 것만〉을 켜면 예전처럼 둘 다 맞는 것만 보여요.']])}})(F67);
+}
 
 route();boot();
 </script>

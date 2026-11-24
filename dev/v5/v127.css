@@ -8,3 +8,26 @@ html,body{max-width:100%;overflow-x:clip}
 #sheetC,#sheet,.sheet,#calPane,#tt84slot,.tt93s{max-width:100vw;box-sizing:border-box}
 #sheetC img,#sheetC table,#sheetC pre{max-width:100%}
 #sheetC input,#sheetC select,#sheetC textarea{max-width:100%;min-width:0}
+/* 🧽 관리·주 N회 시트, 🧽 단추, 📌 정한 날 줄 */
+.deck127b{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05;min-width:44px;min-height:40px;white-space:nowrap;flex:none}
+.deck127b small{font-size:10px;margin-top:1px}
+.d127h{margin:12px 0 4px;font-size:14px}
+.d127row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.d127row.col{flex-direction:column;align-items:stretch}
+.d127t{display:flex;flex-direction:column;min-width:0;flex:1}.d127t b{overflow-wrap:anywhere}
+.d127b{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+.d127d{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.chipbtn.d127day{display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 0;min-height:52px;line-height:1.15}
+.chipbtn.d127day small{font-size:10px}.chipbtn.d127day b{font-size:12px}
+.chipbtn.d127day[aria-pressed="true"]{border-color:var(--ink);border-width:2px;font-weight:700}
+.chipbtn.d127day[disabled]{opacity:.4}
+.pl127{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.pl127 .chipbtn{min-height:36px}
+/* 폰 캘린더 바: 단추가 많아 제목(11월…)이 거의 안 보이던 걸 — 좁으면 두 줄로 접어 제목을 읽히게 */
+@media (max-width:480px){body:not(.tt84) #calPane .calbar2{flex-wrap:wrap;row-gap:4px}
+  body:not(.tt84) #calPane .calbar2 #calTitle{flex:1 0 5.5em;min-width:5.5em;white-space:nowrap}}
+/* 폰 주소창이 오르내려도 화면에 딱 맞게: vh 대신 dvh(지원하는 브라우저에서만) */
+@supports (height:100dvh){.tt93s{height:min(46dvh,380px)}
+  @media (min-width:700px){.tt93s{height:min(52dvh,460px)}}
+  body.tt84 #tt84slot{height:var(--tt84h,42dvh)}body.tt84 [data-view="tasks"]{padding-bottom:calc(var(--tt84h,42dvh) + 8px)}}
+#sheetC{overscroll-behavior:contain}
