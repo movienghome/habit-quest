@@ -18,6 +18,7 @@
 .d128r.late .d128t small{color:var(--ink)}
 .d128r .d128b .chipbtn.on{border-style:solid;font-weight:700}
 .d128f select{width:auto;max-width:12.5em}
+@media(max-width:430px){.d128f select{max-width:9.5em;font-size:13px}.d128f .chipbtn{padding:2px 8px}}
 .d128bar.off{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .d128n{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .tgh66.g130{margin-top:8px}
@@ -25,7 +26,7 @@ details.wk130,details.set126{margin-top:10px;border-top:1px solid var(--line);pa
 details.wk130>summary,details.set126>summary{cursor:pointer;font-weight:700;font-size:13px;padding:4px 0}
 @media(max-width:430px){.d128b .chipbtn{padding:2px 7px}.d128r{gap:6px}}
 /* 내일 짜기 관리 단계 정렬 */
-.p80g .so93{margin-left:8px;font-size:12px;padding:1px 4px;max-width:11em;font-weight:400}
+.p80g .so93{width:auto;margin-left:8px;font-size:12px;padding:1px 4px;max-width:11em;font-weight:400}
 /* 날짜 고르기 */
 #m61 .dm130{display:flex;gap:6px;align-items:center;padding:4px 8px}
 #m61 .dm130 input{min-width:0;flex:1}

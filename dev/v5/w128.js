@@ -121,7 +121,7 @@ try{if(typeof renderCal==='function')renderCal=(function(prev){return function()
 
 const C128=()=>{let c=C.care128;if(!c||typeof c!=='object'||Array.isArray(c))c=C.care128={};if(!c.s)c.s='due';if(!c.f)c.f='all';return c};
 const SORTS=[['due','차례 빠른 순'],['late','오래 밀린 순'],['short','짧은 것 먼저'],['long','긴 것 먼저'],['name','이름순'],['list','목록별']];
-const FILT=[['all','전체'],['due','차례인 것'],['un','안 놓은 것'],['pl','놓은 것']];
+const FILT=[['all','전체'],['due','차례'],['un','안 놓음'],['pl','놓음']];   // v13.2: 폰에서 한 줄에 들어가게 짧게
 const D={sel:new Set(),q:'',bd:null,k:null,multi:false,set:false};
 /* v13.2: 관리 창 하나로 — 이 창이 🧽 관리 창(careSheet76)이자 놓기 시트. k = 어느 날 기준 '차례'인지(기본 오늘, 내일 짜기에서 열면 그 날) */
 const kK=()=>{const td=tdK();return D.k&&D.k>td?D.k:td};

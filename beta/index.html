@@ -2761,6 +2761,7 @@ body.dragging.dg129 .sheet>.sc{opacity:.22;pointer-events:none;transition:opacit
 .d128r.late .d128t small{color:var(--ink)}
 .d128r .d128b .chipbtn.on{border-style:solid;font-weight:700}
 .d128f select{width:auto;max-width:12.5em}
+@media(max-width:430px){.d128f select{max-width:9.5em;font-size:13px}.d128f .chipbtn{padding:2px 8px}}
 .d128bar.off{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .d128n{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .tgh66.g130{margin-top:8px}
@@ -2768,7 +2769,7 @@ details.wk130,details.set126{margin-top:10px;border-top:1px solid var(--line);pa
 details.wk130>summary,details.set126>summary{cursor:pointer;font-weight:700;font-size:13px;padding:4px 0}
 @media(max-width:430px){.d128b .chipbtn{padding:2px 7px}.d128r{gap:6px}}
 /* 내일 짜기 관리 단계 정렬 */
-.p80g .so93{margin-left:8px;font-size:12px;padding:1px 4px;max-width:11em;font-weight:400}
+.p80g .so93{width:auto;margin-left:8px;font-size:12px;padding:1px 4px;max-width:11em;font-weight:400}
 /* 날짜 고르기 */
 #m61 .dm130{display:flex;gap:6px;align-items:center;padding:4px 8px}
 #m61 .dm130 input{min-width:0;flex:1}
@@ -17941,7 +17942,7 @@ try{if(typeof renderCal==='function')renderCal=(function(prev){return function()
 
 const C128=()=>{let c=C.care128;if(!c||typeof c!=='object'||Array.isArray(c))c=C.care128={};if(!c.s)c.s='due';if(!c.f)c.f='all';return c};
 const SORTS=[['due','차례 빠른 순'],['late','오래 밀린 순'],['short','짧은 것 먼저'],['long','긴 것 먼저'],['name','이름순'],['list','목록별']];
-const FILT=[['all','전체'],['due','차례인 것'],['un','안 놓은 것'],['pl','놓은 것']];
+const FILT=[['all','전체'],['due','차례'],['un','안 놓음'],['pl','놓음']];   // v13.2: 폰에서 한 줄에 들어가게 짧게
 const D={sel:new Set(),q:'',bd:null,k:null,multi:false,set:false};
 /* v13.2: 관리 창 하나로 — 이 창이 🧽 관리 창(careSheet76)이자 놓기 시트. k = 어느 날 기준 '차례'인지(기본 오늘, 내일 짜기에서 열면 그 날) */
 const kK=()=>{const td=tdK();return D.k&&D.k>td?D.k:td};
