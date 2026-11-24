@@ -1,0 +1,18 @@
+/* v13.1 (w129): ○/✓ 체크 · 관리 창 띄우기·끌기 */
+.ck128.on129{background:var(--ink);color:var(--panel)}
+.tchk.on129{background:var(--muted);border-color:var(--muted);color:var(--panel)}
+.c76r.dn129 .c76t b{text-decoration:line-through;color:var(--muted)}
+.dn129w .c76g{margin-top:6px}
+.c76r.dg129,.d128r.dg129{touch-action:pan-y}
+.d128r .tchk{margin-left:-2px}
+#sheetC>.sh.mv129{cursor:grab;touch-action:none;user-select:none}
+.fl129b{flex:none;font-size:12px;white-space:nowrap;padding:0 8px;min-height:30px;margin-left:auto;margin-right:6px}
+#sheetC>.sh.mv129{display:flex;align-items:center;gap:6px}
+#sheetC>.sh.mv129 h3{flex:1;min-width:0}
+.hint129{margin:-6px 0 0}
+body.fl129 .sheet{background:transparent;pointer-events:none}
+body.fl129 .sheet>.sc{pointer-events:auto;position:fixed;margin:0;max-height:none;border-radius:14px;border:2px solid var(--ink);box-shadow:0 10px 28px rgba(0,0,0,.28);resize:both;overflow:auto;animation:none}
+body.fl129 #sheetC>.grab{cursor:grab;touch-action:none}
+body.fl129{overflow:auto}
+body.dragging.dg129 .sheet{pointer-events:none;background:transparent}
+body.dragging.dg129 .sheet>.sc{opacity:.22;pointer-events:none;transition:opacity .12s}

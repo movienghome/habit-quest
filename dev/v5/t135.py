@@ -20,9 +20,9 @@ with sync_playwright() as pw:
     n=J(pg,"document.querySelectorAll('.blk .ck128').length");ok(n==1,f'[{W}] ① 놓은 관리 블록에 ✓ 칸이 하나',n)
     # 일반 할 일 블록엔 없음
     J(pg,"(()=>{const t=addTaskFrom('일반 일');t.due=midKey68();t.time='10:00';t.dur=30;saveTask(t);render()})()");pg.wait_for_timeout(500)
-    ok(J(pg,"document.querySelectorAll('.blk .ck128').length")==1,f'[{W}] ① 일반 블록엔 ✓가 안 붙음')
-    J(pg,"document.querySelector('.blk .ck128').scrollIntoView({block:'center'})");pg.wait_for_timeout(200)
-    J(pg,"document.querySelector('.blk .ck128').click()");pg.wait_for_timeout(900)
+    ok(J(pg,"document.querySelectorAll('.blk .ck128').length")==2,f'[{W}] ① (v13.1부터) 일반 블록에도 ○')
+    J(pg,"document.querySelector(`.blk[data-ctask='${window.__w}'] .ck128`).scrollIntoView({block:'center'})");pg.wait_for_timeout(200)
+    J(pg,"document.querySelector(`.blk[data-ctask='${window.__w}'] .ck128`).click()");pg.wait_for_timeout(900)
     ok(J(pg,"!document.querySelector('#sheetC [data-tsact]')"),f'[{W}] ① ✓를 눌러도 상세는 안 열림')
     r=J(pg,"JSON.stringify({due:TASKS[window.__w].due,last:TASKS[window.__w].last,cs:!!TASKS[window.__w].cs126,td:midKey68()})")
     import json;r=json.loads(r)

@@ -62,6 +62,7 @@ function daySheet120(id,k){const t=TASKS[id];if(!t||!wx91(t)||!t.sl91||t.sl91[k]
     ${others.length?`<div class="tiny muted" style="margin-top:10px">같은 주 다른 날: ${others.map(d=>`<button type="button" class="chipbtn" data-day120="${esc(id)}|${esc(d)}">${esc(fmtD(d))}(${wdOf(d)}) ${t.sl91[d]?esc(t.sl91[d]):'종일'}</button>`).join(' ')}</div>`:''}
     <p class="help" style="margin:10px 0 0">🤝 하그둘로 바꾸면 이 날은 시나리오 쓰기 대신 <b>'하그둘'</b>이라는 정해진 일정이 돼요(같은 시각·길이). 끝내면 시나리오 쓰기 주 횟수에 1번으로 세어져요.</p>`)}
 addEventListener('click',e=>{const el=e.target.closest&&e.target.closest('.blk[data-ctask]:not(.done),.cchip[data-ctask]:not(.done)');if(!el||el.classList.contains('bar83'))return;
+  if(e.target.closest('[data-tdone],[data-un129]'))return;   // v13.1: 블록 안 ○·✓ 단추는 체크 처리로(이 날 창을 열지 않음 — 놓은 빨래 ○가 안 먹던 원인)
   if(typeof lpFired!=='undefined'&&lpFired)return;if(typeof DND!=='undefined'&&DND.on)return;
   const t=TASKS[el.dataset.ctask];if(!t||!wx91(t))return;const k=srcDate91(el);if(!k||!t.sl91||t.sl91[k]===undefined)return;
   e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();daySheet120(t.id,k)},true);

@@ -43,7 +43,8 @@ function doneMenu105(el,x,y){const tid=el.dataset.ctask,k=d105(el),t=TASKS[tid];
     {l:'✎ 할 일 열기',f:()=>openTaskSheet(tid)},
     {l:'↩ 체크 해제 (이 기록 지우기)',bad:1,f:()=>{removeEntry(k,e.id);toast(`'${t.title}' 체크를 풀었어요`)}},
     {l:'🕒 캘린더에 보이는 시각 바꾸기…',f:()=>ctSheet105(k,tid)}]);return true}
-addEventListener('click',e=>{const el=e.target.closest&&e.target.closest('.blk.done.d77[data-ctask],.cchip.done.d84[data-ctask]');if(!el)return;
+addEventListener('click',e=>{const el=e.target.closest&&e.target.closest('.blk.done.d77[data-ctask],.cchip.done.d84[data-ctask]');if(!el)return;if(e.target.closest('[data-un129]'))return;   // v13.1: 끝낸 블록의 ✓ 단추 = 바로 체크 풀기(w129)
+
   if(typeof lpFired!=='undefined'&&lpFired)return;if(typeof DND!=='undefined'&&DND.on)return;
   if(doneMenu105(el,e.clientX,e.clientY)){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()}},true);
 addEventListener('contextmenu',e=>{const el=e.target.closest&&e.target.closest('.blk.done.d77[data-ctask],.cchip.done.d84[data-ctask]');if(!el)return;
