@@ -1,0 +1,8 @@
+/* v13.6 (w134): 루틴 단계 끌어서 순서 바꾸기 */
+.dg134{border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;min-width:26px;height:30px;padding:0 2px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;flex:none}
+.dg134:focus-visible{outline:2px solid var(--ink);outline-offset:1px;border-radius:6px}
+.st62s.dgon134 .st62.dgs134{opacity:.45}
+.st62s.dgon134 .st62.dgb134{box-shadow:inset 0 3px 0 0 var(--ink)}
+.st62s.dgon134 .st62.dga134{box-shadow:inset 0 -3px 0 0 var(--ink)}
+/* ⠿ 손잡이가 있는 카드에선 ↑↓를 숨김(공간) — DOM엔 남아 있음 */
+.st62s.dgon134 .st62 [data-r62op^="up:"],.st62s.dgon134 .st62 [data-r62op^="dn:"],.st62s.dgon134 .st62 [data-pm117$="|up"],.st62s.dgon134 .st62 [data-pm117$="|dn"]{display:none!important}
