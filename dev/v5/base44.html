@@ -1783,7 +1783,7 @@ $('searchIn').addEventListener('input',drawSearch);
 $('searchIn').addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();sSel=clamp(sSel+(e.key==='ArrowDown'?1:-1),0,sRes.length-1);[...$('searchRes').children].forEach((li,i)=>li.classList.toggle('on',i===sSel))}if(e.key==='Enter'&&sRes[sSel]){const r=sRes[sSel];closeSearch();lastPt={x:innerWidth/2,y:innerHeight/3};r.go()}if(e.key==='Escape')closeSearch()});
 $('searchClose').onclick=closeSearch;
 $('searchBox').addEventListener('click',e=>{if(e.target.id==='searchBox')closeSearch();const li=e.target.closest('[data-sres]');if(li){const r=sRes[+li.dataset.sres];closeSearch();lastPt={x:innerWidth/2,y:innerHeight/3};r.go()}});
-addEventListener('keydown',e=>{const el=e.target;if((e.key==='Enter'||e.key===' ')&&el&&el.matches&&el.matches('[data-info][tabindex]')){e.preventDefault();const r=el.getBoundingClientRect();lastPt={x:r.left+r.width/2,y:r.bottom};openInfo(el.dataset.info);return}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openSearch()}if(e.key==='Escape'){closeInfo();closeDrawer()}});
+addEventListener('keydown',e=>{const el=e.target;if((e.key==='Enter'||e.key===' ')&&el&&el.matches&&el.matches('[data-info][tabindex]')){e.preventDefault();const r=el.getBoundingClientRect();lastPt={x:r.left+r.width/2,y:r.bottom};openInfo(el.dataset.info);return}if((e.ctrlKey||e.metaKey)&&(e.key||'').toLowerCase()==='k'){e.preventDefault();openSearch()}if(e.key==='Escape'){closeInfo();closeDrawer()}});
 
 /* ================= 메뉴 서랍·뒤로가기 ================= */
 function openDrawer(){$('side').classList.add('open');$('scrim').hidden=false;$('scrim').dataset.for='side'}

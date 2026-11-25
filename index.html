@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.10</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.11</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -4485,7 +4485,7 @@ $('searchIn').addEventListener('input',drawSearch);
 $('searchIn').addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();sSel=clamp(sSel+(e.key==='ArrowDown'?1:-1),0,sRes.length-1);[...$('searchRes').children].forEach((li,i)=>li.classList.toggle('on',i===sSel))}if(e.key==='Enter'&&sRes[sSel]){const r=sRes[sSel];closeSearch();lastPt={x:innerWidth/2,y:innerHeight/3};r.go()}if(e.key==='Escape')closeSearch()});
 $('searchClose').onclick=closeSearch;
 $('searchBox').addEventListener('click',e=>{if(e.target.id==='searchBox')closeSearch();const li=e.target.closest('[data-sres]');if(li){const r=sRes[+li.dataset.sres];closeSearch();lastPt={x:innerWidth/2,y:innerHeight/3};r.go()}});
-addEventListener('keydown',e=>{const el=e.target;if((e.key==='Enter'||e.key===' ')&&el&&el.matches&&el.matches('[data-info][tabindex]')){e.preventDefault();const r=el.getBoundingClientRect();lastPt={x:r.left+r.width/2,y:r.bottom};openInfo(el.dataset.info);return}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openSearch()}if(e.key==='Escape'){closeInfo();closeDrawer()}});
+addEventListener('keydown',e=>{const el=e.target;if((e.key==='Enter'||e.key===' ')&&el&&el.matches&&el.matches('[data-info][tabindex]')){e.preventDefault();const r=el.getBoundingClientRect();lastPt={x:r.left+r.width/2,y:r.bottom};openInfo(el.dataset.info);return}if((e.ctrlKey||e.metaKey)&&(e.key||'').toLowerCase()==='k'){e.preventDefault();openSearch()}if(e.key==='Escape'){closeInfo();closeDrawer()}});
 
 /* ================= 메뉴 서랍·뒤로가기 ================= */
 function openDrawer(){$('side').classList.add('open');$('scrim').hidden=false;$('scrim').dataset.for='side'}
@@ -6186,7 +6186,7 @@ let hoverTask=null;
 document.addEventListener('mouseover',e=>{const r=e.target.closest('[data-task],[data-ctask]');hoverTask=r?(r.dataset.task||r.dataset.ctask):null});
 addEventListener('keydown',e=>{
   const tg=e.target,typing=tg&&tg.matches&&tg.matches('input,textarea,select,[contenteditable]');
-  const k=e.key.toLowerCase();
+  const k=(e.key||"").toLowerCase();
   // 내일로 미루기: Ctrl+Shift+R(브라우저가 막으면 Alt+R)
   if(((e.ctrlKey||e.metaKey)&&e.shiftKey&&k==='r')||(e.altKey&&!e.ctrlKey&&k==='r')){
     const id=(sheetCtx&&sheetCtx.task)||hoverTask;const t=id&&TASKS[id];if(!t)return;e.preventDefault();postpone(t,addDays(dateKey(),1));if(sheetCtx&&sheetCtx.task===id)drawTaskSheet();return}
@@ -11327,7 +11327,7 @@ addEventListener('click',e=>{const b=e.target.closest('[data-tq71x],[data-h71x]'
   if(b.dataset.tq71x){ui.tq71='';const i=$('tq71');if(i)i.value='';renderTasks();return}
   C.ui.collapsed['h71'+b.dataset.h71x]=1;save('config');renderTasks()},true);
 // 할 일 화면에서 Ctrl+F = 찾기
-addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='f'&&curView()==='tasks'&&$('tq71')){e.preventDefault();$('tq71').focus()}});
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&(e.key||"").toLowerCase()==='f'&&curView()==='tasks'&&$('tq71')){e.preventDefault();$('tq71').focus()}});
 
 /* ---- 4) 여러 개 고르기: 날짜 더 (모레·주말·다음 주·직접) · 🎯 이름 ---- */
 drawMsel=(function(prev){return function(){const r=prev.apply(this,arguments);try{const bar=$('mselBar');if(!bar||bar.querySelector('#mb71d'))return r;
@@ -13466,7 +13466,7 @@ addEventListener('wheel',e=>{const m=(C.ui.cal||{}).mode;if((m!=='1day'&&m!=='3d
    N 키(캘린더 화면)도 팝업. 입력칸 #calAdd는 DOM에 남김(저장/복원·옛 코드 호환). */
 addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-add83]');if(!b)return;
   e.preventDefault();e.stopPropagation();lastPt={x:e.clientX,y:e.clientY};calAddDay(b.dataset.add83||ui.calSel||dateKey())},true);
-addEventListener('keydown',e=>{if(e.key.toLowerCase()!=='n'||e.ctrlKey||e.metaKey||e.altKey||e.shiftKey||curView()!=='cal')return;
+addEventListener('keydown',e=>{if((e.key||"").toLowerCase()!=='n'||e.ctrlKey||e.metaKey||e.altKey||e.shiftKey||curView()!=='cal')return;
   const t=e.target,typing=t&&(/^(input|textarea|select)$/i.test(t.tagName)||t.isContentEditable);if(typing)return;
   if(document.getElementById('sheet')&&!document.getElementById('sheet').hidden&&sheetCtx)return;
   setTimeout(()=>{if(!document.getElementById('cal58Add'))calAddDay(ui.calSel||dateKey())},10)});

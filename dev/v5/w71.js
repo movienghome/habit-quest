@@ -80,7 +80,7 @@ addEventListener('click',e=>{const b=e.target.closest('[data-tq71x],[data-h71x]'
   if(b.dataset.tq71x){ui.tq71='';const i=$('tq71');if(i)i.value='';renderTasks();return}
   C.ui.collapsed['h71'+b.dataset.h71x]=1;save('config');renderTasks()},true);
 // 할 일 화면에서 Ctrl+F = 찾기
-addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='f'&&curView()==='tasks'&&$('tq71')){e.preventDefault();$('tq71').focus()}});
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&(e.key||"").toLowerCase()==='f'&&curView()==='tasks'&&$('tq71')){e.preventDefault();$('tq71').focus()}});
 
 /* ---- 4) 여러 개 고르기: 날짜 더 (모레·주말·다음 주·직접) · 🎯 이름 ---- */
 drawMsel=(function(prev){return function(){const r=prev.apply(this,arguments);try{const bar=$('mselBar');if(!bar||bar.querySelector('#mb71d'))return r;

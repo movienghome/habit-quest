@@ -67,7 +67,7 @@ let hoverTask=null;
 document.addEventListener('mouseover',e=>{const r=e.target.closest('[data-task],[data-ctask]');hoverTask=r?(r.dataset.task||r.dataset.ctask):null});
 addEventListener('keydown',e=>{
   const tg=e.target,typing=tg&&tg.matches&&tg.matches('input,textarea,select,[contenteditable]');
-  const k=e.key.toLowerCase();
+  const k=(e.key||"").toLowerCase();
   // 내일로 미루기: Ctrl+Shift+R(브라우저가 막으면 Alt+R)
   if(((e.ctrlKey||e.metaKey)&&e.shiftKey&&k==='r')||(e.altKey&&!e.ctrlKey&&k==='r')){
     const id=(sheetCtx&&sheetCtx.task)||hoverTask;const t=id&&TASKS[id];if(!t)return;e.preventDefault();postpone(t,addDays(dateKey(),1));if(sheetCtx&&sheetCtx.task===id)drawTaskSheet();return}
