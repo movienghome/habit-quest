@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.7</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.8</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -19181,6 +19181,42 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['🤝 시나리오 쓰기 칩의 만남 날','캘린더 위 주 N회 칩 → 요일 칸','하나 그리고 둘로 만나기로 한 날은 요일 글자 대신 🤝(점선), 만나서 끝낸 날은 채운 🤝예요. 만남 날도 주 횟수에 들어가요',()=>{location.hash='calendar'},'하그둘 만남 하나 그리고 둘']])}})(F67);
 /* 열린 탭이 가로 스크롤 밖이면 보이게 */
 render=(function(prev){return function(){const x=prev.apply(this,arguments);try{requestAnimationFrame(()=>document.querySelectorAll('.tl135').forEach(l=>{const o=l.querySelector('.tab135.on');if(o&&(o.offsetLeft<l.scrollLeft||o.offsetLeft+o.offsetWidth>l.scrollLeft+l.clientWidth))l.scrollLeft=o.offsetLeft-8}))}catch(e){}return x}})(render);
+
+/* v13.8 🍅 뽀모도로 기기 간 동기화 (w136)
+   돌고 있는 타이머(PM88)를 설정 문서 최상위 키 C.pomoRun88(JSON 문자열 하나)로도 저장 → 다른 기기가 이어받음.
+   - 문자열 하나인 이유: merge3가 객체를 필드별로 섞어 두 기기 값이 뒤섞이는 걸 막고, 둘이 동시에 바꾸면 내 것(마지막 쓴 쪽)이 통째로 남게.
+   - 상태가 바뀔 때만 씀(시작·일시정지·재개·끝·그만두기 = pSave88). 타이머는 Date.now() 기준이라 매초 쓰지 않음.
+   - 새로 쓴 쪽이 이김: 상태마다 at(쓴 시각)·dev(시작한 기기). 그만두면 {off:1,at}.
+   - 알람은 화면이 켜진 기기에서만(숨은 기기는 시작한 기기일 때만 — 기기가 하나뿐이면 예전처럼 울림).
+   - 끝 처리(기록·구슬)는 먼저 hold를 쓴 기기 하나만: pComplete88 앞에서 늘 원격 상태부터 받아 옴. */
+const DEV136=(()=>{try{let d=localStorage.getItem('hq_dev136');if(!d){d='d'+Math.random().toString(36).slice(2,8);localStorage.setItem('hq_dev136',d)}return d}catch(e){return 'd0'}})();
+let SEEN136=null,AT136=(PM88&&PM88.at)||0;
+const SAVE136=pSave88,RING136=pRing88;
+function push136(){
+  const s=JSON.stringify(PM88?Object.assign({},PM88):{off:1,at:AT136,dev:DEV136});
+  if(s===SEEN136)return;SEEN136=s;C.pomoRun88=s;save('config')}
+pSave88=function(){
+  AT136=Date.now();if(PM88){PM88.at=AT136;if(!PM88.dev)PM88.dev=DEV136}
+  SAVE136.apply(this,arguments);try{push136()}catch(e){console.error(e)}};
+pRing88=function(t,b){
+  if(document.visibilityState==='visible'||(PM88&&PM88.dev===DEV136))return RING136(t,b)};
+function adopt136(){
+  const s=C&&C.pomoRun88;if(typeof s!=='string'||!s||s===SEEN136)return false;
+  let r;try{r=JSON.parse(s)}catch(e){SEEN136=s;return false}
+  if(!r||typeof r!=='object'){SEEN136=s;return false}
+  if((r.at||0)<AT136){ // 이 기기 것이 더 새로움(오프라인에서 바꾼 것 등) → 올림
+    SEEN136=null;if(PM88||AT136)try{push136()}catch(e){console.error(e)}return false}
+  const prev=PM88;SEEN136=s;AT136=r.at||0;
+  if(r.off)PM88=null;else{PM88=r;delete PM88.off}
+  PSTOP88=0;SAVE136();
+  const fin=!!PM88&&(prev?(PM88.hold&&(prev.hold!==PM88.hold||prev.phase!==PM88.phase||prev.n!==PM88.n)||((PM88.n||0)>(prev.n||0))):!!PM88.hold);
+  try{pBtn88();pTitle88();pDraw88();pPop88(fin)}catch(e){console.error(e)}
+  if(fin&&document.visibilityState==='visible'){const g=pget88(),w=PM88.phase==='work'||(PM88.n||0)>(prev&&prev.n||0);
+    RING136(w?'🍅 '+g.w+'분 끝!':'☕ 쉬는 시간 끝',PM88.kind)}
+  return true}
+{const _c=pComplete88;pComplete88=function(){adopt136();if(!PM88||PM88.hold)return;return _c.apply(this,arguments)}}
+setInterval(adopt136,1000);
+addEventListener('visibilitychange',()=>{if(!document.hidden)adopt136()});
 
 route();boot();
 </script>
