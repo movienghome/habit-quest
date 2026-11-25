@@ -5,7 +5,7 @@
      (⚠ 옛 ↑↓는 하나뿐일 때 `r.steps`만 바꿔서 화면만 바뀌고 실제 실행 순서 `effSteps117`(=p.s)은 그대로였음 → 옛 ↑↓ 클릭 뒤에도 p.s를 맞춤 `sync134`.)
    · ↑↓ 단추는 손잡이가 있는 카드에서 숨김(공간 — 줄 맨 앞 ⠿ + 키보드 ↑↓로 대신). DOM엔 남아 있어 옛 시험·코드는 그대로 `.click()` 됨.
    · '단계 편집' 안내 글의 `↑↓=이 프리셋 순서`를 `⠿ 끌기=이 프리셋 순서`로.
-   시험 t141. */
+   · 시간표 블록 커서: 마우스에서 ✋→화살표+올리면 테두리, 길이 손잡이(.rz) 작은 블록에서 1/3 이하·올리면 표시, 길이 바꾸는 중엔 ↕ 유지(`body.rs134`, v134.css 아래쪽). 시험 t141·t142. */
 
 var DG134=null;
 function sid134(row,r){
@@ -80,3 +80,7 @@ addEventListener('click',e=>{if(e.target.closest&&e.target.closest('.dg134')){e.
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['↕ 루틴 단계 끌어서 순서 바꾸기','설정(편집) → 루틴 탭(또는 할 일 → 루틴 이름 누르기) → 단계 줄 맨 왼쪽 ⠿ 끌기','루틴 단계 줄 맨 앞 ⠿를 끌어 놓으면 순서가 바뀌어요(프리셋이 둘 이상이면 지금 편집 중인 프리셋의 순서). ⠿에 포커스를 두고 키보드 ↑↓로도 돼요.']
 ])}})(F67);
+
+/* ---- 길이 바꾸는 동안 커서 ↕ 유지(옛 body.dragging은 ✋ grabbing으로 바꿔 버림) ---- */
+dndStart=(function(prev){return function(e){const r=prev.apply(this,arguments);try{document.body.classList.toggle('rs134',DND.kind==='resize')}catch(x){}return r}})(dndStart);
+['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,()=>document.body.classList.remove('rs134'),true));

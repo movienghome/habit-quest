@@ -2898,6 +2898,19 @@ button.rc132d{font-family:inherit;color:inherit;background:none;cursor:pointer;w
 .st62s.dgon134 .st62.dga134{box-shadow:inset 0 -3px 0 0 var(--ink)}
 /* ⠿ 손잡이가 있는 카드에선 ↑↓를 숨김(공간) — DOM엔 남아 있음 */
 .st62s.dgon134 .st62 [data-r62op^="up:"],.st62s.dgon134 .st62 [data-r62op^="dn:"],.st62s.dgon134 .st62 [data-pm117$="|up"],.st62s.dgon134 .st62 [data-pm117$="|dn"]{display:none!important}
+
+/* ---- 시간표 블록 커서·길이 손잡이 (사용자 11/25 15:21: ✋ 커서 위치가 애매 — 작은 블록에서 옮기기·누르기·길이 늘이기가 헷갈림) ----
+   마우스(hover+fine)에서만. ✋(grab)은 기준점이 손바닥 가운데라 블록 위인지 가늠이 안 됨 → 블록 몸통은 화살표(꼭짓점=기준점) + 올리면 테두리 강조,
+   길이 손잡이(.rz)는 작은 블록에서 블록 높이의 1/3 넘지 않게(몸통을 안 먹게) + 올리면 영역 색·굵은 막대로 어디가 손잡이인지 보임. */
+@media (hover:hover) and (pointer:fine){
+  .blk,.cchip{cursor:default}
+  .blk:hover{outline:2px solid color-mix(in srgb,var(--ink) 60%,transparent);outline-offset:-1px;z-index:3}
+  .blk .rz{height:min(12px,34%);min-height:4px}
+  .blk .rz:hover{background:color-mix(in srgb,var(--ink) 20%,transparent)}
+  .blk .rz:hover::after{opacity:1;background:var(--ink);width:24px;height:3px;margin-left:-12px}
+}
+/* 길이를 바꾸는 동안엔 ✋(grabbing) 대신 ↕ 유지 */
+body.dragging.rs134,body.dragging.rs134 *{cursor:ns-resize!important}
 </style>
 
 <header class="hud" id="hud">
@@ -18934,7 +18947,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
      (⚠ 옛 ↑↓는 하나뿐일 때 `r.steps`만 바꿔서 화면만 바뀌고 실제 실행 순서 `effSteps117`(=p.s)은 그대로였음 → 옛 ↑↓ 클릭 뒤에도 p.s를 맞춤 `sync134`.)
    · ↑↓ 단추는 손잡이가 있는 카드에서 숨김(공간 — 줄 맨 앞 ⠿ + 키보드 ↑↓로 대신). DOM엔 남아 있어 옛 시험·코드는 그대로 `.click()` 됨.
    · '단계 편집' 안내 글의 `↑↓=이 프리셋 순서`를 `⠿ 끌기=이 프리셋 순서`로.
-   시험 t141. */
+   · 시간표 블록 커서: 마우스에서 ✋→화살표+올리면 테두리, 길이 손잡이(.rz) 작은 블록에서 1/3 이하·올리면 표시, 길이 바꾸는 중엔 ↕ 유지(`body.rs134`, v134.css 아래쪽). 시험 t141·t142. */
 
 var DG134=null;
 function sid134(row,r){
@@ -19009,6 +19022,10 @@ addEventListener('click',e=>{if(e.target.closest&&e.target.closest('.dg134')){e.
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['↕ 루틴 단계 끌어서 순서 바꾸기','설정(편집) → 루틴 탭(또는 할 일 → 루틴 이름 누르기) → 단계 줄 맨 왼쪽 ⠿ 끌기','루틴 단계 줄 맨 앞 ⠿를 끌어 놓으면 순서가 바뀌어요(프리셋이 둘 이상이면 지금 편집 중인 프리셋의 순서). ⠿에 포커스를 두고 키보드 ↑↓로도 돼요.']
 ])}})(F67);
+
+/* ---- 길이 바꾸는 동안 커서 ↕ 유지(옛 body.dragging은 ✋ grabbing으로 바꿔 버림) ---- */
+dndStart=(function(prev){return function(e){const r=prev.apply(this,arguments);try{document.body.classList.toggle('rs134',DND.kind==='resize')}catch(x){}return r}})(dndStart);
+['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,()=>document.body.classList.remove('rs134'),true));
 
 route();boot();
 </script>

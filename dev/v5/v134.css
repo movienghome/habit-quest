@@ -6,3 +6,16 @@
 .st62s.dgon134 .st62.dga134{box-shadow:inset 0 -3px 0 0 var(--ink)}
 /* ⠿ 손잡이가 있는 카드에선 ↑↓를 숨김(공간) — DOM엔 남아 있음 */
 .st62s.dgon134 .st62 [data-r62op^="up:"],.st62s.dgon134 .st62 [data-r62op^="dn:"],.st62s.dgon134 .st62 [data-pm117$="|up"],.st62s.dgon134 .st62 [data-pm117$="|dn"]{display:none!important}
+
+/* ---- 시간표 블록 커서·길이 손잡이 (사용자 11/25 15:21: ✋ 커서 위치가 애매 — 작은 블록에서 옮기기·누르기·길이 늘이기가 헷갈림) ----
+   마우스(hover+fine)에서만. ✋(grab)은 기준점이 손바닥 가운데라 블록 위인지 가늠이 안 됨 → 블록 몸통은 화살표(꼭짓점=기준점) + 올리면 테두리 강조,
+   길이 손잡이(.rz)는 작은 블록에서 블록 높이의 1/3 넘지 않게(몸통을 안 먹게) + 올리면 영역 색·굵은 막대로 어디가 손잡이인지 보임. */
+@media (hover:hover) and (pointer:fine){
+  .blk,.cchip{cursor:default}
+  .blk:hover{outline:2px solid color-mix(in srgb,var(--ink) 60%,transparent);outline-offset:-1px;z-index:3}
+  .blk .rz{height:min(12px,34%);min-height:4px}
+  .blk .rz:hover{background:color-mix(in srgb,var(--ink) 20%,transparent)}
+  .blk .rz:hover::after{opacity:1;background:var(--ink);width:24px;height:3px;margin-left:-12px}
+}
+/* 길이를 바꾸는 동안엔 ✋(grabbing) 대신 ↕ 유지 */
+body.dragging.rs134,body.dragging.rs134 *{cursor:ns-resize!important}
