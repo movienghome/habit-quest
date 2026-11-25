@@ -71,6 +71,8 @@ function hold110(id){
   fxPop('+'+e.xp+' XP','var(--good)');buzz();toast(IK110[x.k][0]+' '+IK110[x.k][2]+' ✓ '+x.n+' · 참았어요! +'+e.xp+'XP'+(e.gold?' · '+e.gold+'G':'')+(x.a?' · 아낀 약 '+won110(x.a):''))}
 /* 대응: 든든한 것 먼저 → n분 기다리기 → 그래도 당기면 덜 나쁜 걸로 끝내기(대신 하기) */
 function fill110(id,i){const f=find110(id);if(!f)return;const nm=cfg110().fill[i];if(!nm)return;f.x.fl=nm;f.x.w=Date.now()+cfg110().wait*60000;save(f.k);render()}
+var TG110='그냥 꾹 참기';
+function tough110(id){const f=find110(id);if(!f)return;f.x.fl=TG110;f.x.w=Date.now()+cfg110().wait*60000;save(f.k);render()}
 function skip110(id){const f=find110(id);if(!f)return;f.x.w=Date.now()-1;save(f.k);render()}
 function swap110(id,i){const f=find110(id);if(!f||!guard())return;const x=f.x,c=cfg110(),alt=c.alts[x.k][i];if(!alt)return;
   if(/보상함/.test(alt.n)){C.shop=C.shop||[];if(!C.shop.some(z=>z.name===x.n))C.shop.push({id:uid(),name:x.n,price:0});save('config');hold110(id);toast('📥 보상함에 적어 뒀어요 — 갖고 싶으면 가격을 정해 모아요');return}
@@ -120,7 +122,7 @@ function fdet110(x){const sit=x.sit||[];
     <div class="row" style="gap:4px;flex-wrap:wrap;margin-top:4px">${SIT110.map(z=>`<button type="button" class="chipbtn" data-imsit110="${x.id}:${esc(z)}" aria-pressed="${sit.includes(z)}">${sit.includes(z)?'✓ ':''}${z}</button>`).join('')}</div>
     <div class="row" style="gap:6px;margin-top:4px;flex-wrap:nowrap"><input type="time" class="imt110" data-imtm110="${x.id}" value="${esc(x.gt||'')}" aria-label="몇 시쯤이었는지"><input type="text" class="imm110" data-imm110="${x.id}" maxlength="100" autocomplete="off" placeholder="그때 상황·내가 한 행동 (예: 야근 후 배달앱을 열었다)" value="${esc(x.m||'')}"></div>
     <button type="button" class="linkbtn tiny" data-imed110="${x.id}">접기</button></div>`}
-function ftxt110(x){const bits=[];if((x.sit||[]).length)bits.push('🏷 '+x.sit.join('·'));if(x.m)bits.push('“'+x.m+'”');if(x.fl)bits.push('든든한 것: '+x.fl);else if(x.w)bits.push('기다리기 해 봄');return bits.length?`<div class="tiny muted">${bits.map(esc).join(' · ')}</div>`:''}
+function ftxt110(x){const bits=[];if((x.sit||[]).length)bits.push('🏷 '+x.sit.join('·'));if(x.m)bits.push('“'+x.m+'”');if(x.fl===TG110)bits.push('대응: 💪 '+TG110);else if(x.fl)bits.push('든든한 것: '+x.fl);else if(x.w)bits.push('기다리기 해 봄');return bits.length?`<div class="tiny muted">${bits.map(esc).join(' · ')}</div>`:''}
 function hist110(){const td=gk76(),F=fails110(28);if(!F.length)return '';const old=F.filter(z=>z.k!==td),tot=F.reduce((a,z)=>a+(z.x.a||0),0);
   return `<details class="im110hs"${IM110.hs?' open':''}><summary class="small">🔎 못 참았던 때 돌아보기 · 최근 4주 ${F.length}건${tot?' · 약 '+won110(tot):''}</summary>
     <ul class="im110sum">${pat110(F).map(l=>`<li class="tiny">${esc(l)}</li>`).join('')}</ul>
@@ -159,10 +161,10 @@ function plan110(x,c){const K=IK110[x.k],r=x.w?Math.ceil((x.w-Date.now())/60000)
   if(x.k==='b')return `${hn}<div class="tiny"><b>🧭 물건은 오늘 사지 않는 게 먼저예요.</b> 정말 갖고 싶다면 보상함에 적어 두고 며칠 뒤에 다시 봐요.</div>${alts}`;
   if(!x.w){
     h+=`<div class="tiny"><b>🧭 ① 먼저 든든하게</b> — 집에 도착하면 바로, 포만감 있는 걸 하나 먹어요. 배고프고 지친 상태가 충동을 가장 키워요.</div>
-      <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:4px">${c.fill.map((n,i)=>`<button type="button" class="chipbtn" data-imfl110="${x.id}:${i}">${esc(n)} 먹었어요</button>`).join('')}</div>
+      <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:4px">${c.fill.map((n,i)=>`<button type="button" class="chipbtn" data-imfl110="${x.id}:${i}">${esc(n)} 먹었어요</button>`).join('')}<button type="button" class="chipbtn" data-imtg110="${x.id}" title="먼저 든든하게 먹을 수 없을 때(밖에 있을 때 등) — 참는 것도 대응이에요">💪 ${TG110}</button></div>
       <div class="tiny muted" style="margin-top:4px">누르면 ${c.wait}분 기다리기가 시작돼요 → 그래도 당기면 덜 나쁜 걸로 끝내요. <button type="button" class="linkbtn" data-imsk110="${x.id}">바로 정할래요</button></div>`}
   else if(r>0){
-    h+=`<div class="tiny"><b>⏳ ② 기다리는 중 — 약 ${r}분 남음</b>${x.fl?` · ${esc(x.fl)} 먹었어요`:''}<br><span class="muted">물 한 잔을 마시거나 잠깐 씻고 오면 시간이 더 빨리 가요.</span> <button type="button" class="linkbtn" data-imsk110="${x.id}">바로 정할래요</button></div>`}
+    h+=`<div class="tiny"><b>⏳ ② 기다리는 중 — 약 ${r}분 남음</b>${x.fl===TG110?` · 💪 ${TG110}`:x.fl?` · ${esc(x.fl)} 먹었어요`:''}<br><span class="muted">물 한 잔을 마시거나 잠깐 씻고 오면 시간이 더 빨리 가요.</span> <button type="button" class="linkbtn" data-imsk110="${x.id}">바로 정할래요</button></div>`}
   else{
     h+=`<div class="tiny"><b>③ 지금 당김은?</b> 사라졌으면 위 <b>✓ ${K[2]}</b>을 눌러요. 줄었어도 그대로여도, 먹겠다면 덜 나쁜 걸로 끝내요:</div>${alts}`}
   return h}
@@ -220,6 +222,7 @@ addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
   if((b=T.closest('[data-imadd110]'))){e.preventDefault();e.stopPropagation();const i=$('imp110N'),a=$('imp110A'),x=add110(IM110.kind,i&&i.value,a&&num110(a.value));if(x){IM110.plan=x.id;if(i){i.value='';i.focus()}if(a)a.value='';redraw110()}return}
   if((b=T.closest('[data-impl110]'))){e.preventDefault();e.stopPropagation();IM110.plan=IM110.plan===b.dataset.impl110?null:b.dataset.impl110;redraw110();return}
   if((b=T.closest('[data-imfl110]'))){e.preventDefault();e.stopPropagation();const q=b.dataset.imfl110.split(':');fill110(q[0],+q[1]);redraw110();return}
+  if((b=T.closest('[data-imtg110]'))){e.preventDefault();e.stopPropagation();tough110(b.dataset.imtg110);redraw110();return}
   if((b=T.closest('[data-imsk110]'))){e.preventDefault();e.stopPropagation();skip110(b.dataset.imsk110);redraw110();return}
   if((b=T.closest('[data-imal110]'))){e.preventDefault();e.stopPropagation();const q=b.dataset.imal110.split(':');swap110(q[0],+q[1]);redraw110();return}
   if((b=T.closest('[data-imh110]'))){e.preventDefault();e.stopPropagation();hold110(b.dataset.imh110);redraw110();return}

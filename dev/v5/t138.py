@@ -130,7 +130,7 @@ with sync_playwright() as pw:
     e=[x for x in errs if 'favicon' not in x];ok(not e,f'[{W}] U4 오류 없음',e[:3]);errs.clear()
     b.close()
   # ---------- U5 ----------
-  if want('U5'):
+  if want('U5') and False:  # v13.14: 기본 중립 → 기본 ☠ 셈으로 뒤집음(새 시험 t151)
    SEED5="""(()=>{const td=midKey68();const mk=(n,d)=>{const t=newTask({title:n,due:addDays(td,d)});t.order=1;t.created=addDays(td,-20);saveTask(t);return t.id};
      return {a:mk('미룰 일 가',-2),b:mk('미룰 일 나',-1),c:mk('나중 일',3),d:mk('상세 미루기',0),e:mk('상세 미루기 둘',-3)}})()"""
    def ppmenu(pg,id,touch):

@@ -87,37 +87,10 @@ function tcBuild131(keep){const L=$('tList');if(!L)return;const c=TC131();
 addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-tc131]');if(!b)return;e.preventDefault();e.stopPropagation();
   const c=TC131(),k=b.dataset.tc131;if(c[k])delete c[k];else c[k]=1;save('config');renderTasks()},true);
 
-/* ---------- U5 미루기는 기본 중립(☠ 안 셈) — ⏩ 미루기 날짜 창·상세 미루기 칸의 '☠ 미룸으로 기록'을 켰을 때만 ☠ ---------- */
-// postpone() 하나가 모든 미루기 입구(⏩ 메뉴·상세 미루기 칸·뽑기 '내일로'·단축키)를 거침 → 여기서 기본을 중립으로.
-// 켠 칸: 상세는 SK131(누른 순간 1.5초만 유효), ⏩ 창은 CHK131 + 그 창을 연 할 일(LT131) + 창이 닫힌 지 1.5초 안(고른 순간 창이 먼저 닫힘)
-// (w130 dayMenu130은 블록 안 함수라 바깥에서 못 감쌈 → 전역 menu61·closeMenu61·taskMenu61로 알아봄)
-var SK131=0,CHK131=0,LT131=null,CL131=0;
-postpone=(function(prev){return function(t,to){const arm=(SK131&&Date.now()-SK131<1500)||(CHK131&&t&&LT131===t.id&&Date.now()-CL131<1500);SK131=0;CHK131=0;
-  if(!t||!to)return prev.apply(this,arguments);
-  const td=midKey68(),would=!!(t.due&&t.due<=td&&to>t.due);
-  if(arm||!would)return prev.apply(this,arguments);
-  t.due=to;saveTask(t);render();
-  toastAct(`📆 ${dueLabel(to)}로 옮겼어요 · ☠ 안 셈`,'☠ 미룸으로',()=>{const x=TASKS[t.id];if(!x)return;x.skull=(x.skull||0)+1;saveTask(x);render();
-    if(x.skull>=3&&!x.rid&&!isStep62(x))setTimeout(()=>strike65(x.id),380);else toast(`☠ 미룸으로 셌어요 · ${'☠'.repeat(Math.min(3,x.skull))}`)},6000)}})(postpone);
-function skRow131(id){return `<label class="m61f sk131"><input type="checkbox" id="${id}"> ☠ 미룸으로 기록 <small class="muted">끄면 그냥 날짜만 옮김</small></label>`}
-taskMenu61=(function(prev){return function(t){LT131=t&&t.id||null;return prev.apply(this,arguments)}})(taskMenu61);
-menu61=(function(prev){return function(x,y,title,items){CHK131=0;
-  try{const t=LT131&&TASKS[LT131];
-    if(t&&Array.isArray(items)&&/^⏩ /.test(String(title||''))&&items.some(it=>it&&it.html&&/id="dm130"/.test(it.html))&&t.status===0&&t.due&&t.due<=midKey68())
-      items=items.concat([{html:skRow131('sk131'),f:()=>{}}])}catch(e){console.error(e)}
-  return prev.call(this,x,y,title,items)}})(menu61);
-closeMenu61=(function(prev){return function(){CL131=Date.now();return prev.apply(this,arguments)}})(closeMenu61);
-// 상세 칸은 시트가 change마다 다시 그려지므로 change를 시트로 안 보내고, 켠 상태는 PK131(그 할 일 id)로 들고 있음
-var PK131=null;
-addEventListener('change',e=>{const el=e.target;if(!el)return;if(el.id==='sk131')CHK131=el.checked?1:0;
-  if(el.id==='sk131p'){e.stopPropagation();PK131=el.checked?(sheetCtx||{}).task||null:null}
-  if(el.id==='x57PpDate'&&el.value&&PK131&&PK131===(sheetCtx||{}).task)SK131=Date.now()},true);
-addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-x57pp]');if(!b||b.dataset.x57pp==='open')return;if(PK131&&PK131===(sheetCtx||{}).task)SK131=Date.now();PK131=null},true);
-// 상세 시트 '미루기 ▾' 칸에도 같은 칸(지났거나 오늘인 할 일만 — 그 밖엔 원래 ☠가 없음)
-drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{
-  const bx=document.querySelector('#sheetC .pp57'),t=TASKS[(sheetCtx||{}).task];
-  if(PK131&&PK131!==(t&&t.id))PK131=null;
-  if(bx&&t&&!bx.querySelector('#sk131p')&&t.due&&t.due<=midKey68()){bx.insertAdjacentHTML('beforeend',skRow131('sk131p'));if(PK131===t.id)$('sk131p').checked=true}}catch(e){console.error(e)}return r}})(drawTaskSheet);
+/* ---------- U5 (v13.14에서 뒤집음) 미루기·날짜 변경은 기본으로 ☠ 미룸에 셈 ----------
+   postpone()는 v5c 원래대로(날짜가 지났거나 오늘인 걸 뒤로 옮기면 ☠+1) — 센 뒤 w72 saveTask 감쌈이 알림에
+   '단순 날짜 변경으로 바꾸기' 단추를 띄움(누르면 ☠ −1, unskull72). 옛 '☠ 미룸으로 기록' 칸(sk131·sk131p)과 기본 중립은 없앰.
+   (방금 정한 날짜를 고친 것·여러 날 일정은 w72가 원래부터 안 셈. '📆 모두 내일로'(w132)는 한꺼번에라 그대로 ☠ 안 셈.) */
 
 /* ---------- U6 보이기·숨기기 둘로: 캘린더 화면 = C.calf77, 할 일 화면 시간표(PC 3단 옆·폰 독) = C.calf77t ---------- */
 // v7.7(J1)이 둘을 C.calf77 하나로 합친 것을 되돌리되, v7.7이 고친 것(끝낸 블록 doneOn·지난 날·kinds·inv·and)은 그대로 —

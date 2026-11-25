@@ -53,11 +53,11 @@ saveTask=(function(prev){return function(t){try{const p=t&&SN72.get(t.id);
     const sk=t.skull||0;
     if(sk>p.sk&&t.due&&p.due){const born=(+t.order>1e12&&t.created===dateKey())?+t.order:0,fresh=Date.now()-Math.max(+t.dset72||0,born)<30*60e3;
       if(span71(t)||fresh){if(p.sk)t.skull=p.sk;else delete t.skull}   // 여러 날 일정이거나 방금 정한 날짜를 고친 거면 미룸 아님
-      else{const id=t.id;setTimeout(()=>{const x=TASKS[id];if(!x||(x.skull||0)<1)return;toastAct(`'${x.title}' ☠ 미룬 것으로 셌어요 (${x.skull})`,'사정상 옮긴 거예요',()=>unskull72(x.id),6500)},80)}}
+      else{const id=t.id;setTimeout(()=>{const x=TASKS[id];if(!x||(x.skull||0)<1)return;toastAct(`'${x.title}' ☠ 미룬 것으로 셌어요 (${x.skull})${x.skull>=3?' · 삼진아웃! 쪼개거나 버려요':''}`,'단순 날짜 변경으로 바꾸기',()=>unskull72(x.id),7000)},80)}}
     t.dset72=Date.now()}
   }catch(e){console.error(e)}
   const r=prev.apply(this,arguments);try{snap72(t)}catch(e){}return r}})(saveTask);
-function unskull72(id){const x=TASKS[id];if(!x)return;x.skull=Math.max(0,(x.skull||0)-1);if(!x.skull)delete x.skull;x.moved72=(x.moved72||0)+1;saveTask(x);render();if(sheetCtx&&sheetCtx.task===id&&$('tsTitle'))tsRedraw();toast('☠ 뺐어요 · 사정상 옮긴 걸로')}
+function unskull72(id){const x=TASKS[id];if(!x)return;x.skull=Math.max(0,(x.skull||0)-1);if(!x.skull)delete x.skull;x.moved72=(x.moved72||0)+1;saveTask(x);render();if(sheetCtx&&sheetCtx.task===id&&$('tsTitle'))tsRedraw();toast('📆 단순 날짜 변경으로 바꿨어요 · ☠ 안 셈')}
 addEventListener('click',e=>{const b=e.target.closest('[data-sk72]');if(!b)return;e.preventDefault();e.stopPropagation();unskull72(b.dataset.sk72)},true);
 dndEnd=(function(prev){return function(x,y){KT72=null;try{const kind=DND.kind,id=DND.id,drop=DND.drop,el=DND.el,t=TASKS[id];
     if((kind==='task'||kind==='block')&&drop&&drop.date&&t){const gk=el&&el.dataset&&el.dataset.k72;

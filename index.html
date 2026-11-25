@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.13</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.14</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -11737,11 +11737,11 @@ saveTask=(function(prev){return function(t){try{const p=t&&SN72.get(t.id);
     const sk=t.skull||0;
     if(sk>p.sk&&t.due&&p.due){const born=(+t.order>1e12&&t.created===dateKey())?+t.order:0,fresh=Date.now()-Math.max(+t.dset72||0,born)<30*60e3;
       if(span71(t)||fresh){if(p.sk)t.skull=p.sk;else delete t.skull}   // 여러 날 일정이거나 방금 정한 날짜를 고친 거면 미룸 아님
-      else{const id=t.id;setTimeout(()=>{const x=TASKS[id];if(!x||(x.skull||0)<1)return;toastAct(`'${x.title}' ☠ 미룬 것으로 셌어요 (${x.skull})`,'사정상 옮긴 거예요',()=>unskull72(x.id),6500)},80)}}
+      else{const id=t.id;setTimeout(()=>{const x=TASKS[id];if(!x||(x.skull||0)<1)return;toastAct(`'${x.title}' ☠ 미룬 것으로 셌어요 (${x.skull})${x.skull>=3?' · 삼진아웃! 쪼개거나 버려요':''}`,'단순 날짜 변경으로 바꾸기',()=>unskull72(x.id),7000)},80)}}
     t.dset72=Date.now()}
   }catch(e){console.error(e)}
   const r=prev.apply(this,arguments);try{snap72(t)}catch(e){}return r}})(saveTask);
-function unskull72(id){const x=TASKS[id];if(!x)return;x.skull=Math.max(0,(x.skull||0)-1);if(!x.skull)delete x.skull;x.moved72=(x.moved72||0)+1;saveTask(x);render();if(sheetCtx&&sheetCtx.task===id&&$('tsTitle'))tsRedraw();toast('☠ 뺐어요 · 사정상 옮긴 걸로')}
+function unskull72(id){const x=TASKS[id];if(!x)return;x.skull=Math.max(0,(x.skull||0)-1);if(!x.skull)delete x.skull;x.moved72=(x.moved72||0)+1;saveTask(x);render();if(sheetCtx&&sheetCtx.task===id&&$('tsTitle'))tsRedraw();toast('📆 단순 날짜 변경으로 바꿨어요 · ☠ 안 셈')}
 addEventListener('click',e=>{const b=e.target.closest('[data-sk72]');if(!b)return;e.preventDefault();e.stopPropagation();unskull72(b.dataset.sk72)},true);
 dndEnd=(function(prev){return function(x,y){KT72=null;try{const kind=DND.kind,id=DND.id,drop=DND.drop,el=DND.el,t=TASKS[id];
     if((kind==='task'||kind==='block')&&drop&&drop.date&&t){const gk=el&&el.dataset&&el.dataset.k72;
@@ -16413,6 +16413,8 @@ function hold110(id){
   fxPop('+'+e.xp+' XP','var(--good)');buzz();toast(IK110[x.k][0]+' '+IK110[x.k][2]+' ✓ '+x.n+' · 참았어요! +'+e.xp+'XP'+(e.gold?' · '+e.gold+'G':'')+(x.a?' · 아낀 약 '+won110(x.a):''))}
 /* 대응: 든든한 것 먼저 → n분 기다리기 → 그래도 당기면 덜 나쁜 걸로 끝내기(대신 하기) */
 function fill110(id,i){const f=find110(id);if(!f)return;const nm=cfg110().fill[i];if(!nm)return;f.x.fl=nm;f.x.w=Date.now()+cfg110().wait*60000;save(f.k);render()}
+var TG110='그냥 꾹 참기';
+function tough110(id){const f=find110(id);if(!f)return;f.x.fl=TG110;f.x.w=Date.now()+cfg110().wait*60000;save(f.k);render()}
 function skip110(id){const f=find110(id);if(!f)return;f.x.w=Date.now()-1;save(f.k);render()}
 function swap110(id,i){const f=find110(id);if(!f||!guard())return;const x=f.x,c=cfg110(),alt=c.alts[x.k][i];if(!alt)return;
   if(/보상함/.test(alt.n)){C.shop=C.shop||[];if(!C.shop.some(z=>z.name===x.n))C.shop.push({id:uid(),name:x.n,price:0});save('config');hold110(id);toast('📥 보상함에 적어 뒀어요 — 갖고 싶으면 가격을 정해 모아요');return}
@@ -16462,7 +16464,7 @@ function fdet110(x){const sit=x.sit||[];
     <div class="row" style="gap:4px;flex-wrap:wrap;margin-top:4px">${SIT110.map(z=>`<button type="button" class="chipbtn" data-imsit110="${x.id}:${esc(z)}" aria-pressed="${sit.includes(z)}">${sit.includes(z)?'✓ ':''}${z}</button>`).join('')}</div>
     <div class="row" style="gap:6px;margin-top:4px;flex-wrap:nowrap"><input type="time" class="imt110" data-imtm110="${x.id}" value="${esc(x.gt||'')}" aria-label="몇 시쯤이었는지"><input type="text" class="imm110" data-imm110="${x.id}" maxlength="100" autocomplete="off" placeholder="그때 상황·내가 한 행동 (예: 야근 후 배달앱을 열었다)" value="${esc(x.m||'')}"></div>
     <button type="button" class="linkbtn tiny" data-imed110="${x.id}">접기</button></div>`}
-function ftxt110(x){const bits=[];if((x.sit||[]).length)bits.push('🏷 '+x.sit.join('·'));if(x.m)bits.push('“'+x.m+'”');if(x.fl)bits.push('든든한 것: '+x.fl);else if(x.w)bits.push('기다리기 해 봄');return bits.length?`<div class="tiny muted">${bits.map(esc).join(' · ')}</div>`:''}
+function ftxt110(x){const bits=[];if((x.sit||[]).length)bits.push('🏷 '+x.sit.join('·'));if(x.m)bits.push('“'+x.m+'”');if(x.fl===TG110)bits.push('대응: 💪 '+TG110);else if(x.fl)bits.push('든든한 것: '+x.fl);else if(x.w)bits.push('기다리기 해 봄');return bits.length?`<div class="tiny muted">${bits.map(esc).join(' · ')}</div>`:''}
 function hist110(){const td=gk76(),F=fails110(28);if(!F.length)return '';const old=F.filter(z=>z.k!==td),tot=F.reduce((a,z)=>a+(z.x.a||0),0);
   return `<details class="im110hs"${IM110.hs?' open':''}><summary class="small">🔎 못 참았던 때 돌아보기 · 최근 4주 ${F.length}건${tot?' · 약 '+won110(tot):''}</summary>
     <ul class="im110sum">${pat110(F).map(l=>`<li class="tiny">${esc(l)}</li>`).join('')}</ul>
@@ -16501,10 +16503,10 @@ function plan110(x,c){const K=IK110[x.k],r=x.w?Math.ceil((x.w-Date.now())/60000)
   if(x.k==='b')return `${hn}<div class="tiny"><b>🧭 물건은 오늘 사지 않는 게 먼저예요.</b> 정말 갖고 싶다면 보상함에 적어 두고 며칠 뒤에 다시 봐요.</div>${alts}`;
   if(!x.w){
     h+=`<div class="tiny"><b>🧭 ① 먼저 든든하게</b> — 집에 도착하면 바로, 포만감 있는 걸 하나 먹어요. 배고프고 지친 상태가 충동을 가장 키워요.</div>
-      <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:4px">${c.fill.map((n,i)=>`<button type="button" class="chipbtn" data-imfl110="${x.id}:${i}">${esc(n)} 먹었어요</button>`).join('')}</div>
+      <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:4px">${c.fill.map((n,i)=>`<button type="button" class="chipbtn" data-imfl110="${x.id}:${i}">${esc(n)} 먹었어요</button>`).join('')}<button type="button" class="chipbtn" data-imtg110="${x.id}" title="먼저 든든하게 먹을 수 없을 때(밖에 있을 때 등) — 참는 것도 대응이에요">💪 ${TG110}</button></div>
       <div class="tiny muted" style="margin-top:4px">누르면 ${c.wait}분 기다리기가 시작돼요 → 그래도 당기면 덜 나쁜 걸로 끝내요. <button type="button" class="linkbtn" data-imsk110="${x.id}">바로 정할래요</button></div>`}
   else if(r>0){
-    h+=`<div class="tiny"><b>⏳ ② 기다리는 중 — 약 ${r}분 남음</b>${x.fl?` · ${esc(x.fl)} 먹었어요`:''}<br><span class="muted">물 한 잔을 마시거나 잠깐 씻고 오면 시간이 더 빨리 가요.</span> <button type="button" class="linkbtn" data-imsk110="${x.id}">바로 정할래요</button></div>`}
+    h+=`<div class="tiny"><b>⏳ ② 기다리는 중 — 약 ${r}분 남음</b>${x.fl===TG110?` · 💪 ${TG110}`:x.fl?` · ${esc(x.fl)} 먹었어요`:''}<br><span class="muted">물 한 잔을 마시거나 잠깐 씻고 오면 시간이 더 빨리 가요.</span> <button type="button" class="linkbtn" data-imsk110="${x.id}">바로 정할래요</button></div>`}
   else{
     h+=`<div class="tiny"><b>③ 지금 당김은?</b> 사라졌으면 위 <b>✓ ${K[2]}</b>을 눌러요. 줄었어도 그대로여도, 먹겠다면 덜 나쁜 걸로 끝내요:</div>${alts}`}
   return h}
@@ -16562,6 +16564,7 @@ addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
   if((b=T.closest('[data-imadd110]'))){e.preventDefault();e.stopPropagation();const i=$('imp110N'),a=$('imp110A'),x=add110(IM110.kind,i&&i.value,a&&num110(a.value));if(x){IM110.plan=x.id;if(i){i.value='';i.focus()}if(a)a.value='';redraw110()}return}
   if((b=T.closest('[data-impl110]'))){e.preventDefault();e.stopPropagation();IM110.plan=IM110.plan===b.dataset.impl110?null:b.dataset.impl110;redraw110();return}
   if((b=T.closest('[data-imfl110]'))){e.preventDefault();e.stopPropagation();const q=b.dataset.imfl110.split(':');fill110(q[0],+q[1]);redraw110();return}
+  if((b=T.closest('[data-imtg110]'))){e.preventDefault();e.stopPropagation();tough110(b.dataset.imtg110);redraw110();return}
   if((b=T.closest('[data-imsk110]'))){e.preventDefault();e.stopPropagation();skip110(b.dataset.imsk110);redraw110();return}
   if((b=T.closest('[data-imal110]'))){e.preventDefault();e.stopPropagation();const q=b.dataset.imal110.split(':');swap110(q[0],+q[1]);redraw110();return}
   if((b=T.closest('[data-imh110]'))){e.preventDefault();e.stopPropagation();hold110(b.dataset.imh110);redraw110();return}
@@ -18631,37 +18634,10 @@ function tcBuild131(keep){const L=$('tList');if(!L)return;const c=TC131();
 addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-tc131]');if(!b)return;e.preventDefault();e.stopPropagation();
   const c=TC131(),k=b.dataset.tc131;if(c[k])delete c[k];else c[k]=1;save('config');renderTasks()},true);
 
-/* ---------- U5 미루기는 기본 중립(☠ 안 셈) — ⏩ 미루기 날짜 창·상세 미루기 칸의 '☠ 미룸으로 기록'을 켰을 때만 ☠ ---------- */
-// postpone() 하나가 모든 미루기 입구(⏩ 메뉴·상세 미루기 칸·뽑기 '내일로'·단축키)를 거침 → 여기서 기본을 중립으로.
-// 켠 칸: 상세는 SK131(누른 순간 1.5초만 유효), ⏩ 창은 CHK131 + 그 창을 연 할 일(LT131) + 창이 닫힌 지 1.5초 안(고른 순간 창이 먼저 닫힘)
-// (w130 dayMenu130은 블록 안 함수라 바깥에서 못 감쌈 → 전역 menu61·closeMenu61·taskMenu61로 알아봄)
-var SK131=0,CHK131=0,LT131=null,CL131=0;
-postpone=(function(prev){return function(t,to){const arm=(SK131&&Date.now()-SK131<1500)||(CHK131&&t&&LT131===t.id&&Date.now()-CL131<1500);SK131=0;CHK131=0;
-  if(!t||!to)return prev.apply(this,arguments);
-  const td=midKey68(),would=!!(t.due&&t.due<=td&&to>t.due);
-  if(arm||!would)return prev.apply(this,arguments);
-  t.due=to;saveTask(t);render();
-  toastAct(`📆 ${dueLabel(to)}로 옮겼어요 · ☠ 안 셈`,'☠ 미룸으로',()=>{const x=TASKS[t.id];if(!x)return;x.skull=(x.skull||0)+1;saveTask(x);render();
-    if(x.skull>=3&&!x.rid&&!isStep62(x))setTimeout(()=>strike65(x.id),380);else toast(`☠ 미룸으로 셌어요 · ${'☠'.repeat(Math.min(3,x.skull))}`)},6000)}})(postpone);
-function skRow131(id){return `<label class="m61f sk131"><input type="checkbox" id="${id}"> ☠ 미룸으로 기록 <small class="muted">끄면 그냥 날짜만 옮김</small></label>`}
-taskMenu61=(function(prev){return function(t){LT131=t&&t.id||null;return prev.apply(this,arguments)}})(taskMenu61);
-menu61=(function(prev){return function(x,y,title,items){CHK131=0;
-  try{const t=LT131&&TASKS[LT131];
-    if(t&&Array.isArray(items)&&/^⏩ /.test(String(title||''))&&items.some(it=>it&&it.html&&/id="dm130"/.test(it.html))&&t.status===0&&t.due&&t.due<=midKey68())
-      items=items.concat([{html:skRow131('sk131'),f:()=>{}}])}catch(e){console.error(e)}
-  return prev.call(this,x,y,title,items)}})(menu61);
-closeMenu61=(function(prev){return function(){CL131=Date.now();return prev.apply(this,arguments)}})(closeMenu61);
-// 상세 칸은 시트가 change마다 다시 그려지므로 change를 시트로 안 보내고, 켠 상태는 PK131(그 할 일 id)로 들고 있음
-var PK131=null;
-addEventListener('change',e=>{const el=e.target;if(!el)return;if(el.id==='sk131')CHK131=el.checked?1:0;
-  if(el.id==='sk131p'){e.stopPropagation();PK131=el.checked?(sheetCtx||{}).task||null:null}
-  if(el.id==='x57PpDate'&&el.value&&PK131&&PK131===(sheetCtx||{}).task)SK131=Date.now()},true);
-addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-x57pp]');if(!b||b.dataset.x57pp==='open')return;if(PK131&&PK131===(sheetCtx||{}).task)SK131=Date.now();PK131=null},true);
-// 상세 시트 '미루기 ▾' 칸에도 같은 칸(지났거나 오늘인 할 일만 — 그 밖엔 원래 ☠가 없음)
-drawTaskSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{
-  const bx=document.querySelector('#sheetC .pp57'),t=TASKS[(sheetCtx||{}).task];
-  if(PK131&&PK131!==(t&&t.id))PK131=null;
-  if(bx&&t&&!bx.querySelector('#sk131p')&&t.due&&t.due<=midKey68()){bx.insertAdjacentHTML('beforeend',skRow131('sk131p'));if(PK131===t.id)$('sk131p').checked=true}}catch(e){console.error(e)}return r}})(drawTaskSheet);
+/* ---------- U5 (v13.14에서 뒤집음) 미루기·날짜 변경은 기본으로 ☠ 미룸에 셈 ----------
+   postpone()는 v5c 원래대로(날짜가 지났거나 오늘인 걸 뒤로 옮기면 ☠+1) — 센 뒤 w72 saveTask 감쌈이 알림에
+   '단순 날짜 변경으로 바꾸기' 단추를 띄움(누르면 ☠ −1, unskull72). 옛 '☠ 미룸으로 기록' 칸(sk131·sk131p)과 기본 중립은 없앰.
+   (방금 정한 날짜를 고친 것·여러 날 일정은 w72가 원래부터 안 셈. '📆 모두 내일로'(w132)는 한꺼번에라 그대로 ☠ 안 셈.) */
 
 /* ---------- U6 보이기·숨기기 둘로: 캘린더 화면 = C.calf77, 할 일 화면 시간표(PC 3단 옆·폰 독) = C.calf77t ---------- */
 // v7.7(J1)이 둘을 C.calf77 하나로 합친 것을 되돌리되, v7.7이 고친 것(끝낸 블록 doneOn·지난 날·kinds·inv·and)은 그대로 —
