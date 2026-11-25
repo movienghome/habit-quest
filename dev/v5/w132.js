@@ -161,9 +161,37 @@ renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);t
 // 종일 칸 왼쪽 빈 곳을 눌러도 접기·펴기
 addEventListener('click',e=>{const c=e.target.closest&&e.target.closest('.tgall>div:first-child');if(!c||e.target.closest('.alltog'))return;const b=c.querySelector('.alltog');if(b&&b.querySelector('.ar132')){e.preventDefault();b.click()}},true);
 
+/* ---------- ⑨ 캘린더 화면 할 일 추가(날짜 팝업 calAddDay · 빈 시간 팝업 calAddSheet) = 할 일 화면 입력과 같은 길 ---------- */
+// 예전엔 parseQuick+newTask만 → 미리보기 없음·안내 글 옛것·기본 목록·카드 잇기·되돌리기 알림이 할 일 화면과 달랐음. 이제 addTaskFrom(같은 감쌈 전부)을 거치고,
+// 날짜·시각이 없으면 그 날(·그 시각)로. '3시'처럼 날짜 없는 말은 팝업 날짜 기준(BD132로 parseQuick에 baseDate를 넣음)
+var BD132=null;
+parseQuick=(function(prev){return function(raw,o){if(BD132&&!(o&&o.baseDate))o={...(o||{}),baseDate:BD132};return prev.call(this,raw,o)}})(parseQuick);
+function calCtx132(){const c=sheetCtx||{};if(c.cal58)return {id:'cal58Add',k:c.cal58.k,keep:1};if(c.cal57)return {id:'cal57Add',k:c.cal57.k,m:c.cal57.m,dur:c.cal57.dur};return null}
+function calP132(v,x){let p;BD132=x.k;try{p=parseQuick(v)}finally{BD132=null}if(!p.due)p.due=x.k;if(x.m!=null&&!p.time){p.time=hm(x.m);p.dur=p.dur||x.dur}return p}
+function calDeco132(){const x=calCtx132(),i=x&&$(x.id);if(!i||i.dataset.c132)return;i.dataset.c132=1;i.placeholder=PH78.replace(/^할 일 추가 · 내일 3시 30분/,x.m!=null?'할 일 · 30분 걸려요':'할 일 · 3시 30분');
+  i.title='알아듣는 말·기호: 3시 30분·11시부터 2시간 · 내일·금요일 · 9일 마감 · 매주·주에 3번 · #태그 · ! !! !!! 중요도 · ^목록 · @영역 · *구슬 · %관리(%14 = 14일마다) · 날짜를 안 적으면 이 날, Shift+Enter = 추가하고 자세히';
+  const f=i.closest('form');if(f&&!f.querySelector('.parse'))f.insertAdjacentHTML('beforeend','<div class="parse" id="c132p"></div>')}
+calAddDay=(function(prev){return function(){const r=prev.apply(this,arguments);try{calDeco132()}catch(e){console.error(e)}return r}})(calAddDay);
+calAddSheet=(function(prev){return function(){const r=prev.apply(this,arguments);try{calDeco132()}catch(e){console.error(e)}return r}})(calAddSheet);
+addEventListener('input',e=>{const x=calCtx132();if(!x||!e.target||e.target.id!==x.id)return;const o=$('c132p');if(!o)return;const v=e.target.value.trim();
+  try{o.innerHTML=v?parseChips(calP132(v,x)):''}catch(err){console.error(err)}},true);
+function calAdd132(open){const x=calCtx132(),i=x&&$(x.id);if(!i)return;const v=i.value.trim();if(!v){i.focus();return}
+  let t;BD132=x.k;try{t=addTaskFrom(v,{due:x.k})}finally{BD132=null}if(!t)return;
+  if(x.m!=null&&!t.time){t.time=hm(x.m);t.dur=t.dur||x.dur;saveTask(t);render()}
+  if(open){closeSheet();setTimeout(()=>openTaskSheet(t.id),40);return}
+  if(x.keep){i.value='';const o=$('c132p');if(o)o.innerHTML='';i.focus()}else closeSheet()}
+addEventListener('submit',e=>{const f=e.target;if(!f||!f.dataset||!(f.dataset.x58caladd||f.dataset.x57caladd))return;e.preventDefault();e.stopImmediatePropagation();calAdd132(false)},true);
+addEventListener('keydown',e=>{const x=calCtx132();if(!x||!e.target||e.target.id!==x.id||e.key!=='Enter')return;
+  if(e.isComposing||e.keyCode===229){return}   // 한글 조합 중 Enter는 글자 확정만
+  if(e.shiftKey){e.preventDefault();e.stopImmediatePropagation();calAdd132(true)}},true);
+
+// 미리보기 칩에 같은 글자가 두 번 나오던 것(예: '⏳ 마감' — 두 모듈이 각각 붙임) 하나로
+parseChips=(function(prev){return function(){const h=prev.apply(this,arguments);try{const seen=new Set();return String(h).replace(/<span\b[^>]*>([^<]*)<\/span>/g,(m,tx)=>{const k=tx.trim();if(k&&seen.has(k))return '';seen.add(k);return m})}catch(e){return h}}})(parseChips);
+
 /* ---------- F67 기능 지도 ---------- */
 F67=(function(prev){return function(){return prev.apply(this,arguments).filter(x=>!/캘린더 숨김/.test(x[0])).concat([
   ['📆 밀린 것 모두 내일로','할 일 → 오늘 → 맨 위 ⏳ 밀린 칩 펼치기 → 📆 모두 내일로','밀린 할 일을 한 번에 내일로 옮겨요. ☠ 미룸으로 안 세고, 알림에서 되돌릴 수 있어요',()=>{location.hash='tasks'},'밀린 내일 한꺼번에 미루기'],
   ['📅 ⚠ n일째 → 언제 했나 달력','할 일·관리 줄의 ⚠ n일째(또는 ⏳ n일째) 꼬리표 누르기','그 카드를 언제 했는지 달 달력에 ✓로 보여 줘요(‹ › 로 지난 달). 마지막으로 한 날·최근 30일 횟수도',()=>{location.hash='tasks'},'방치 경보 기록 달력 언제'],
   ['📦 관리 묶음 = 폴더','관리 할 일을 다른 관리 밑에 묶으면(예: 집 청소)','묶음 머리는 자기 차례·밀림이 없고 안의 관리가 각자 차례예요. 줄에 📦 n개 · 밀린 n · 오늘 n. 관리 창 위 📦 칩으로 접고 펴요',()=>{location.hash='tasks'},'관리 묶음 폴더 집 청소'],
+  ['📅 캘린더에서 할 일 추가 = 같은 입력','캘린더 → ＋ 할 일 · 날짜 두 번 누르기 · 빈 시간 우클릭(폰 꾹)','할 일 화면 입력칸과 같은 말·기호를 알아듣고 아래에 미리보기가 떠요(날짜를 안 적으면 그 날, 빈 시간 팝업은 그 시각). Shift+Enter = 추가하고 자세히',()=>{location.hash='cal'},'캘린더 추가 자연어 입력'],
   ['⋯ 할 일 보기 메뉴','할 일 화면 제목 줄 맨 오른쪽 ⋯','묶기·정렬·하나만 남기기·여러 개 고르기·목록 관리. 화면이 좁으면 제목 줄 단추가 이 메뉴로 들어가요',()=>{location.hash='tasks'},'묶기 정렬 메뉴 점점점']])}})(F67);

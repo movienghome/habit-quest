@@ -207,4 +207,26 @@ with sync_playwright() as pw:
     J(pg,"render()");pg.wait_for_timeout(300);ok(abs(J(pg,Hh)-h4)<4,f'[{W}] V8 다시 그려도 그 높이')
     pg.locator('#calPane .alltog').click();pg.wait_for_timeout(300);ok(J(pg,Hh)>h4+20,f'[{W}] V8 줄인 뒤에도 ▾로 다 펴짐')
     noerr(f'[{W}] V8');b.close()
+  # ---------- V9 캘린더 할 일 추가 = 같은 입력 ----------
+  if want('V9'):
+   for W,H,touch in SIZES:
+    b,pg=run2(pw,W,H,touch);J(pg,"location.hash='cal'");pg.wait_for_timeout(700)
+    k=J(pg,"addDays(midKey68(),2)");J(pg,f"calAddDay('{k}')");pg.wait_for_timeout(300)
+    ok('@영역' in J(pg,"document.getElementById('cal58Add').placeholder"),f'[{W}] V9 안내 글이 할 일 화면과 같은 기호',J(pg,"document.getElementById('cal58Add').placeholder"))
+    pg.locator('#cal58Add').fill('회의139 3시 !!');pg.wait_for_timeout(200)
+    pv=J(pg,"(document.getElementById('c132p')||{}).textContent||''")
+    ok('15:00' in pv and '!!' in pv,f'[{W}] V9 미리보기 칩',pv)
+    pg.locator('#cal58Add').press('Enter');pg.wait_for_timeout(500)
+    t=json.loads(J(pg,"JSON.stringify(Object.values(TASKS).filter(t=>t.title==='회의139')[0]||null)"))
+    ok(t and t['due']==k and t['time']=='15:00' and t.get('prio')==3,f'[{W}] V9 그 날·시각·중요도로 추가',t and (t['due'],t['time'],t.get('prio')))
+    ok('되돌리기' in J(pg,"document.getElementById('toast').textContent") and J(pg,"!document.getElementById('sheet').hidden && document.getElementById('cal58Add').value===''"),f'[{W}] V9 되돌리기 알림 · 창은 그대로(이어 적기)')
+    J(pg,"closeSheet()");J(pg,f"calAddSheet('{k}',600,60)");pg.wait_for_timeout(300)
+    pg.locator('#cal57Add').fill('#걷기 동네139');pg.wait_for_timeout(150)
+    ok('10:00' in J(pg,"(document.getElementById('c132p')||{}).textContent||''"),f'[{W}] V9 빈 시간 팝업 미리보기에 그 시각')
+    pg.locator('#cal57Add').press('Enter');pg.wait_for_timeout(500)
+    t=json.loads(J(pg,"JSON.stringify(Object.values(TASKS).filter(t=>t.title==='동네139')[0]||null)"))
+    ok(t and t['due']==k and t['time']=='10:00' and t['dur']==60 and 'tags' in t and '걷기' in t['tags'],f'[{W}] V9 빈 시간 팝업 → 그 시각·길이·태그',t and (t['due'],t['time'],t['dur'],t.get('tags')))
+    J(pg,f"calAddDay('{k}')");pg.wait_for_timeout(300);pg.locator('#cal58Add').fill('메모 정리');pg.locator('#cal58Add').press('Shift+Enter');pg.wait_for_timeout(600)
+    ok(J(pg,"!!(sheetCtx&&sheetCtx.task&&TASKS[sheetCtx.task]&&TASKS[sheetCtx.task].title==='메모 정리')"),f'[{W}] V9 Shift+Enter → 추가하고 자세히')
+    noerr(f'[{W}] V9');b.close()
 print('\nFAILS',len(FAILS));[print(' -',f) for f in FAILS]
