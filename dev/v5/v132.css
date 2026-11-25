@@ -1,0 +1,47 @@
+/* v13.4 (v132) */
+/* ① 할 일 '오늘': 밀린 칩은 맨 위(선 없이), 관리·끝냄은 맨 아래 */
+.tc131.top132{border-top:0;margin-top:0;padding-top:0;padding-bottom:6px}
+.tc131 .lt132,.tgroup.l132 .lt132{flex:none;white-space:nowrap;font-size:12.5px;padding:3px 9px}
+.lt132 small{opacity:.7}
+.tgroup.l132{position:relative}
+.tgroup.l132>.lt132{position:absolute;right:0;top:2px}
+/* ② 입력 줄 🧽 단추 = 같은 줄 다섯째 칸(둘째 줄로 꺾이지 않게) */
+form.tadd .in:has(>.c106b){grid-template-columns:minmax(0,1fr) auto auto auto auto}
+form.tadd.nr132 .in [data-tadd71] .l71{display:none}
+form.tadd.nr132 .in [data-tadd71]{padding-left:9px;padding-right:9px}
+form.tadd .in .c106b{min-height:0;align-self:stretch;padding:0 7px;font-size:14px}
+/* ③ 할 일 머리줄: 좁으면 덜 중요한 것부터 숨김(⋯ 메뉴에 있음) */
+.ptitle>.row select{flex:none!important}
+.ptitle.z1n132 #tCount,.ptitle.z1n132 .b93h .t93{display:none}
+.ptitle.z2n132 #tGroup,.ptitle.z2n132 #tSort{display:none}
+.ptitle.z3n132 .b93h,.ptitle.z3n132 #tSelBtn{display:none}
+.ptitle.z4n132>h2{max-width:28%}
+.ptitle #tMenu{flex:none}
+.m132{display:flex;flex-wrap:wrap;gap:4px;padding:2px 10px 6px;max-width:300px}
+.m132 .chipbtn{font-size:12.5px;padding:3px 9px}
+.m132 .chipbtn[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+/* ⑤ ⚠ n일째 → 기록 달력 */
+.a131{cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px}
+.rc132{padding:4px 10px 6px;width:252px}
+.rc132h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.rc132g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.rc132w{font-size:11px;color:var(--muted);padding:2px 0}
+.rc132d{position:relative;font-size:12px;padding:4px 0 3px;border-radius:6px;border:1px solid transparent;line-height:1.1}
+.rc132d.o{opacity:.35}
+.rc132d.fu{color:var(--muted)}
+.rc132d.ok{background:var(--ink);color:var(--panel);font-weight:700}
+.rc132d.ok i{display:block;font-style:normal;font-size:10px;line-height:1}
+.rc132d.td{border-color:var(--ink);border-width:2px}
+.rc132s{margin-top:6px}
+/* ⑥ 관리 묶음 = 폴더 */
+.trow .kcount.f132 b{color:var(--bad);font-weight:700}
+.trow .tchk.f132{border-style:dashed;opacity:.55}
+.trow .tx.f132x{visibility:hidden}
+.f132r .chipbtn{font-size:12.5px;padding:3px 9px}
+.f132r .chipbtn[aria-pressed="false"]{opacity:.7}
+/* ⑦ 🙈 n개 숨김 칩은 안 보임(⚲ 단추 숫자로 충분) */
+.calbar2 .h72{display:none!important}
+/* ⑧ 종일 칸 접기 표시 */
+.alltog .ar132{margin-left:2px}
+.tgall>div:first-child{cursor:pointer}
+.allrz{height:9px}

@@ -139,14 +139,20 @@ window.sortCare128=(a,s)=>sortCare128(a,s||C128().s);window.SORTS128=SORTS;windo
 function listOf(){const c=C128(),k=kK(),q=D.q.trim().toLowerCase();
   let a=careAll76().filter(t=>!q||String(t.title).toLowerCase().includes(q));
   if(c.f==='due')a=a.filter(t=>t.due&&t.due<=k);else if(c.f==='un')a=a.filter(t=>!plOn126(t));else if(c.f==='pl')a=a.filter(t=>plOn126(t));
+  if(c.fh&&!q)a=a.filter(t=>!(t.parent&&c.fh[t.parent]&&TASKS[t.parent]&&window.isFold132&&window.isFold132(TASKS[t.parent])));   // v13.4: 📦 묶음 칩으로 접은 하위는 숨김(찾을 땐 다 보임)
   return sortCare128(a,c.s)}
+/* v13.4: 관리 묶음(폴더) 칩 줄 — 머리는 관리 목록에서 빠지고(w132 careAll76), 하위를 접고 펴는 칩만 */
+function foldRow132(){if(!window.isFold132)return '';const c=C128(),k=kK(),fs=Object.values(TASKS).filter(t=>window.isFold132(t));if(!fs.length)return '';
+  return `<div class="row d128f f132r" style="gap:6px;flex-wrap:wrap;margin-top:6px">${fs.map(t=>{const ks=window.foldKids132(t),n=ks.filter(x=>x.due&&x.due<=k).length,sh=!!(c.fh&&c.fh[t.id]);
+    return `<button type="button" class="chipbtn" data-f132c="${esc(t.id)}" aria-pressed="${!sh}" title="📦 ${esc(t.title)} 묶음 — 눌러서 안의 관리 ${sh?'펴기':'접기'}">📦 ${esc(t.title)} <b>${n}</b>/${ks.length} ${sh?'▸':'▾'}</button>`}).join('')}</div>`}
 const sumMin=ts=>ts.reduce((s,t)=>s+(+t.dur||30),0);
 const wkT=t=>t.rep&&t.rep.f==='x'?`이번 주 ${wkCnt91(t,weekStart(tdK()))}/${+t.rep.n||3}`:'';
 const plTxt=t=>{const td=tdK();return (t.cs126.d===td?'오늘':t.cs126.d===addDays(td,1)?'내일':fmtD(t.cs126.d))+(t.cs126.m?' '+t.cs126.m:'')};
 function rowH(t,c,prevL){const td=tdK(),k=kK(),on=plOn126(t),sel=D.sel.has(t.id),dueNow=t.due&&t.due<=k,late=late76(t,k),id=esc(t.id);
   const head=c.s==='list'&&lname(t)!==prevL?`<div class="tgh66"><span>📂 ${esc(lname(t)||'목록 없음')}</span></div>`:'';
   const st=on?'놓음':late?'⏳ 때 지남 '+late+'일':dueNow?(k===td?'오늘 차례':dayName68(k)+' 차례'):(when76(t,td)||'날짜 없음');
-  const sub=[wkT(t),st,t.dur?'⏱'+dL(+t.dur):'',repLabel(t.rep)].filter(Boolean).join(' · ');
+  const pf=t.parent&&TASKS[t.parent]&&window.isFold132&&window.isFold132(TASKS[t.parent])?'📦 '+TASKS[t.parent].title:'';   // v13.4: 묶음 하위는 묶음 이름
+  const sub=[pf,wkT(t),st,t.dur?'⏱'+dL(+t.dur):'',repLabel(t.rep)].filter(Boolean).join(' · ');
   return head+`<div class="d128r dg129${sel?' sel':''}${dueNow&&!on?' due':''}${late?' late':''}" data-d128r="${id}" data-k129="1" data-drag="task:${id}" data-dragmode="hold">
     <button type="button" class="tchk" data-tdone="${id}" aria-label="${esc(t.title)} 했어요"></button>
     ${D.multi?`<label class="d128c"><input type="checkbox" data-d128s="${id}"${sel?' checked':''} aria-label="${esc(t.title)} 고르기"></label>`:''}
@@ -190,6 +196,7 @@ function sheetH(){const c=C128(),td=tdK(),k=kK(),all=careAll76(),pl=all.filter(p
     <div class="row d128f" style="gap:6px;flex-wrap:wrap;align-items:center"><select data-d128sort="1" aria-label="정렬">${SORTS.map(([s,l])=>`<option value="${s}"${c.s===s?' selected':''}>↕ ${l}</option>`).join('')}</select>
       ${FILT.map(([f,l])=>`<button type="button" class="chipbtn" data-d128f="${f}" aria-pressed="${c.f===f}">${l}</button>`).join('')}</div>
     <div class="row d128f" style="gap:6px;align-items:center;margin-top:6px"><input type="search" id="d128q" placeholder="관리 찾기 · 전체 ${all.length}개${pl?' · 놓음 '+pl+'개':''}" value="${esc(D.q)}" aria-label="관리 찾기" style="flex:1;min-width:0"><button type="button" class="chipbtn" data-d130m="1" aria-pressed="${D.multi}" title="여러 개 골라 한꺼번에 놓기·빼기·끝내기">☑ 여러 개</button></div>
+    ${foldRow132()}
     <div id="d128bar">${barH()}</div>
     <div id="d128list">${listH()}</div>
     ${doneH()}${questH()}${wkH()}${setH()}`}
