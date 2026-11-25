@@ -20,6 +20,8 @@ function habLinkSync(){
   try{const td=dateKey(),day=DAYS[td];if(!day)return;
     Object.values(TASKS).forEach(t=>{
       if(!(t.hab&&t.status===0&&t.rep&&t.due&&t.due<=td))return;
+      // v13.7b: 오늘 끝낸 기록(e.tid)이 있고 t.last도 오늘인데 due가 안 넘어간 어긋남(다른 기기가 옛 값으로 덮은 뒤 등)은 다음 차례로 고침 — 안 고치면 일퀘 칸이 계속 '대기'
+      if(t.last===td&&(day.entries||[]).some(e=>e.tid===t.id)){let nx=nextDue(t.rep,t.due);while(nx&&nx<=td)nx=nextDue(t.rep,nx);if(nx){t.due=nx;saveTask(t)}return}
       const a=C.actions.find(x=>x.id===t.aid);if(!a||!a.link||!linkMet(a,day))return;
       if((day.entries||[]).some(e=>e.tid===t.id))return;
       const qid=t.qid||('q'+t.id);
