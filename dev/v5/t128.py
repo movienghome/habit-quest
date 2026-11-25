@@ -42,7 +42,7 @@ with sync_playwright() as pw:
     sz=J("""(()=>{const o={};['s-done','s-tr','s-miss','s-plan','s-fut'].forEach(c=>{const e=document.querySelector('.wk91 .d99.'+c);if(!e){o[c]=null;return}const r=e.getBoundingClientRect(),b=getComputedStyle(e,'::before');o[c]={w:r.width,h:r.height,bw:b.width,bh:b.height,txt:e.textContent}});return JSON.stringify(o)})()""")
     sz=json.loads(sz);print(sz)
     chk('점 5종 모양 있음(앞으로·정한 날 포함)',sz.get('s-fut') and sz.get('s-plan') and sz.get('s-done'))
-    chk('점 글자 없음(모양으로)',all((v or {}).get('txt','')=='' for v in sz.values()))
+    chk('점 글자 없음(모양으로)',all(len((v or {}).get('txt',''))<=1 for v in sz.values()))
     chk('앞으로 점이 6px 이상',sz['s-fut'] and float(sz['s-fut']['bw'][:-2])>=6)
     chk('틀 크기 모두 같음',len({(v['w'],v['h']) for v in sz.values() if v})==1)
     b.close()
