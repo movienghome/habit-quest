@@ -22,6 +22,20 @@ async function start() {
   try { fs = F.initializeFirestore(app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) }); }
   catch (e) { fs = F.getFirestore(app); }
 
+  /* ---------- v13.15: 숨은 탭은 10분 뒤 서버 연결을 끊어 둠 ----------
+     Firebase는 30분 넘게 끊겼다 다시 이어진 실시간 연결을 '처음부터 전부 다시 읽기'로 세어요(기록 400일·할 일 60일치 ≈ 수천 건).
+     사물함에 넣어 둔 노트북이 절전·업데이트로 깨어날 때마다 이게 반복돼 하루 읽기 한도(5만)를 새벽에 다 썼어요(11/15·11/26 '저장 안 됨').
+     숨은 지 10분이 지나면 연결을 끊고, 화면이 다시 보일 때 이어 붙여요. 아직 안 올린 저장이 있으면 끊지 않고 기다려요. */
+  let hideT = null, netOff = false;
+  const goOff = () => {
+    hideT = null; if (netOff || !document.hidden) return;
+    if ((window.__hqBusy && window.__hqBusy()) || window.HQ_PENDING) { hideT = setTimeout(goOff, 30000); return; }
+    netOff = true; F.disableNetwork(fs).catch(() => {});
+  };
+  const goOn = () => { clearTimeout(hideT); hideT = null; if (netOff) { netOff = false; F.enableNetwork(fs).catch(() => {}); } };
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { clearTimeout(hideT); hideT = setTimeout(goOff, 10 * 60 * 1000); } else goOn(); });
+  addEventListener('pageshow', goOn); addEventListener('online', () => { if (!document.hidden) goOn(); });
+
   /* ---------- 로그인 화면 ---------- */
   let signup = false;
   const msg = $('#gmsg'), err = $('#gerr'), sub = $('#gsubmit'), mode = $('#gmode');

@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.14</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.15</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2974,6 +2974,31 @@ body.dragging.rs134,body.dragging.rs134 *{cursor:ns-resize!important}
 /* 좁은 카드(폰·3단): 합계를 시각 줄 오른쪽으로, 요일은 다음 줄 */
 .pc135{container-type:inline-size}
 @container (max-width:440px){.ph135 .sm135{order:1}.ph135 .wr135{order:2;width:100%}}
+
+/* v13.15 (w141) */
+.aqb141{margin-left:auto;margin-right:6px;padding:2px 9px;font-size:14px}
+.aqb141[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.aq141{display:flex;gap:6px;align-items:center;margin:2px 0 6px}
+.aq141 input{flex:1;min-width:0;padding:6px 12px;border-radius:999px;font-size:14px}
+.aq141d{margin:6px 0 2px}
+.aq141c{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+#actGroups .add141{grid-column:1/-1}
+#actGroups .add141t{display:flex;align-items:center;justify-content:center;gap:4px;min-height:32px;padding:4px 10px;border:1.5px dashed var(--line);border-radius:10px;background:transparent;color:var(--muted);font-size:13px;cursor:pointer;width:100%}
+#actGroups .add141t:hover,#actGroups .add141t:focus-visible{border-color:var(--accent);color:var(--accent)}
+#actGroups .add141f{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px;border:1.5px solid var(--accent);border-radius:10px}
+#actGroups .add141f input{flex:1 1 140px;min-width:0;padding:6px 10px;font-size:14px}
+#actGroups .add141f select{padding:5px 6px;font-size:13px}
+#meal141 .m141m{display:flex;flex-direction:column;gap:6px}
+#meal141 .m141r{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#meal141 .m141c{justify-content:flex-start}
+#meal141 .m141n{font-weight:600;font-size:14px}
+#meal141 .stepper{display:inline-flex;align-items:center;gap:8px}
+#meal141 .stepper button{min-width:38px;min-height:34px}
+#meal141 .stepper .v.neg{color:var(--bad)}
+#meal141 .m141p{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+#meal141 .p141{padding:6px 12px;font-size:13px}
+#meal141 .p141.on{text-decoration:line-through;opacity:.85}
+#meal141 .m141h{margin-top:8px}
 </style>
 
 <header class="hud" id="hud">
@@ -3021,6 +3046,7 @@ body.dragging.rs134,body.dragging.rs134 *{cursor:ns-resize!important}
         <div id="htList"></div></div></div>
       <div class="hblock" data-hid="gacha"><div class="panel"><div class="ptitle"><h2>🎲 뽑기 · ⏱ 사냥</h2><span class="row" style="gap:2px"><a class="small" href="#gacha" style="color:var(--accent)">뽑기 열기</a><button class="colbtn" data-collapse="gacha" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div>
         <div class="hgacha" id="hGacha"></div></div></div>
+      <div class="hblock" data-hid="meal141"><div class="panel"><div class="ptitle"><h2>🍽 식사 · 자주 쓰는 것</h2><span class="row" style="gap:2px"><a class="small" href="#log" style="color:var(--accent)">기록하기</a><button class="colbtn" data-collapse="meal141" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div id="meal141"></div></div></div>
       <div class="hblock" data-hid="sugg"><div class="panel"><div class="ptitle"><h2>지금 하면 좋은 것</h2><span class="row" style="gap:2px"><button class="qbtn" data-guide="flow" aria-label="설명">?</button><button class="colbtn" data-collapse="sugg" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div class="sugg" id="sugg"></div></div></div>
       <div class="hblock" data-hid="quests"><div class="panel">
           <div class="ptitle"><h2>오늘의 일퀘</h2><span class="row" style="gap:2px"><span class="small muted num" id="questCount"></span><button class="qbtn" data-guide="quest" aria-label="설명">?</button><button class="colbtn" data-collapse="quests" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div>
@@ -10779,13 +10805,44 @@ function adopt69(n,d){
   else if(n==='progress'){P=normProgress(d)}
   else if(n.startsWith('t:')){const id=n.slice(2);if(d==null){delete TASKS[id]}else{const t=clone(d);t.id=id;TASKS[id]=t}}
   else if(n!=='local'){DAYS[n]=normDay(n,d)}}
-var ERRK69={'invalid-argument':'저장할 수 없는 모양의 기록','permission-denied':'저장 권한 없음(로그인 확인)','too-big':'설정이 너무 커요','resource-exhausted':'오늘 저장 한도에 닿았어요'};
+var ERRK69={'invalid-argument':'저장할 수 없는 모양의 기록','permission-denied':'저장 권한 없음(로그인 확인)','too-big':'설정이 너무 커요','resource-exhausted':'Firebase 무료 한도(읽기·쓰기)에 닿았어요 · 이 기기에 보관했다가 한도가 풀리면(한국시간 오후 5시쯤) 저절로 올려요 — 탭을 닫아도 보관돼요'};
 function err69(n,e){ERR69[n]={code:(e&&e.code)||'?',msg:String((e&&e.message)||e||'').slice(0,160),at:Date.now()};errBar69()}
 function errBar69(){let el=$('err69');const ks=Object.keys(ERR69);if(!ks.length){if(el)el.remove();return}
   if(!el){el=document.createElement('div');el.id='err69';el.setAttribute('role','alert');document.body.appendChild(el)}
   const e=ERR69[ks[0]];el.innerHTML=`<b>⚠ 저장 안 됨</b> <span>${esc(ERRK69[e.code]||e.code)} · ${esc(ks.map(k=>k==='config'?'설정':k==='progress'?'진행':k.startsWith('t:')?'할 일':k).filter((x,i,a)=>a.indexOf(x)===i).join(', '))}</span> <button type="button" data-err69="retry">다시 시도</button><button type="button" data-err69="x" aria-label="닫기">×</button><small>${esc(e.msg)}</small>`}
 addEventListener('click',e=>{const b=e.target.closest('[data-err69]');if(!b)return;const k=b.dataset.err69;const ks=Object.keys(ERR69);ERR69={};errBar69();if(k==='retry')ks.forEach(n=>{BACK69[n]=0;save(n)})},true);
 const TRANS69=['unavailable','aborted','deadline-exceeded','failed-precondition','cancelled','unknown','internal'];
+// v13.15(w141 아님·여기): 저장이 안 된 변경을 이 기기에 보관 → 새로고침·닫기 뒤에도 안 사라지고, 서버 것과 합쳐 다시 올림
+// (원인: Firebase 읽기 한도(5만/일)에 닿으면 합치기 저장이 거절되는데, 다시 열면 서버의 옛 값이 화면 사본을 덮어 '등록한 카드·바꾼 설정'이 되돌아간 것처럼 보임)
+const PEND141='hq-pend'+(location.pathname.includes('/beta/')?'-b':'');
+function pendRead141(){try{return JSON.parse(localStorage.getItem(PEND141))||{}}catch(e){return {}}}
+function pendWrite141(o){try{if(Object.keys(o).length)localStorage.setItem(PEND141,JSON.stringify(o));else localStorage.removeItem(PEND141)}catch(e){console.error('보관 실패',e)}}
+function pendPut141(n,base,mine){
+  try{const o=pendRead141();
+    if(n==='config'||n==='progress'){const m={},b={},bs=isObj69(base)?base:{};
+      Object.keys(mine).forEach(k=>{if(!deq69(mine[k],bs[k])){m[k]=mine[k];if(bs[k]!==undefined)b[k]=bs[k]}});
+      Object.keys(bs).forEach(k=>{if(mine[k]===undefined&&bs[k]!==undefined){m[k]=null;b[k]=bs[k]}});   // null = 내가 지움
+      if(Object.keys(m).length)o[n]={m,b,at:Date.now()};else delete o[n]}
+    else o[n]={m:mine,b:base===undefined?null:base,at:Date.now()};
+    pendWrite141(o)}catch(e){console.error(e)}}
+function pendDrop141(n){try{const o=pendRead141();if(o[n]){delete o[n];pendWrite141(o)}}catch(e){}}
+function pendRestore141(){
+  const o=pendRead141();let n0=0;
+  Object.keys(o).forEach(n=>{const p=o[n];if(!p||!p.m)return;
+    if(Date.now()-(p.at||0)>7*86400000){delete o[n];return}   // 일주일 넘은 보관본은 버림
+    try{
+      if(n==='config'||n==='progress'){const cur=n==='config'?C:P;
+        Object.keys(p.m).forEach(k=>{const mv=p.m[k],bv=p.b?p.b[k]:undefined;
+          if(mv===null){if(deq69(cur[k],bv))delete cur[k];return}
+          cur[k]=cur[k]===undefined?clone(mv):merge3(bv,mv,cur[k],n==='progress')});
+        save(n);n0++}
+      else if(n.startsWith('t:')){const id=n.slice(2),cur=TASKS[id];TASKS[id]=cur?merge3(p.b,p.m,clone(cur)):clone(p.m);TASKS[id].id=id;save(n);n0++}
+      else{const cur=DAYS[n];DAYS[n]=normDay(n,cur?merge3(p.b,p.m,clone(cur)):p.m);save(n);n0++}
+    }catch(e){console.error('보관본 합치기 실패',n,e)}});
+  pendWrite141(o);
+  if(n0)later(()=>toast('저장 못 했던 변경 '+n0+'건을 이 기기 보관본에서 되살려 다시 올려요',5000))}
+addEventListener('pagehide',()=>{try{dirty.forEach(n=>{const body=bodyOf(n);if(body)pendPut141(n,BASE69[n],clone(body))})}catch(e){}});
+window.__hqBusy=()=>dirty.size>0||Object.keys(writing).some(k=>writing[k]);
 async function flush(n){
   if(mode==='local'){dirty.delete(n);try{localStorage.setItem(LKEY,JSON.stringify({C,P,DAYS,TASKS}))}catch(e){}return}
   if(mode!=='db')return;
@@ -10805,9 +10862,13 @@ async function flush(n){
     BASE69[n]=clone(res);delete ERR69[n];BACK69[n]=0;errBar69();
     if(!deq69(res,mine)){ // 그 사이 서버(다른 기기)에 바뀐 게 있었음 → 내 화면에도 합쳐 넣기
       const now=bodyOf(n);adopt69(n,now&&rev[n]!==r?merge3(mine,clone(now),res):res);render()}
-    if(rev[n]===r)dirty.delete(n);else timers[n]=setTimeout(()=>flush(n),200);
+    if(rev[n]===r){dirty.delete(n);pendDrop141(n)}else timers[n]=setTimeout(()=>flush(n),200);
     setSync('저장됨 · 모든 기기에서 같은 기록')}
   catch(e){const code=e&&e.code;
+    try{pendPut141(n,base,mine)}catch(x){}
+    if(code==='resource-exhausted'){ // 무료 한도: 포기하지 않고 5분~30분 간격으로 계속 시도(보관본은 이미 기기에 있음)
+      const w=BACK69[n]=Math.min(1800000,Math.max(300000,(BACK69[n]>=300000?BACK69[n]*2:300000)));
+      err69(n,e);setSync('저장 한도 · 이 기기에 보관 중 · '+Math.round(w/60000)+'분 뒤 다시 시도');timers[n]=setTimeout(()=>flush(n),w);return}
     if((!code||TRANS69.includes(code))&&(BACK69[n]||0)>=4000){ // 합치기가 두 번 넘게 안 되면(연결 불안정) 기기 사본에 쓰고 연결되면 올라가게 — 앱을 닫아도 안 사라져요
       try{await db.doc(docPath(n)).set(mine);BASE69[n]=clone(mine);BACK69[n]=0;if(rev[n]===r)dirty.delete(n);setSync('이 기기에 저장 · 연결되면 올라가요');return}catch(e2){}}
     if(!code||TRANS69.includes(code)){const w=BACK69[n]=Math.min(30000,(BACK69[n]||1000)*2);setSync('저장 대기 중 · 연결되면 올려요');timers[n]=setTimeout(()=>flush(n),w);if(w>=16000)err69(n,e)}
@@ -10820,6 +10881,7 @@ async function boot(){
   let d=null;
   try{d=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){d=null}
   const afterLoad=()=>{
+    try{pendRestore141()}catch(e){console.error(e)}
     if(rawCfgV!==null&&rawCfgV<8){save('config');}
     if(C._pendingTasks){const ps=C._pendingTasks;delete C._pendingTasks;ps.forEach(p=>saveTask(newTask({...p,due:dateKey()})));save('config')}
     ['v54news','v53news','v51news','v5news'].forEach(k=>{if(C[k]){delete C[k];save('config')}});
@@ -19267,6 +19329,187 @@ function heal139(){
     HC139[t.id]=(HC139[t.id]||0)+1;t.due=nd;saveTask(t);n++});
   return n}
 render=(function(prev){return function(){try{heal139()}catch(e){console.error(e)}return prev.apply(this,arguments)}})(render);
+
+/* v13.15 (w141): 11/26 써 보고 요청 묶음
+   ① 기록하기 → 행동/습관: 🔍 카드 찾기(제목줄 🔍 → 찾기 줄) — 칠 때 '좋은' 거르기·접힌 영역과 상관없이 전체에서 찾음 · 끝낸 '한 번' 카드도 함께(↩ 반복 카드로 되살리기)
+   ② 영역마다 끝에 `＋ 새 카드` 타일 → 그 자리에서 이름·좋은/나쁜·반복/한 번만 고르고 추가(맨 아래까지 안 내려가도 됨)
+   ③ '그냥 한 일'(홈 오늘 ✓ · 빠른 기록)은 카드를 안 만듦 → 알림에 `🃏 카드로 만들기` (옛 '한 번' 카드는 doneAt이 있으면 목록에서 빠져 있음 → ①의 찾기 줄에서 되살림)
+   ④ 주 N회 칩을 날짜에 놓은 뒤 '오늘은 건너뛰기' → 오늘 자리(t.sl91[오늘])를 빼서 캘린더에서 사라짐(되돌리기 있음)
+   ⑤ 🛏 어젯밤 창 저장 → '7시간 이상 잤다'(오늘, 일어난 시각) · '늦게 잠'(어제, 잠든 시각의 세부 옵션)을 자동 기록/고침/지움(e.sl141 표시 — 직접 적은 기록은 안 건드림)
+   ⑥ 홈 `🍽 식사 · 자주 쓰는 것` 칸: 식사 항목(± / 체크)과 기록하기에서 📌 고정한 행동을 홈에서 바로 기록(C.pin133 그대로) */
+(function(){
+const NORM141=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
+const aq=()=>String(ui.aq141||'').trim();
+
+/* ---------- ① 찾기 ---------- */
+renderLog=(function(prev){return function(){
+  const q=aq();let ov=null;
+  if(q){ov={f:C.ui.list.filter,c:C.ui.collapsed};C.ui.list.filter='all';C.ui.collapsed={}}   // 찾는 동안만 전체·펼침으로 그림(저장 안 됨)
+  let r;try{r=prev.apply(this,arguments)}finally{if(ov){C.ui.list.filter=ov.f;C.ui.collapsed=ov.c}}
+  try{log141()}catch(e){console.error(e)}
+  return r}})(renderLog);
+
+function panel141(){const g=$('actGroups');return g&&g.closest('.panel')}
+function ensureUi141(){
+  const P=panel141();if(!P)return;
+  const tt=P.querySelector('.ptitle');
+  if(tt&&!tt.querySelector('#aqb141')){
+    const b=document.createElement('button');b.type='button';b.id='aqb141';b.className='chipbtn aqb141';b.textContent='🔍';b.title='행동/습관 카드 찾기';b.setAttribute('aria-label','카드 찾기');
+    const a=tt.querySelector('a[data-goedit]');if(a)a.before(b);else tt.appendChild(b)}
+  if(!$('aq141')){
+    const row=document.createElement('div');row.id='aq141';row.className='aq141';row.hidden=true;
+    row.innerHTML='<input id="aq141i" type="search" placeholder="🔍 카드 찾기 (이름·영역·점수)" autocomplete="off" enterkeyhint="search" aria-label="행동 습관 카드 찾기"><span class="tiny muted" id="aq141n"></span><button type="button" class="chipbtn" id="aq141x" aria-label="찾기 닫기">닫기</button>';
+    const tl=$('actTools');tl.parentNode.insertBefore(row,tl)}
+  if(!$('aq141d')){const d=document.createElement('div');d.id='aq141d';d.className='aq141d';d.hidden=true;const g=$('actGroups');g.parentNode.insertBefore(d,g.nextSibling)}
+}
+function log141(){
+  ensureUi141();
+  const row=$('aq141'),inp=$('aq141i'),open=!!ui.aq141open||!!aq();
+  if(!row)return;
+  row.hidden=!open;
+  const b=$('aqb141');if(b)b.setAttribute('aria-pressed',String(open));
+  if(inp&&document.activeElement!==inp&&inp.value!==(ui.aq141||''))inp.value=ui.aq141||'';
+  const G=$('actGroups'),q=NORM141(aq()),toks=aq().split(/\s+/).filter(Boolean).map(NORM141);
+  // 찾기 적용: 안 맞는 줄·빈 묶음 숨김
+  let shown=0,total=0;
+  if(toks.length){
+    const heads=new Map();G.querySelectorAll('.ghead').forEach(h=>{const n=h.nextElementSibling;if(n&&n.classList.contains('acts'))heads.set(n,NORM141(h.textContent))});
+    G.querySelectorAll('.act[data-info^="act:"]').forEach(r=>{total++;
+      const ac=r.closest('.acts'),gt=(ac&&heads.get(ac))||'',txt=NORM141(r.textContent)+gt;
+      const ok=toks.every(t=>txt.includes(t));r.hidden=!ok;if(ok)shown++;else r.style.display='none'});
+    const hideIf=(el,sel)=>{if(!el.querySelector(sel+':not([hidden])')){el.hidden=true;el.style.display='none'}};
+    G.querySelectorAll('.acts').forEach(a=>{hideIf(a,'.act[data-info^="act:"]');const h=a.previousElementSibling;if(h&&h.classList.contains('ghead')&&a.hidden){h.hidden=true;h.style.display='none'}});
+    G.querySelectorAll('.ghead').forEach(h=>{const n=h.nextElementSibling;if(!n||!n.classList.contains('acts')){if(!h.closest('.now96w')){h.hidden=true;h.style.display='none'}}});
+    G.querySelectorAll('.now96w,.pin133').forEach(w=>hideIf(w,'.act[data-info^="act:"]'));
+    G.querySelectorAll('.now96w').forEach(w=>{if(w.hidden)w.style.display='none'});
+  }
+  const nEl=$('aq141n');if(nEl)nEl.textContent=toks.length?`${shown}개 찾음`:'';
+  // 끝낸 '한 번' 카드(목록에서 빠진 것): 찾기 줄이 열려 있을 때만
+  const D=$('aq141d');
+  if(D){const done=open?C.actions.filter(a=>a.once&&a.doneAt&&(!toks.length||toks.every(t=>NORM141(a.name+' '+((C.areas.find(z=>z.id===a.area)||{}).name||'')).includes(t)))):[];
+    D.hidden=!done.length;
+    D.innerHTML=done.length?`<div class="tiny muted">✓ 끝낸 '한 번' 카드 ${done.length}개 — 한 번 기록하면 목록에서 빠지는 카드예요. 누르면 반복 카드로 되살려요.</div><div class="aq141c">${done.slice(0,30).map(a=>`<button type="button" class="chipbtn" data-rev141="${esc(a.id)}">↩ ${esc(a.name)} <small class="muted">${esc(a.doneAt)}</small></button>`).join('')}</div>`:''}
+  // ② 영역마다 ＋ 새 카드
+  G.querySelectorAll('.add141').forEach(x=>x.remove());
+  if(!toks.length&&(C.ui.list||{}).group==='area'){
+    G.querySelectorAll('.ghead[data-gcollapse^="a:"]').forEach(h=>{const ac=h.nextElementSibling;if(!ac||!ac.classList.contains('acts'))return;
+      const id=h.dataset.gcollapse.slice(2);
+      if(ui.add141===id){
+        const f=document.createElement('form');f.className='add141 add141f';f.dataset.area=id;
+        const bad=(C.ui.list||{}).filter==='bad';
+        f.innerHTML=`<input maxlength="40" placeholder="새 카드 이름" value="${esc(ui.add141v||'')}" autocomplete="off" enterkeyhint="done" aria-label="새 카드 이름"><select aria-label="좋은 나쁜"><option value="good"${bad?'':' selected'}>▲ 좋은</option><option value="bad"${bad?' selected':''}>▼ 나쁜</option></select><select aria-label="반복 한 번"><option value="">반복</option><option value="1">한 번</option></select><button type="submit" class="btn sm">추가</button><button type="button" class="chipbtn" data-x141="1" aria-label="닫기">×</button>`;
+        ac.appendChild(f)}
+      else{const t=document.createElement('button');t.type='button';t.className='add141 add141t';t.dataset.add141=id;t.setAttribute('aria-label',(h.textContent||'').trim().replace(/\s+\d+$/,'')+' 영역에 새 카드 추가');t.textContent='＋ 새 카드';ac.appendChild(t)}})}
+}
+addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
+  if((b=T.closest('#aqb141'))){e.preventDefault();e.stopPropagation();ui.aq141open=!(ui.aq141open||aq());if(!ui.aq141open)ui.aq141='';renderLog();if(ui.aq141open){const i=$('aq141i');i&&i.focus()}return}
+  if((b=T.closest('#aq141x'))){e.preventDefault();e.stopPropagation();ui.aq141open=false;ui.aq141='';renderLog();return}
+  if((b=T.closest('[data-rev141]'))){e.preventDefault();e.stopPropagation();const a=C.actions.find(x=>x.id===b.dataset.rev141);if(!a)return;delete a.once;delete a.doneAt;save('config');render();toast(`↩ '${a.name}' 카드를 반복 카드로 되살렸어요`);return}
+  if((b=T.closest('[data-add141]'))){e.preventDefault();e.stopPropagation();ui.add141=b.dataset.add141;ui.add141v='';renderLog();const i=document.querySelector('.add141f input');i&&i.focus();return}
+  if((b=T.closest('[data-x141]'))){e.preventDefault();e.stopPropagation();ui.add141=null;ui.add141v='';renderLog();return}
+},true);
+addEventListener('submit',e=>{const f=e.target&&e.target.closest&&e.target.closest('form.add141f');if(!f)return;e.preventDefault();e.stopPropagation();
+  if(!ready)return;
+  const inp=f.querySelector('input'),sel=f.querySelectorAll('select'),name=inp.value.trim();
+  if(!name){inp.focus();toast('카드 이름을 먼저 적어주세요');return}
+  const id=f.dataset.area,type=sel[0].value,once=sel[1].value;
+  const a=newAction(uid(),name,type,id,once);
+  let at=-1;C.actions.forEach((x,i)=>{if(x.area===id&&x.type===type)at=i});if(at<0)C.actions.forEach((x,i)=>{if(x.area===id)at=i});
+  if(at>=0)C.actions.splice(at+1,0,a);else C.actions.push(a);
+  ui.add141=null;ui.add141v='';save('config');render();
+  toast(`'${name}' 추가했어요${once?' (한 번)':''}. 이름을 누르면 점수를 바꿔요`)},true);
+addEventListener('input',e=>{const t=e.target;if(!t)return;
+  if(t.id==='aq141i'){if(e.isComposing||t===CMP141)return;ui.aq141=t.value;aqRun141()}
+  else if(t.closest&&t.closest('form.add141f')&&t.tagName==='INPUT'){ui.add141v=t.value}},true);
+let CMP141=null;
+addEventListener('compositionstart',e=>{if(e.target&&e.target.id==='aq141i')CMP141=e.target},true);
+addEventListener('compositionend',e=>{const t=e.target;if(t&&t.id==='aq141i'){CMP141=null;ui.aq141=t.value;aqRun141()}},true);
+addEventListener('keydown',e=>{const t=e.target;if(t&&t.id==='aq141i'&&e.key==='Escape'){ui.aq141open=false;ui.aq141='';renderLog()}},true);
+let AQT=0;
+function aqRun141(){clearTimeout(AQT);AQT=setTimeout(()=>{const i=$('aq141i'),pos=i?i.selectionStart:0;renderLog();const j=$('aq141i');if(j&&document.activeElement!==j){j.focus();try{j.setSelectionRange(pos,pos)}catch(x){}}},120)}
+
+/* ---------- ③ 그냥 한 일 → 카드로 만들기 · '한 번' 카드 안내 ---------- */
+function makeCard141(name,size,area){
+  const sz=(typeof FREE_SIZES!=='undefined'&&FREE_SIZES.find(x=>x[0]===size))||['m','보통 일',10];
+  const a=newAction(uid(),name,'good',area||C.areas[0].id,'');a.xp=sz[2];a.cond=Math.round(sz[2]/3);a.gold=Math.round(sz[2]/4);
+  C.actions.push(a);save('config');render();toast(`🃏 '${name}' 카드가 생겼어요 · 기록하기 → 행동/습관에서 찾아요`)}
+if(typeof doFree==='function'){doFree=(function(prev){return function(name,size,area){const r=prev.apply(this,arguments);
+  try{if(name&&!C.actions.some(a=>a.name===name&&!a.doneAt))setTimeout(()=>toastAct(`'${name}' 그냥 한 일로 기록했어요 (카드는 안 만들어져요)`,'🃏 카드로 만들기',()=>makeCard141(name,size,area),8000),80)}catch(e){console.error(e)}return r}})(doFree)}
+
+/* ---------- ④ 주 N회 칩 '오늘은 건너뛰기' ---------- */
+skipToday61=(function(prev){return function(t){
+  try{const k=midKey68();
+    if(t&&typeof wx91==='function'&&wx91(t)&&t.sl91&&t.sl91[k]!==undefined){
+      const had=t.sl91[k],hl=t.sd119&&t.sd119[k],oldSkip=(t.skip61||[]).slice();
+      delete t.sl91[k];if(t.sd119)delete t.sd119[k];if(!Object.keys(t.sl91).length)delete t.sl91;
+      t.skip61=[...new Set([...(t.skip61||[]).filter(d=>d>=addDays(k,-14)),k])];delete t.skull;
+      saveTask(t);syncDailies(C);save('config');render();
+      toastAct(`'${t.title}' 오늘 자리를 뺐어요 (☠ 없이 · 이번 주 다른 날에 해요)`,'되돌리기',()=>{t.sl91=t.sl91||{};t.sl91[k]=had;if(hl){t.sd119=t.sd119||{};t.sd119[k]=hl}if(oldSkip.length)t.skip61=oldSkip;else delete t.skip61;saveTask(t);syncDailies(C);save('config');render()});
+      return}}catch(e){console.error(e)}
+  return prev.apply(this,arguments)}})(skipToday61);
+
+/* ---------- ⑤ 🛏 어젯밤 창 → 7시간 이상 잤다 · 늦게 잠 자동 ---------- */
+function hh141(s){const m=/^(\d{1,2}):(\d{2})$/.exec(String(s||''));return m?(+m[1])+(+m[2])/60:null}
+function lateOpt141(card,b){
+  const h=hh141(b);if(h==null||h>=9||!card||!Array.isArray(card.opts)||!card.opts.length)return null;   // 자정 전·아침 잠은 '늦게 잠' 아님
+  const i=h<1?0:h<2?1:h<3?2:h<4?3:4;
+  if(card.opts.length===5)return card.opts[i].id;
+  const byId=card.opts.find(o=>o.id==='s'+i);return byId?byId.id:null}
+function log141a(day,a,o,key){
+  const y=dayOf(day),seen=new Set((y.entries||[]).map(e=>e.id));
+  try{withDay69(day,()=>doAction(a,{direct:true,at:o.at||null,vid:o.vid||undefined,note:o.note||''}))}catch(e){console.error(e);return false}
+  const es=((DAYS[day]||{}).entries||[]).filter(x=>!seen.has(x.id));   // 기록은 시각순으로 끼어들 수 있어 '새로 생긴 것'을 id로 찾음
+  const e=es.find(x=>x.kind==='act'&&x.aid===a.id)||es.find(x=>x.aid===a.id);
+  if(e){e.sl141=key;save(day);return true}
+  return false}
+function sleepSync141(k){
+  try{
+    if(!k||!C||typeof ready72==='function'&&!ready72())return;
+    const d=DAYS[k],s=d&&d.sl102,yk=addDays(k,-1);
+    const m=s&&s.b&&s.w?slMin102(s):null;
+    // 7시간 이상 잤다 — 일어난 날(k) 기록, 시각은 일어난 시각
+    const c7=C.actions.find(a=>a.type==='good'&&/7\s*시간\s*이상/.test(a.name||'')&&!a.doneAt);
+    if(c7){const es=dayOf(k).entries||[],mine=es.filter(e=>e.aid===c7.id&&e.sl141==='h7'),any=es.some(e=>e.aid===c7.id);
+      const want=!!(m&&m>=420);
+      if(want&&!any)log141a(k,c7,{at:s.w,note:`🛏 어젯밤 창: ${Math.floor(m/60)}시간 ${m%60}분 잠`},'h7');
+      else if(!want)mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}})}
+    // 늦게 잠 — 어제(yk) 기록, 잠든 시각에 맞는 세부 옵션
+    const cl=typeof sleepCard73==='function'?sleepCard73():null;
+    if(cl){const es=dayOf(yk).entries||[],mine=es.filter(e=>e.aid===cl.id&&e.sl141==='late'),other=es.some(e=>e.aid===cl.id&&e.sl141!=='late');
+      const opt=s&&s.b?lateOpt141(cl,s.b):null;
+      if(opt&&!other){if(!(mine.length===1&&mine[0].vid===opt)){mine.forEach(e=>{try{removeEntry(yk,e.id)}catch(x){console.error(x)}});log141a(yk,cl,{at:s.b,vid:opt,note:'🛏 어젯밤 창: 잠든 시각으로 자동'},'late')}}
+      else if(!opt)mine.forEach(e=>{try{removeEntry(yk,e.id)}catch(x){console.error(x)}})}
+    render();
+  }catch(e){console.error(e)}}
+addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;
+  if(T.closest('[data-sl102ok],[data-sl102del]')&&typeof SL102!=='undefined'&&SL102.k){const k=SL102.k;setTimeout(()=>sleepSync141(k),90)}},true);
+window.sleepSync141=sleepSync141;
+
+/* ---------- ⑥ 홈 🍽 식사 · 자주 쓰는 것 ---------- */
+HOME_BLOCKS.meal141='🍽 식사 · 자주 쓰는 것';
+function fill141(){
+  const box=$('meal141');if(!box)return;
+  const day=today(),F=C.food||[],pins=(Array.isArray(C.pin133)?C.pin133:[]).map(id=>C.actions.find(a=>a.id===id&&!a.doneAt)).filter(Boolean);
+  const meals=F.map(f=>{const v=+((day.food||{})[f.id]||0),neg=f.points<0;
+    if(f.kind==='check')return `<label class="m141r m141c"><input type="checkbox" data-foodcheck="${esc(f.id)}" ${v?'checked':''}> <span class="m141n">${esc(f.name)}</span></label>`;
+    return `<div class="m141r"><span class="m141n">${esc(f.name)}</span><span class="stepper"><button type="button" data-food="${esc(f.id)}" data-d="-1" aria-label="${esc(f.name)} 줄이기">−</button><span class="v num${neg&&v?' neg':''}">${v}</span><button type="button" data-food="${esc(f.id)}" data-d="1" aria-label="${esc(f.name)} 늘리기">+</button></span></div>`}).join('');
+  const chips=pins.map(a=>{const n=(day.entries||[]).filter(e=>e.kind==='act'&&e.aid===a.id).length;
+    return `<button type="button" class="chipbtn p141${n?' on':''}" data-p141="${esc(a.id)}" aria-label="${esc(a.name)} 했어요 기록${n?' · 오늘 '+n+'번':''}">${n?'✓':'○'} ${esc(a.name)}${n>1?' ×'+n:''}</button>`}).join('');
+  box.innerHTML=`<div class="m141m">${meals||'<div class="tiny muted">식사 항목이 없어요 (편집 → 식사)</div>'}</div>`
+    +(chips?`<div class="m141p"><span class="tiny muted">📌 자주 쓰는 것</span>${chips}</div>`:`<div class="tiny muted m141h">📌 기록하기 → 행동/습관에서 행동 이름을 눌러 고정하면 여기서 바로 기록해요.</div>`)}
+renderHome=(function(prev){return function(){const r=prev.apply(this,arguments);try{fill141()}catch(e){console.error(e)}return r}})(renderHome);
+addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;const b=T.closest('#meal141 [data-p141]');
+  if(!b){if(T.closest('#meal141 [data-food],#meal141 [data-foodcheck]'))ui.off=0;return}
+  e.preventDefault();e.stopPropagation();if(!ready)return;ui.off=0;const a=C.actions.find(x=>x.id===b.dataset.p141);if(a)doAction(a)},true);
+addEventListener('change',e=>{if(e.target&&e.target.closest&&e.target.closest('#meal141'))ui.off=0},true);
+// 처음 한 번: '오늘' 칸 바로 밑에 켜 둠 (그 뒤 홈 배치에서 끄거나 옮기면 그대로)
+render=(function(prev){return function(){
+  try{if(ready&&!C.mig141h&&Array.isArray(C.ui.home)){C.mig141h=1;
+    if(!C.ui.home.some(h=>h[0]==='meal141')){const i=C.ui.home.findIndex(h=>h[0]==='today'),at=i>=0?i+1:C.ui.home.length,col=(C.ui.home[i]||[])[2];
+      C.ui.home.splice(at,0,col?['meal141',1,col]:['meal141',1])}
+    save('config')}}catch(e){console.error(e)}
+  return prev.apply(this,arguments)}})(render);
+})();
 
 route();boot();
 </script>

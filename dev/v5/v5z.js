@@ -57,13 +57,44 @@ function adopt69(n,d){
   else if(n==='progress'){P=normProgress(d)}
   else if(n.startsWith('t:')){const id=n.slice(2);if(d==null){delete TASKS[id]}else{const t=clone(d);t.id=id;TASKS[id]=t}}
   else if(n!=='local'){DAYS[n]=normDay(n,d)}}
-var ERRK69={'invalid-argument':'저장할 수 없는 모양의 기록','permission-denied':'저장 권한 없음(로그인 확인)','too-big':'설정이 너무 커요','resource-exhausted':'오늘 저장 한도에 닿았어요'};
+var ERRK69={'invalid-argument':'저장할 수 없는 모양의 기록','permission-denied':'저장 권한 없음(로그인 확인)','too-big':'설정이 너무 커요','resource-exhausted':'Firebase 무료 한도(읽기·쓰기)에 닿았어요 · 이 기기에 보관했다가 한도가 풀리면(한국시간 오후 5시쯤) 저절로 올려요 — 탭을 닫아도 보관돼요'};
 function err69(n,e){ERR69[n]={code:(e&&e.code)||'?',msg:String((e&&e.message)||e||'').slice(0,160),at:Date.now()};errBar69()}
 function errBar69(){let el=$('err69');const ks=Object.keys(ERR69);if(!ks.length){if(el)el.remove();return}
   if(!el){el=document.createElement('div');el.id='err69';el.setAttribute('role','alert');document.body.appendChild(el)}
   const e=ERR69[ks[0]];el.innerHTML=`<b>⚠ 저장 안 됨</b> <span>${esc(ERRK69[e.code]||e.code)} · ${esc(ks.map(k=>k==='config'?'설정':k==='progress'?'진행':k.startsWith('t:')?'할 일':k).filter((x,i,a)=>a.indexOf(x)===i).join(', '))}</span> <button type="button" data-err69="retry">다시 시도</button><button type="button" data-err69="x" aria-label="닫기">×</button><small>${esc(e.msg)}</small>`}
 addEventListener('click',e=>{const b=e.target.closest('[data-err69]');if(!b)return;const k=b.dataset.err69;const ks=Object.keys(ERR69);ERR69={};errBar69();if(k==='retry')ks.forEach(n=>{BACK69[n]=0;save(n)})},true);
 const TRANS69=['unavailable','aborted','deadline-exceeded','failed-precondition','cancelled','unknown','internal'];
+// v13.15(w141 아님·여기): 저장이 안 된 변경을 이 기기에 보관 → 새로고침·닫기 뒤에도 안 사라지고, 서버 것과 합쳐 다시 올림
+// (원인: Firebase 읽기 한도(5만/일)에 닿으면 합치기 저장이 거절되는데, 다시 열면 서버의 옛 값이 화면 사본을 덮어 '등록한 카드·바꾼 설정'이 되돌아간 것처럼 보임)
+const PEND141='hq-pend'+(location.pathname.includes('/beta/')?'-b':'');
+function pendRead141(){try{return JSON.parse(localStorage.getItem(PEND141))||{}}catch(e){return {}}}
+function pendWrite141(o){try{if(Object.keys(o).length)localStorage.setItem(PEND141,JSON.stringify(o));else localStorage.removeItem(PEND141)}catch(e){console.error('보관 실패',e)}}
+function pendPut141(n,base,mine){
+  try{const o=pendRead141();
+    if(n==='config'||n==='progress'){const m={},b={},bs=isObj69(base)?base:{};
+      Object.keys(mine).forEach(k=>{if(!deq69(mine[k],bs[k])){m[k]=mine[k];if(bs[k]!==undefined)b[k]=bs[k]}});
+      Object.keys(bs).forEach(k=>{if(mine[k]===undefined&&bs[k]!==undefined){m[k]=null;b[k]=bs[k]}});   // null = 내가 지움
+      if(Object.keys(m).length)o[n]={m,b,at:Date.now()};else delete o[n]}
+    else o[n]={m:mine,b:base===undefined?null:base,at:Date.now()};
+    pendWrite141(o)}catch(e){console.error(e)}}
+function pendDrop141(n){try{const o=pendRead141();if(o[n]){delete o[n];pendWrite141(o)}}catch(e){}}
+function pendRestore141(){
+  const o=pendRead141();let n0=0;
+  Object.keys(o).forEach(n=>{const p=o[n];if(!p||!p.m)return;
+    if(Date.now()-(p.at||0)>7*86400000){delete o[n];return}   // 일주일 넘은 보관본은 버림
+    try{
+      if(n==='config'||n==='progress'){const cur=n==='config'?C:P;
+        Object.keys(p.m).forEach(k=>{const mv=p.m[k],bv=p.b?p.b[k]:undefined;
+          if(mv===null){if(deq69(cur[k],bv))delete cur[k];return}
+          cur[k]=cur[k]===undefined?clone(mv):merge3(bv,mv,cur[k],n==='progress')});
+        save(n);n0++}
+      else if(n.startsWith('t:')){const id=n.slice(2),cur=TASKS[id];TASKS[id]=cur?merge3(p.b,p.m,clone(cur)):clone(p.m);TASKS[id].id=id;save(n);n0++}
+      else{const cur=DAYS[n];DAYS[n]=normDay(n,cur?merge3(p.b,p.m,clone(cur)):p.m);save(n);n0++}
+    }catch(e){console.error('보관본 합치기 실패',n,e)}});
+  pendWrite141(o);
+  if(n0)later(()=>toast('저장 못 했던 변경 '+n0+'건을 이 기기 보관본에서 되살려 다시 올려요',5000))}
+addEventListener('pagehide',()=>{try{dirty.forEach(n=>{const body=bodyOf(n);if(body)pendPut141(n,BASE69[n],clone(body))})}catch(e){}});
+window.__hqBusy=()=>dirty.size>0||Object.keys(writing).some(k=>writing[k]);
 async function flush(n){
   if(mode==='local'){dirty.delete(n);try{localStorage.setItem(LKEY,JSON.stringify({C,P,DAYS,TASKS}))}catch(e){}return}
   if(mode!=='db')return;
@@ -83,9 +114,13 @@ async function flush(n){
     BASE69[n]=clone(res);delete ERR69[n];BACK69[n]=0;errBar69();
     if(!deq69(res,mine)){ // 그 사이 서버(다른 기기)에 바뀐 게 있었음 → 내 화면에도 합쳐 넣기
       const now=bodyOf(n);adopt69(n,now&&rev[n]!==r?merge3(mine,clone(now),res):res);render()}
-    if(rev[n]===r)dirty.delete(n);else timers[n]=setTimeout(()=>flush(n),200);
+    if(rev[n]===r){dirty.delete(n);pendDrop141(n)}else timers[n]=setTimeout(()=>flush(n),200);
     setSync('저장됨 · 모든 기기에서 같은 기록')}
   catch(e){const code=e&&e.code;
+    try{pendPut141(n,base,mine)}catch(x){}
+    if(code==='resource-exhausted'){ // 무료 한도: 포기하지 않고 5분~30분 간격으로 계속 시도(보관본은 이미 기기에 있음)
+      const w=BACK69[n]=Math.min(1800000,Math.max(300000,(BACK69[n]>=300000?BACK69[n]*2:300000)));
+      err69(n,e);setSync('저장 한도 · 이 기기에 보관 중 · '+Math.round(w/60000)+'분 뒤 다시 시도');timers[n]=setTimeout(()=>flush(n),w);return}
     if((!code||TRANS69.includes(code))&&(BACK69[n]||0)>=4000){ // 합치기가 두 번 넘게 안 되면(연결 불안정) 기기 사본에 쓰고 연결되면 올라가게 — 앱을 닫아도 안 사라져요
       try{await db.doc(docPath(n)).set(mine);BASE69[n]=clone(mine);BACK69[n]=0;if(rev[n]===r)dirty.delete(n);setSync('이 기기에 저장 · 연결되면 올라가요');return}catch(e2){}}
     if(!code||TRANS69.includes(code)){const w=BACK69[n]=Math.min(30000,(BACK69[n]||1000)*2);setSync('저장 대기 중 · 연결되면 올려요');timers[n]=setTimeout(()=>flush(n),w);if(w>=16000)err69(n,e)}
@@ -98,6 +133,7 @@ async function boot(){
   let d=null;
   try{d=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){d=null}
   const afterLoad=()=>{
+    try{pendRestore141()}catch(e){console.error(e)}
     if(rawCfgV!==null&&rawCfgV<8){save('config');}
     if(C._pendingTasks){const ps=C._pendingTasks;delete C._pendingTasks;ps.forEach(p=>saveTask(newTask({...p,due:dateKey()})));save('config')}
     ['v54news','v53news','v51news','v5news'].forEach(k=>{if(C[k]){delete C[k];save('config')}});
