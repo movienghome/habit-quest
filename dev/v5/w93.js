@@ -13,6 +13,7 @@
   let NF93=0;
   const nf93=fn=>function(){NF93++;try{return fn.apply(this,arguments)}finally{NF93--}};
   calPass=(function(prev){return function(){return NF93?true:prev.apply(this,arguments)}})(calPass);
+  window.nfOn93=()=>NF93>0;   // v13.19(w144): 칩 거르기가 내일 짜기 동안엔 안 걸리게 바깥에서 확인
   const done93=()=>{if(!C.tm93done||typeof C.tm93done!=='object'||Array.isArray(C.tm93done))C.tm93done={};return C.tm93done};
   const at93=()=>hm80(C.tm93at)!=null?C.tm93at:'21:00';
   const ord93=()=>{const o=Array.isArray(C.tm93ord)?C.tm93ord.filter(x=>ALL.some(a=>a[0]===x)):[];ALL.forEach(a=>{if(!o.includes(a[0]))o.push(a[0])});return o};

@@ -1,0 +1,15 @@
+/* v13.19 (w144) */
+body.nochip144 .wk91{display:none!important}
+/* 루틴 미리 보기 블록: 옅게·점선 테두리(색만으로 구분하지 않게 글자 앞 ◌) */
+.blk.gh144,.cchip.gh144{opacity:.55;border-style:dashed!important;cursor:pointer}
+.blk.gh144 .bt::before,.cchip.gh144::before{content:'◌ ';font-weight:400}
+/* 홈 끝냄 칩 — 할 일 화면 '✓ 끝냄'과 같은 모양(글자만 있는 작은 칩) */
+.hd144{margin-top:6px}
+.hd144>summary{display:inline-flex;align-items:center;gap:3px;list-style:none;cursor:pointer;font-size:12px;line-height:1.45;padding:1px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);user-select:none}
+.hd144>summary::-webkit-details-marker{display:none}
+.hd144>summary::after{content:'▾';font-size:10px}
+.hd144[open]>summary{color:var(--ink);border-color:var(--muted)}
+.hd144[open]>summary::after{content:'▴'}
+.hd144b{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.hd144i{font-size:12px;padding:1px 7px;border:1px dashed var(--line);border-radius:999px;color:var(--muted);text-decoration:line-through}
+.hd144i::before{content:'✓ ';text-decoration:none}
