@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.16</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.17</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -2889,6 +2889,10 @@ button.rc132d{font-family:inherit;color:inherit;background:none;cursor:pointer;w
 .d99.w133.s-hg,.wk91 .dd99 .d99.w133.s-hg{border-radius:50%;border:1px dashed var(--ink);color:var(--ink)}
 .d99.w133.now::after{bottom:-3px;left:1px;right:1px}
 .w121c .wd121 .d99.w133.big133,.w121c .week121 .d99.w133.big133{--cw:28px;--ch:28px;font-size:13px;line-height:26px;margin:2px 0 3px;border-radius:7px}
+
+/* v13.17: 같은 카드 다른 할 일로 한 날(↗) · 경보 설명 */
+.rc132d.ok.sh143{background:none;color:var(--ink);border:1px dashed var(--ink);font-weight:600}
+.rc132s.al143{margin-top:4px;line-height:1.45}
 
 /* v13.6 (w134): 루틴 단계 끌어서 순서 바꾸기 */
 .dg134{border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;min-width:26px;height:30px;padding:0 2px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;flex:none}
@@ -13727,7 +13731,7 @@ tasksOn=(function(prev){return function(k){
   const a=prev.apply(this,arguments);
   try{const ws=weekStart(k),td=midKey68();
     const base=a.filter(t=>!(wx91(t)&&t.sl91&&slotKeys91(t,ws).length));
-    openTasks().forEach(t=>{if(!wx91(t)||!t.sl91||t.sl91[k]===undefined||!calPass(t))return;
+    openTasks().forEach(t=>{if(!wx91(t)||!t.sl91||t.sl91[k]===undefined)return;
       if(k<td||slotDoneOn91(t,k)||wkCnt91(t,ws)>=(+t.rep.n||3))return;
       const c=Object.assign({},t,{due:k,time:t.sl91[k]||null});if(t.sd119&&+t.sd119[k]>0)c.dur=+t.sd119[k];base.push(c)});   // v12.2: 날마다 다른 길이(t.sd119)
     return base}catch(e){console.error(e);return a}}})(tasksOn);
@@ -13756,7 +13760,7 @@ dndEnd=(function(prev){return function(x,y){
 function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
   const old=m.parentElement.querySelector(':scope > .wk91');if(old)old.remove();
   const md=(C.ui.cal||{}).mode,td=midKey68();
-  const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t)&&calPass(t));if(!L.length)return;
+  const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t));if(!L.length)return;
   const chips=L.slice(0,4).map(t=>{const n=wkCnt91(t,ws),N=+t.rep.n||3,ks=slotKeys91(t,ws);
     return `<span class="c91${n>=N?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정해 둔 날 '+ks.map(k=>fmtD(k)+(t.sl91[k]?' '+t.sl91[k]:'')).join(', '):''}">${n>=N?'✓':'🔁'} ${esc(t.title)} <b>${n}/${N}</b>${ks.length?`<i>정한 날 ${ks.length}</i>`:''}</span>`}).join('');
   const d=document.createElement('div');d.className='wk91';d.innerHTML=chips+(L.length>4?`<span class="c91">+${L.length-4}</span>`:'');
@@ -14482,7 +14486,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   }
   function wk93(k){
     const ws=weekStart(k);
-    return openTasks().filter(t=>wx91(t)&&calPass(t)&&!hid76(t)).map(t=>({t,n:wkCnt91(t,ws),N:+t.rep.n||3,ks:slotKeys91(t,ws),on:!!(t.sl91&&t.sl91[k]!==undefined)}))
+    return openTasks().filter(t=>wx91(t)&&!hid76(t)).map(t=>({t,n:wkCnt91(t,ws),N:+t.rep.n||3,ks:slotKeys91(t,ws),on:!!(t.sl91&&t.sl91[k]!==undefined)}))
       .filter(x=>x.n<x.N||x.on).sort((a,b)=>(b.t.prio||0)-(a.t.prio||0));
   }
   function ad93(k){
@@ -15289,7 +15293,7 @@ function grp99(L){const m=new Map(),out=[];L.forEach(t=>{const key=t.aid?'a:'+t.
 function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
   const old=m.parentElement.querySelector(':scope > .wk91');if(old)old.remove();
   const md=(C.ui.cal||{}).mode,td=midKey68();
-  const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t)&&calPass(t));if(!L.length)return;
+  const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t));if(!L.length)return;
   const cur=ws===weekStart(td),G=grp99(L);
   const chips=G.slice(0,4).map(g=>{const t=g.t,n=wkCnt91(t,ws),N=g.N,ks=[...new Set([].concat(...g.ts.map(x=>slotKeys91(x,ws))))].sort(),fin=n>=N,
       kt=k=>{const o=g.ts.find(x=>x.sl91&&x.sl91[k]!==undefined);return o&&o.sl91[k]||''};
@@ -15304,7 +15308,7 @@ function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
 
 /* ② 내일 짜기 맨 위 줄 — 알리기만 */
 function alert99(k){
-  const L=grp99(openTasks().filter(t=>wx91(t)&&calPass(t)&&!hid76(t))).map(g=>Object.assign({t:{title:g.title}},slack99(g.t,k,g.N))).filter(x=>x.need>0&&x.slack<=0);
+  const L=grp99(openTasks().filter(t=>wx91(t)&&!hid76(t))).map(g=>Object.assign({t:{title:g.title}},slack99(g.t,k,g.N))).filter(x=>x.need>0&&x.slack<=0);
   if(!L.length)return '';
   const lab=k===addDays(midKey68(),1)?'내일':dayName68(k);
   return `<div class="al99" role="status" title="알림만 해요 · 점수·HP는 안 깎여요, 목표를 못 채운 게 아니에요">${L.slice(0,2).map(x=>x.slack===0
@@ -16111,7 +16115,7 @@ dndEnd=(function(prev){return function(x,y){
 (function(){
   const nm=g=>[...new Set(g.ts.map(t=>t.title))].join(' + ');
   const short=s=>s.length>10?s.slice(0,10)+'…':s;
-  const groups=()=>grp99(openTasks().filter(t=>wx91(t)&&calPass(t)));
+  const groups=()=>grp99(openTasks().filter(t=>wx91(t)));
   const wsOf=()=>{const md=(C.ui.cal||{}).mode,td=midKey68();return weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td))};
   // ① 같은 이름이 겹쳐 '빨래 + 빨래'가 되던 것
   (function(prev){grp99=function(){const out=prev.apply(this,arguments);out.forEach(g=>{g.title=nm(g)});return out}})(grp99);
@@ -17272,7 +17276,7 @@ dndEnd=(function(prev){return function(x,y){
    · 글자: 굵은 `n/N`=이번 주 실제로 한 횟수(점 ●), `📌 계획 k일`=정해 둔 날 수(◇). 끌어 놓을 때마다 계획이 늘고, 하면 실제가 늘어 서로 비교됨. 색 없이 글자·기호로만. */
 strip91=(function(prev){return function(){prev.apply(this,arguments);try{const m=$('calMain'),w=m&&m.parentElement&&m.parentElement.querySelector(':scope > .wk91');if(!w)return;
   const md=(C.ui.cal||{}).mode,td=midKey68(),ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td));
-  grp99(openTasks().filter(t=>wx91(t)&&calPass(t))).forEach(g=>{const c=w.querySelector('.c91.k105[data-wk105="'+g.t.id+'"]');if(!c)return;
+  grp99(openTasks().filter(t=>wx91(t))).forEach(g=>{const c=w.querySelector('.c91.k105[data-wk105="'+g.t.id+'"]');if(!c)return;
     const ks=[...new Set([].concat(...g.ts.map(x=>slotKeys91(x,ws))))],n=wkCnt91(g.t,ws);
     c.dataset.drag='task:'+g.t.id;c.dataset.dragmode='hold';c.classList.add('dr119');
     c.title+=' · 끌어서 시간표·캘린더에 놓으면 그 날을 계획에 넣어요 · 굵은 n/N=실제 한 횟수, 📌=계획한 날';
@@ -17444,14 +17448,14 @@ function minOf121(t,N){const m=+(t&&t.min119)||0;return m>0&&m<N?m:0}
 slack99=(function(prev){return function(t,from,Nov){const N=Nov||(t&&t.rep&&+t.rep.n)||3,m=t?minOf121(t,N):0;
   const r=prev.call(this,t,from,m||Nov);r.goal=N;r.min=m;return r}})(slack99);
 alert99=function(k){
-  const L=grp99(openTasks().filter(t=>wx91(t)&&calPass(t)&&!hid76(t))).map(g=>Object.assign({t:{title:g.title}},slack99(g.t,k,g.N))).filter(x=>x.need>0&&x.slack<=0);
+  const L=grp99(openTasks().filter(t=>wx91(t)&&!hid76(t))).map(g=>Object.assign({t:{title:g.title}},slack99(g.t,k,g.N))).filter(x=>x.need>0&&x.slack<=0);
   if(!L.length)return '';
   const lab=k===addDays(midKey68(),1)?'내일':dayName68(k);
   return `<div class="al99" role="status" title="알림만 해요 · 점수·HP는 안 깎여요, 목표를 못 채운 게 아니에요">${L.slice(0,2).map(x=>{const w=x.min?'최소까지 ':'';return x.slack===0
     ?`<div>⚠ <b>${esc(x.t.title)}</b> · ${w}${x.need}번 남음 · ${esc(lab)}부터 쉬는 날 없이 매일 한 번씩</div>`
     :`<div>⚠ <b>${esc(x.t.title)}</b> · ${w}${x.need}번 남음 · 남은 날 ${x.days}일 (하루 두 번 필요)</div>`}).join('')}</div>`};
 strip91=(function(prev){return function(){prev.apply(this,arguments);try{const m=$('calMain'),w=m&&m.parentElement&&m.parentElement.querySelector(':scope > .wk91');if(!w)return;
-  grp99(openTasks().filter(t=>wx91(t)&&calPass(t))).forEach(g=>{const c=w.querySelector('.c91.k105[data-wk105="'+g.t.id+'"]');if(!c)return;const mn=minOf121(g.t,g.N);
+  grp99(openTasks().filter(t=>wx91(t))).forEach(g=>{const c=w.querySelector('.c91.k105[data-wk105="'+g.t.id+'"]');if(!c)return;const mn=minOf121(g.t,g.N);
     const wi=c.querySelector('i.w99');if(wi)wi.title=mn?`최소 ${mn}회를 채우려면 쉬는 날 없이 해야 해요`:'쉬는 날 없이 해야 채워요'})}catch(e){console.error(e)}}})(strip91);
 /* ---- ④ 점 모양 ---- */
 function hgDay121(t,k){return Object.values(TASKS).some(x=>x&&x.hg119===t.id&&x.status===0&&x.due===k)}
@@ -17506,8 +17510,8 @@ function card121(g,ws,td){const t=g.t,N=g.N,mn=minOf121(t,N),n=wkCnt91(t,ws),cur
       <span class="tiny muted" style="flex-basis:100%">⚠ 경고는 ${mn?'최소':'목표'} 기준으로 떠요 · 최소는 '이만큼은 하자'는 줄이에요</span></div>
     <details class="rec121"><summary>셈에 들어간 기록 ${R.length}개</summary>${R.length?`<ul class="l105">${R.map(r=>`<li>${fmtD(r.k)}(${wdOf(r.k)}) ${esc(r.e.t||'')} · ${esc((r.e.name||'').slice(0,30))} <span class="muted">· ${esc(r.why)}</span></li>`).join('')}</ul>`:'<div class="tiny muted">아직 기록이 없어요</div>'}
       <div class="tiny muted">잘못 센 기록은 날짜를 보고 캘린더에서 체크 해제하세요. 한 주는 월요일부터예요.</div></details>
-    <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">${g.ts.map(x=>`<button type="button" class="btn sm ghost" data-wk105open="${esc(x.id)}">✎ ${esc(g.ts.length>1?x.title:'할 일 열기')}</button>`).join('')}</div></div>`}
-function wkSheet121(tid){const ws=wsNow120(),td=midKey68(),G=grp99(openTasks().filter(t=>wx91(t)&&calPass(t)));
+    <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">${g.ts.map(x=>{const meta=[listName(x.list||'inbox'),x.dur?x.dur+'분':'',x.care76?'🧽 관리':'',slotTxt91(x,ws).replace(/^ · /,'')].filter(Boolean).join(' · ');return `<button type="button" class="btn sm ghost" data-wk105open="${esc(x.id)}">✎ 할 일 열기${g.ts.length>1?' · '+esc(meta):''}</button>`}).join('')}</div>${g.ts.length>1?`<div class="tiny muted" style="margin-top:4px">⚠ 같은 카드를 쓰는 할 일 ${g.ts.length}개가 한 칩으로 묶였어요 — 횟수는 합치지 않고 날마다 큰 쪽만 세요. 같은 걸 두 번 만든 거라면 하나를 지우세요.</div>`:''}</div>`}
+function wkSheet121(tid){const ws=wsNow120(),td=midKey68(),G=grp99(openTasks().filter(t=>wx91(t)));
   if(!G.length){closeSheet();toast('주 N회 할 일이 없어요');return}
   const one=tid&&tid!=='*'?G.filter(g=>g.ts.some(x=>x.id===tid)):G;
   sheetCtx={wk105:tid||'*'};
@@ -18633,13 +18637,16 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
 function al131(){const k=gk76(),y=addDays(k,-1),m={};
   (C.watches||[]).forEach(w=>{if(!w||!w.days||!w.action||w.action==='@courage')return;
     if(!w.action.startsWith('@t:')){const a=C.actions.find(x=>x.id===w.action);if(!a||a.type!=='good'||(a.once&&a.doneAt))return}
-    const s=daysSince(w.action,y)+1;if(s>=w.days)m[w.action]={s,d:+w.days,over:s>w.days}});
+    const s=daysSince(w.action,y)+1;if(s>=w.days){const a2=w.action.startsWith('@t:')?null:C.actions.find(x=>x.id===w.action);m[w.action]={s,d:+w.days,over:s>w.days,name:a2?a2.name:'',last:addDays(y,-(s-1))}}});
   return m}
 // 이 카드에 이어진 습관(반복 할 일)·관리가 있나 — 관리는 openTasks()에서 빠지므로 TASKS를 직접 봄(hid76 아님, cb76·ml80·루틴 단계는 뺌)
 function link131(aid){return Object.values(TASKS).some(t=>t&&t.status===0&&t.aid===aid&&t.rep&&t.rep.f&&!t.cb76&&!t.ml80&&!t.rid&&!isStep62(t))}
 function alOf131(t,m){if(!t||t.status!==0)return null;return (t.aid&&m[t.aid])||m['@t:'+t.id]||null}
 function alTxt131(x){return x.over?`⚠ ${x.s}일째`:`⏳ ${x.s}일째`}
-function alTip131(x){return x.over?`이 카드를 ${x.s}일째 안 했어요 (방치 경보 ${x.d}일)`:`이 카드를 ${x.s}일째 안 했어요 · 오늘이 경보 기한(${x.d}일)`}
+function alExplain143(w,last,td,t){const d=+w.days||0,s=last?diffDays(td,last):null;
+  if(s==null)return `방치 경보: 이 카드를 ${d}일 넘게 안 하면 ⚠가 떠요. 아직 한 기록이 없어요.`;
+  return `⚠ 방치 경보 — 이 카드를 마지막으로 한 날(${fmtD(last)})부터 ${s}일이 지났어요. 경보 기준은 ${d}일이라 ${s>d?(s-d)+'일 넘겼어요':s===d?'오늘이 기한이에요':'아직 여유가 있어요'}. 반복 주기의 '때 지남'과는 따로예요(경보=카드를 마지막으로 한 날부터, 때 지남=이 할 일의 반복 차례부터). 같은 카드로 이은 다른 할 일을 한 날도 '한 날'로 쳐요. 하면 바로 사라져요.`}
+function alTip131(x){return x.last?`${x.name?"'"+x.name+"' 카드를":'이 카드를'} 마지막으로 한 날(${fmtD(x.last)})부터 ${x.s}일째예요 · 경보 기준 ${x.d}일 ${x.over?'초과':'도달'}. 눌러서 언제 했는지 보기`:(x.over?`이 카드를 ${x.s}일째 안 했어요 (방치 경보 ${x.d}일)`:`이 카드를 ${x.s}일째 안 했어요 · 오늘이 경보 기한(${x.d}일)`)}
 // '⚠ 오래 안 한 행동' 칸: 이어진 습관·관리가 있는 경보는 빼고(그 줄에 꼬리표), 남은 줄마다 🧽 관리로 옮기기
 {const _th=todayHabits;todayHabits=function(){const r=_th();try{return r.filter(x=>!(x&&x.a&&link131(x.a.id)))}catch(e){console.error(e);return r}}}
 {const _thh=todayHabitsHTML;todayHabitsHTML=function(){const p=MODE68;MODE68='game';let h;try{h=_thh()}finally{MODE68=p}if(!h)return h;
@@ -18971,10 +18978,13 @@ careRow76=(function(prev){return function(){CR133=1;HID133=0;let h;try{h=prev.ap
 /* ---------- ③ ⚠ n일째 기록 달력: 지난 날(안 한 날)을 눌러 '그날 했어요' 바로 적기 ---------- */
 function recCal132(id,x,y,mk){const t=TASKS[id];if(!t)return;const key=key132(t),wt=typeof watchTarget==='function'?watchTarget(key):null,w=watch132(t);
   const did=k=>{const d=DAYS[k];if(!d)return false;try{if(wt&&wt.done(d))return true}catch(_){}return (d.entries||[]).some(e=>e.tid===t.id||(t.aid&&e.aid===t.aid))};
+  const own=k=>{const d=DAYS[k];return !!(d&&(d.entries||[]).some(e=>e.tid===t.id))};
+  const others=t.aid?Object.values(TASKS).filter(x=>x&&x.id!==t.id&&x.status===0&&x.aid===t.aid&&!x.rid&&!isStep62(x)):[];
   const td=gk76(),dk=dateKey();mk=mk||td.slice(0,7);RC132={id,m:mk,x,y};
   const first=mk+'-01',ws=weekStartD(first),nm=addDays(first,40).slice(0,7)+'-01';let cells='';
   for(let i=0;i<42;i++){const k=addDays(ws,i);if(i>=35&&k>=nm)break;const inm=k.slice(0,7)===mk,ok=did(k),can=!ok&&k<=dk;
-    const cls=`rc132d${inm?'':' o'}${ok?' ok':''}${k===td?' td':''}${k>td?' fu':''}${can?' can133':''}`,inner=`${+k.slice(8)}${ok?'<i>✓</i>':''}`;
+    const sh=ok&&others.length&&!own(k);   // 이 할 일이 아니라 같은 카드의 다른 할 일로 '한 날'이 된 칸
+    const cls=`rc132d${inm?'':' o'}${ok?' ok':''}${sh?' sh143':''}${k===td?' td':''}${k>td?' fu':''}${can?' can133':''}`,inner=`${+k.slice(8)}${ok?`<i>${sh?'↗':'✓'}</i>`:''}`;
     cells+=can?`<button type="button" class="${cls}" data-rc133="${esc(id)}|${k}" title="${esc(fmtD(k))} · 눌러서 '그날 했어요'로 적기" aria-label="${esc(fmtD(k))} 그날 했어요로 적기">${inner}</button>`
       :`<span class="${cls}" title="${esc(fmtD(k))}${ok?' · 했어요':''}">${inner}</span>`}
   let last=null;for(let i=0;i<=400;i++){const k=addDays(td,-i);if(did(k)){last=k;break}}
@@ -18982,7 +18992,9 @@ function recCal132(id,x,y,mk){const t=TASKS[id];if(!t)return;const key=key132(t)
   const [yy,mm]=mk.split('-');
   const html=`<div class="rc132"><div class="rc132h"><button type="button" class="ib" data-rc132="-1" aria-label="이전 달">‹</button><b>${+yy}년 ${+mm}월</b><button type="button" class="ib" data-rc132="1" aria-label="다음 달"${mk>=td.slice(0,7)?' disabled':''}>›</button></div>
     <div class="rc132g">${WKH71().map(d=>`<span class="rc132w">${d}</span>`).join('')}${cells}</div>
-    <div class="small muted rc132s">${last?`마지막: ${esc(fmtD(last))}${last===td?' (오늘)':` (${diffDays(td,last)}일 전)`}`:'아직 한 기록이 없어요'} · 최근 30일 ${n}번${w?` · 경보 ${+w.days}일`:''}</div>
+    <div class="small muted rc132s">${last?`마지막: ${esc(fmtD(last))}${last===td?' (오늘)':` (${diffDays(td,last)}일 전)`}`:'아직 한 기록이 없어요'} · 최근 30일 ${n}번</div>
+    ${w?`<div class="tiny rc132s al143">${esc(alExplain143(w,last,td,t))}</div>`:''}
+    ${others.length?`<div class="tiny muted rc132s">↗ = 이 할 일이 아니라 <b>같은 카드를 쓰는 다른 할 일</b>(${esc(others.slice(0,3).map(x=>x.title).join('·'))}${others.length>3?' 외 '+(others.length-3)+'개':''})로 한 날이에요. 경보·✓는 카드 기준이라 이런 날도 '한 날'로 쳐요.</div>`:''}
     <div class="tiny muted rc132s">✓ = 한 날 · 안 한 날(테두리 칸)을 누르면 <b>그날 했어요</b>로 적어요(되돌리기 있음)</div></div>`;
   menu61(x,y,`📅 ${esc(t.title.length>20?t.title.slice(0,20)+'…':t.title)} · 언제 했나`,[{html,f:()=>{}},'-',{l:'✎ 할 일 열기',f:()=>openTaskSheet(id)}])}
 function didDay133(id,k){const t=TASKS[id];if(!t||!guard())return;if(k>dateKey()){toast('앞으로의 날은 적을 수 없어요');return}
@@ -19738,6 +19750,28 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['🔍 카드 찾기 · ＋ 추가 접기','기록하기 → 행동/습관 제목 줄의 🔍 · 영역 끝 ＋ 추가 칩','🔍를 눌러야 찾기 줄이 열려요(Esc로 닫기). 영역 끝 입력 줄은 ＋ 추가 칩으로 접혀 있다가 누르면 색 띠 입력 줄로 펼쳐져요',()=>{location.hash='log'},'검색 돋보기 카드 추가 영역 입력 줄'],
   ['🍱 식사 블록','캘린더 시간표 점심·저녁 블록','personal 목록에 들어가고 ○를 눌러 먹었어요 체크(되돌리기는 블록을 눌러 ↶ 안 먹었어요)',()=>{location.hash='cal'},'식사 점심 저녁 체크 personal']])}})(F67);
 })();
+
+/* v13.17 (w143): 11/26 밤 2차 — 홈 배치 새로고침 되돌림 · 끝낸 식사 블록 시간표에 남기기
+   ① 홈 배치: normConfig가 C.ui.home을 기본 목록(DEFAULT_CONFIG)에 있는 칸으로만 걸러 → 나중에 생긴 칸(🍽 식사 meal141 · 📌 빠른 기록 pin141)의 저장된 자리가 새로고침마다 지워졌음.
+      → normConfig 뒤에 원래 저장된 목록에서 HOME_BLOCKS에 있는 칸을 그 자리(앞 칸 바로 뒤)에 다시 끼움.
+   ② 끝낸 식사 블록: 식사 완료는 기록(entries)이 아니라 t.status=2·t.doneAt라서 doneBlk77(기록 기준)에 안 잡혀 시간표에서 사라졌음 → 끝낸 끼니도 ✓ 블록으로 */
+{const _nc143=normConfig;normConfig=function(raw){const c=_nc143.apply(this,arguments);
+  try{const rh=raw&&raw.ui&&Array.isArray(raw.ui.home)?raw.ui.home:null,H=c&&c.ui&&c.ui.home;
+    if(rh&&Array.isArray(H)&&typeof HOME_BLOCKS!=='undefined'){
+      const ent=x=>{const a=x&&x._na?x._na:x;return Array.isArray(a)?a:null};
+      const have=new Set(H.map(h=>h&&h[0]));let prev=null;
+      rh.forEach(x=>{const a=ent(x);if(!a||!a[0])return;
+        if(have.has(a[0])){prev=a[0];return}
+        if(!HOME_BLOCKS[a[0]])return;
+        const item=[a[0],a[1]?1:0,a[2]==='R'?'R':'L'],i=prev?H.findIndex(h=>h&&h[0]===prev):-1;
+        H.splice(i+1,0,item);have.add(a[0]);prev=a[0]})}}catch(e){console.error(e)}
+  return c}}
+doneBlk77=(function(prev){return function(k){const out=prev.apply(this,arguments);
+  try{const seen=new Set(out.map(o=>o.t.id));
+    Object.values(TASKS).forEach(t=>{if(!t||!t.ml80||t.status!==2||seen.has(t.id)||!t.time)return;
+      if((t.doneAt||t.due)!==k&&!(!t.doneAt&&t.due===k))return;
+      out.push({t:Object.assign({},t,{due:k}),e:{},once:true})})}catch(e){console.error(e)}
+  return out}})(doneBlk77);
 
 route();boot();
 </script>

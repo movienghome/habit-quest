@@ -35,14 +35,14 @@ function minOf121(t,N){const m=+(t&&t.min119)||0;return m>0&&m<N?m:0}
 slack99=(function(prev){return function(t,from,Nov){const N=Nov||(t&&t.rep&&+t.rep.n)||3,m=t?minOf121(t,N):0;
   const r=prev.call(this,t,from,m||Nov);r.goal=N;r.min=m;return r}})(slack99);
 alert99=function(k){
-  const L=grp99(openTasks().filter(t=>wx91(t)&&calPass(t)&&!hid76(t))).map(g=>Object.assign({t:{title:g.title}},slack99(g.t,k,g.N))).filter(x=>x.need>0&&x.slack<=0);
+  const L=grp99(openTasks().filter(t=>wx91(t)&&!hid76(t))).map(g=>Object.assign({t:{title:g.title}},slack99(g.t,k,g.N))).filter(x=>x.need>0&&x.slack<=0);
   if(!L.length)return '';
   const lab=k===addDays(midKey68(),1)?'내일':dayName68(k);
   return `<div class="al99" role="status" title="알림만 해요 · 점수·HP는 안 깎여요, 목표를 못 채운 게 아니에요">${L.slice(0,2).map(x=>{const w=x.min?'최소까지 ':'';return x.slack===0
     ?`<div>⚠ <b>${esc(x.t.title)}</b> · ${w}${x.need}번 남음 · ${esc(lab)}부터 쉬는 날 없이 매일 한 번씩</div>`
     :`<div>⚠ <b>${esc(x.t.title)}</b> · ${w}${x.need}번 남음 · 남은 날 ${x.days}일 (하루 두 번 필요)</div>`}).join('')}</div>`};
 strip91=(function(prev){return function(){prev.apply(this,arguments);try{const m=$('calMain'),w=m&&m.parentElement&&m.parentElement.querySelector(':scope > .wk91');if(!w)return;
-  grp99(openTasks().filter(t=>wx91(t)&&calPass(t))).forEach(g=>{const c=w.querySelector('.c91.k105[data-wk105="'+g.t.id+'"]');if(!c)return;const mn=minOf121(g.t,g.N);
+  grp99(openTasks().filter(t=>wx91(t))).forEach(g=>{const c=w.querySelector('.c91.k105[data-wk105="'+g.t.id+'"]');if(!c)return;const mn=minOf121(g.t,g.N);
     const wi=c.querySelector('i.w99');if(wi)wi.title=mn?`최소 ${mn}회를 채우려면 쉬는 날 없이 해야 해요`:'쉬는 날 없이 해야 채워요'})}catch(e){console.error(e)}}})(strip91);
 /* ---- ④ 점 모양 ---- */
 function hgDay121(t,k){return Object.values(TASKS).some(x=>x&&x.hg119===t.id&&x.status===0&&x.due===k)}
@@ -97,8 +97,8 @@ function card121(g,ws,td){const t=g.t,N=g.N,mn=minOf121(t,N),n=wkCnt91(t,ws),cur
       <span class="tiny muted" style="flex-basis:100%">⚠ 경고는 ${mn?'최소':'목표'} 기준으로 떠요 · 최소는 '이만큼은 하자'는 줄이에요</span></div>
     <details class="rec121"><summary>셈에 들어간 기록 ${R.length}개</summary>${R.length?`<ul class="l105">${R.map(r=>`<li>${fmtD(r.k)}(${wdOf(r.k)}) ${esc(r.e.t||'')} · ${esc((r.e.name||'').slice(0,30))} <span class="muted">· ${esc(r.why)}</span></li>`).join('')}</ul>`:'<div class="tiny muted">아직 기록이 없어요</div>'}
       <div class="tiny muted">잘못 센 기록은 날짜를 보고 캘린더에서 체크 해제하세요. 한 주는 월요일부터예요.</div></details>
-    <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">${g.ts.map(x=>`<button type="button" class="btn sm ghost" data-wk105open="${esc(x.id)}">✎ ${esc(g.ts.length>1?x.title:'할 일 열기')}</button>`).join('')}</div></div>`}
-function wkSheet121(tid){const ws=wsNow120(),td=midKey68(),G=grp99(openTasks().filter(t=>wx91(t)&&calPass(t)));
+    <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">${g.ts.map(x=>{const meta=[listName(x.list||'inbox'),x.dur?x.dur+'분':'',x.care76?'🧽 관리':'',slotTxt91(x,ws).replace(/^ · /,'')].filter(Boolean).join(' · ');return `<button type="button" class="btn sm ghost" data-wk105open="${esc(x.id)}">✎ 할 일 열기${g.ts.length>1?' · '+esc(meta):''}</button>`}).join('')}</div>${g.ts.length>1?`<div class="tiny muted" style="margin-top:4px">⚠ 같은 카드를 쓰는 할 일 ${g.ts.length}개가 한 칩으로 묶였어요 — 횟수는 합치지 않고 날마다 큰 쪽만 세요. 같은 걸 두 번 만든 거라면 하나를 지우세요.</div>`:''}</div>`}
+function wkSheet121(tid){const ws=wsNow120(),td=midKey68(),G=grp99(openTasks().filter(t=>wx91(t)));
   if(!G.length){closeSheet();toast('주 N회 할 일이 없어요');return}
   const one=tid&&tid!=='*'?G.filter(g=>g.ts.some(x=>x.id===tid)):G;
   sheetCtx={wk105:tid||'*'};

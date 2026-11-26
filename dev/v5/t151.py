@@ -1,62 +1,48 @@
-# t151 (v13.14): ① 충동 적기 '💪 그냥 꾹 참기' 대응 ② 미루기·날짜 변경은 기본 ☠ 셈 + '단순 날짜 변경으로 바꾸기' 단추
-import os,json,sys
+# t151 (v13.17): 홈 배치 새로고침 유지 · 끝낸 식사 블록 시간표에 남기기 · 주 N회 칩이 보이기 거르기에 안 걸림 · 칩 창 같은 이름 구분
+import os,json
 os.environ.setdefault('HQURL','file:///home/claude/habit-quest/beta/index.html')
 exec(open('/home/claude/habit-quest/dev/v5/h61.py').read())
-URL=os.environ.get('HQURL',URL)
 FAILS=[]
 def ok(c,msg,extra=''):
     print(('PASS ' if c else 'FAIL ')+msg+(' · '+str(extra)[:300] if extra!='' else ''))
     if not c:FAILS.append(msg)
 J=lambda pg,x:pg.evaluate(x)
-def notoast(pg):J(pg,"(()=>{const t=document.getElementById('toast');if(t){t.classList.remove('on');t.style.pointerEvents=''}const s=document.getElementById('snack');if(s)s.hidden=true})()")
-def run2(pw,W,H,touch=False):
-    b=pw.chromium.launch();kw=dict(viewport={'width':W,'height':H})
-    if touch:kw.update(has_touch=True,is_mobile=True)
-    ctx=b.new_context(**kw);ctx.add_init_script(MOCK+"\ntry{localStorage.clear()}catch(e){}\n"+("window.__coarse75=1;" if touch else ""))
-    ctx.route('**/backend.js',lambda r:r.fulfill(body="window.__hqResolve(window.__mockApi)",content_type='application/javascript'))
-    ctx.route('**/config.js',lambda r:r.fulfill(body="",content_type='application/javascript'))
-    ctx.route('**/sw.js',lambda r:r.fulfill(body="",content_type='application/javascript'))
-    pg=ctx.new_page();pg.on('pageerror',lambda e:errs.append('PAGEERR '+str(e)));pg.on('console',lambda m:errs.append('CON '+m.text) if m.type=='error' else None)
-    pg.goto(URL);pg.wait_for_timeout(2300);closepops(pg);notoast(pg);return b,pg
-def tap(pg,loc,touch):
-    loc.wait_for(state='attached',timeout=8000);loc.evaluate("e=>e.scrollIntoView({block:'center'})");pg.wait_for_timeout(120);bb=loc.bounding_box()
-    if touch:pg.touchscreen.tap(*ctr(bb))
-    else:pg.mouse.click(*ctr(bb))
-def T(pg,id):return json.loads(J(pg,f"JSON.stringify(TASKS[{json.dumps(id)}]||null)"))
-SIZES=[(1200,950,False),(390,860,True)]
-SEED="""(()=>{const td=midKey68();const mk=(n,d)=>{const t=newTask({title:n,due:addDays(td,d)});t.order=1;t.created=addDays(td,-20);saveTask(t);return t.id};
-  return {a:mk('미룰 일 가',-2),b:mk('나중 일',3)}})()"""
 with sync_playwright() as pw:
-  for W,H,touch in SIZES:
-    b,pg=run2(pw,W,H,touch);ids=J(pg,SEED);tm=J(pg,"addDays(midKey68(),1)")
-    # ---------- ② 미루기 ----------
-    J(pg,"C.tc131={late:1};location.hash='tasks'");pg.wait_for_timeout(700);notoast(pg)
-    J(pg,f"(()=>{{const r=document.querySelector('#tList .trow[data-task=\"{ids['a']}\"]');r.scrollIntoView({{block:'center'}});const q=r.getBoundingClientRect();taskMenu61(TASKS['{ids['a']}'],q.left+60,q.top+10)}})()");pg.wait_for_timeout(300)
-    tap(pg,pg.locator('#m61 [data-m61]',has_text='미루기').first,touch);pg.wait_for_timeout(350)
-    ok(not J(pg,"!!document.querySelector('#m61 #sk131')"),f'[{W}] ② 옛 ☠ 미룸으로 기록 칸이 없어짐')
-    tap(pg,pg.locator('#m61 [data-m61]',has_text='내일').first,touch);pg.wait_for_timeout(600)
-    t=T(pg,ids['a']);ok(t['due']==tm and t.get('skull')==1,f'[{W}] ② 미루기 → 기본으로 ☠ 1 셈',(t['due'],t.get('skull')))
-    tx=J(pg,"$('toast').innerText");ok('미룬 것으로 셌어요' in tx and '☠ 안 셈' not in tx,f'[{W}] ② 알림에 \'미룬 것으로 셌어요\'(안 셈 아님)',tx)
-    ok('단순 날짜 변경으로 바꾸기' in tx and J(pg,"!!document.querySelector('#toast .tbtn55')"),f'[{W}] ② 알림에 단순 날짜 변경으로 바꾸기 단추',tx)
-    J(pg,"document.querySelector('#toast .tbtn55').click()");pg.wait_for_timeout(400)
-    t=T(pg,ids['a']);ok(t['due']==tm and not t.get('skull'),f'[{W}] ② 단추 → ☠ 빠지고 날짜는 그대로',(t['due'],t.get('skull')))
-    # 앞으로 날짜인 할 일은 원래 ☠ 없음
-    J(pg,f"postpone(TASKS['{ids['b']}'],addDays(midKey68(),5))");pg.wait_for_timeout(400)
-    ok(not T(pg,ids['b']).get('skull'),f'[{W}] ② 아직 날짜 전인 할 일을 옮기면 ☠ 없음')
-    # ---------- ① 충동 대응 ----------
-    J(pg,"sheet110('f')");pg.wait_for_timeout(500)
-    iid=J(pg,"(()=>{const x=add110('f','치킨',0);IM110.plan=x.id;redraw110();return x.id})()");pg.wait_for_timeout(300)
-    ok(J(pg,f"!!document.querySelector('#sheetC [data-imtg110=\"{iid}\"]')"),f'[{W}] ① ① 단계에 💪 그냥 꾹 참기 단추')
-    ok(J(pg,f"document.querySelector('#sheetC [data-imtg110=\"{iid}\"]').textContent.includes('그냥 꾹 참기')"),f'[{W}] ① 단추 글자')
-    tap(pg,pg.locator(f'#sheetC [data-imtg110="{iid}"]'),touch);pg.wait_for_timeout(500)
-    st=J(pg,f"(()=>{{const f=find110('{iid}');return JSON.stringify({{fl:f.x.fl,w:f.x.w>Date.now()}})}})()")
-    ok(json.loads(st)=={'fl':'그냥 꾹 참기','w':True},f'[{W}] ① 누르면 대응 기록 + 기다리기 시작',st)
-    tx=J(pg,"document.querySelector('#sheetC .im110p').innerText")
-    ok('그냥 꾹 참기' in tx and '기다리는 중' in tx and '먹었어요' not in tx,f'[{W}] ① 기다리는 중 줄에 💪 그냥 꾹 참기(먹었어요 아님)',tx)
-    J(pg,f"skip110('{iid}');redraw110()");pg.wait_for_timeout(200)
-    J(pg,f"hold110('{iid}');redraw110()");pg.wait_for_timeout(500)
-    ok(J(pg,f"find110('{iid}').x.s")=='h',f'[{W}] ① 그다음 ✓ 안 먹었어요로 확정됨')
-    ok('대응: 💪 그냥 꾹 참기' in J(pg,"(()=>{const x=find110('%s').x;return ftxt110(x)})()"%iid),f'[{W}] ① 기록 줄에 대응이 남음')
-    e=[x for x in errs if 'favicon' not in x];ok(not e,f'[{W}] 오류 없음',e[:3]);errs.clear()
-    b.close()
-print('FAILS',len(FAILS),FAILS)
+    # ① 홈 배치
+    b0,pg=run(pw,W=1400,H=900);closepops(pg)
+    J(pg,"location.hash='home'");pg.wait_for_timeout(700)
+    J(pg,"homeEditOn(true)");pg.wait_for_timeout(300)
+    J(pg,"document.querySelector('[data-x56hcol=\"today\"]').click()");pg.wait_for_timeout(300)
+    J(pg,"homeEditOn(false)");pg.wait_for_timeout(700)
+    after=J(pg,"JSON.stringify(C.ui.home)");st={k:v for k,v in json.loads(dump(pg))}
+    b1,pg2=run(pw,W=1400,H=900,store=st);closepops(pg2)
+    J(pg2,"location.hash='home'");pg2.wait_for_timeout(700)
+    ok(J(pg2,"JSON.stringify(C.ui.home)")==after,'홈 배치(식사·빠른 기록 칸 포함)가 새로고침 뒤에도 그대로')
+    # ② 끝낸 식사 블록
+    b2,pg=run(pw,W=1400,H=900);closepops(pg)
+    J(pg,"(()=>{C.ui=C.ui||{};C.ui.cal=Object.assign(C.ui.cal||{},{mode:'week'});location.hash='calendar';render()})()");pg.wait_for_timeout(900)
+    J(pg,"(()=>{ml80cfg().on=1;save('config');mealEnsure80();render()})()");pg.wait_for_timeout(600)
+    tid=J(pg,"(()=>{const k=midKey68();const t=Object.values(TASKS).find(t=>t.ml80&&t.status===0&&t.time);return t?t.id:null})()")
+    ok(bool(tid),'식사 블록이 있음',tid)
+    J(pg,"(()=>{const id=%s;const t=TASKS[id];ui.calAnchor=t.due;renderCal()})()"%json.dumps(tid));pg.wait_for_timeout(400)
+    n0=J(pg,"document.querySelectorAll('#calPane .blk[data-ctask=\"%s\"]').length"%tid)
+    J(pg,"completeTask(TASKS[%s])"%json.dumps(tid));pg.wait_for_timeout(600)
+    J(pg,"renderCal()");pg.wait_for_timeout(300)
+    ok(J(pg,"TASKS[%s].status"%json.dumps(tid))==2,'식사 완료 처리됨')
+    n1=J(pg,"document.querySelectorAll('#calPane .blk.done[data-ctask=\"%s\"]').length"%tid)
+    ok(n1>=1,'끝낸 식사가 시간표에 ✓ 블록으로 남음',(n0,n1))
+    # ③ 주 N회 칩이 거르기에 안 걸림
+    J(pg,"""(()=>{const t=newTask({title:'칩 시험 빨래'});t.rep={f:'x',n:2};t.list='inbox';t.aid=C.actions.find(a=>a.type==='good').id;saveTask(t);
+      C.mig77f=1;C.calf77={lists:['Lfixed'],areas:[],tags:[],kinds:[],inv:0};C.calf77t={lists:['Lfixed'],areas:[],tags:[],kinds:[],inv:0};save('config');render()})()""");pg.wait_for_timeout(700)
+    J(pg,"renderCal()");pg.wait_for_timeout(300)
+    print('DBG',J(pg,"[side131(),fOn77(),location.hash,curView(),JSON.stringify(C.calf77)]"))
+    ok(J(pg,"!![...document.querySelectorAll('.wk91 .c91')].find(b=>/칩 시험 빨래/.test(b.innerText))"),'목록 거르기(고정 목록만)에도 주 N회 칩은 칩 줄에 보임',J(pg,"[...document.querySelectorAll('.wk91 .c91')].map(b=>b.innerText.trim())"))
+    # 같은 이름 둘 → 칩 창 구분
+    J(pg,"""(()=>{const t=newTask({title:'칩 시험 빨래'});t.rep={f:'x',n:2};t.list='inbox';t.dur=30;t.aid=C.actions.find(a=>a.type==='good').id;saveTask(t);render()})()""");pg.wait_for_timeout(500)
+    J(pg,"wkSheet121(Object.values(TASKS).find(t=>t.title==='칩 시험 빨래').id)");pg.wait_for_timeout(400)
+    txt=J(pg,"document.querySelector('.sheet')?document.querySelector('.sheet').innerText:''")
+    print('SHEET',txt[:600]);ok('같은 카드를 쓰는' in txt and '할 일 열기' in txt,'칩 창에 같은 이름 구분 문구',txt[-200:])
+    J(pg,"""(()=>{const t=Object.values(TASKS).find(t=>t.title==='칩 시험 빨래');const k=addDays(midKey68(),1);t.sl91={[k]:'10:00'};saveTask(t);ui.calAnchor=midKey68();renderCal()})()""");pg.wait_for_timeout(500)
+    ok(J(pg,"[...document.querySelectorAll('#calPane [data-ctask]')].some(e=>/칩 시험 빨래/.test(e.innerText))"),'칩을 날짜에 배치하면 거르기 중에도 다른 할 일과 같은 블록으로 보임')
+    print('ERRS',[e for e in errs if 'favicon' not in e][:5])
+    print('FAILS',FAILS)

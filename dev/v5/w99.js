@@ -33,7 +33,7 @@ function grp99(L){const m=new Map(),out=[];L.forEach(t=>{const key=t.aid?'a:'+t.
 function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
   const old=m.parentElement.querySelector(':scope > .wk91');if(old)old.remove();
   const md=(C.ui.cal||{}).mode,td=midKey68();
-  const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t)&&calPass(t));if(!L.length)return;
+  const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t));if(!L.length)return;
   const cur=ws===weekStart(td),G=grp99(L);
   const chips=G.slice(0,4).map(g=>{const t=g.t,n=wkCnt91(t,ws),N=g.N,ks=[...new Set([].concat(...g.ts.map(x=>slotKeys91(x,ws))))].sort(),fin=n>=N,
       kt=k=>{const o=g.ts.find(x=>x.sl91&&x.sl91[k]!==undefined);return o&&o.sl91[k]||''};
@@ -48,7 +48,7 @@ function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
 
 /* ② 내일 짜기 맨 위 줄 — 알리기만 */
 function alert99(k){
-  const L=grp99(openTasks().filter(t=>wx91(t)&&calPass(t)&&!hid76(t))).map(g=>Object.assign({t:{title:g.title}},slack99(g.t,k,g.N))).filter(x=>x.need>0&&x.slack<=0);
+  const L=grp99(openTasks().filter(t=>wx91(t)&&!hid76(t))).map(g=>Object.assign({t:{title:g.title}},slack99(g.t,k,g.N))).filter(x=>x.need>0&&x.slack<=0);
   if(!L.length)return '';
   const lab=k===addDays(midKey68(),1)?'내일':dayName68(k);
   return `<div class="al99" role="status" title="알림만 해요 · 점수·HP는 안 깎여요, 목표를 못 채운 게 아니에요">${L.slice(0,2).map(x=>x.slack===0

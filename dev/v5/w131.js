@@ -5,13 +5,16 @@
 function al131(){const k=gk76(),y=addDays(k,-1),m={};
   (C.watches||[]).forEach(w=>{if(!w||!w.days||!w.action||w.action==='@courage')return;
     if(!w.action.startsWith('@t:')){const a=C.actions.find(x=>x.id===w.action);if(!a||a.type!=='good'||(a.once&&a.doneAt))return}
-    const s=daysSince(w.action,y)+1;if(s>=w.days)m[w.action]={s,d:+w.days,over:s>w.days}});
+    const s=daysSince(w.action,y)+1;if(s>=w.days){const a2=w.action.startsWith('@t:')?null:C.actions.find(x=>x.id===w.action);m[w.action]={s,d:+w.days,over:s>w.days,name:a2?a2.name:'',last:addDays(y,-(s-1))}}});
   return m}
 // 이 카드에 이어진 습관(반복 할 일)·관리가 있나 — 관리는 openTasks()에서 빠지므로 TASKS를 직접 봄(hid76 아님, cb76·ml80·루틴 단계는 뺌)
 function link131(aid){return Object.values(TASKS).some(t=>t&&t.status===0&&t.aid===aid&&t.rep&&t.rep.f&&!t.cb76&&!t.ml80&&!t.rid&&!isStep62(t))}
 function alOf131(t,m){if(!t||t.status!==0)return null;return (t.aid&&m[t.aid])||m['@t:'+t.id]||null}
 function alTxt131(x){return x.over?`⚠ ${x.s}일째`:`⏳ ${x.s}일째`}
-function alTip131(x){return x.over?`이 카드를 ${x.s}일째 안 했어요 (방치 경보 ${x.d}일)`:`이 카드를 ${x.s}일째 안 했어요 · 오늘이 경보 기한(${x.d}일)`}
+function alExplain143(w,last,td,t){const d=+w.days||0,s=last?diffDays(td,last):null;
+  if(s==null)return `방치 경보: 이 카드를 ${d}일 넘게 안 하면 ⚠가 떠요. 아직 한 기록이 없어요.`;
+  return `⚠ 방치 경보 — 이 카드를 마지막으로 한 날(${fmtD(last)})부터 ${s}일이 지났어요. 경보 기준은 ${d}일이라 ${s>d?(s-d)+'일 넘겼어요':s===d?'오늘이 기한이에요':'아직 여유가 있어요'}. 반복 주기의 '때 지남'과는 따로예요(경보=카드를 마지막으로 한 날부터, 때 지남=이 할 일의 반복 차례부터). 같은 카드로 이은 다른 할 일을 한 날도 '한 날'로 쳐요. 하면 바로 사라져요.`}
+function alTip131(x){return x.last?`${x.name?"'"+x.name+"' 카드를":'이 카드를'} 마지막으로 한 날(${fmtD(x.last)})부터 ${x.s}일째예요 · 경보 기준 ${x.d}일 ${x.over?'초과':'도달'}. 눌러서 언제 했는지 보기`:(x.over?`이 카드를 ${x.s}일째 안 했어요 (방치 경보 ${x.d}일)`:`이 카드를 ${x.s}일째 안 했어요 · 오늘이 경보 기한(${x.d}일)`)}
 // '⚠ 오래 안 한 행동' 칸: 이어진 습관·관리가 있는 경보는 빼고(그 줄에 꼬리표), 남은 줄마다 🧽 관리로 옮기기
 {const _th=todayHabits;todayHabits=function(){const r=_th();try{return r.filter(x=>!(x&&x.a&&link131(x.a.id)))}catch(e){console.error(e);return r}}}
 {const _thh=todayHabitsHTML;todayHabitsHTML=function(){const p=MODE68;MODE68='game';let h;try{h=_thh()}finally{MODE68=p}if(!h)return h;

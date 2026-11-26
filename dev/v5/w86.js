@@ -15,7 +15,7 @@ tasksOn=(function(prev){return function(k){
   const a=prev.apply(this,arguments);
   try{const ws=weekStart(k),td=midKey68();
     const base=a.filter(t=>!(wx91(t)&&t.sl91&&slotKeys91(t,ws).length));
-    openTasks().forEach(t=>{if(!wx91(t)||!t.sl91||t.sl91[k]===undefined||!calPass(t))return;
+    openTasks().forEach(t=>{if(!wx91(t)||!t.sl91||t.sl91[k]===undefined)return;
       if(k<td||slotDoneOn91(t,k)||wkCnt91(t,ws)>=(+t.rep.n||3))return;
       const c=Object.assign({},t,{due:k,time:t.sl91[k]||null});if(t.sd119&&+t.sd119[k]>0)c.dur=+t.sd119[k];base.push(c)});   // v12.2: 날마다 다른 길이(t.sd119)
     return base}catch(e){console.error(e);return a}}})(tasksOn);
@@ -44,7 +44,7 @@ dndEnd=(function(prev){return function(x,y){
 function strip91(){const m=$('calMain');if(!m||!m.parentElement)return;
   const old=m.parentElement.querySelector(':scope > .wk91');if(old)old.remove();
   const md=(C.ui.cal||{}).mode,td=midKey68();
-  const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t)&&calPass(t));if(!L.length)return;
+  const ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td)),L=openTasks().filter(t=>wx91(t));if(!L.length)return;
   const chips=L.slice(0,4).map(t=>{const n=wkCnt91(t,ws),N=+t.rep.n||3,ks=slotKeys91(t,ws);
     return `<span class="c91${n>=N?' ok':''}" title="이번 주 ${n}/${N}회${ks.length?' · 정해 둔 날 '+ks.map(k=>fmtD(k)+(t.sl91[k]?' '+t.sl91[k]:'')).join(', '):''}">${n>=N?'✓':'🔁'} ${esc(t.title)} <b>${n}/${N}</b>${ks.length?`<i>정한 날 ${ks.length}</i>`:''}</span>`}).join('');
   const d=document.createElement('div');d.className='wk91';d.innerHTML=chips+(L.length>4?`<span class="c91">+${L.length-4}</span>`:'');

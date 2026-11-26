@@ -88,7 +88,7 @@ dndEnd=(function(prev){return function(x,y){
 (function(){
   const nm=g=>[...new Set(g.ts.map(t=>t.title))].join(' + ');
   const short=s=>s.length>10?s.slice(0,10)+'…':s;
-  const groups=()=>grp99(openTasks().filter(t=>wx91(t)&&calPass(t)));
+  const groups=()=>grp99(openTasks().filter(t=>wx91(t)));
   const wsOf=()=>{const md=(C.ui.cal||{}).mode,td=midKey68();return weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td))};
   // ① 같은 이름이 겹쳐 '빨래 + 빨래'가 되던 것
   (function(prev){grp99=function(){const out=prev.apply(this,arguments);out.forEach(g=>{g.title=nm(g)});return out}})(grp99);

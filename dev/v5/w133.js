@@ -34,10 +34,13 @@ careRow76=(function(prev){return function(){CR133=1;HID133=0;let h;try{h=prev.ap
 /* ---------- ③ ⚠ n일째 기록 달력: 지난 날(안 한 날)을 눌러 '그날 했어요' 바로 적기 ---------- */
 function recCal132(id,x,y,mk){const t=TASKS[id];if(!t)return;const key=key132(t),wt=typeof watchTarget==='function'?watchTarget(key):null,w=watch132(t);
   const did=k=>{const d=DAYS[k];if(!d)return false;try{if(wt&&wt.done(d))return true}catch(_){}return (d.entries||[]).some(e=>e.tid===t.id||(t.aid&&e.aid===t.aid))};
+  const own=k=>{const d=DAYS[k];return !!(d&&(d.entries||[]).some(e=>e.tid===t.id))};
+  const others=t.aid?Object.values(TASKS).filter(x=>x&&x.id!==t.id&&x.status===0&&x.aid===t.aid&&!x.rid&&!isStep62(x)):[];
   const td=gk76(),dk=dateKey();mk=mk||td.slice(0,7);RC132={id,m:mk,x,y};
   const first=mk+'-01',ws=weekStartD(first),nm=addDays(first,40).slice(0,7)+'-01';let cells='';
   for(let i=0;i<42;i++){const k=addDays(ws,i);if(i>=35&&k>=nm)break;const inm=k.slice(0,7)===mk,ok=did(k),can=!ok&&k<=dk;
-    const cls=`rc132d${inm?'':' o'}${ok?' ok':''}${k===td?' td':''}${k>td?' fu':''}${can?' can133':''}`,inner=`${+k.slice(8)}${ok?'<i>✓</i>':''}`;
+    const sh=ok&&others.length&&!own(k);   // 이 할 일이 아니라 같은 카드의 다른 할 일로 '한 날'이 된 칸
+    const cls=`rc132d${inm?'':' o'}${ok?' ok':''}${sh?' sh143':''}${k===td?' td':''}${k>td?' fu':''}${can?' can133':''}`,inner=`${+k.slice(8)}${ok?`<i>${sh?'↗':'✓'}</i>`:''}`;
     cells+=can?`<button type="button" class="${cls}" data-rc133="${esc(id)}|${k}" title="${esc(fmtD(k))} · 눌러서 '그날 했어요'로 적기" aria-label="${esc(fmtD(k))} 그날 했어요로 적기">${inner}</button>`
       :`<span class="${cls}" title="${esc(fmtD(k))}${ok?' · 했어요':''}">${inner}</span>`}
   let last=null;for(let i=0;i<=400;i++){const k=addDays(td,-i);if(did(k)){last=k;break}}
@@ -45,7 +48,9 @@ function recCal132(id,x,y,mk){const t=TASKS[id];if(!t)return;const key=key132(t)
   const [yy,mm]=mk.split('-');
   const html=`<div class="rc132"><div class="rc132h"><button type="button" class="ib" data-rc132="-1" aria-label="이전 달">‹</button><b>${+yy}년 ${+mm}월</b><button type="button" class="ib" data-rc132="1" aria-label="다음 달"${mk>=td.slice(0,7)?' disabled':''}>›</button></div>
     <div class="rc132g">${WKH71().map(d=>`<span class="rc132w">${d}</span>`).join('')}${cells}</div>
-    <div class="small muted rc132s">${last?`마지막: ${esc(fmtD(last))}${last===td?' (오늘)':` (${diffDays(td,last)}일 전)`}`:'아직 한 기록이 없어요'} · 최근 30일 ${n}번${w?` · 경보 ${+w.days}일`:''}</div>
+    <div class="small muted rc132s">${last?`마지막: ${esc(fmtD(last))}${last===td?' (오늘)':` (${diffDays(td,last)}일 전)`}`:'아직 한 기록이 없어요'} · 최근 30일 ${n}번</div>
+    ${w?`<div class="tiny rc132s al143">${esc(alExplain143(w,last,td,t))}</div>`:''}
+    ${others.length?`<div class="tiny muted rc132s">↗ = 이 할 일이 아니라 <b>같은 카드를 쓰는 다른 할 일</b>(${esc(others.slice(0,3).map(x=>x.title).join('·'))}${others.length>3?' 외 '+(others.length-3)+'개':''})로 한 날이에요. 경보·✓는 카드 기준이라 이런 날도 '한 날'로 쳐요.</div>`:''}
     <div class="tiny muted rc132s">✓ = 한 날 · 안 한 날(테두리 칸)을 누르면 <b>그날 했어요</b>로 적어요(되돌리기 있음)</div></div>`;
   menu61(x,y,`📅 ${esc(t.title.length>20?t.title.slice(0,20)+'…':t.title)} · 언제 했나`,[{html,f:()=>{}},'-',{l:'✎ 할 일 열기',f:()=>openTaskSheet(id)}])}
 function didDay133(id,k){const t=TASKS[id];if(!t||!guard())return;if(k>dateKey()){toast('앞으로의 날은 적을 수 없어요');return}

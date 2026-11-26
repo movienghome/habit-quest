@@ -130,7 +130,7 @@ dndEnd=(function(prev){return function(x,y){
    · 글자: 굵은 `n/N`=이번 주 실제로 한 횟수(점 ●), `📌 계획 k일`=정해 둔 날 수(◇). 끌어 놓을 때마다 계획이 늘고, 하면 실제가 늘어 서로 비교됨. 색 없이 글자·기호로만. */
 strip91=(function(prev){return function(){prev.apply(this,arguments);try{const m=$('calMain'),w=m&&m.parentElement&&m.parentElement.querySelector(':scope > .wk91');if(!w)return;
   const md=(C.ui.cal||{}).mode,td=midKey68(),ws=weekStart(md==='month'||md==='agenda'?td:(ui.calAnchor||td));
-  grp99(openTasks().filter(t=>wx91(t)&&calPass(t))).forEach(g=>{const c=w.querySelector('.c91.k105[data-wk105="'+g.t.id+'"]');if(!c)return;
+  grp99(openTasks().filter(t=>wx91(t))).forEach(g=>{const c=w.querySelector('.c91.k105[data-wk105="'+g.t.id+'"]');if(!c)return;
     const ks=[...new Set([].concat(...g.ts.map(x=>slotKeys91(x,ws))))],n=wkCnt91(g.t,ws);
     c.dataset.drag='task:'+g.t.id;c.dataset.dragmode='hold';c.classList.add('dr119');
     c.title+=' · 끌어서 시간표·캘린더에 놓으면 그 날을 계획에 넣어요 · 굵은 n/N=실제 한 횟수, 📌=계획한 날';

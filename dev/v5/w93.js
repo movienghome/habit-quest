@@ -34,7 +34,7 @@
   }
   function wk93(k){
     const ws=weekStart(k);
-    return openTasks().filter(t=>wx91(t)&&calPass(t)&&!hid76(t)).map(t=>({t,n:wkCnt91(t,ws),N:+t.rep.n||3,ks:slotKeys91(t,ws),on:!!(t.sl91&&t.sl91[k]!==undefined)}))
+    return openTasks().filter(t=>wx91(t)&&!hid76(t)).map(t=>({t,n:wkCnt91(t,ws),N:+t.rep.n||3,ks:slotKeys91(t,ws),on:!!(t.sl91&&t.sl91[k]!==undefined)}))
       .filter(x=>x.n<x.N||x.on).sort((a,b)=>(b.t.prio||0)-(a.t.prio||0));
   }
   function ad93(k){

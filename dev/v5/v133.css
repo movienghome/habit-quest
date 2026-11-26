@@ -38,3 +38,7 @@ button.rc132d{font-family:inherit;color:inherit;background:none;cursor:pointer;w
 .d99.w133.s-hg,.wk91 .dd99 .d99.w133.s-hg{border-radius:50%;border:1px dashed var(--ink);color:var(--ink)}
 .d99.w133.now::after{bottom:-3px;left:1px;right:1px}
 .w121c .wd121 .d99.w133.big133,.w121c .week121 .d99.w133.big133{--cw:28px;--ch:28px;font-size:13px;line-height:26px;margin:2px 0 3px;border-radius:7px}
+
+/* v13.17: 같은 카드 다른 할 일로 한 날(↗) · 경보 설명 */
+.rc132d.ok.sh143{background:none;color:var(--ink);border:1px dashed var(--ink);font-weight:600}
+.rc132s.al143{margin-top:4px;line-height:1.45}
