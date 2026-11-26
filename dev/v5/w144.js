@@ -150,7 +150,7 @@ function gEntry144(x){const d=x.ghk&&DAYS[x.ghk];return d&&(d.entries||[]).find(
 function gDrop144(x){try{if(x.geid&&gEntry144(x))removeEntry(x.ghk,x.geid)}catch(e){console.error(e)}delete x.geid;delete x.ghk}
 gave110=(function(prev){return function(id){const r=prev.apply(this,arguments);
   try{const f=find110(id);if(!f||f.x.s!=='g'||(f.x.geid&&gEntry144(f.x)))return r;const a=badCard144(f.x.k);if(!a||!guard())return r;
-    const d=today(),e=actEntry(a,{});e.note=note144(f.x);e.imp110=f.x.id;
+    const d=today(),e=actEntry(a,{});e.note=note144(f.x);e.n144=e.note;e.imp110=f.x.id;
     commit(()=>{applyEntry(d,e);f.x.geid=e.id;f.x.ghk=d.date},[f.k,d.date]);render();
     toast(`${IK110[f.x.k][0]} '${a.name}' 카드로도 기록했어요 — 상황·메모를 적으면 기록 메모에 따라가요`)}catch(e){console.error(e)}return r}})(gave110);
 undo110=(function(prev){return function(id){try{const f=find110(id);if(f&&f.x.geid){gDrop144(f.x);save(f.k)}}catch(e){console.error(e)}return prev.apply(this,arguments)}})(undo110);
@@ -159,7 +159,11 @@ hold110=(function(prev){return function(id){try{const f=find110(id);if(f&&f.x.ge
 // 메모 따라가기: 상황·메모를 나중에 적어도 기록 메모를 고침(참음 기록 eid · 못 참음 기록 geid)
 function impNotes144(){try{const td=gk76();for(let i=0;i<3;i++){const k=addDays(td,-i);(list110(k)||[]).forEach(x=>{
     [[x.hk,x.eid],[x.ghk,x.geid]].forEach(([dk,eid])=>{if(!dk||!eid)return;const d=DAYS[dk];const e=d&&(d.entries||[]).find(z=>z.id===eid);if(!e||e.kind==='imp110')return;
-      const n=note144(x);if(e.note!==n){e.note=n;save(dk)}})})}}catch(e){console.error(e)}}
+      if(!e.n144||e.note!==e.n144)return;   // 이번 버전이 만든 메모만, 사용자가 고치지 않았을 때만(옛 기록·직접 고친 메모는 안 건드림)
+      const n=note144(x);if(e.note!==n){e.note=n;e.n144=n;save(dk)}})})}}catch(e){console.error(e)}}
+// 참음 기록: 새로 만들 때만 메모를 note144로(표시 e.n144)
+hold110=(function(prev){return function(id){const r=prev.apply(this,arguments);try{const f=find110(id);if(!f||!f.x.eid)return r;const d=DAYS[f.x.hk],e=d&&(d.entries||[]).find(z=>z.id===f.x.eid);
+  if(e&&e.kind!=='imp110'&&!e.n144){e.note=note144(f.x);e.n144=e.note;save(f.x.hk)}}catch(e){console.error(e)}return r}})(hold110);
 
 /* ---------- ⑩ 식사 칸 채소 ↔ '채소 한 번 먹기' 할 일·카드 (사용자 11/26 밤) ----------
    식사 칸 '채소 먹은 횟수'가 1 이상이 되면, 이름이 채소…먹… 인 좋은 카드에 이어진 반복 할 일(오늘 차례)을 끝냄(✓).

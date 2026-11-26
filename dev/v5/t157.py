@@ -45,6 +45,8 @@ with sync_playwright() as pw:
       const x=add110('b','운동화',89000);window.X=x.id;const y=add110('b','키보드',120000);window.Y=y.id;render()})()""");pg.wait_for_timeout(700)
     J(pg,"hold110(X)");pg.wait_for_timeout(700)
     ok(J(pg,"(today().entries||[]).some(e=>e.name==='충동구매 참았다'&&/운동화/.test(e.note||'')&&/89,000/.test(e.note||''))"),'안 샀어요 → 충동구매 참았다 카드 기록 + 메모(이름·금액)',J(pg,"JSON.stringify((today().entries||[]).filter(e=>/충동/.test(e.name)).map(e=>[e.name,e.note]))"))
+    J(pg,"(()=>{const f=find110(X);const e=today().entries.find(z=>z.id===f.x.eid);delete e.n144;e.note='옛 메모';f.x.m='새 메모';save(f.k);render()})()");pg.wait_for_timeout(600)
+    ok(J(pg,"(()=>{const f=find110(X);return today().entries.find(z=>z.id===f.x.eid).note})()")=='옛 메모','옛 기록·직접 고친 메모는 안 건드림')
     J(pg,"gave110(Y)");pg.wait_for_timeout(700)
     ok(J(pg,"(today().entries||[]).some(e=>e.name==='충동구매'&&e.type==='bad'&&/키보드/.test(e.note||''))"),'샀어요 → 충동구매(나쁜 카드) 기록')
     J(pg,"(()=>{const f=find110(Y);f.x.sit=['피곤'];f.x.m='할인이라서';save(f.k);render()})()");pg.wait_for_timeout(600)
