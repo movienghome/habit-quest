@@ -29,7 +29,7 @@ function chipRow144(){try{document.body.classList.toggle('nochip144',!chipPass14
 /* ---------- ② 슬롯: 숨는 할 일(습관·관리)도 + ④ 루틴 미리 보기 ---------- */
 const slotOn144=(t,k)=>!!(t&&t.status===0&&t.rep&&t.rep.f==='x'&&t.sl91&&t.sl91[k]!==undefined&&!slotDoneOn91(t,k)&&wkCnt91(t,weekStart(k))<(+t.rep.n||3));
 window.slotOn144=slotOn144;
-const ghostOK=()=>{try{return (window.nfOn93&&nfOn93())||((C.ui.cal||{}).mode!=='month')}catch(e){return true}};
+const ghostOK=()=>true;   // 월 칸은 그린 뒤 ghost144가 뺌(할 일 화면 옆 시간표와 캘린더 화면의 보기 모드가 따로라 여기서 못 가림)
 tasksOn=(function(prev){return function(k){const a=prev.apply(this,arguments);
   try{const td=midKey68(),ids=new Set(a.map(t=>t.id));
     // ② w86은 openTasks()(숨는 할 일 빠짐)만 봄 → 빠진 슬롯을 채움
@@ -45,9 +45,10 @@ tasksOn=(function(prev){return function(k){const a=prev.apply(this,arguments);
       a.push(c);ids.add(t.id)});
   }catch(e){console.error(e)}return a}})(tasksOn);
 // 미리 보기 블록: 끌기·길이·○ 없앰, 표시
-function ghost144(){try{document.querySelectorAll('#calPane [data-ctask], #tt84slot [data-ctask], #pl93 [data-ctask]').forEach(el=>{const t=TASKS[el.dataset.ctask];if(!t||!t.rid)return;
+function ghost144(){try{document.querySelectorAll('#calPane [data-ctask], #calMain [data-ctask], #tt84slot [data-ctask], #pl93 [data-ctask]').forEach(el=>{const t=TASKS[el.dataset.ctask];if(!t||!t.rid)return;
     const col=el.closest('[data-drop^="col:"],[data-drop^="allday:"],[data-drop^="day:"]');if(!col)return;const d=col.dataset.drop,k=d.slice(d.indexOf(':')+1);
     if(!k||k===t.due||k<=t.due)return;
+    if(el.closest('.mgrid')){el.remove();return}
     el.classList.add('gh144');el.removeAttribute('data-drag');el.querySelectorAll('.rz,[data-tdone],.ck128').forEach(x=>x.remove());
     if(!el.title||!/미리 보기/.test(el.title))el.title=(t.title||'')+' · 반복 루틴 미리 보기(이 날 차례)'})}catch(e){console.error(e)}}
 

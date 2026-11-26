@@ -54,7 +54,7 @@
   - 순서: `patch.py` → `patch2` → … **번호순**(`ls dev/v5/patch*.py | sort -V`), 지금 마지막은 patch100(v13.19 w144)·patch99(v13.18 — 베타 띠만, 코드는 v5z.js 직접)·patch98(v13.17 w143)·patch97(v13.16 w142)·patch96(v13.15 w141)·옛 patch95(v13.14 — 베타 띠만, 코드는 w110·w131·w72를 직접 고침) → 다음은 patch101(w145.js·v145.css). **patch 파일은 `patch.py` 끝에 `exec(open(V+'patchNN.py'...))` 줄을 직접 더해야 돌아감**. 새 모듈은 `dev/v5/wNNN.js`(+`vNNN.css`)로 만들고 patch 파일이 끼워 넣음. 어느 버전이 어느 patch·w 파일인지는 CHANGELOG 칸 제목. 직전 patch 파일 하나를 베껴 시작.
   - **v6.9부터 `route();boot();`는 스크립트 맨 끝**. patch22~36은 w70~w84를 그 바로 앞에 넣음 → 다음 모듈도 `\nroute();boot();\n` 앞에. 첫 render 때 모든 모듈·감싸기가 준비돼 있음.
   - 함수 덮어쓰기: function 선언은 **뒤에 있는 게 이김**. 이미 대입된 함수는 `{const _f=f;f=function(){...}}`로 감쌈. 어떤 함수를 누가 감쌌는지는 CHANGELOG에서 이름으로 찾기.
-- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 베타·본 앱 모두 `2026-11-27-v1319a` — 아이콘만 바꿀 때도 올림). 베타 띠 버전 표시(`β 베타 v9.2`)도 같이.
+- 릴리스 때 `beta/sw.js`의 VERSION 올리기 (지금 베타·본 앱 모두 `2026-11-27-v1319b` — 아이콘만 바꿀 때도 올림). 베타 띠 버전 표시(`β 베타 v9.2`)도 같이.
 - `beta/backend.js`는 생성 파일 아님(직접 고침). 승격 때 루트에 복사.
 
 ## 꼭 지킬 것 (한 줄 규칙 — 어기면 예전 버그가 돌아옴. 원인·함수 설명 원문은 `dev/HANDOFF-archive.md` '꼭 지킬 것 원문'에서 `grep -n 키워드`로 찾기)

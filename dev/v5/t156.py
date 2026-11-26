@@ -49,7 +49,7 @@ with sync_playwright() as pw:
         ok(J(pg,"(()=>{const el=document.querySelector('#calPane [data-drop=\"col:%s\"] [data-ctask=\"%s\"]')||document.querySelector('#calPane [data-drop=\"allday:%s\"] [data-ctask=\"%s\"]');return !!el&&el.classList.contains('gh144')&&!el.hasAttribute('data-drag')&&!el.querySelector('[data-tdone]')})()"%(K2,rid,K2,rid)),'미리 보기 블록: 끌기·○ 없음')
         ok(J(pg,"(()=>{const el=document.querySelector('#calPane [data-drop=\"col:'+midKey68()+'\"] [data-ctask=\"%s\"]');return !!el&&!el.classList.contains('gh144')})()"%rid),'오늘 블록은 진짜 블록')
         J(pg,"C.ui.cal.mode='month';render()");pg.wait_for_timeout(600)
-        ok(J(pg,"!tasksOn(%s).some(t=>t.id===%s)"%(json.dumps(K2),json.dumps(rid))),'월 보기엔 미리 보기 안 넣음(칸이 꽉 차지 않게)')
+        ok(J(pg,"!document.querySelector('.mgrid [data-ctask=\"%s\"].gh144, .mgrid [data-drop=\"day:%s\"] [data-ctask=\"%s\"]')"%(rid,K2,rid)),'월 보기엔 미리 보기 안 그림(칸이 꽉 차지 않게)')
         # 오늘 한 단계 줄
         J(pg,"(()=>{const r=rtOfT62(TASKS[%s]);const s=(r.steps||[])[0];if(s&&TASKS[s.tid]){completeTask(TASKS[s.tid])}})()"%json.dumps(rid));pg.wait_for_timeout(800)
         J(pg,"C.ui.tasks.sel='today';location.hash='tasks';render()");pg.wait_for_timeout(800)
