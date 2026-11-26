@@ -19,3 +19,8 @@ doneBlk77=(function(prev){return function(k){const out=prev.apply(this,arguments
       if((t.doneAt||t.due)!==k&&!(!t.doneAt&&t.due===k))return;
       out.push({t:Object.assign({},t,{due:k}),e:{},once:true})})}catch(e){console.error(e)}
   return out}})(doneBlk77);
+/* ---------- ③ 관리 창 묶음 머리 한 줄 — 누르면 하위가 펴지고 접힘(세션 동안만 기억) ---------- */
+window.BX143=window.BX143||new Set();
+function bx143(el){const id=el&&el.dataset.bx143;if(!id)return;const S=window.BX143;if(S.has(id))S.delete(id);else S.add(id);if(typeof window.deck128==='function')window.deck128()}
+addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-bx143]');if(!b)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();bx143(b)},true);
+addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const b=e.target&&e.target.closest&&e.target.closest('[data-bx143]');if(!b||e.target!==b)return;e.preventDefault();bx143(b)},true);
