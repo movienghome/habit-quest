@@ -13,11 +13,10 @@ with sync_playwright() as pw:
     for W,H,nm in ((1200,900,'PC'),(390,800,'폰')):
         b0,pg=run(pw,W=W,H=H);closepops(pg)
         J(pg,"location.hash='log'");pg.wait_for_timeout(700)
-        has=J(pg,"!!document.getElementById('aqb141')")
-        ok(has,nm+' 행동/습관 제목줄에 🔍 단추')
+        has=J(pg,"!!document.getElementById('aq141i')&&document.getElementById('aq141').offsetParent!==null")
+        ok(has,nm+' 행동/습관 상단에 늘 보이는 찾기 줄')
         base=J(pg,VIS)
-        pg.click('#aqb141');pg.wait_for_timeout(200)
-        ok(J(pg,"!document.getElementById('aq141').hidden"),nm+' 🔍 누르면 찾기 줄')
+        pg.click('#aq141i');pg.wait_for_timeout(200)
         pg.keyboard.type('걷');pg.wait_for_timeout(500)
         v=J(pg,VIS)
         ok(len(v)>=1 and all('걷' in x or '몸' in x or True for x in v) and len(v)<len(base),nm+' 찾으면 줄어듦',v)
@@ -26,15 +25,14 @@ with sync_playwright() as pw:
         J(pg,"(()=>{ui.aq141='술';renderLog()})()");pg.wait_for_timeout(200)
         v2=J(pg,VIS);print(v2)
         ok(any('술' in x for x in v2),nm+" '좋은' 거르기 중에도 나쁜 카드('술')를 찾음",v2)
-        J(pg,"(()=>{ui.aq141='';ui.aq141open=false;renderLog()})()");pg.wait_for_timeout(150)
+        J(pg,"(()=>{ui.aq141='';renderLog()})()");pg.wait_for_timeout(150)
         ok(len(J(pg,VIS))==len(base),nm+' 닫으면 원래대로',(len(J(pg,VIS)),len(base)))
         # 영역별 ＋
-        n_t=J(pg,"document.querySelectorAll('#actGroups .add141t').length")
-        ok(n_t>=3,nm+' 영역마다 ＋ 새 카드 타일',n_t)
-        ar=J(pg,"document.querySelectorAll('#actGroups .add141t')[1].dataset.add141")
-        pg.click('#actGroups .add141t >> nth=1');pg.wait_for_timeout(250)
-        ok(J(pg,"!!document.querySelector('#actGroups .add141f')"),nm+' 타일을 누르면 입력 줄')
-        pg.fill('#actGroups .add141f input','테스트 카드 150');pg.click('#actGroups .add141f button[type=submit]');pg.wait_for_timeout(400)
+        n_t=J(pg,"document.querySelectorAll('#actGroups .add141f').length")
+        ok(n_t>=3,nm+' 영역마다 입력 줄',n_t)
+        ar=J(pg,"document.querySelectorAll('#actGroups .add141f')[1].dataset.area")
+        ok(J(pg,"document.querySelector('form[data-addform=act]').style.display==='none'"),nm+' 영역별 보기에선 맨 아래 공용 줄 숨김')
+        pg.fill('#actGroups .add141f >> nth=1 >> input','테스트 카드 150');pg.click('#actGroups .add141f >> nth=1 >> button[type=submit] >> nth=1');pg.wait_for_timeout(400)
         c=J(pg,"C.actions.find(a=>a.name==='테스트 카드 150')")
         ok(bool(c) and c['area']==ar and c['type']=='good',nm+' 그 영역에 새 카드가 생김',c)
         ok('테스트 카드 150' in J(pg,VIS),nm+' 목록에 바로 보임')
@@ -47,10 +45,10 @@ with sync_playwright() as pw:
         # 옛 '한 번' 카드(끝낸 것)는 목록에서 빠져 있음 → 찾기 줄에서 되살림
         J(pg,"(()=>{const a=newAction(uid(),'한번카드150','good',C.areas[0].id,'1');a.doneAt=dateKey();C.actions.push(a);save('config');render()})()");pg.wait_for_timeout(300)
         ok('한번카드150' not in J(pg,VIS),nm+' 끝낸 한 번 카드는 목록에서 빠져 있음')
-        J(pg,"(()=>{ui.aq141open=true;renderLog()})()");pg.wait_for_timeout(200)
+        J(pg,"(()=>{ui.aq141='한번카드';renderLog()})()");pg.wait_for_timeout(200)
         ok(J(pg,"!!document.querySelector('[data-rev141]')"),nm+' 찾기 줄에 끝낸 한 번 카드 되살리기')
         pg.click('[data-rev141]');pg.wait_for_timeout(300)
-        J(pg,"(()=>{ui.aq141open=false;renderLog()})()")
+        J(pg,"(()=>{ui.aq141='';renderLog()})()")
         ok('한번카드150' in J(pg,VIS),nm+' 되살리니 목록에 다시 보임')
         # 주 N회 건너뛰기
         r=J(pg,"""(()=>{const td=midKey68();const t=newTask({title:'주3 시험150'});t.rep={f:'x',n:3};t.due=addDays(weekStart(td),6);t.sl91={[td]:'10:00'};saveTask(t);render();
@@ -61,22 +59,25 @@ with sync_playwright() as pw:
         ok(J(pg,"!!(TASKS['%s'].sl91&&TASKS['%s'].sl91[midKey68()])"%(r['id'],r['id'])),nm+' 되돌리기로 자리 복구')
         # 수면 동기화
         J(pg,"render()");pg.wait_for_timeout(300)
-        J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1),c7=C.actions.find(a=>(a.name||'').includes('7시간 이상')),cl=sleepCard73();[[k,c7],[yk,cl]].forEach(([d,c])=>{dayOf(d).entries=(dayOf(d).entries||[]).filter(e=>e.aid!==c.id)})})()""")
+        J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1),c7=C.actions.find(a=>(a.name||'').includes('시간 이상 잤')),cl=sleepCard73();[[k,c7],[yk,cl]].forEach(([d,c])=>{dayOf(d).entries=(dayOf(d).entries||[]).filter(e=>e.aid!==c.id)})})()""")
         r=J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1);dayOf(k).sl102={b:'01:30',w:'09:00',dr:0,ln:0};sleepSync141(k);
-          const c7=C.actions.find(a=>/7\\s*시간\\s*이상/.test(a.name)),cl=sleepCard73();
+          const c7=C.actions.find(a=>/시간 이상 잤/.test(a.name)),cl=sleepCard73();
           const e7=(dayOf(k).entries||[]).filter(e=>e.aid===c7.id),el=(dayOf(yk).entries||[]).filter(e=>e.aid===cl.id);
-          return {c7:!!c7,cl:cl&&cl.name,opts:cl&&cl.opts&&cl.opts.length,e7:e7.length,e7f:e7[0]&&e7[0].sl141,el:el.length,elf:el[0]&&el[0].sl141,vid:el[0]&&el[0].vid}})()""")
+          return {c7:!!c7,cl:cl&&cl.name,opts:cl&&cl.opts&&cl.opts.length,e7:e7.length,e7f:e7[0]&&e7[0].sl141,e7v:e7[0]&&e7[0].vid,el:el.length,elf:el[0]&&el[0].sl141,vid:el[0]&&el[0].vid}})()""")
         print(r, J(pg,"(()=>{const k=gk76();return JSON.stringify((dayOf(k).entries||[]).map(e=>[e.aid,e.name,e.sl141,e.note]))})()"))
-        ok(r['e7']==1 and r['e7f']=='h7',nm+' 7시간 이상 잤다 자동 기록',r)
+        ok(r['e7']==1 and r['e7f']=='h7' and r['e7v']=='h2',nm+' 8시간 이상 잤다 카드 7.5h → 7~8시간 옵션 자동 기록',r)
         ok(r['el']==1 and r['elf']=='late' and r['vid']=='s1',nm+' 늦게 잠: 01:30 → 1~2시 옵션(s1)',r)
         r=J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1);dayOf(k).sl102={b:'03:10',w:'09:00',dr:0,ln:0};sleepSync141(k);
-          const c7=C.actions.find(a=>/7\\s*시간\\s*이상/.test(a.name)),cl=sleepCard73();
+          const c7=C.actions.find(a=>/시간 이상 잤/.test(a.name)),cl=sleepCard73();
           return {e7:(dayOf(k).entries||[]).filter(e=>e.aid===c7.id).length,el:(dayOf(yk).entries||[]).filter(e=>e.aid===cl.id).map(e=>e.vid)}})()""")
-        ok(r['e7']==0 and r['el']==['s3'],nm+' 03:10 → 3~4시(s3)로 고침 · 겹쳐 안 쌓임 · 5h50이라 7시간 기록은 지워짐',r)
+        ok(r['e7']==1 and r['el']==['s3'],nm+' 03:10 → 늦게 잠 3~4시(s3)로 고침 · 잠 5h50이라 수면 카드는 6시간 미만 하나로 고쳐짐(겹쳐 안 쌓임)',r)
         r=J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1);dayOf(k).sl102={b:'23:30',w:'05:00',dr:0,ln:0};sleepSync141(k);
-          const c7=C.actions.find(a=>/7\\s*시간\\s*이상/.test(a.name)),cl=sleepCard73();
+          const c7=C.actions.find(a=>/시간 이상 잤/.test(a.name)),cl=sleepCard73();
           return {e7:(dayOf(k).entries||[]).filter(e=>e.aid===c7.id).length,el:(dayOf(yk).entries||[]).filter(e=>e.aid===cl.id).length}})()""")
-        ok(r['e7']==0 and r['el']==0,nm+' 23:30→05:00(5.5h): 둘 다 지움',r)
+        ok(r['e7']==1 and r['el']==0,nm+' 23:30→05:00(5.5h): 늦게 잠은 지우고 수면 카드는 6시간 미만',r)
+        r=J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1),c7=C.actions.find(a=>/시간 이상 잤/.test(a.name));delete dayOf(k).sl102;sleepSync141(k);
+          return {e7:(dayOf(k).entries||[]).filter(e=>e.aid===c7.id).length}})()""")
+        ok(r['e7']==0,nm+' 수면 입력을 지우면 자동 기록도 지움',r)
         # 직접 적은 늦게 잠은 안 건드림
         r=J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1),cl=sleepCard73();withDay69(yk,()=>doAction(cl,{direct:true,at:'03:00',vid:'s3'}));
           dayOf(k).sl102={b:'01:30',w:'09:00',dr:0,ln:0};sleepSync141(k);
@@ -90,7 +91,7 @@ with sync_playwright() as pw:
         ok(J(pg,"(today().food||{})['%s']"%fid)==1,nm+' 홈에서 + 누르면 오늘 식사 횟수 1')
         J(pg,"(()=>{C.pin133=[C.actions.find(a=>a.type==='good'&&!a.doneAt).id];render()})()");pg.wait_for_timeout(300)
         n0=J(pg,"today().entries.length")
-        pg.click('#meal141 [data-p141]');pg.wait_for_timeout(300)
+        pg.click('#pin141 [data-p141]');pg.wait_for_timeout(300)
         ok(J(pg,"today().entries.length")==n0+1,nm+' 📌 고정 행동을 홈에서 바로 기록')
         # 저장 보관
         J(pg,"""(()=>{window.__quota=1;const _d=db.doc.bind(db);db.doc=p=>{const r=_d(p);const m=r.merge;r.merge=async f=>{if(window.__quota)throw Object.assign(new Error('Quota exceeded'),{code:'resource-exhausted'});return m(f)};return r}})()""")
