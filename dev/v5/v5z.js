@@ -7,7 +7,7 @@
    1) 쓰기 = 서버 것과 3방향 합치기(merge3, 트랜잭션). 마지막으로 본 서버 것(BASE69)을 기준으로 내가 바꾼 것만 얹어요 → 다른 기기 변경을 덮지 않음.
    2) 내가 쓴 것이 되돌아온 스냅샷·바뀐 게 없는 스냅샷은 다시 그리지 않음(깜빡임·'주기적 새로고침' 줄임).
    3) 저장이 계속 실패하면 화면 위에 빨간 띠(무엇이 왜 실패했는지). */
-var BASE69={},ERR69={},BACK69={},SNAP69=null;
+var BASE69={},ERR69={},BACK69={},SNAP69=null,PW69={};
 snapLoad=(function(prev){return function(){try{const x=JSON.parse(localStorage.getItem(SNAPK));SNAP69=x&&x.C?x.C:null}catch(e){SNAP69=null}return prev.apply(this,arguments)}})(snapLoad);
 function isObj69(v){return !!v&&typeof v==='object'&&!Array.isArray(v)}
 function deq69(a,b){
@@ -43,8 +43,10 @@ function mergeIds69(b,l,s){
   const prim=sameOrder(b,s)?l:s,other=prim===l?s:l;
   const item=id=>{const hb=B.has(id),hl=L.has(id),hs=S.has(id);
     if(hl&&hs)return merge3(B.get(id),L.get(id),S.get(id));
-    if(hl){if(hb&&deq69(L.get(id),B.get(id)))return null;return clone(L.get(id))}
-    if(hs){if(hb&&deq69(S.get(id),B.get(id)))return null;return clone(S.get(id))}return null};
+    // v13.18: 지운 쪽이 이김 — 기준(마지막으로 본 서버)에 있던 항목이 한쪽에서 없어졌으면 지운 것. 예전엔 다른 쪽이 그 항목을
+    // 조금이라도 바꿨으면(정리·이주가 필드 하나만 더해도) 되살려서 '지운 카드·프리셋이 다시 살아남'이 났음.
+    if(hl){if(hb)return null;return clone(L.get(id))}
+    if(hs){if(hb)return null;return clone(S.get(id))}return null};
   const out=[],seen=new Set();
   prim.forEach(x=>{seen.add(x.id);const v=item(x.id);if(v)out.push(v)});
   other.forEach((x,i)=>{if(seen.has(x.id))return;seen.add(x.id);const v=item(x.id);if(!v)return;
@@ -88,7 +90,9 @@ function pendRestore141(){
           if(mv===null){if(deq69(cur[k],bv))delete cur[k];return}
           cur[k]=cur[k]===undefined?clone(mv):merge3(bv,mv,cur[k],n==='progress')});
         save(n);n0++}
-      else if(n.startsWith('t:')){const id=n.slice(2),cur=TASKS[id];TASKS[id]=cur?merge3(p.b,p.m,clone(cur)):clone(p.m);TASKS[id].id=id;save(n);n0++}
+      else if(n.startsWith('t:')){const id=n.slice(2),cur=TASKS[id];
+        if(!cur&&p.b!=null){delete o[n];return}   // v13.18: 보관할 땐 서버에 있던 할 일인데 지금 서버에 없음 = 다른 기기에서 지움 → 되살리지 않음
+        TASKS[id]=cur?merge3(p.b,p.m,clone(cur)):clone(p.m);TASKS[id].id=id;save(n);n0++}
       else{const cur=DAYS[n];DAYS[n]=normDay(n,cur?merge3(p.b,p.m,clone(cur)):p.m);save(n);n0++}
     }catch(e){console.error('보관본 합치기 실패',n,e)}});
   pendWrite141(o);
@@ -103,14 +107,19 @@ async function flush(n){
   if(writing[n]){timers[n]=setTimeout(()=>flush(n),300);return}
   if(n==='config'){slim69();C.v69=1}
   const body=bodyOf(n);if(!body){dirty.delete(n);return}
-  writing[n]=true;const r=rev[n],mine=clone(body),base=BASE69[n],isT=n.startsWith('t:');
+  writing[n]=true;const r=rev[n],mine=clone(body),base=BASE69[n],isT=n.startsWith('t:');let wid=null;
   try{
     const ref=db.doc(docPath(n));let res;
-    if(ref.merge&&navigator.onLine!==false){
-      const out=await ref.merge(cur=>{if(cur==null)return (base!=null&&isT)?undefined:mine;const m=merge3(base===undefined?null:base,mine,cur,n==='progress');if(m&&Array.isArray(m.entries)){const q=new Set();m.entries=m.entries.filter(e=>{if(!e||e.kind!=='quest'||(+e.xp||0)||(+e.gold||0))return true;const k=e.qid;if(q.has(k))return false;q.add(k);return true})}return m/* 기준이 없으면(그 사이 다른 기기가 처음 만든 문서) 빈 것을 기준으로 합침 */});
+    // v13.18: 오프라인이면 쓰지 않고 기다림(예전엔 ref.set(mine)으로 이 기기 사본 전체를 서버에 통째로 덮어써서
+    // 다른 기기에서 만든 프리셋·뽀모도로 기록·목록이 사라지고 지운 카드가 되살아났음). 보관본(hq-pend)이 앱을 닫아도 지켜 줌.
+    if(ref.merge&&navigator.onLine===false)throw {code:'unavailable',message:'offline'};
+    if(ref.merge){
+      // v13.18: 진행(XP·골드 더하기)은 시간 초과로 실패했다고 본 쓰기가 실제로 들어갔으면 두 번 더하지 않게 쓰기 표시(_w69)로 확인
+      wid=n==='progress'?'w'+Date.now().toString(36)+Math.random().toString(36).slice(2,6):null;const pw=PW69[n];
+      const out=await ref.merge(cur=>{if(cur==null)return (base!=null&&isT)?undefined:mine;const b0=(pw&&cur&&cur._w69===pw.id)?pw.mine:base;const m=merge3(b0===undefined?null:b0,mine,cur,n==='progress');if(wid&&m)m._w69=wid;if(m&&Array.isArray(m.entries)){const q=new Set();m.entries=m.entries.filter(e=>{if(!e||e.kind!=='quest'||(+e.xp||0)||(+e.gold||0))return true;const k=e.qid;if(q.has(k))return false;q.add(k);return true})}return m/* 기준이 없으면(그 사이 다른 기기가 처음 만든 문서) 빈 것을 기준으로 합침 */});
       if(out&&out.skip){ // 다른 기기에서 지운 할 일 → 되살리지 않음
-        BASE69[n]=null;if(rev[n]===r){dirty.delete(n);if(isT){delete TASKS[n.slice(2)];render()}}return}
-      res=out?out.data:mine;
+        BASE69[n]=null;pendDrop141(n);if(rev[n]===r){dirty.delete(n);if(isT){delete TASKS[n.slice(2)];render()}}return}
+      res=out?out.data:mine;delete PW69[n];
     }else{await ref.set(mine);res=mine}
     BASE69[n]=clone(res);delete ERR69[n];BACK69[n]=0;errBar69();
     if(!deq69(res,mine)){ // 그 사이 서버(다른 기기)에 바뀐 게 있었음 → 내 화면에도 합쳐 넣기
@@ -118,23 +127,28 @@ async function flush(n){
     if(rev[n]===r){dirty.delete(n);pendDrop141(n)}else timers[n]=setTimeout(()=>flush(n),200);
     setSync('저장됨 · 모든 기기에서 같은 기록')}
   catch(e){const code=e&&e.code;
+    if(n==='progress'&&code==='deadline-exceeded'&&wid)PW69[n]={id:wid,mine};
     try{pendPut141(n,base,mine)}catch(x){}
     if(code==='resource-exhausted'){ // 무료 한도: 포기하지 않고 5분~30분 간격으로 계속 시도(보관본은 이미 기기에 있음)
       const w=BACK69[n]=Math.min(1800000,Math.max(300000,(BACK69[n]>=300000?BACK69[n]*2:300000)));
       err69(n,e);setSync('저장 한도 · 이 기기에 보관 중 · '+Math.round(w/60000)+'분 뒤 다시 시도');timers[n]=setTimeout(()=>flush(n),w);return}
-    if((!code||TRANS69.includes(code))&&(BACK69[n]||0)>=4000){ // 합치기가 두 번 넘게 안 되면(연결 불안정) 기기 사본에 쓰고 연결되면 올라가게 — 앱을 닫아도 안 사라져요
-      try{await db.doc(docPath(n)).set(mine);BASE69[n]=clone(mine);BACK69[n]=0;if(rev[n]===r)dirty.delete(n);setSync('이 기기에 저장 · 연결되면 올라가요');return}catch(e2){}}
-    if(!code||TRANS69.includes(code)){const w=BACK69[n]=Math.min(30000,(BACK69[n]||1000)*2);setSync('저장 대기 중 · 연결되면 올려요');timers[n]=setTimeout(()=>flush(n),w);if(w>=16000)err69(n,e)}
+    // v13.18: 연결이 불안정해도 '이 기기 사본으로 통째 덮어쓰기'는 하지 않음(근본 원인). 보관본에 두고 합치기로만 다시 시도.
+    if(!code||TRANS69.includes(code)){const w=BACK69[n]=Math.min(30000,(BACK69[n]||1000)*2);setSync('저장 대기 중 · 이 기기에 보관 · 연결되면 합쳐서 올려요');timers[n]=setTimeout(()=>flush(n),w);if(w>=16000)err69(n,e)}
     else{console.error('저장 실패',n,e);err69(n,e);setSync('저장이 안 됐어요 · 위의 빨간 띠를 봐요')}}
   finally{writing[n]=false}
 }
+// v13.18: 연결이 돌아오거나 화면이 다시 보이면 기다리던 저장을 바로 합쳐서 올림(한도 오류는 원래 간격대로)
+{const kick=()=>{try{if(mode!=='db'||navigator.onLine===false||document.hidden)return;
+   dirty.forEach(n=>{if(writing[n]||(ERR69[n]&&ERR69[n].code==='resource-exhausted'))return;clearTimeout(timers[n]);BACK69[n]=0;timers[n]=setTimeout(()=>flush(n),1500)})}catch(e){}};
+ addEventListener('online',kick);document.addEventListener('visibilitychange',kick);addEventListener('pageshow',kick)}
 async function boot(){
   if(!snapLoad())document.body.classList.add('booting');
   render();
   let d=null;
   try{d=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){d=null}
   const afterLoad=()=>{
-    try{pendRestore141()}catch(e){console.error(e)}
+    // v13.18: 보관본은 서버의 설정·할 일을 다 받은 뒤에만 합침(예전엔 8초 시간 초과·캐시 상태에서도 합쳐 지운 할 일을 되살릴 수 있었음)
+    {let n8=0;const go=()=>{if(mode!=='db'||(SRV59.c&&TSRV64&&TSRV64r)){try{pendRestore141()}catch(e){console.error(e)}return}if(++n8<240)setTimeout(go,500)};go()}
     if(rawCfgV!==null&&rawCfgV<8){save('config');}
     if(C._pendingTasks){const ps=C._pendingTasks;delete C._pendingTasks;ps.forEach(p=>saveTask(newTask({...p,due:dateKey()})));save('config')}
     ['v54news','v53news','v51news','v5news'].forEach(k=>{if(C[k]){delete C[k];save('config')}});
