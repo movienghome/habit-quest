@@ -4,25 +4,23 @@
 .aq141d{margin:6px 0 2px}
 .aq141c{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 #actGroups .add141{grid-column:1/-1}
-#meal141 .m141m{display:flex;flex-direction:column;gap:6px}
-#meal141 .m141r{display:flex;align-items:center;justify-content:space-between;gap:8px}
-#meal141 .m141c{justify-content:flex-start}
-#meal141 .m141n{font-weight:600;font-size:14px}
-#meal141 .stepper{display:inline-flex;align-items:center;gap:8px}
-#meal141 .stepper button{min-width:38px;min-height:34px}
-#meal141 .stepper .v.neg{color:var(--bad)}
 #pin141 .m141p{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
-#pin141 .p141{padding:6px 12px;font-size:13px}
-#pin141 .p141.on{text-decoration:line-through;opacity:.85}
 #actGroups .add141f{grid-column:1/-1}
 [data-view=log] .actform-hide141{display:none}
-#meal141 .m141w{margin-top:2px;padding-top:6px;border-top:1px dashed var(--line)}
-#meal141 .m141wi{display:inline-flex;align-items:center;gap:6px}
-#meal141 .m141wi input{width:84px;padding:5px 8px;font-size:14px;text-align:right}
 @media (max-width:520px){.addrow.add141f{grid-template-columns:22px minmax(0,1fr) auto auto}.addrow.add141f input{grid-column:2;grid-row:1}.addrow.add141f select{grid-column:3;grid-row:1;width:auto}.addrow.add141f .btn{grid-column:4;grid-row:1}}
 .bmini141{margin-top:6px!important;gap:6px!important;padding-top:6px;border-top:1px dashed var(--line)}
 .bmini141>.small{display:none}
 .bmini141 .sizes{gap:4px}
 .bmini141 .sizes .chipbtn{padding:3px 9px;font-size:12px}
 .bmini141 #braveForm input{padding:6px 10px;font-size:14px}
-#meal141 label.m141c{display:flex!important;flex-direction:row;justify-content:flex-start;align-items:center;gap:10px}#meal141 label.m141c input{width:auto;flex:none}
+#pin141 .m141p{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
+#pin141 .pq141{display:inline-flex;align-items:center;gap:2px}
+#pin141 .pq141 .hand{cursor:grab;color:var(--muted);padding:2px 1px;touch-action:none}
+#pin141 .p141{padding:6px 12px;font-size:13px}
+#pin141 .p141.on{text-decoration:line-through;opacity:.85}
+#meal141 .weightform{margin-top:10px}
+.reads141{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:8px}
+.reads141 .rt141{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rbar141{display:inline-block;width:80px;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.rbar141 i{display:block;height:100%;background:var(--accent)}
+.rwarn141{font-weight:700}

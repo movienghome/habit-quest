@@ -69,15 +69,18 @@ with sync_playwright() as pw:
         ok(r['el']==1 and r['elf']=='late' and r['vid']=='s1',nm+' 늦게 잠: 01:30 → 1~2시 옵션(s1)',r)
         r=J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1);dayOf(k).sl102={b:'03:10',w:'09:00',dr:0,ln:0};sleepSync141(k);
           const c7=C.actions.find(a=>/시간 이상 잤/.test(a.name)),cl=sleepCard73();
-          return {e7:(dayOf(k).entries||[]).filter(e=>e.aid===c7.id).length,el:(dayOf(yk).entries||[]).filter(e=>e.aid===cl.id).map(e=>e.vid)}})()""")
-        ok(r['e7']==1 and r['el']==['s3'],nm+' 03:10 → 늦게 잠 3~4시(s3)로 고침 · 잠 5h50이라 수면 카드는 6시간 미만 하나로 고쳐짐(겹쳐 안 쌓임)',r)
+          const cb=C.actions.find(a=>a.sl141b);return {e7:(dayOf(k).entries||[]).filter(e=>e.aid===c7.id).length,eb:(dayOf(k).entries||[]).filter(e=>e.aid===cb.id).map(e=>[e.vid,e.type,e.cond,e.sl141]),el:(dayOf(yk).entries||[]).filter(e=>e.aid===cl.id).map(e=>e.vid)}})()""")
+        ok(r['e7']==0 and len(r['eb'])==1 and r['eb'][0][0]=='b0' and r['eb'][0][1]=='bad' and r['eb'][0][2]<0 and r['el']==['s3'],nm+' 03:10(5h50) → 좋은 수면 카드는 없고 나쁨 카드(5~6시간, 컨디션 −) 하나 · 늦게 잠 s3',r)
         r=J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1);dayOf(k).sl102={b:'23:30',w:'05:00',dr:0,ln:0};sleepSync141(k);
           const c7=C.actions.find(a=>/시간 이상 잤/.test(a.name)),cl=sleepCard73();
           return {e7:(dayOf(k).entries||[]).filter(e=>e.aid===c7.id).length,el:(dayOf(yk).entries||[]).filter(e=>e.aid===cl.id).length}})()""")
-        ok(r['e7']==1 and r['el']==0,nm+' 23:30→05:00(5.5h): 늦게 잠은 지우고 수면 카드는 6시간 미만',r)
-        r=J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1),c7=C.actions.find(a=>/시간 이상 잤/.test(a.name));delete dayOf(k).sl102;sleepSync141(k);
-          return {e7:(dayOf(k).entries||[]).filter(e=>e.aid===c7.id).length}})()""")
+        ok(r['e7']==0 and r['el']==0,nm+' 23:30→05:00(5.5h): 늦게 잠은 지움 · 좋은 수면 카드 없음',r)
+        r=J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1),c7=C.actions.find(a=>/시간 이상 잤/.test(a.name)),cb=C.actions.find(a=>a.sl141b);delete dayOf(k).sl102;sleepSync141(k);
+          return {e7:(dayOf(k).entries||[]).filter(e=>e.aid===c7.id||e.aid===cb.id).length}})()""")
         ok(r['e7']==0,nm+' 수면 입력을 지우면 자동 기록도 지움',r)
+        r=J(pg,"""(()=>{const k=gk76(),cb=C.actions.find(a=>a.sl141b);dayOf(k).sl102={b:'23:30',w:'04:30',dr:0,ln:0};sleepSync141(k);const a=(dayOf(k).entries||[]).filter(e=>e.aid===cb.id).length;
+          dayOf(k).sl102={b:'22:30',w:'08:00',dr:0,ln:0};sleepSync141(k);const g=C.actions.find(x=>x.sl141g);return {bad7:a,bad_after:(dayOf(k).entries||[]).filter(e=>e.aid===cb.id).length,good:(dayOf(k).entries||[]).filter(e=>e.aid===g.id).map(e=>e.vid)}})()""")
+        ok(r['bad7']==1 and r['bad_after']==0 and r['good']==['h3'],nm+' 7h→8h30으로 고치면 나쁨 기록은 지워지고 좋은 카드(8시간 이상)로 바뀜',r)
         # 직접 적은 늦게 잠은 안 건드림
         r=J(pg,"""(()=>{const k=gk76(),yk=addDays(k,-1),cl=sleepCard73();withDay69(yk,()=>doAction(cl,{direct:true,at:'03:00',vid:'s3'}));
           dayOf(k).sl102={b:'01:30',w:'09:00',dr:0,ln:0};sleepSync141(k);
@@ -93,6 +96,21 @@ with sync_playwright() as pw:
         n0=J(pg,"today().entries.length")
         pg.click('#pin141 [data-p141]');pg.wait_for_timeout(300)
         ok(J(pg,"today().entries.length")==n0+1,nm+' 📌 고정 행동을 홈에서 바로 기록')
+        # 홈 식사 칸 = 기록하기와 같은 모양, 빠른 기록 이름·끌어서 순서
+        ok(J(pg,"!!document.querySelector('#meal141 .frow .counter')&&!!document.querySelector('#meal141 form.weightform')"),nm+' 홈 식사 칸이 기록하기와 같은 줄 모양 + 몸무게 칸')
+        ok(J(pg,"document.querySelector('[data-hid=pin141] h2').textContent.includes('빠른 기록')"),nm+" '빠른 기록' 이름")
+        J(pg,"(()=>{C.pin133=C.actions.filter(a=>a.type==='good'&&!a.doneAt).slice(0,3).map(a=>a.id);render()})()");pg.wait_for_timeout(300)
+        ids0=J(pg,"C.pin133.slice()")
+        hs=pg.locator('#pin141 .hand');hs.nth(2).scroll_into_view_if_needed();pg.wait_for_timeout(200);hb=hs.nth(2).bounding_box();tb=pg.locator('#pin141 .pq141').nth(0).bounding_box()
+        pg.mouse.move(hb['x']+hb['width']/2,hb['y']+hb['height']/2);pg.mouse.down();pg.mouse.move(hb['x']-20,hb['y']+hb['height']/2,steps=4);pg.mouse.move(tb['x']+3,tb['y']+3,steps=8);pg.mouse.up();pg.wait_for_timeout(400)
+        ids1=J(pg,"C.pin133.slice()")
+        ok(ids1==[ids0[2],ids0[0],ids0[1]],nm+' 빠른 기록을 끌어서 맨 앞으로',(ids0,ids1))
+        # 읽기 계량기·진단
+        J(pg,"window.__hqReads=()=>41234;location.hash='more';render()");pg.wait_for_timeout(400)
+        ok(J(pg,"document.getElementById('reads141')&&document.querySelector('#reads141 .rt141')")!=None,nm+' 읽기 계량기 줄')
+        txt=J(pg,"diagText141()")
+        ok('41234' in txt and '저장 상태' in txt,nm+' 진단 내용',txt[:80])
+        ok(J(pg,"document.querySelector('#reads141 .rwarn141')!=null"),nm+' 4만 넘으면 경고 글')
         # 저장 보관
         J(pg,"""(()=>{window.__quota=1;const _d=db.doc.bind(db);db.doc=p=>{const r=_d(p);const m=r.merge;r.merge=async f=>{if(window.__quota)throw Object.assign(new Error('Quota exceeded'),{code:'resource-exhausted'});return m(f)};return r}})()""")
         J(pg,"(()=>{C.test141=1;save('config')})()");pg.wait_for_timeout(1800)

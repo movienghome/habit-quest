@@ -2981,28 +2981,26 @@ body.dragging.rs134,body.dragging.rs134 *{cursor:ns-resize!important}
 .aq141d{margin:6px 0 2px}
 .aq141c{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 #actGroups .add141{grid-column:1/-1}
-#meal141 .m141m{display:flex;flex-direction:column;gap:6px}
-#meal141 .m141r{display:flex;align-items:center;justify-content:space-between;gap:8px}
-#meal141 .m141c{justify-content:flex-start}
-#meal141 .m141n{font-weight:600;font-size:14px}
-#meal141 .stepper{display:inline-flex;align-items:center;gap:8px}
-#meal141 .stepper button{min-width:38px;min-height:34px}
-#meal141 .stepper .v.neg{color:var(--bad)}
 #pin141 .m141p{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
-#pin141 .p141{padding:6px 12px;font-size:13px}
-#pin141 .p141.on{text-decoration:line-through;opacity:.85}
 #actGroups .add141f{grid-column:1/-1}
 [data-view=log] .actform-hide141{display:none}
-#meal141 .m141w{margin-top:2px;padding-top:6px;border-top:1px dashed var(--line)}
-#meal141 .m141wi{display:inline-flex;align-items:center;gap:6px}
-#meal141 .m141wi input{width:84px;padding:5px 8px;font-size:14px;text-align:right}
 @media (max-width:520px){.addrow.add141f{grid-template-columns:22px minmax(0,1fr) auto auto}.addrow.add141f input{grid-column:2;grid-row:1}.addrow.add141f select{grid-column:3;grid-row:1;width:auto}.addrow.add141f .btn{grid-column:4;grid-row:1}}
 .bmini141{margin-top:6px!important;gap:6px!important;padding-top:6px;border-top:1px dashed var(--line)}
 .bmini141>.small{display:none}
 .bmini141 .sizes{gap:4px}
 .bmini141 .sizes .chipbtn{padding:3px 9px;font-size:12px}
 .bmini141 #braveForm input{padding:6px 10px;font-size:14px}
-#meal141 label.m141c{display:flex!important;flex-direction:row;justify-content:flex-start;align-items:center;gap:10px}#meal141 label.m141c input{width:auto;flex:none}
+#pin141 .m141p{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
+#pin141 .pq141{display:inline-flex;align-items:center;gap:2px}
+#pin141 .pq141 .hand{cursor:grab;color:var(--muted);padding:2px 1px;touch-action:none}
+#pin141 .p141{padding:6px 12px;font-size:13px}
+#pin141 .p141.on{text-decoration:line-through;opacity:.85}
+#meal141 .weightform{margin-top:10px}
+.reads141{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:8px}
+.reads141 .rt141{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rbar141{display:inline-block;width:80px;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.rbar141 i{display:block;height:100%;background:var(--accent)}
+.rwarn141{font-weight:700}
 </style>
 
 <header class="hud" id="hud">
@@ -3050,8 +3048,8 @@ body.dragging.rs134,body.dragging.rs134 *{cursor:ns-resize!important}
         <div id="htList"></div></div></div>
       <div class="hblock" data-hid="gacha"><div class="panel"><div class="ptitle"><h2>🎲 뽑기 · ⏱ 사냥</h2><span class="row" style="gap:2px"><a class="small" href="#gacha" style="color:var(--accent)">뽑기 열기</a><button class="colbtn" data-collapse="gacha" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div>
         <div class="hgacha" id="hGacha"></div></div></div>
-      <div class="hblock" data-hid="meal141"><div class="panel"><div class="ptitle"><h2>🍽 식사 · 몸무게</h2><span class="row" style="gap:2px"><a class="small" href="#log" style="color:var(--accent)">기록하기</a><button class="colbtn" data-collapse="meal141" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div id="meal141"></div></div></div>
-      <div class="hblock" data-hid="pin141"><div class="panel"><div class="ptitle"><h2>📌 자주 쓰는 것</h2><span class="row" style="gap:2px"><a class="small" href="#log" style="color:var(--accent)">기록하기</a><button class="colbtn" data-collapse="pin141" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div id="pin141"></div></div></div>
+      <div class="hblock" data-hid="meal141"><div class="panel"><div class="ptitle"><h2>🍽 식사 · 몸무게</h2><span class="row" style="gap:2px"><a class="small" href="#edit" data-goedit="food" style="color:var(--accent)">항목 편집</a><button class="colbtn" data-collapse="meal141" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div id="meal141"></div></div></div>
+      <div class="hblock" data-hid="pin141"><div class="panel"><div class="ptitle"><h2>📌 빠른 기록</h2><span class="row" style="gap:2px"><a class="small" href="#log" style="color:var(--accent)">기록하기</a><button class="colbtn" data-collapse="pin141" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div id="pin141"></div></div></div>
       <div class="hblock" data-hid="sugg"><div class="panel"><div class="ptitle"><h2>지금 하면 좋은 것</h2><span class="row" style="gap:2px"><button class="qbtn" data-guide="flow" aria-label="설명">?</button><button class="colbtn" data-collapse="sugg" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div><div class="sugg" id="sugg"></div></div></div>
       <div class="hblock" data-hid="quests"><div class="panel">
           <div class="ptitle"><h2>오늘의 일퀘</h2><span class="row" style="gap:2px"><span class="small muted num" id="questCount"></span><button class="qbtn" data-guide="quest" aria-label="설명">?</button><button class="colbtn" data-collapse="quests" aria-label="접기·펴기"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span></div>
@@ -10847,6 +10845,7 @@ function pendRestore141(){
   pendWrite141(o);
   if(n0)later(()=>toast('저장 못 했던 변경 '+n0+'건을 이 기기 보관본에서 되살려 다시 올려요',5000))}
 addEventListener('pagehide',()=>{try{dirty.forEach(n=>{const body=bodyOf(n);if(body)pendPut141(n,BASE69[n],clone(body))})}catch(e){}});
+window.__hqDiag=()=>({err:JSON.parse(JSON.stringify(ERR69)),back:Object.assign({},BACK69),dirty:[...dirty],pend:Object.keys(pendRead141()||{})});
 window.__hqBusy=()=>dirty.size>0||Object.keys(writing).some(k=>writing[k]);
 async function flush(n){
   if(mode==='local'){dirty.delete(n);try{localStorage.setItem(LKEY,JSON.stringify({C,P,DAYS,TASKS}))}catch(e){}return}
@@ -19467,22 +19466,34 @@ function log141a(day,a,o,key){
   const e=es.find(x=>x.kind==='act'&&x.aid===a.id)||es.find(x=>x.aid===a.id);
   if(e){e.sl141=key;save(day);return true}
   return false}
-/* 수면 시간 카드: '8시간 이상 잤다' + 세부 옵션(6시간 미만 / 6~7 / 7~8 / 8시간 이상) — 사용자 11/26 요청으로 이 카드 한 장만 이름·옵션을 바꿈 */
-const SLEEPG141=[['h0','6시간 미만',0],['h1','6~7시간',.35],['h2','7~8시간',.7],['h3','8시간 이상',1]];
+/* 수면 시간: 좋음/중립 = '8시간 이상 잤다' 카드(옵션 6~7 중립 · 7~8 좋음 · 8+ 최고) · 나쁨 = '6시간 미만 잤다' 나쁜 카드(옵션 5~6 · 4~5 · 4시간 미만, 컨디션 ↓) — 사용자 11/26 요청 */
+const SLEEPG141=[['h1','6~7시간',.35],['h2','7~8시간',.7],['h3','8시간 이상',1]];
+const SLEEPB141=[['b0','5~6시간',8],['b1','4~5시간',14],['b2','4시간 미만',20]];
 function sleepGood141(){return (C.actions||[]).find(a=>a.type==='good'&&!a.doneAt&&(a.sl141g||/[78]\s*시간\s*이상\s*잤/.test(a.name||'')))||null}
+function sleepBad141(){return (C.actions||[]).find(a=>a.type==='bad'&&!a.doneAt&&a.sl141b)||null}
 function migSleepGood141(){
-  if(C.mig141s||!ready)return;C.mig141s=1;
-  const a=sleepGood141();if(!a){save('config');return}
-  C.bak141sleepg=JSON.parse(JSON.stringify(a));
-  if(/^7\s*시간\s*이상\s*잤다$/.test((a.name||'').trim()))a.name='8시간 이상 잤다';
-  if(!(a.opts||[]).length){const c=+a.cond||0,g=+a.gold||0,x=+a.xp||0;
-    a.opts=SLEEPG141.map(([id,nm,r])=>({id,name:nm,cond:Math.round(c*r),gold:Math.round(g*r),xp:Math.round(x*r)}))}
-  a.sl141g=1;if(!a.desc)a.desc='잔 시간으로 골라요. 어젯밤 창에 자고 일어난 시각을 적으면 자동으로 들어가요. 8시간 이상이 최고점이에요.';
-  save('config')}
+  if(!ready)return;let ch=false;
+  if(!C.mig141s){C.mig141s=1;ch=true;
+    const a=sleepGood141();
+    if(a){C.bak141sleepg=JSON.parse(JSON.stringify(a));
+      if(/^7\s*시간\s*이상\s*잤다$/.test((a.name||'').trim()))a.name='8시간 이상 잤다';
+      if(!(a.opts||[]).length){const c=+a.cond||0,g=+a.gold||0,x=+a.xp||0;
+        a.opts=SLEEPG141.map(([id,nm,r])=>({id,name:nm,cond:Math.round(c*r),gold:Math.round(g*r),xp:Math.round(x*r)}))}
+      a.sl141g=1;if(!a.desc)a.desc='잔 시간으로 골라요. 어젯밤 창에 자고 일어난 시각을 적으면 자동으로 들어가요. 8시간 이상이 최고점이에요.'}}
+  if(!C.mig141t){C.mig141t=1;ch=true;
+    const a=sleepGood141();if(a&&(a.opts||[]).some(o=>o.id==='h0'))a.opts=a.opts.filter(o=>o.id!=='h0');   // 6시간 미만은 이제 나쁜 카드로
+    if(!sleepBad141()){const n=newAction(uid(),'6시간 미만 잤다','bad',(a&&a.area)||'body','');
+      n.cond=8;n.gold=0;n.xp=0;n.sl141b=1;n.opts=SLEEPB141.map(([id,nm,c])=>({id,name:nm,cond:c,gold:0}));
+      n.desc='잔 시간으로 골라요. 어젯밤 창에 자고 일어난 시각을 적으면 6시간 미만일 때 자동으로 들어가요.';
+      C.actions.push(n)}}
+  if(ch)save('config')}
 function hOpt141(c,m){
-  const id=m<360?'h0':m<420?'h1':m<480?'h2':'h3';
+  if(m<360)return null;   // 6시간 미만 → 좋은 카드엔 기록 안 함(나쁜 카드로)
+  const id=m<420?'h1':m<480?'h2':'h3';
   if((c.opts||[]).some(o=>o.id===id))return id;
   return m>=420?'':null}   // 옵션이 없는 옛 카드: 7시간 넘으면 그냥 기록
+function bOpt141(c,m){if(m>=360)return null;const id=m<240?'b2':m<300?'b1':'b0';return (c.opts||[]).some(o=>o.id===id)?id:''}
+const verdict141=m=>m<360?'나쁨':m<420?'중립':'좋음';
 function sleepSync141(k){
   try{
     if(!k||!C||typeof ready72==='function'&&!ready72())return;
@@ -19493,7 +19504,14 @@ function sleepSync141(k){
     if(c7){const es=dayOf(k).entries||[],mine=es.filter(e=>e.aid===c7.id&&e.sl141==='h7'),other=es.some(e=>e.aid===c7.id&&e.sl141!=='h7');
       const vid=m?hOpt141(c7,m):null;
       if(vid!==null&&!other){if(!(mine.length===1&&(mine[0].vid||'')===vid)){mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}});
-        log141a(k,c7,{at:s.w,vid:vid||undefined,note:`🛏 어젯밤 창: ${Math.floor(m/60)}시간 ${m%60}분 잠`},'h7')}}
+        log141a(k,c7,{at:s.w,vid:vid||undefined,note:`🛏 어젯밤 창: ${Math.floor(m/60)}시간 ${m%60}분 잠 · ${verdict141(m)}`},'h7')}}
+      else if(vid===null)mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}})}
+    // 6시간 미만 잤다(나쁨) — 일어난 날(k), 컨디션이 내려감
+    const cb=sleepBad141();
+    if(cb){const es=dayOf(k).entries||[],mine=es.filter(e=>e.aid===cb.id&&e.sl141==='h6'),other=es.some(e=>e.aid===cb.id&&e.sl141!=='h6');
+      const vid=m?bOpt141(cb,m):null;
+      if(vid!==null&&!other){if(!(mine.length===1&&(mine[0].vid||'')===vid)){mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}});
+        log141a(k,cb,{at:s.w,vid:vid||undefined,note:`🛏 어젯밤 창: ${Math.floor(m/60)}시간 ${m%60}분 잠 · ${verdict141(m)}`},'h6')}}
       else if(vid===null)mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}})}
     // 늦게 잠 — 어제(yk) 기록, 잠든 시각에 맞는 세부 옵션
     const cl=typeof sleepCard73==='function'?sleepCard73():null;
@@ -19508,22 +19526,33 @@ addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;
 window.sleepSync141=sleepSync141;
 
 /* ---------- ⑥ 홈 🍽 식사 · 자주 쓰는 것 ---------- */
-HOME_BLOCKS.meal141='🍽 식사 · 몸무게';HOME_BLOCKS.pin141='📌 자주 쓰는 것';
+HOME_BLOCKS.meal141='🍽 식사 · 몸무게';HOME_BLOCKS.pin141='📌 빠른 기록';
+function foodHtml141(day){
+  return (C.food||[]).map(f=>{const v=+((day.food||{})[f.id]||0),ar=C.areas.find(a=>a.id===f.area),neg=f.points<0;
+    const eff=`<span class="tiny muted">${esc(ar?ar.name:'')} ${neg?'−':'+'}${Math.abs(f.points)}${f.kind==='counter'?' / 회':''}${!neg&&f.kind==='counter'&&f.max?` (최대 ${f.max}회)`:''}</span>`;
+    const fh=`<span class="hand fh" data-drag="row:${f.id}" data-dragmode="now" aria-label="끌어서 순서 바꾸기">⋮⋮</span>`;
+    if(f.kind==='check')return `<div class="frow" data-rowid="${f.id}">${fh}<label class="togglebox"><input type="checkbox" data-foodcheck="${f.id}" ${v?'checked':''}> <span><b>${esc(f.name)}</b><br>${eff}</span></label></div>`;
+    const dots=Array.from({length:Math.max(neg?3:(+f.max||3),v)},(_,i)=>`<i class="${i<v?'on':''}"></i>`).join('');
+    return `<div class="frow" data-rowid="${f.id}">${fh}<div class="counter"><div><b>${esc(f.name)}</b> ${eff}<div class="dots ${neg?'neg':''}">${dots}</div></div><div class="stepper"><button data-food="${f.id}" data-d="-1" aria-label="${esc(f.name)} 줄이기">−</button><span class="v num">${v}</span><button data-food="${f.id}" data-d="1" aria-label="${esc(f.name)} 늘리기">+</button></div></div></div>`}).join('')||'<div class="empty">식사 항목이 없어요.</div>'}
 function fill141(){
   const box=$('meal141');if(!box)return;
-  const day=today(),F=C.food||[],pins=(Array.isArray(C.pin133)?C.pin133:[]).map(id=>C.actions.find(a=>a.id===id&&!a.doneAt)).filter(Boolean);
-  const meals=F.map(f=>{const v=+((day.food||{})[f.id]||0),neg=f.points<0;
-    if(f.kind==='check')return `<label class="m141r m141c"><input type="checkbox" data-foodcheck="${esc(f.id)}" ${v?'checked':''}> <span class="m141n">${esc(f.name)}</span></label>`;
-    return `<div class="m141r"><span class="m141n">${esc(f.name)}</span><span class="stepper"><button type="button" data-food="${esc(f.id)}" data-d="-1" aria-label="${esc(f.name)} 줄이기">−</button><span class="v num${neg&&v?' neg':''}">${v}</span><button type="button" data-food="${esc(f.id)}" data-d="1" aria-label="${esc(f.name)} 늘리기">+</button></span></div>`}).join('');
-  let wrow='';
-  if(C.weight&&C.weight.on!==false){const last=Object.keys(DAYS).filter(k=>DAYS[k]&&DAYS[k].weight).sort().pop(),lw=last?DAYS[last].weight:null,tw=day.weight;
-    wrow=`<form class="m141r m141w" id="w141f"><span class="m141n">⚖ 몸무게</span><span class="m141wi"><input id="w141i" type="number" step="0.1" min="30" max="250" inputmode="decimal" placeholder="${lw?lw:'kg'}" value="${tw||''}" aria-label="몸무게 kg"><span class="tiny muted">kg</span><button type="submit" class="btn sm ghost">${tw?'고치기':'기록'}</button></span></form>`}
+  const day=today(),pins=(Array.isArray(C.pin133)?C.pin133:[]).map(id=>C.actions.find(a=>a.id===id&&!a.doneAt)).filter(Boolean);
+  const wOn=C.weight&&C.weight.on!==false;
   if(!(document.activeElement&&document.activeElement.id==='w141i'))
-    box.innerHTML=`<div class="m141m">${meals||'<div class="tiny muted">식사 항목이 없어요 (편집 → 식사)</div>'}${wrow}</div>`;
+    box.innerHTML=`<div class="food" data-drop="reorder:food">${foodHtml141(day)}</div>`
+      +(wOn?`<form class="weightform" id="w141f"><label>몸무게 (kg)<input id="w141i" type="number" step="0.1" min="30" max="250" inputmode="decimal" value="${day.weight??''}"></label><button class="btn" type="submit">기록</button><span class="small muted">${day.weight?'기록됨 · 고치려면 다시 기록':`재기만 해도 XP +${(C.weight||{}).xp||0}`}</span></form>`:'');
   const pb=$('pin141');
   if(pb){const chips=pins.map(a=>{const n=(day.entries||[]).filter(e=>e.kind==='act'&&e.aid===a.id).length;
-      return `<button type="button" class="chipbtn p141${n?' on':''}" data-p141="${esc(a.id)}" aria-label="${esc(a.name)} 했어요 기록${n?' · 오늘 '+n+'번':''}">${n?'✓':'○'} ${esc(a.name)}${n>1?' ×'+n:''}</button>`}).join('');
-    pb.innerHTML=chips?`<div class="m141p">${chips}</div>`:'<div class="tiny muted">기록하기 → 행동/습관에서 행동 이름을 눌러 📌 고정하면 여기서 바로 기록해요.</div>'}}
+      return `<span class="pq141" data-rowid="${esc(a.id)}"><span class="hand fh" data-drag="row:${esc(a.id)}" data-dragmode="now" aria-label="${esc(a.name)} 끌어서 순서 바꾸기">⋮⋮</span><button type="button" class="chipbtn p141${n?' on':''}" data-p141="${esc(a.id)}" aria-label="${esc(a.name)} 했어요 기록${n?' · 오늘 '+n+'번':''}">${n?'✓':'○'} ${esc(a.name)}${n>1?' ×'+n:''}</button></span>`}).join('');
+    pb.innerHTML=chips?`<div class="m141p" data-drop="reorder:pin141">${chips}</div>`:'<div class="tiny muted">기록하기 → 행동/습관에서 행동 이름을 눌러 📌 고정하면 여기서 바로 기록해요.</div>'}}
+// 빠른 기록(📌) 순서: 끌어서 바꾸기 — C.pin133(카드 id 목록)을 그대로 다시 배열
+dndEnd=(function(prev){return function(x,y){
+  const d=DND&&DND.drop;
+  if(d&&d.type==='reorder'&&d.col==='pin141'){const id=DND.id;dndAbort();
+    const arr=Array.isArray(C.pin133)?C.pin133:[],i0=arr.indexOf(id);if(i0<0)return;
+    const rest=arr.filter(z=>z!==id);let i=d.before?rest.indexOf(d.before):rest.length;if(i<0)i=rest.length;rest.splice(i,0,id);
+    C.pin133=rest;save('config');render();return}
+  return prev.apply(this,arguments)}})(dndEnd);
 addEventListener('submit',e=>{const f=e.target;if(!f||f.id!=='w141f')return;e.preventDefault();e.stopPropagation();
   const i=$('w141i'),v=parseFloat(i.value);if(!(v>=30&&v<=250)){toast('몸무게를 kg로 적어주세요');return}
   ui.off=0;$('wInput').value=v;const w=$('wForm');if(w.requestSubmit)w.requestSubmit();else w.dispatchEvent(new Event('submit',{cancelable:true,bubbles:true}))},true);
@@ -19541,6 +19570,33 @@ render=(function(prev){return function(){
     if(!H.some(h=>h[0]==='pin141')){const col=H[i][2];H.splice(i+1,0,col?['pin141',1,col]:['pin141',1])}
     save('config')}}catch(e){console.error(e)}
   return prev.apply(this,arguments)}})(render);
+
+/* ---------- ⑦ 더보기 → 계정·백업 아래: 이 브라우저가 오늘 읽은 문서 수 · 📋 진단 복사 ---------- */
+function reads141(){
+  const box=$('acctBox');if(!box)return;
+  let r=$('reads141');
+  if(!r){r=document.createElement('div');r.id='reads141';r.className='reads141';box.after(r);
+    r.innerHTML='<span class="rt141"></span><button type="button" class="chipbtn" id="diag141" aria-label="진단 내용 복사">📋 진단 복사</button>'}
+  const n=typeof window.__hqReads==='function'?window.__hqReads():0,pct=Math.min(100,Math.round(n/500));
+  const t=r.querySelector('.rt141');
+  t.innerHTML=`<span class="small">📖 오늘 읽은 문서 <b class="num">${n.toLocaleString()}</b> / 50,000</span><span class="rbar141" role="img" aria-label="무료 읽기 한도의 ${pct}%"><i style="width:${pct}%"></i></span>${n>=40000?'<span class="small rwarn141">⚠ 한도 가까움 — 이 기기에서 많이 읽었어요</span>':''}`;
+  if(n>=40000&&!ui.rw141){ui.rw141=1;toast('📖 오늘 읽은 문서가 4만을 넘었어요(한도 5만). 앱을 자주 껐다 켜지 마세요')}}
+function diagText141(){
+  const dg=typeof window.__hqDiag==='function'?window.__hqDiag():{};
+  const L=[`해비티카틱 진단 ${new Date().toLocaleString('ko-KR')}`,
+    `화면: ${(document.querySelector('.banner b,#bannerVer')||{}).textContent||''} · ${location.pathname.includes('/beta/')?'베타':'본 앱'}`,
+    `오늘 읽은 문서(이 브라우저): ${typeof window.__hqReads==='function'?window.__hqReads():'?'} / 50000`,
+    `저장 상태: ${($('syncState')||{}).textContent||'?'} · 온라인 ${navigator.onLine}`,
+    `저장 대기: ${(dg.dirty||[]).join(',')||'없음'} · 이 기기에 보관 중: ${(dg.pend||[]).join(',')||'없음'}`,
+    `최근 오류: ${Object.entries(dg.err||{}).map(([k,v])=>`${k} ${v.code} ${v.msg}`).join(' | ')||'없음'}`,
+    `재시도 대기(ms): ${JSON.stringify(dg.back||{})}`,
+    `기기: ${navigator.userAgent.slice(0,120)}`];
+  return L.join('\n')}
+window.diagText141=diagText141;
+addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('#diag141');if(!b)return;e.preventDefault();
+  const t=diagText141();
+  (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('📋 진단 내용을 복사했어요. 채팅에 붙여 넣어 주세요'),()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('📋 진단 내용을 복사했어요')}catch(x){toast('복사하지 못했어요')}ta.remove()})},true);
+render=(function(prev){return function(){const r=prev.apply(this,arguments);try{reads141()}catch(e){console.error(e)}return r}})(render);
 })();
 
 route();boot();

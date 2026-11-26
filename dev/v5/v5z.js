@@ -94,6 +94,7 @@ function pendRestore141(){
   pendWrite141(o);
   if(n0)later(()=>toast('저장 못 했던 변경 '+n0+'건을 이 기기 보관본에서 되살려 다시 올려요',5000))}
 addEventListener('pagehide',()=>{try{dirty.forEach(n=>{const body=bodyOf(n);if(body)pendPut141(n,BASE69[n],clone(body))})}catch(e){}});
+window.__hqDiag=()=>({err:JSON.parse(JSON.stringify(ERR69)),back:Object.assign({},BACK69),dirty:[...dirty],pend:Object.keys(pendRead141()||{})});
 window.__hqBusy=()=>dirty.size>0||Object.keys(writing).some(k=>writing[k]);
 async function flush(n){
   if(mode==='local'){dirty.delete(n);try{localStorage.setItem(LKEY,JSON.stringify({C,P,DAYS,TASKS}))}catch(e){}return}

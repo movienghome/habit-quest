@@ -72,6 +72,12 @@ async function start() {
   };
   window.__hqEnc = enc; window.__hqDec = dec;
   /* ---------- 저장소 연결 (아티팩트 db와 같은 모양) ---------- */
+  // v13.15: 이 브라우저가 오늘(미국 태평양 날짜 — 무료 한도가 리셋되는 기준) Firestore에서 읽은 문서 수 (본 앱·베타가 같은 값을 더함)
+  const rkey = () => 'hq-reads-' + new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles' }).format(new Date());
+  const rcount = n => { if (!(n > 0)) return; try { const k = rkey(); localStorage.setItem(k, String((+localStorage.getItem(k) || 0) + n));
+    for (const x of Object.keys(localStorage)) if (x.startsWith('hq-reads-') && x < 'hq-reads-' + new Date(Date.now() - 3 * 864e5).toISOString().slice(0, 10)) localStorage.removeItem(x); } catch (e) {} };
+  window.__hqReads = () => { try { return +localStorage.getItem(rkey()) || 0; } catch (e) { return 0; } };
+  const qcount = s => { try { if (s.metadata && s.metadata.fromCache) return; rcount(s.docChanges ? s.docChanges().length : s.size); } catch (e) {} };
   const wrap = s => ({ id: s.id, exists: s.exists(), data: () => { const d = s.data(); return d == null ? d : dec(d); }, metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } });
   // 기기 사본에 바로 쓰고 서버 확인은 나중에. 오프라인에서도 앱이 기다리지 않게.
   let pending = 0;
@@ -94,12 +100,12 @@ async function start() {
       update: d => fastWrite(F.updateDoc(r, enc(d))),
       // v6.9: 서버 것과 합쳐서 쓰기(트랜잭션). fn(서버 것|null) → 쓸 것(undefined면 안 씀). 다른 기기 변경을 덮어쓰지 않게.
       merge: fn => withTimeout(F.runTransaction(fs, async tx => {
-        const s = await tx.get(r); const cur = s.exists() ? dec(s.data()) : null;
+        const s = await tx.get(r); rcount(1); const cur = s.exists() ? dec(s.data()) : null;
         const next = fn(cur); if (next === undefined) return { skip: 1, cur };
         tx.set(r, enc(next)); return { data: next };
       }, { maxAttempts: 4 }), 12000),
       delete: () => fastWrite(F.deleteDoc(r)),
-      onSnapshot: (next, error, o) => (o && o.meta) ? F.onSnapshot(r, { includeMetadataChanges: true }, s => next(wrap(s)), e => error && error(errOf(e))) : F.onSnapshot(r, s => next(wrap(s)), e => error && error(errOf(e)))
+      onSnapshot: (next, error, o) => (o && o.meta) ? F.onSnapshot(r, { includeMetadataChanges: true }, s => { if (!s.metadata.fromCache && s.exists()) rcount(1); next(wrap(s)); }, e => error && error(errOf(e))) : F.onSnapshot(r, s => { if (!s.metadata.fromCache && s.exists()) rcount(1); next(wrap(s)); }, e => error && error(errOf(e)))
     };
   }
   function colApi(path, cons = []) {
@@ -110,8 +116,8 @@ async function start() {
       orderBy: (f, d) => colApi(path, [...cons, F.orderBy(f, d || 'asc')]),
       where: (f, op, v) => colApi(path, [...cons, F.where(f, op, v)]),
       limit: n => colApi(path, [...cons, F.limit(n)]),
-      get: async () => { const s = await F.getDocs(q()); return { docs: s.docs.map(wrap), size: s.size, empty: s.empty }; },
-      onSnapshot: (next, error, o) => F.onSnapshot(q(), ...((o && o.meta) ? [{ includeMetadataChanges: true }] : []), s => next({ docs: s.docs.map(wrap), size: s.size, empty: s.empty, metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } }), e => error && error(errOf(e)))
+      get: async () => { const s = await F.getDocs(q()); rcount(s.size); return { docs: s.docs.map(wrap), size: s.size, empty: s.empty }; },
+      onSnapshot: (next, error, o) => F.onSnapshot(q(), ...((o && o.meta) ? [{ includeMetadataChanges: true }] : []), s => { qcount(s); next({ docs: s.docs.map(wrap), size: s.size, empty: s.empty, metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } }); }, e => error && error(errOf(e)))
     };
   }
 
