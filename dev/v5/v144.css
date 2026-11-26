@@ -13,3 +13,8 @@ body.nochip144 .wk91{display:none!important}
 .hd144b{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
 .hd144i{font-size:12px;padding:1px 7px;border:1px dashed var(--line);border-radius:999px;color:var(--muted);text-decoration:line-through}
 .hd144i::before{content:'✓ ';text-decoration:none}
+/* 빠른 기록 묶기 */
+#pin141 .g144w .m141p.g144{margin-top:6px;padding-top:6px}
+#pin141 .g144w .m141p.g144+.m141p.g144{border-top:1px dotted var(--line)}
+#pin141 .g144l{flex:none;font-size:11px;font-weight:700;color:var(--muted);min-width:3.2em}
+#pin141 .g144b{font-size:11px;padding:1px 7px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--muted);margin-left:auto}

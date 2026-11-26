@@ -49,7 +49,10 @@ with sync_playwright() as pw:
     xp2=J(pg,"P.xp");g2=J(pg,"P.gold");n2=J(pg,"today().entries.length")
     J(pg,"document.querySelectorAll('#sheetC [data-img110]')[1].click()");pg.wait_for_timeout(300);notoast(pg)
     it=items(pg);ok(it[1]['s']=='g',f'[{W}] 샀음 → 기록만 상태',it)
-    ok(J(pg,"P.xp")==xp2 and J(pg,"P.gold")==g2 and J(pg,"today().entries.length")==n2,f'[{W}] 샀음은 점수·기록이 안 늘고 안 깎임')
+    # v13.19(사용자 11/26): 샀음 → 이름에 충동·구매가 든 나쁜 카드가 있으면 그 카드를 기록(카드 점수 그대로), 없으면 예전처럼 기록만
+    bad=J(pg,"(()=>{const a=badCard144('b');return a?a.name:null})()")
+    if bad: ok(J(pg,"today().entries.length")==n2+1 and J(pg,"today().entries.some(e=>e.type==='bad'&&/새 이어폰/.test(e.note||''))"),f'[{W}] 샀음 → 나쁜 충동 카드 기록(메모에 이름)',bad)
+    else: ok(J(pg,"P.xp")==xp2 and J(pg,"P.gold")==g2 and J(pg,"today().entries.length")==n2,f'[{W}] 샀음은 점수·기록이 안 늘고 안 깎임')
     # --- 사고 싶음 확정은 충동구매 참았다 카드 점수 ---
     pg.click('#sheetC [data-imu110]',timeout=3000);pg.wait_for_timeout(300);notoast(pg)
     J(pg,"document.querySelectorAll('#sheetC [data-imh110]')[1].click()");pg.wait_for_timeout(300);notoast(pg)

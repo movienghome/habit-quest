@@ -3050,6 +3050,11 @@ body.nochip144 .wk91{display:none!important}
 .hd144b{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
 .hd144i{font-size:12px;padding:1px 7px;border:1px dashed var(--line);border-radius:999px;color:var(--muted);text-decoration:line-through}
 .hd144i::before{content:'✓ ';text-decoration:none}
+/* 빠른 기록 묶기 */
+#pin141 .g144w .m141p.g144{margin-top:6px;padding-top:6px}
+#pin141 .g144w .m141p.g144+.m141p.g144{border-top:1px dotted var(--line)}
+#pin141 .g144l{flex:none;font-size:11px;font-weight:700;color:var(--muted);min-width:3.2em}
+#pin141 .g144b{font-size:11px;padding:1px 7px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--muted);margin-left:auto}
 </style>
 
 <header class="hud" id="hud">
@@ -19915,7 +19920,130 @@ function homeDone144(){const L=$('htList');if(!L)return;const el=[...L.querySele
   d.innerHTML=`<summary title="오늘 끝낸 것">✓ 끝냄 ${dn.length}</summary><div class="hd144b">${dn.map(e=>`<span class="hd144i">${esc(e.name||'')}</span>`).join('')}</div>`;
   d.addEventListener('toggle',()=>{HD144=d.open});el.replaceWith(d)}
 
-render=(function(prev){return function(){try{mig144()}catch(e){console.error(e)}const r=prev.apply(this,arguments);try{chipRow144();ghost144();homeDone144()}catch(e){console.error(e)}return r}})(render);
+/* ---------- ⑦ 빠른 기록 묶기 (C.pg144: ''=안 묶음 · 'type'=좋음/나쁨 · 'area'=영역) — 끝의 작은 '묶기' 칩을 누를 때마다 바뀜 ---------- */
+const PG144=[['','안 묶음'],['type','좋음·나쁨'],['area','영역별']];
+function pinGroup144(){const pb=$('pin141');if(!pb||pb.querySelector('[data-g144]'))return;const box=pb.querySelector('.m141p');if(!box)return;
+  const g=C.pg144||'',items=[...box.querySelectorAll(':scope > .pq141')];if(!items.length)return;
+  const lab=(PG144.find(x=>x[0]===g)||PG144[0])[1];
+  const btn=`<button type="button" class="g144b" data-g144="1" title="빠른 기록 묶는 방식 바꾸기 (안 묶음 → 좋음·나쁨 → 영역별)">⊞ ${esc(lab)}</button>`;
+  if(!g){box.insertAdjacentHTML('beforeend',btn);return}
+  const key=a=>{if(!a)return ['~','기타'];if(g==='type'){const t=a.type==='bad'?['2','✖ 나쁨']:a.type==='good'?['1','✚ 좋음']:['3','○ 그 밖'];return t}
+    const ar=(C.areas||[]).find(x=>x.id===a.area);const i=(C.areas||[]).indexOf(ar);return [String(i<0?999:i).padStart(3,'0'),ar?ar.name:'영역 없음']};
+  const G=new Map();items.forEach(el=>{const a=C.actions.find(x=>x.id===el.dataset.rowid);const [k,l]=key(a);if(!G.has(k))G.set(k,{l,els:[]});G.get(k).els.push(el)});
+  const wrap=document.createElement('div');wrap.className='g144w';
+  [...G.keys()].sort().forEach(k=>{const {l,els}=G.get(k);const row=document.createElement('div');row.className='m141p g144';row.dataset.drop='reorder:pin141';
+    row.innerHTML=`<span class="g144l">${esc(l)}</span>`;els.forEach(e=>row.appendChild(e));wrap.appendChild(row)});
+  wrap.lastChild.insertAdjacentHTML('beforeend',btn);box.replaceWith(wrap)}
+addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-g144]');if(!b)return;e.preventDefault();e.stopPropagation();
+  const i=PG144.findIndex(x=>x[0]===(C.pg144||''));const nx=PG144[(i+1)%PG144.length][0];if(nx)C.pg144=nx;else delete C.pg144;save('config');render()},true);
+renderHome=(function(prev){return function(){const r=prev.apply(this,arguments);try{pinGroup144()}catch(e){console.error(e)}return r}})(renderHome);
+
+/* ---------- ⑧ 관리·습관 통계: 할 일 하나 기준 (사용자 11/26 밤: 카드 기준 통계가 틀렸다) ----------
+   같은 카드를 쓰는 다른 할 일이 있으면(예: 청소 카드를 여러 청소 할 일이 씀) ⚠ 경보·기록 달력을 **이 할 일의 기록만**으로 셈.
+   다른 할 일이 없으면 예전처럼 카드 기록도 셈(카드를 기록하기에서 바로 누른 날). 관리 ⋯ 메뉴에 '📊 언제 했나 · 통계'. */
+const others144=t=>t&&t.aid?Object.values(TASKS).filter(x=>x&&x.id!==t.id&&x.status===0&&x.aid===t.aid&&!x.rid&&!(typeof isStep62==='function'&&isStep62(x))):[];
+const own144=(t,k)=>{const d=DAYS[k];return !!(d&&(d.entries||[]).some(e=>e.tid===t.id))};
+function did144(t,k){if(own144(t,k))return true;if(others144(t).length)return false;const d=DAYS[k];if(!d)return false;
+  try{const wt=typeof watchTarget==='function'?watchTarget(key132(t)):null;if(wt&&wt.done(d))return true}catch(e){}
+  return (d.entries||[]).some(e=>t.aid&&e.aid===t.aid)}
+window.did144=did144;
+function lastOwn144(t,from){for(let i=0;i<=400;i++){const k=addDays(from,-i);if(did144(t,k))return k}return null}
+alOf131=(function(prev){return function(t,m){const x=prev.apply(this,arguments);
+  try{if(!x||!t||!t.aid||!m[t.aid]||!others144(t).length)return x;
+    const w=watch132(t),d=+((w&&w.days)||x.d),y=addDays(gk76(),-1),last=lastOwn144(t,y),b=last||t.created||null;if(!b)return x;
+    const s=diffDays(y,b)+1;if(s<d)return null;return Object.assign({},x,{s,over:s>d,last:last||null,own144:1})}catch(e){console.error(e);return x}}})(alOf131);
+alTip131=(function(prev){return function(x){if(x&&x.own144)return x.last?`이 할 일을 마지막으로 한 날(${fmtD(x.last)})부터 ${x.s}일째예요 · 경보 기준 ${x.d}일 ${x.over?'초과':'도달'}. 눌러서 언제 했는지 보기`:`이 할 일을 ${x.s}일째 안 했어요 · 경보 기준 ${x.d}일`;return prev.apply(this,arguments)}})(alTip131);
+recCal132=function(id,x,y,mk){const t=TASKS[id];if(!t)return;const w=watch132(t),oth=others144(t);
+  const td=gk76(),dk=dateKey();mk=mk||td.slice(0,7);RC132={id,m:mk,x,y};
+  const first=mk+'-01',ws=weekStartD(first),nm=addDays(first,40).slice(0,7)+'-01';let cells='';
+  for(let i=0;i<42;i++){const k=addDays(ws,i);if(i>=35&&k>=nm)break;const inm=k.slice(0,7)===mk,ok=did144(t,k),can=!ok&&k<=dk;
+    const cls=`rc132d${inm?'':' o'}${ok?' ok':''}${k===td?' td':''}${k>td?' fu':''}${can?' can133':''}`,inner=`${+k.slice(8)}${ok?'<i>✓</i>':''}`;
+    cells+=can?`<button type="button" class="${cls}" data-rc133="${esc(id)}|${k}" title="${esc(fmtD(k))} · 눌러서 '그날 했어요'로 적기" aria-label="${esc(fmtD(k))} 그날 했어요로 적기">${inner}</button>`
+      :`<span class="${cls}" title="${esc(fmtD(k))}${ok?' · 했어요':''}">${inner}</span>`}
+  // 통계: 마지막 · 최근 30일 · 90일 평균 간격 · 올해
+  const ds=[];for(let i=0;i<=365;i++){const k=addDays(td,-i);if(did144(t,k))ds.push(k)}
+  const last=ds[0]||null,n30=ds.filter(k=>k>addDays(td,-30)).length,d90=ds.filter(k=>k>addDays(td,-90));
+  let gap='';if(d90.length>=2){const g=[];for(let i=0;i<d90.length-1;i++)g.push(diffDays(d90[i],d90[i+1]));gap=` · 평균 ${Math.round(g.reduce((a,b)=>a+b,0)/g.length*10)/10}일마다`}
+  const per=t.rep&&t.rep.f==='d'&&+t.rep.i>1?` (정한 주기 ${+t.rep.i}일)`:'';
+  const [yy,mm]=mk.split('-');
+  const al=w?(()=>{const dd=+w.days||0;if(!last)return `⚠ 방치 경보 ${dd}일 — 아직 한 기록이 없어요.`;const s=diffDays(td,last);return `⚠ 방치 경보 ${dd}일 — 이 할 일을 마지막으로 한 날부터 ${s}일(${s>dd?(s-dd)+'일 넘김':s===dd?'오늘이 기한':'여유 있음'}).`})():'';
+  const html=`<div class="rc132"><div class="rc132h"><button type="button" class="ib" data-rc132="-1" aria-label="이전 달">‹</button><b>${+yy}년 ${+mm}월</b><button type="button" class="ib" data-rc132="1" aria-label="다음 달"${mk>=td.slice(0,7)?' disabled':''}>›</button></div>
+    <div class="rc132g">${WKH71().map(d=>`<span class="rc132w">${d}</span>`).join('')}${cells}</div>
+    <div class="small rc132s">${last?`마지막: <b>${esc(fmtD(last))}</b>${last===td?' (오늘)':` (${diffDays(td,last)}일 전)`}`:'아직 한 기록이 없어요'} · 최근 30일 <b>${n30}</b>번${gap}${per} · 1년 ${ds.length}번</div>
+    ${al?`<div class="tiny rc132s">${esc(al)}</div>`:''}
+    ${oth.length?`<div class="tiny muted rc132s">이 할 일 기록만 세요 — 같은 카드를 쓰는 ${esc(oth.slice(0,3).map(z=>z.title).join('·'))}${oth.length>3?' 외 '+(oth.length-3)+'개':''}로 한 날은 빼요.</div>`:''}
+    <div class="tiny muted rc132s">✓ = 한 날 · 안 한 날(테두리 칸)을 누르면 <b>그날 했어요</b>로 적어요(되돌리기 있음)</div></div>`;
+  menu61(x,y,`📊 ${esc(t.title.length>20?t.title.slice(0,20)+'…':t.title)} · 언제 했나`,[{html,f:()=>{}},'-',{l:'✎ 할 일 열기',f:()=>openTaskSheet(id)}])};
+window.recCal132=recCal132;
+careMenu76=(function(prev){return function(t,x,y){const m0=menu61;
+  menu61=function(x2,y2,title,items){try{if(Array.isArray(items)&&t){items=items.slice();let i=items.lastIndexOf('-');if(i<0)i=items.length;
+    items.splice(i,0,{l:'📊 언제 했나 · 통계 <small class="muted">기록 달력</small>',f:()=>setTimeout(()=>recCal132(t.id,x,y),40)})}}catch(e){}
+    menu61=m0;return m0.call(this,x2,y2,title,items)};
+  try{return prev.apply(this,arguments)}finally{menu61=m0}}})(careMenu76);
+window.careMenu76=careMenu76;
+
+/* ---------- ⑨ 충동 → 카드 자동 기록 (사용자 11/26 밤) ----------
+   · '안 먹었어요/안 샀어요'(hold110)는 이미 '…참았다' 카드를 기록함 → 기록 메모에 상황·메모·금액·적은 시각을 같이 남김(나중에 적어도 따라감).
+   · '먹었어요/샀어요'(gave110) → 이름에 충동·구매(또는 야식·폭식·과식)가 든 **나쁜 카드**가 있으면 그 카드를 기록(카드 점수 그대로 — 사용자 요청) + 같은 메모.
+     되돌리기(undo110)·지우기(del110)·참음으로 바꾸기면 그 기록도 지움. 기록 id는 x.geid/x.ghk(normDay 보존). */
+function badCard144(k){const re=k==='b'?/충동.*(구매|지출|소비)|(구매|지출|소비).*충동/:/(야식|폭식|과식)/;
+  const id=((C.imp110||{}).bad144||{})[k];let a=id&&C.actions.find(x=>x.id===id&&x.type==='bad');
+  return a||C.actions.find(x=>x.type==='bad'&&!x.doneAt&&re.test(x.name||'')&&!/참/.test(x.name||''))||null}
+function note144(x){const K=IK110[x.k]||['',''];const b=[K[0]+' '+x.n];if(x.t)b.push('적은 때 '+x.t);if(x.a)b.push('약 '+cm110(x.a)+'원');
+  if((x.sit||[]).length)b.push('상황 '+x.sit.join('·'));if(x.m)b.push('“'+x.m+'”');if(x.fl)b.push('대응 '+x.fl);return b.join(' · ').slice(0,200)}
+normDay=(function(prev){return function(k,raw){const d=prev.apply(this,arguments);
+  try{if(raw&&Array.isArray(raw.imp110)&&Array.isArray(d.imp110)){const m=new Map(raw.imp110.map(x=>[String(x&&x.id),x]));
+    d.imp110.forEach(o=>{const x=m.get(o.id);if(x&&x.geid){o.geid=String(x.geid);o.ghk=String(x.ghk||k)}})}}catch(e){}return d}})(normDay);
+window.badCard144=badCard144;
+function gEntry144(x){const d=x.ghk&&DAYS[x.ghk];return d&&(d.entries||[]).find(e=>e.id===x.geid)}
+function gDrop144(x){try{if(x.geid&&gEntry144(x))removeEntry(x.ghk,x.geid)}catch(e){console.error(e)}delete x.geid;delete x.ghk}
+gave110=(function(prev){return function(id){const r=prev.apply(this,arguments);
+  try{const f=find110(id);if(!f||f.x.s!=='g'||(f.x.geid&&gEntry144(f.x)))return r;const a=badCard144(f.x.k);if(!a||!guard())return r;
+    const d=today(),e=actEntry(a,{});e.note=note144(f.x);e.imp110=f.x.id;
+    commit(()=>{applyEntry(d,e);f.x.geid=e.id;f.x.ghk=d.date},[f.k,d.date]);render();
+    toast(`${IK110[f.x.k][0]} '${a.name}' 카드로도 기록했어요 — 상황·메모를 적으면 기록 메모에 따라가요`)}catch(e){console.error(e)}return r}})(gave110);
+undo110=(function(prev){return function(id){try{const f=find110(id);if(f&&f.x.geid){gDrop144(f.x);save(f.k)}}catch(e){console.error(e)}return prev.apply(this,arguments)}})(undo110);
+del110=(function(prev){return function(id){try{const f=find110(id);if(f&&f.x.geid)gDrop144(f.x)}catch(e){console.error(e)}return prev.apply(this,arguments)}})(del110);
+hold110=(function(prev){return function(id){try{const f=find110(id);if(f&&f.x.geid){gDrop144(f.x);save(f.k)}}catch(e){console.error(e)}return prev.apply(this,arguments)}})(hold110);
+// 메모 따라가기: 상황·메모를 나중에 적어도 기록 메모를 고침(참음 기록 eid · 못 참음 기록 geid)
+function impNotes144(){try{const td=gk76();for(let i=0;i<3;i++){const k=addDays(td,-i);(list110(k)||[]).forEach(x=>{
+    [[x.hk,x.eid],[x.ghk,x.geid]].forEach(([dk,eid])=>{if(!dk||!eid)return;const d=DAYS[dk];const e=d&&(d.entries||[]).find(z=>z.id===eid);if(!e||e.kind==='imp110')return;
+      const n=note144(x);if(e.note!==n){e.note=n;save(dk)}})})}}catch(e){console.error(e)}}
+
+/* ---------- ⑩ 식사 칸 채소 ↔ '채소 한 번 먹기' 할 일·카드 (사용자 11/26 밤) ----------
+   식사 칸 '채소 먹은 횟수'가 1 이상이 되면, 이름이 채소…먹… 인 좋은 카드에 이어진 반복 할 일(오늘 차례)을 끝냄(✓).
+   점수는 0 — 채소 횟수(+점수)·일퀘가 이미 셈(두 번 세지 않게). 이어진 할 일이 없으면 그 카드를 0점으로 한 번 기록(빠른 기록 ✓).
+   횟수를 0으로 되돌리면 이 자동 기록만 지움(직접 누른 기록은 안 건드림). 자동 기록 표시 e.au144='veg'. */
+const VEGN144='🥗 식사 칸 채소에서 자동';
+function vegSync144(){if(!ready||mode==='db'&&!(SRV59.c&&tAll64()))return;if(VS144)return;
+  const f=(C.food||[]).find(x=>x.id==='veg')||(C.food||[]).find(x=>/채소/.test(x.name||'')&&x.points>0);if(!f)return;
+  const k=gk76(),d=DAYS[k],v=+((d&&d.food||{})[f.id]||0),td=midKey68();
+  const cards=C.actions.filter(a=>a.type==='good'&&!a.doneAt&&/채소/.test(a.name||'')&&/먹/.test(a.name||''));if(!cards.length)return;
+  const cid=new Set(cards.map(a=>a.id)),E=(d&&d.entries)||[],isAuto=e=>e.au144==='veg'||e.note===VEGN144;
+  const T=Object.values(TASKS).filter(t=>t&&t.status===0&&cid.has(t.aid)&&t.rep&&t.rep.f&&t.rep.f!=='x'&&!t.rid&&!(typeof isStep62==='function'&&isStep62(t)));
+  VS144=1;
+  try{
+    if(T.length){T.forEach(t=>{const mine=E.filter(e=>e.tid===t.id&&e.kind!=='quest'),auto=mine.find(isAuto);
+      if(v>0&&!mine.length&&t.due&&t.due<=td){const before=new Set(E.map(e=>e.id));
+        try{completeTask(t,{direct:true})}catch(e){console.error(e)}
+        const dd=DAYS[k],ne=dd&&(dd.entries||[]).find(e=>!before.has(e.id)&&e.tid===t.id&&e.kind!=='quest');
+        if(ne){ne.au144='veg';ne.note=VEGN144;if((+ne.xp||0)||(+ne.gold||0)||(+ne.cond||0))px75Apply(k,ne.id,{xp:0,gold:0,cond:0});save(k)}}
+      else if(v<=0&&auto){removeEntry(k,auto.id)}})}
+    else cards.forEach(a=>{const mine=E.filter(e=>e.aid===a.id&&e.kind==='act'),auto=mine.find(isAuto);
+      if(v>0&&!mine.length){const dd=today();const e=actEntry(a,{});e.xp=0;e.gold=0;e.cond=0;e.au144='veg';e.note=VEGN144;commit(()=>applyEntry(dd,e),[dd.date])}
+      else if(v<=0&&auto)removeEntry(k,auto.id)})
+  }finally{VS144=0}}
+var VS144=0;
+
+/* ---------- F67 기능 지도 ---------- */
+try{F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
+  ['🏷 칩 보이기·숨기기','캘린더 → 위 ⚲ 보이기·숨기기 → 종류 → 🏷 칩(주 N회)','주 N회 칩(위 칩 줄·날짜에 놓은 칩)은 이 항목 하나로만 보이고 숨어요(목록 거르기와 상관없음)',()=>{location.hash='cal'},'주 N회 칩 거르기 운동 시나리오'],
+  ['◌ 루틴 미리 보기 블록','캘린더 시간표(주·3일·1일) → 앞으로의 날','매일·요일 반복 루틴은 앞날에도 점선 블록으로 보여요(오늘 했는지와 상관없이). 누르면 루틴 상세',()=>{location.hash='cal'},'루틴 블록 매일 Eos Vesper Lethe'],
+  ['⊞ 빠른 기록 묶기','홈 → 📌 빠른 기록 끝의 ⊞ 칩','누를 때마다 안 묶음 → 좋음·나쁨 → 영역별',()=>{location.hash='home'},'빠른 기록 묶음 좋음 나쁨 영역'],
+  ['📊 관리 통계','🧽 관리 창 → 줄의 ⋯ → 📊 언제 했나 · 통계','이 할 일을 한 날 달력·마지막·최근 30일·평균 간격. 같은 카드를 쓰는 다른 할 일 기록은 빼고 셈',()=>{try{careSheet76()}catch(e){}},'관리 통계 기록 달력 언제 했나'],
+  ['🔗 자동 연동','충동 적기 확정 · 홈 🍽 식사 채소','안 먹었어요/안 샀어요 → 참았다 카드, 샀어요 → 충동구매 카드(메모에 상황·금액), 채소 +1 → 채소 한 번 먹기 할 일 ✓(0점)',()=>{location.hash='home'},'충동 참았다 충동구매 채소 자동']])}})(F67)}catch(e){console.error(e)}
+
+render=(function(prev){return function(){try{mig144()}catch(e){console.error(e)}const r=prev.apply(this,arguments);try{chipRow144();ghost144();homeDone144()}catch(e){console.error(e)}try{impNotes144()}catch(e){console.error(e)}setTimeout(()=>{try{vegSync144()}catch(e){console.error(e)}},0);return r}})(render);
 renderCal=(function(prev){return function(){const r=prev.apply(this,arguments);try{chipRow144();ghost144()}catch(e){console.error(e)}return r}})(renderCal);
 renderHome=(function(prev){return function(){const r=prev.apply(this,arguments);try{homeDone144()}catch(e){console.error(e)}return r}})(renderHome);
 })();
