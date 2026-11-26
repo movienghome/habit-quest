@@ -1,1 +1,14 @@
 /* v13.16 (v142.css) */
+.dc142{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:2px 0 6px}
+.dc142 .chipbtn{padding:2px 9px;font-size:12px}
+.dc142 .d69p{position:relative;overflow:hidden}
+.dc142 .d69p input[type=date]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.aq142b{padding:2px 8px;font-size:14px;line-height:1.2}
+.aq142b[aria-pressed=true]{background:var(--accent);color:#fff}
+#actGroups .add141f:not(.open142){display:flex;justify-content:flex-start;border:0;background:none;padding:0;margin:2px 0 0}
+#actGroups .add141f:not(.open142)>:not(.plus){display:none}
+#actGroups .add141f:not(.open142) .plus{width:auto;height:auto;padding:3px 10px;border-radius:999px;border:1px dashed var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent);color:var(--accent);font-size:12px;font-weight:700;cursor:pointer}
+#actGroups .add141f:not(.open142) .plus::after{content:' 추가';font-weight:600}
+#actGroups .add141f.open142{background:color-mix(in srgb,var(--accent) 9%,var(--panel));border:1px dashed var(--accent);border-radius:12px;padding:6px 10px;margin-top:4px;box-shadow:inset 3px 0 0 var(--accent)}
+#actGroups .add141f.open142 input{border-bottom:1px solid color-mix(in srgb,var(--accent) 40%,transparent)}
+form[data-addform="act"]{background:color-mix(in srgb,var(--accent) 7%,var(--panel));border:1px dashed var(--accent);border-radius:12px;padding:6px 10px;box-shadow:inset 3px 0 0 var(--accent)}
