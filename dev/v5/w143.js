@@ -24,3 +24,15 @@ window.BX143=window.BX143||new Set();
 function bx143(el){const id=el&&el.dataset.bx143;if(!id)return;const S=window.BX143;if(S.has(id))S.delete(id);else S.add(id);if(typeof window.deck128==='function')window.deck128()}
 addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-bx143]');if(!b)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();bx143(b)},true);
 addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const b=e.target&&e.target.closest&&e.target.closest('[data-bx143]');if(!b||e.target!==b)return;e.preventDefault();bx143(b)},true);
+/* ---------- ④ 운동 기록: 근력 · 유산소 두 종류 + 메모 (사용자 11/26 요청) ----------
+   '어떻게 했나요?' 창은 카드의 세부 옵션(a.opts)이 있으면 열리고 메모 칸도 이미 있음 → 운동 카드에 옵션 둘만 한 번 심음(점수는 카드 그대로 — 옵션에 xp를 안 적으면 카드 값 사용).
+   이름이 정확히 '운동'인 좋은 카드만, 이미 옵션이 있으면 건드리지 않음. 한 번짜리 이주 `C.mig143`(지우지 말 것) */
+function mig143(){try{if(C.mig143||typeof ready72!=='function'||!ready72()||typeof tasksReady==='undefined'||!tasksReady||!tOK64())return;
+  const a=(C.actions||[]).find(x=>x&&x.type==='good'&&String(x.name||'').trim()==='운동');
+  C.mig143=1;if(a&&!(a.opts&&a.opts.length)){a.opts=[{id:'str143',name:'💪 근력'},{id:'car143',name:'🏃 유산소'}];
+    setTimeout(()=>{try{toast('💪 운동 기록에 근력 · 🏃 유산소 두 종류와 메모를 넣었어요')}catch(e){}},700)}
+  save('config')}catch(e){console.error(e)}}
+render=(function(prev){return function(){try{mig143()}catch(e){console.error(e)}return prev.apply(this,arguments)}})(render);
+drawDoneSheet=(function(prev){return function(){const r=prev.apply(this,arguments);
+  try{const S=sheetCtx,a=S&&S.a;if(a&&(a.opts||[]).some(o=>o.id==='str143'||o.id==='car143')){const n=$('sxNote');if(n){n.placeholder='예: 30분 러닝 / 푸시업 12×3, 스쿼트 20×5 / 오늘은 몸이 가볍다';n.maxLength=200}}}catch(e){console.error(e)}
+  return r}})(drawDoneSheet);

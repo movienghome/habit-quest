@@ -4,3 +4,10 @@
 .d128r.bx143 .bxi143{width:22px;text-align:center;font-size:16px;flex:none}
 .d128r.bx143 .d128t{flex:1;min-width:0}
 .bxk143{margin:0 0 4px 14px;padding-left:8px;border-left:3px solid var(--line)}
+/* 체크리스트(하위 할 일) 줄: 손잡이·체크·글·↗·× 가 한 행에 — 칸이 모자라 ×가 아래 줄로 떨어지던 grid 3칸을 flex 한 줄로 */
+.subs .sr{display:flex;flex-wrap:nowrap;align-items:center;gap:6px}
+.subs .sr>*{flex:none}
+.subs .sr>input[type=text]{flex:1 1 auto;min-width:0;width:auto}
+.subs .sr>input[type=checkbox]{margin:0}
+.subs .sr>.x,.subs .sr>.dg123{padding:2px 4px;min-width:22px}
+.subs form.sr>span:first-child{width:18px;text-align:center}
