@@ -115,4 +115,10 @@ addEventListener('keydown',e=>{const t=e.target;if(!t||e.key!=='Escape'||!t.clos
   else if(t.closest('form.add141f')){const f=t.closest('form');if(!t.value){(ui.addOpen142=ui.addOpen142||{})[f.dataset.area]=0;f.classList.remove('open142');t.blur()}}},true);
 addEventListener('focusout',e=>{const f=e.target&&e.target.closest&&e.target.closest('form.add141f');if(!f)return;
   setTimeout(()=>{if(!f.isConnected||f.contains(document.activeElement))return;const i=f.querySelector('input');if(i&&!i.value){(ui.addOpen142=ui.addOpen142||{})[f.dataset.area]=0;f.classList.remove('open142')}},120)},true);
+
+/* ---------- F67 기능 지도 ---------- */
+F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
+  ['📅 홈 오늘 한 일 날짜 고르기','홈 → 오늘 한 일 칸 위 [오늘][어제][그저께][📅 날짜]','지난 날 기록을 홈에서 바로 봐요(보기 전용 — 홈에서 기록하는 날은 안 바뀌어요). 기록 줄에 커서를 올리면(폰은 길게 누르기) 점수·보너스가 왜 붙었는지 설명이 떠요',()=>{location.hash='home'},'어제 그저께 기록 보기 점수 이유 보너스 설명 툴팁'],
+  ['🔍 카드 찾기 · ＋ 추가 접기','기록하기 → 행동/습관 제목 줄의 🔍 · 영역 끝 ＋ 추가 칩','🔍를 눌러야 찾기 줄이 열려요(Esc로 닫기). 영역 끝 입력 줄은 ＋ 추가 칩으로 접혀 있다가 누르면 색 띠 입력 줄로 펼쳐져요',()=>{location.hash='log'},'검색 돋보기 카드 추가 영역 입력 줄'],
+  ['🍱 식사 블록','캘린더 시간표 점심·저녁 블록','personal 목록에 들어가고 ○를 눌러 먹었어요 체크(되돌리기는 블록을 눌러 ↶ 안 먹었어요)',()=>{location.hash='cal'},'식사 점심 저녁 체크 personal']])}})(F67);
 })();
