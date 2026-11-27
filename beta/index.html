@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.25</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.26</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -3110,6 +3110,8 @@ details.wy146[open]>summary::before{content:'▾ '}
 /* HP 설명 창 규칙 세 줄 */
 .how146{display:grid;gap:3px;margin:4px 0 6px;font-size:13px;line-height:1.45}
 .how146>div{display:grid;grid-template-columns:7.2em minmax(0,1fr);gap:6px}
+
+/* v13.26 (w147) */
 </style>
 
 <header class="hud" id="hud">
@@ -20333,6 +20335,23 @@ window.scoreDiag146=function(){
   const n=S.hp.length,avg=a=>a.length?Math.round(a.reduce((t,v)=>t+v,0)/a.length*10)/10:0;
   out.splice(2,0,'요약: 새 규칙 '+n+'일 · HP 평균 '+avg(S.hp)+' · 10 이하 '+S.hp.filter(v=>v<=10).length+'일 · 30 이하 '+S.hp.filter(v=>v<=30).length+'일 · 방치 합 하루 평균 −'+avg(S.nl)+'(최대 −'+(S.nl.length?Math.max(...S.nl):0)+') · 감점 중 방치 몫 평균 '+Math.round(avg(S.nlShare)*100)+'% · 누적 배수 붙은 나쁜 기록 '+S.badM+'/'+S.bad+'건(하루 최대 배수 평균 ×'+(avg(S.mu)||1)+')');
   return out};
+})();
+
+/* ================= v13.26 (w147): 11/27 저녁 사용자 요청 묶음 =================
+   ① 방치 경보: 묶음 머리(예: 집 청소)는 껍데기 — 그 아래 관리 할 일을 하나라도 한 날이면 머리도 한 걸로 셈(HP 방치 벌점·경보판·⚠ 모두 watchTarget 한 길)
+   ② 빠른 기록 묶기에 '좋음·나쁨 × 영역별' 합친 모드(C.pg144='both')
+   ③ 카드 ℹ 창 📊 기록(달력·월 넘기기·통계)  ④ 🛟 사라진 것 찾기(카드·뽀모도로)
+   모두 읽기 위주 — 점수 규칙은 안 바꿈. */
+(function(){
+/* ---------- ① 묶음 머리 방치 ---------- */
+function desc147(id){const out=[],seen=new Set([id]),q=[id];
+  while(q.length){const p=q.shift();Object.values(TASKS).forEach(k=>{if(k&&k.parent===p&&k.status!==-1&&!seen.has(k.id)){seen.add(k.id);out.push(k.id);q.push(k.id)}})}
+  return out}
+watchTarget=(function(prev){return function(id){const w=prev.apply(this,arguments);
+  if(!w||typeof id!=='string'||id.slice(0,3)!=='@t:')return w;
+  const ids=desc147(id.slice(3));if(!ids.length)return w;
+  const d0=w.done;return Object.assign({},w,{done:day=>!!d0(day)||ids.some(k=>tDone60(k,day))})}})(watchTarget);
+window.desc147=desc147;
 })();
 
 route();boot();
