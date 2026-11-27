@@ -7,3 +7,5 @@
 .ft90 .areas.k3148{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:10px}
 .ft90 .areas.k3148 .area{grid-template-columns:26px minmax(0,1fr) 28px;gap:3px}
 @media (max-width:600px){.ft90 .areas.k3148{column-gap:8px}.ft90 .areas.k3148 .area .num{font-size:11px}}
+/* v13.28b 💰 경제 칩 — 참음은 글자로(색만으로 구분 안 함) */
+.pc101.ec148 .hd148{border-left:1px solid var(--line);padding-left:4px}
