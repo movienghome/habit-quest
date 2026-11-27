@@ -1,0 +1,10 @@
+/* v13.21 (w145): 골드 장부 */
+.gl145{margin-top:10px;border-top:1px solid var(--line);padding-top:6px}
+.gl145>summary{cursor:pointer;font-size:13.5px;list-style:none;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.gl145>summary::-webkit-details-marker{display:none}
+.gl145>summary::before{content:'▸';color:var(--muted)}
+.gl145[open]>summary::before{content:'▾'}
+.gh145{display:flex;gap:6px 12px;flex-wrap:wrap;margin-top:6px}
+.gr145{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;padding:4px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.gr145 .gn145{min-width:0;overflow-wrap:anywhere}
+.gr145 .gv145{white-space:nowrap}
