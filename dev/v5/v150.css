@@ -1,0 +1,17 @@
+/* v13.30 (w150): F5-② 🔢 횟수 기준 — 옵션 표 '기준' 한 칸(부터·까지 두 칸 대신), 펼침 칸 */
+.vtable.cr150t .vrow .hr{display:none}
+.vtable.cr150t .vrow{grid-template-columns:30px minmax(0,1.5fr) repeat(3,minmax(0,.55fr)) minmax(54px,.8fr) 26px}
+@media (max-width:520px){.vtable.cr150t .vrow{grid-template-columns:30px minmax(0,1.2fr) repeat(3,minmax(0,.6fr)) 52px 26px}}
+.cr150b{height:28px;padding:0 4px;border:1px dashed var(--line);border-radius:7px;background:none;color:var(--muted);font:inherit;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;min-width:0}
+.cr150b.on{border-style:solid;border-color:var(--ink);color:var(--ink);font-weight:600}
+.cr150p{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;padding:6px 8px;border:1px dashed var(--line);border-radius:8px;font-size:13px}
+.cr150p .seg150{display:inline-flex;gap:4px;flex-wrap:wrap}
+.cr150p .row150{display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap}
+.cr150p input[type=number]{width:58px;padding:4px 5px;font-size:13px}
+.cr150p select{width:auto;padding:4px;font-size:13px}
+.optbtn .cn150{font-size:10.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+.why150{color:var(--muted)}
+.ec148 .hd148{text-decoration:underline dotted;text-underline-offset:2px;cursor:pointer}
+.ul150{list-style:none;padding:0;margin:6px 0;display:grid;gap:3px;max-height:50vh;overflow:auto}
+.ul150 .im150.s-g b{text-decoration:line-through dotted}
+.ul150 .im150.s-p{color:var(--muted)}
