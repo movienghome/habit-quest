@@ -27,7 +27,8 @@ render=(function(prev){return function(){const r=prev.apply(this,arguments);try{
 neglectList=(function(prev){return function(date){const L=prev.apply(this,arguments);
   L.forEach(n=>{n.raw147=n.pen});
   if(!on(date))return L;
-  let left=nlCap();[...L].sort((a,b)=>b.pen-a.pen).forEach(n=>{const u=Math.min(n.pen,left);n.pen=u;left-=u});
+  const hpIn=n=>{const ar=n.t&&n.t.area;return !ar||akOf101(ar)==='c'};   // v13.27: HP 밖 영역(생활·작품·성장·경제) 경보는 상한을 쓰지 않음
+  let left=nlCap();[...L].filter(hpIn).sort((a,b)=>b.pen-a.pen).forEach(n=>{const u=Math.min(n.pen,left);n.pen=u;left-=u});
   return L}})(neglectList);
 badMult=(function(prev){return function(a,date){const r=prev.apply(this,arguments);
   if(r&&on(date||curDay().date)&&r.mult>mCap())r.mult=mCap();return r}})(badMult);
@@ -135,4 +136,15 @@ addEventListener('click',e=>{const t=e.target&&e.target.closest&&e.target.closes
 render=(function(prev){return function(){const r=prev.apply(this,arguments);
   try{const d=document.getElementById('diag141');if(d&&!document.getElementById('rs147')){const b=document.createElement('button');b.type='button';b.id='rs147';b.className='chipbtn';b.textContent='🛟 사라진 것 찾기';b.setAttribute('aria-label','사라진 카드·뽀모도로·루틴 프리셋 찾기');d.after(b)}}catch(e){console.error(e)}
   return r}})(render);
+})();
+
+/* ================= ⑤ v13.27: HP는 몸·마음만 — 생활을 '진척' 종류로(HP 밖·따로 집계). 사용자 11/27 18:29 동의 =================
+   기존 영역 종류 설정(C.ak101: c 컨디션·p 진척·m 경제)을 한 번만 채워 넣음. 이미 사용자가 정해 둔 값(C.ak101.life)은 건드리지 않음.
+   되돌리기: 더보기 → 영역 설정에서 생활을 '컨디션'으로. 지난 날 HP도 새로 계산돼요(기록은 그대로). */
+(function(){
+function mig(){if(!C||!ready72()||C.f4mig147||!C.f1from101||!C.ak101)return;   // 영역 종류가 채워진 뒤(w101 init)에만
+  const a=(C.areas||[]).find(x=>x.id==='life'||x.name==='생활');
+  if(a){if(!C.ak101[a.id]||C.ak101[a.id]==='c')C.ak101[a.id]='p'}   // 자동으로 채워진 'c'도 한 번만 바꿈(사용자가 동의한 변경) — 이후 사용자가 바꾼 값은 flag로 보존
+  if(a)C.f4mig147=1;else if((C.areas||[]).length)C.f4mig147=1;save('config')}
+render=(function(prev){return function(){try{mig()}catch(e){console.error(e)}return prev.apply(this,arguments)}})(render);
 })();

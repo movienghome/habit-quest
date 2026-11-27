@@ -140,5 +140,5 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
   ui.edit=b.dataset.goedit101;try{closeSheet()}catch(x){}location.hash='edit';setTimeout(()=>{try{renderEdit()}catch(x){}},50)},true);
 
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['🔋 HP에 넣을 영역(컨디션·진척·경제)','편집 → 컨디션 영역 · 영역 막대 누르기','HP는 🔋 컨디션 영역(몸·마음·생활 등)만 더해요. 📈 진척·💰 경제 영역은 HP와 따로, 홈 막대 아래 칩으로 영역 레벨·이번 주 ✨·멈춘 날을 보여요. 카드마다 예외(HP에 넣기/빼기)는 카드 편집 칩 줄의 🔋 칩. 아침 에너지 대신 하루 시작값을 써요.',()=>{ui.edit='areas';location.hash='edit'},'컨디션 영역 HP 진척 경제 아침 에너지 시작값 F1'],
+  ['🔋 HP에 넣을 영역(컨디션·진척·경제)','편집 → 컨디션 영역 · 영역 막대 누르기','HP는 🔋 컨디션 영역(몸·마음 등(생활은 따로))만 더해요. 📈 진척·💰 경제 영역은 HP와 따로, 홈 막대 아래 칩으로 영역 레벨·이번 주 ✨·멈춘 날을 보여요. 카드마다 예외(HP에 넣기/빼기)는 카드 편집 칩 줄의 🔋 칩. 아침 에너지 대신 하루 시작값을 써요.',()=>{ui.edit='areas';location.hash='edit'},'컨디션 영역 HP 진척 경제 아침 에너지 시작값 F1'],
   ['📈 진척 칩(멈춤 표시)','홈 전투 카드 영역 막대 아래','진척·경제 영역의 영역 레벨과 이번 주 ✨를 보여 주고, 정한 날(기본 7일) 넘게 안 하면 ⏸ n일째가 붙어요. 줄지 않아요 — HP를 깎지 않고 알려만 줘요.',()=>{location.hash='home'},'진척 멈춤 경보 원정 작품 성장']])}})(F67);

@@ -8,7 +8,7 @@ function mig107(){
   const fix=[];
   C.ak101=Object.assign({},C.ak101||{});
   C.areas.forEach(a=>{const k=C.ak101[a.id];
-    if(/^(몸|마음|생활)$/.test(String(a.name||'').trim())&&k&&k!=='c'){C.ak101[a.id]='c';fix.push(a.name)}});
+    if(/^(몸|마음)$/.test(String(a.name||'').trim())&&k&&k!=='c'){C.ak101[a.id]='c';fix.push(a.name)}});
   C.mig107={at:gk76(),fix};
   save('config');
   if(fix.length)setTimeout(()=>toast(`${fix.join('·')} 막대를 홈에 되살렸어요 (영역 종류가 🔋 컨디션이 아니었어요) · 편집 → 컨디션 영역에서 바꿀 수 있어요`,7000),1800)}

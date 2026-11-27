@@ -15639,7 +15639,7 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
   ui.edit=b.dataset.goedit101;try{closeSheet()}catch(x){}location.hash='edit';setTimeout(()=>{try{renderEdit()}catch(x){}},50)},true);
 
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['🔋 HP에 넣을 영역(컨디션·진척·경제)','편집 → 컨디션 영역 · 영역 막대 누르기','HP는 🔋 컨디션 영역(몸·마음·생활 등)만 더해요. 📈 진척·💰 경제 영역은 HP와 따로, 홈 막대 아래 칩으로 영역 레벨·이번 주 ✨·멈춘 날을 보여요. 카드마다 예외(HP에 넣기/빼기)는 카드 편집 칩 줄의 🔋 칩. 아침 에너지 대신 하루 시작값을 써요.',()=>{ui.edit='areas';location.hash='edit'},'컨디션 영역 HP 진척 경제 아침 에너지 시작값 F1'],
+  ['🔋 HP에 넣을 영역(컨디션·진척·경제)','편집 → 컨디션 영역 · 영역 막대 누르기','HP는 🔋 컨디션 영역(몸·마음 등(생활은 따로))만 더해요. 📈 진척·💰 경제 영역은 HP와 따로, 홈 막대 아래 칩으로 영역 레벨·이번 주 ✨·멈춘 날을 보여요. 카드마다 예외(HP에 넣기/빼기)는 카드 편집 칩 줄의 🔋 칩. 아침 에너지 대신 하루 시작값을 써요.',()=>{ui.edit='areas';location.hash='edit'},'컨디션 영역 HP 진척 경제 아침 에너지 시작값 F1'],
   ['📈 진척 칩(멈춤 표시)','홈 전투 카드 영역 막대 아래','진척·경제 영역의 영역 레벨과 이번 주 ✨를 보여 주고, 정한 날(기본 7일) 넘게 안 하면 ⏸ n일째가 붙어요. 줄지 않아요 — HP를 깎지 않고 알려만 줘요.',()=>{location.hash='home'},'진척 멈춤 경보 원정 작품 성장']])}})(F67);
 
 /* ---- v10.3 (w102.js): F1 조각 2 — 몸 출발점(어젯밤 잠·술·야식 → 몸 최대, 어제 몸 끝값 일부 이월) + HP 비교 이유 + 전투 카드 다듬기 ----
@@ -16475,7 +16475,7 @@ function mig107(){
   const fix=[];
   C.ak101=Object.assign({},C.ak101||{});
   C.areas.forEach(a=>{const k=C.ak101[a.id];
-    if(/^(몸|마음|생활)$/.test(String(a.name||'').trim())&&k&&k!=='c'){C.ak101[a.id]='c';fix.push(a.name)}});
+    if(/^(몸|마음)$/.test(String(a.name||'').trim())&&k&&k!=='c'){C.ak101[a.id]='c';fix.push(a.name)}});
   C.mig107={at:gk76(),fix};
   save('config');
   if(fix.length)setTimeout(()=>toast(`${fix.join('·')} 막대를 홈에 되살렸어요 (영역 종류가 🔋 컨디션이 아니었어요) · 편집 → 컨디션 영역에서 바꿀 수 있어요`,7000),1800)}
@@ -20381,7 +20381,8 @@ render=(function(prev){return function(){const r=prev.apply(this,arguments);try{
 neglectList=(function(prev){return function(date){const L=prev.apply(this,arguments);
   L.forEach(n=>{n.raw147=n.pen});
   if(!on(date))return L;
-  let left=nlCap();[...L].sort((a,b)=>b.pen-a.pen).forEach(n=>{const u=Math.min(n.pen,left);n.pen=u;left-=u});
+  const hpIn=n=>{const ar=n.t&&n.t.area;return !ar||akOf101(ar)==='c'};   // v13.27: HP 밖 영역(생활·작품·성장·경제) 경보는 상한을 쓰지 않음
+  let left=nlCap();[...L].filter(hpIn).sort((a,b)=>b.pen-a.pen).forEach(n=>{const u=Math.min(n.pen,left);n.pen=u;left-=u});
   return L}})(neglectList);
 badMult=(function(prev){return function(a,date){const r=prev.apply(this,arguments);
   if(r&&on(date||curDay().date)&&r.mult>mCap())r.mult=mCap();return r}})(badMult);
@@ -20489,6 +20490,17 @@ addEventListener('click',e=>{const t=e.target&&e.target.closest&&e.target.closes
 render=(function(prev){return function(){const r=prev.apply(this,arguments);
   try{const d=document.getElementById('diag141');if(d&&!document.getElementById('rs147')){const b=document.createElement('button');b.type='button';b.id='rs147';b.className='chipbtn';b.textContent='🛟 사라진 것 찾기';b.setAttribute('aria-label','사라진 카드·뽀모도로·루틴 프리셋 찾기');d.after(b)}}catch(e){console.error(e)}
   return r}})(render);
+})();
+
+/* ================= ⑤ v13.27: HP는 몸·마음만 — 생활을 '진척' 종류로(HP 밖·따로 집계). 사용자 11/27 18:29 동의 =================
+   기존 영역 종류 설정(C.ak101: c 컨디션·p 진척·m 경제)을 한 번만 채워 넣음. 이미 사용자가 정해 둔 값(C.ak101.life)은 건드리지 않음.
+   되돌리기: 더보기 → 영역 설정에서 생활을 '컨디션'으로. 지난 날 HP도 새로 계산돼요(기록은 그대로). */
+(function(){
+function mig(){if(!C||!ready72()||C.f4mig147||!C.f1from101||!C.ak101)return;   // 영역 종류가 채워진 뒤(w101 init)에만
+  const a=(C.areas||[]).find(x=>x.id==='life'||x.name==='생활');
+  if(a){if(!C.ak101[a.id]||C.ak101[a.id]==='c')C.ak101[a.id]='p'}   // 자동으로 채워진 'c'도 한 번만 바꿈(사용자가 동의한 변경) — 이후 사용자가 바꾼 값은 flag로 보존
+  if(a)C.f4mig147=1;else if((C.areas||[]).length)C.f4mig147=1;save('config')}
+render=(function(prev){return function(){try{mig()}catch(e){console.error(e)}return prev.apply(this,arguments)}})(render);
 })();
 
 route();boot();
