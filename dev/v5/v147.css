@@ -2,3 +2,9 @@
 /* v13.26 ②: 점수 상한·누적 데미지 설명 */
 .how147{margin-top:2px}
 .how147 .h146{margin:4px 0 0;font-size:12px;color:var(--muted)}
+/* v13.26 ③: 카드 ℹ 창 기록·통계 */
+.ac147{margin-top:8px;border-top:1px solid var(--line);padding-top:4px}
+.ac147>summary{cursor:pointer;font-weight:700;font-size:13px}
+.ac147 .rc132{max-width:340px}
+.ac147 .wb146{display:grid;gap:3px;margin-top:6px;font-size:13px}
+.ac147 .r146{display:grid;grid-template-columns:minmax(0,1fr) 0 auto;gap:6px;padding:1px 0;border-bottom:1px dotted var(--line)}

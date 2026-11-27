@@ -3115,6 +3115,12 @@ details.wy146[open]>summary::before{content:'▾ '}
 /* v13.26 ②: 점수 상한·누적 데미지 설명 */
 .how147{margin-top:2px}
 .how147 .h146{margin:4px 0 0;font-size:12px;color:var(--muted)}
+/* v13.26 ③: 카드 ℹ 창 기록·통계 */
+.ac147{margin-top:8px;border-top:1px solid var(--line);padding-top:4px}
+.ac147>summary{cursor:pointer;font-weight:700;font-size:13px}
+.ac147 .rc132{max-width:340px}
+.ac147 .wb146{display:grid;gap:3px;margin-top:6px;font-size:13px}
+.ac147 .r146{display:grid;grid-template-columns:minmax(0,1fr) 0 auto;gap:6px;padding:1px 0;border-bottom:1px dotted var(--line)}
 </style>
 
 <header class="hud" id="hud">
@@ -20390,6 +20396,51 @@ infoFor=(function(prev){return function(k){const r=prev.apply(this,arguments);
   try{if(r&&k==='hp'&&typeof r.b==='string'&&r.b.indexOf('how147')<0){
     r.b=r.b.replace(/(<div class="how146">[\s\S]*?<\/div><\/div>)/,'$1'+window.how147())}}catch(e){console.error(e)}
   return r}})(infoFor);
+})();
+
+/* ================= ③ 카드 ℹ 창 📊 기록·통계 (달력 · 달 넘기기 · 수치) — 읽기만, 새 데이터 없음 =================
+   입구는 기존 그대로: 기록하기 행동 줄 ⋯ → ℹ 설명·통계(`openInfo('act:id')`) 맨 아래. 기록=`DAYS[날].entries` 중 `e.aid===카드`. */
+(function(){
+const AC={id:null,m:null};
+const sg=v=>(v>0?'+':v<0?'−':'±')+Math.abs(Math.round(v));
+const ent=(a,k)=>{const d=DAYS[k];return d?(d.entries||[]).filter(e=>e&&e.kind==='act'&&e.aid===a.id):[]};
+function sum(a,keys){const o={n:0,days:0,cond:0,xp:0,gold:0,opt:{}};
+  keys.forEach(k=>{const L=ent(a,k);if(!L.length)return;o.days++;L.forEach(e=>{const c=e.n||1;o.n+=c;o.cond+=e.cond||0;o.xp+=e.xp||0;o.gold+=e.gold||0;
+    if(e.vid){const v=(a.opts||[]).find(x=>x.id===e.vid);const nm=v?v.name:'옵션';o.opt[nm]=(o.opt[nm]||0)+c}})});
+  return o}
+function monthKeys(mk){const out=[],first=mk+'-01';for(let i=0;i<31;i++){const k=addDays(first,i);if(k.slice(0,7)!==mk)break;out.push(k)}return out}
+function prevM(mk){return addDays(mk+'-01',-1).slice(0,7)}
+function nextM(mk){return addDays(mk+'-01',33).slice(0,7)}
+function html(a,mk){
+  const td=gk76(),keys=monthKeys(mk),S=sum(a,keys),P=sum(a,monthKeys(prevM(mk)));
+  const first=mk+'-01',ws=weekStartD(first),nm=nextM(mk)+'-01';let cells='';
+  for(let i=0;i<42;i++){const k=addDays(ws,i);if(i>=35&&k>=nm)break;const inm=k.slice(0,7)===mk,L=inm?ent(a,k):[];
+    const c=L.reduce((t,e)=>t+(e.n||1),0),cd=L.reduce((t,e)=>t+(e.cond||0),0);
+    const t=L.length?`${fmtD(k)} · ${c}번 · 컨디션 ${sg(cd)}`:fmtD(k);
+    cells+=`<span class="rc132d${inm?'':' o'}${c?' ok':''}${k===td?' td':''}${k>td?' fu':''}" title="${esc(t)}">${+k.slice(8)}${c?`<i>${c>1?c:'✓'}</i>`:''}</span>`}
+  let last=null,n=0,days=[];for(let i=0;i<400;i++){const k=addDays(td,-i);if(ent(a,k).length){if(!last)last=k;days.push(k)}}
+  const gap=days.length>1?Math.round((diffDays(days[0],days[days.length-1]))/(days.length-1)*10)/10:null;
+  const [yy,mm]=mk.split('-');const bad=a.type==='bad';
+  const row=(l,v)=>`<div class="r146"><span class="n146">${l}</span><span></span><b class="v146 num">${v}</b></div>`;
+  const opts=Object.keys(S.opt).map(k=>`${esc(k)} ${S.opt[k]}번`).join(' · ');
+  return `<div class="rc132h"><button type="button" class="ib" data-ac147="-1" aria-label="이전 달">‹</button><b>${+yy}년 ${+mm}월</b><button type="button" class="ib" data-ac147="1" aria-label="다음 달"${mk>=td.slice(0,7)?' disabled':''}>›</button></div>
+   <div class="rc132g">${WKH71().map(d=>`<span class="rc132w">${d}</span>`).join('')}${cells}</div>
+   <div class="wb146">
+   ${row('이번 달 한 횟수',S.n+'번 ('+S.days+'일)')}${row('지난 달',P.n+'번 ('+P.days+'일)')}
+   ${row('이 달 컨디션',sg(S.cond))}${row('이 달 점수 합',`✨${sg(S.xp)} · 💰${sg(S.gold)}`)}
+   ${row('마지막',last?fmtD(last)+' ('+diffDays(td,last)+'일 전)':'기록 없음')}${row('평균 간격(최근 400일)',gap==null?'—':gap+'일')}
+   ${opts?`<div class="tiny muted">옵션별 ${opts}</div>`:''}
+   <div class="tiny muted">${bad?'나쁜 행동은 누적 배수가 붙은 점수예요. ':''}기록 줄 눌러서 보는 건 홈·기록하기에서 해요.</div></div>`}
+function build(id){const a=(C.actions||[]).find(x=>x.id===id);if(!a)return '';
+  if(AC.id!==id){AC.id=id;AC.m=gk76().slice(0,7)}
+  return `<details class="ac147" open><summary>📊 기록 · 통계</summary><div class="ac147b rc132" data-aid147="${esc(id)}">${html(a,AC.m)}</div></details>`}
+infoFor=(function(prev){return function(k){const r=prev.apply(this,arguments);
+  try{if(r&&typeof k==='string'&&k.slice(0,4)==='act:'&&typeof r.b==='string'&&r.b.indexOf('ac147')<0){AC.id=null;r.b+=build(k.slice(4))}}catch(e){console.error(e)}
+  return r}})(infoFor);
+addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-ac147]');if(!b)return;
+  e.preventDefault();e.stopPropagation();const box=b.closest('.ac147b');if(!box)return;
+  const a=(C.actions||[]).find(x=>x.id===box.dataset.aid147);if(!a)return;
+  const nx=+b.dataset.ac147>0?nextM(AC.m):prevM(AC.m);if(nx>gk76().slice(0,7))return;AC.m=nx;box.innerHTML=html(a,AC.m)},true);
 })();
 
 route();boot();
