@@ -27,12 +27,18 @@ async function start() {
      사물함에 넣어 둔 노트북이 절전·업데이트로 깨어날 때마다 이게 반복돼 하루 읽기 한도(5만)를 새벽에 다 썼어요(11/15·11/26 '저장 안 됨').
      숨은 지 10분이 지나면 연결을 끊고, 화면이 다시 보일 때 이어 붙여요. 아직 안 올린 저장이 있으면 끊지 않고 기다려요. */
   let hideT = null, netOff = false;
+  /* v13.20b: 이 기기가 언제 얼마나 읽었나 — 진단 복사용(앱 동작은 안 바꿈). 시간별 읽은 수 hq-rhour(48시간), 연결 사건 hq-rlog(최근 80개). */
+  function hh(t) { const d = new Date(t || Date.now()); return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+  function rlog(msg) { try { const L = JSON.parse(localStorage.getItem('hq-rlog') || '[]'); L.push(hh() + ' ' + (NS === 'habit' ? '' : 'β ') + msg + (document.hidden ? ' (숨김)' : '')); localStorage.setItem('hq-rlog', JSON.stringify(L.slice(-80))); } catch (e) {} }
+  function rhour(n) { try { const d = new Date(Date.now()), k = (d.getMonth() + 1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2, '0') + '시'; const H = JSON.parse(localStorage.getItem('hq-rhour') || '{}'); H[k] = (H[k] || 0) + n;
+    const ks = Object.keys(H); if (ks.length > 48) for (const x of ks.slice(0, ks.length - 48)) delete H[x]; localStorage.setItem('hq-rhour', JSON.stringify(H)); } catch (e) {} }
+  window.__hqRlog = () => { try { return { log: JSON.parse(localStorage.getItem('hq-rlog') || '[]'), hour: JSON.parse(localStorage.getItem('hq-rhour') || '{}') }; } catch (e) { return { log: [], hour: {} }; } };
   const goOff = () => {
     hideT = null; if (netOff || !document.hidden) return;
     if ((window.__hqBusy && window.__hqBusy()) || window.HQ_PENDING) { hideT = setTimeout(goOff, 30000); return; }
-    netOff = true; F.disableNetwork(fs).catch(() => {});
+    netOff = true; rlog('숨긴 지 10분 · 연결 끊음'); F.disableNetwork(fs).catch(() => {});
   };
-  const goOn = () => { clearTimeout(hideT); hideT = null; if (netOff) { netOff = false; F.enableNetwork(fs).catch(() => {}); } };
+  const goOn = () => { clearTimeout(hideT); hideT = null; if (netOff) { netOff = false; rlog('화면 보임 · 연결 다시'); F.enableNetwork(fs).catch(() => {}); } };
   document.addEventListener('visibilitychange', () => { if (document.hidden) { clearTimeout(hideT); hideT = setTimeout(goOff, 10 * 60 * 1000); } else goOn(); });
   addEventListener('pageshow', goOn); addEventListener('online', () => { if (!document.hidden) goOn(); });
 
@@ -74,7 +80,7 @@ async function start() {
   /* ---------- 저장소 연결 (아티팩트 db와 같은 모양) ---------- */
   // v13.15: 이 브라우저가 오늘(미국 태평양 날짜 — 무료 한도가 리셋되는 기준) Firestore에서 읽은 문서 수 (본 앱·베타가 같은 값을 더함)
   const rkey = () => 'hq-reads-' + new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles' }).format(new Date());
-  const rcount = n => { if (!(n > 0)) return; try { const k = rkey(); localStorage.setItem(k, String((+localStorage.getItem(k) || 0) + n));
+  const rcount = n => { if (!(n > 0)) return; rhour(n); try { const k = rkey(); localStorage.setItem(k, String((+localStorage.getItem(k) || 0) + n));
     for (const x of Object.keys(localStorage)) if (x.startsWith('hq-reads-') && x < 'hq-reads-' + new Date(Date.now() - 3 * 864e5).toISOString().slice(0, 10)) localStorage.removeItem(x); } catch (e) {} };
   window.__hqReads = () => { try { return +localStorage.getItem(rkey()) || 0; } catch (e) { return 0; } };
   /* v13.20: 계량기 바로잡기 — 실시간 연결이 30분 넘게 끊겼다(앱을 껐다 켬·탭을 오래 숨김·노트북 잠자기) 다시 이어지면
@@ -88,15 +94,16 @@ async function start() {
   const markAll = t => { for (const k in LIVE) if (LIVE[k]) setAlive(k, t); };
   setInterval(() => { const now = Date.now(), gap = now - lastTick;
     // 기기가 잠들었다 깨어남(타이머가 멈춰 있었음): 그동안 연결도 끊겼으니 잠든 때를 마지막 연결로 적고, 30분 넘었으면 다시 읽기로 셈
-    if (gap > 120000) { for (const k in LIVE) if (LIVE[k]) { setAlive(k, lastTick); if (gap > 1800000 && !netOff) rcount(SIZE[k] || 0); setAlive(k, now); } }
+    if (gap > 120000) { rlog('잠들었다 깸 ' + Math.round(gap / 60000) + '분' + (gap > 1800000 && !netOff ? ' · 다시 읽기로 셈 ' + Object.keys(LIVE).filter(k => LIVE[k]).reduce((x, k) => x + (SIZE[k] || 0), 0) : '')); for (const k in LIVE) if (LIVE[k]) { setAlive(k, lastTick); if (gap > 1800000 && !netOff) rcount(SIZE[k] || 0); setAlive(k, now); } }
     else if (!netOff && !document.hidden) markAll(now);
     lastTick = now; }, 30000);
   addEventListener('pagehide', () => markAll()); document.addEventListener('visibilitychange', () => { if (document.hidden) markAll(); });
   window.__hqSizes = () => Object.assign({}, SIZE);
   const track = (k, s, size, changed) => { try {
-    if (s.metadata && s.metadata.fromCache) { if (LIVE[k]) { LIVE[k] = false; setAlive(k); } return; }
+    if (s.metadata && s.metadata.fromCache) { if (LIVE[k]) { LIVE[k] = false; setAlive(k); if (k.startsWith('days')) rlog('연결 끊김'); } return; }
     SIZE[k] = size;
-    if (!LIVE[k]) { LIVE[k] = true; const gap = Date.now() - alive(k); setAlive(k); rcount(gap > 1800000 ? size : changed); return; }
+    if (!LIVE[k]) { LIVE[k] = true; const al = alive(k), gap = Date.now() - al; setAlive(k); const n = gap > 1800000 ? size : changed; rcount(n);
+      if (n > 20 || k.startsWith('days')) rlog('연결 ' + k + ' ' + (al ? Math.round(gap / 60000) + '분 만' : '처음') + ' · ' + n + '건'); return; }
     rcount(changed); } catch (e) {} };
   const qcount = (s, k) => { try { track(k, s, s.size, s.docChanges ? s.docChanges().length : s.size); } catch (e) {} };
   const wrap = s => ({ id: s.id, exists: s.exists(), data: () => { const d = s.data(); return d == null ? d : dec(d); }, metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } });

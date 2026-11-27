@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.20</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.20b</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -19678,6 +19678,10 @@ function diagText141(){
     `최근 오류: ${Object.entries(dg.err||{}).map(([k,v])=>`${k} ${v.code} ${v.msg}`).join(' | ')||'없음'}`,
     `재시도 대기(ms): ${JSON.stringify(dg.back||{})}`,
     `기기: ${navigator.userAgent.slice(0,120)}`];
+  // v13.20b: 이 기기가 시간마다 읽은 수·연결 사건(밤새 누가 읽었나 찾기)
+  try{const R=typeof window.__hqRlog==='function'?window.__hqRlog():null;if(R){
+    const H=Object.entries(R.hour||{}).slice(-30);L.push('시간별 읽기(이 기기): '+(H.map(([k,v])=>k+' '+v).join(' · ')||'없음'));
+    L.push('연결 기록(최근):');(R.log||[]).slice(-40).forEach(x=>L.push('  '+x))}}catch(e){}
   return L.join('\n')}
 window.diagText141=diagText141;
 addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('#diag141');if(!b)return;e.preventDefault();

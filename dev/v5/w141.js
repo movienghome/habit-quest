@@ -257,6 +257,10 @@ function diagText141(){
     `최근 오류: ${Object.entries(dg.err||{}).map(([k,v])=>`${k} ${v.code} ${v.msg}`).join(' | ')||'없음'}`,
     `재시도 대기(ms): ${JSON.stringify(dg.back||{})}`,
     `기기: ${navigator.userAgent.slice(0,120)}`];
+  // v13.20b: 이 기기가 시간마다 읽은 수·연결 사건(밤새 누가 읽었나 찾기)
+  try{const R=typeof window.__hqRlog==='function'?window.__hqRlog():null;if(R){
+    const H=Object.entries(R.hour||{}).slice(-30);L.push('시간별 읽기(이 기기): '+(H.map(([k,v])=>k+' '+v).join(' · ')||'없음'));
+    L.push('연결 기록(최근):');(R.log||[]).slice(-40).forEach(x=>L.push('  '+x))}}catch(e){}
   return L.join('\n')}
 window.diagText141=diagText141;
 addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('#diag141');if(!b)return;e.preventDefault();
