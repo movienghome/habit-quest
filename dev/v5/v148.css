@@ -1,0 +1,5 @@
+/* v13.28 (w148): 🧺 관리 상태 막대 — HP 밖이라 점선 테두리로 HP 막대와 구분(색만으로 구분하지 않음) */
+.area.k148 .track{outline:1px dashed var(--muted);outline-offset:1px}
+.area.k148 b{white-space:nowrap}
+.cs148{border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:8px}
+.cs148 ul{margin:4px 0 6px 18px;padding:0}
