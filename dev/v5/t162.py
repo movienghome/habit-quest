@@ -24,9 +24,9 @@ with sync_playwright() as pw:
         ok(C_('details.wy146 .fl146')==1 and C_('details.wy146 .fc146')==7,tag+'7일 흐름 막대 7칸')
         ok(C_('details.wy146 .fc146 i.no')>=3,tag+'기록 없는 날은 점선 ·',C_('details.wy146 .fc146 i.no'))
         ok(pg.evaluate("()=>document.querySelectorAll('details.wy146 .fc146.on').length")==1,tag+'보는 날(오늘) 한 칸만 굵게')
-        ok('흐름' in t and '7일 평균' in t and '전날보다' in t,tag+'한마디(흐름·전날보다·7일 평균)')
-        ok('야식 ×2 −14 (3일째)' in t,tag+'야식 3일째 꼬리표',t)
-        ok('늦게 잠 −18 (' not in t and '폭음 −9 (' not in t,tag+'하루짜리 감점엔 꼬리표 없음')
+        ok('최근 7일' in t and '전날보다' in t and '평균' in t,tag+'한마디(최근 7일·전날보다·평균)')
+        ok('야식 ×2 (3일째)' in t,tag+'야식 3일째 꼬리표',t)
+        ok('늦게 잠 (' not in t and '폭음 (' not in t,tag+'하루짜리 감점엔 꼬리표 없음')
         ok(pg.evaluate("()=>document.documentElement.scrollWidth<=innerWidth+1"),tag+'가로로 안 넘침')
         h=pg.evaluate("()=>document.querySelector('details.wy146>summary').getBoundingClientRect().height");ok(h<30,tag+'접힌 줄은 그대로 한 줄 높이',h)
         # 어제 칩: 어제 기준으로 7일(어제 끝) + 야식 2일째
@@ -34,7 +34,7 @@ with sync_playwright() as pw:
         if C_('details.wy146')==1:
             if not pg.evaluate("()=>document.querySelector('details.wy146').open"):pg.click('details.wy146>summary');pg.wait_for_timeout(200)
             t1=pg.inner_text('details.wy146 .wb146').replace('\n',' | ');print(tag,'어제:',t1)
-            ok('야식 −8 (2일째)' in t1,tag+'어제 기준 야식 2일째',t1)
+            ok('야식 (2일째)' in t1,tag+'어제 기준 야식 2일째',t1)
         else:ok(False,tag+'어제 줄 있어야 함')
         pg.click('[data-hl142="0"]');pg.wait_for_timeout(300)
         # HP 설명 창에도 같은 부품
@@ -44,11 +44,11 @@ with sync_playwright() as pw:
         pg.evaluate("()=>closeInfo()");pg.wait_for_timeout(200)
         # 보정: 합이 맞는 날엔 보정 줄이 없거나 원인이 적혀 있음
         fx=pg.evaluate("()=>{const e=document.querySelector('details.wy146 .wb146 .tiny.muted');return e?e.textContent:''}")
-        ok(fx=='' or '—' in fx,tag+'보정 줄은 없거나 원인이 적힘',fx)
+        ok('0 아래는 없음' not in pg.inner_text('details.wy146 .eq146'),tag+'합이 맞는 날엔 보정 칩이 없음',fx)
         # 0~100 한계
         pg.evaluate("()=>"+SEED2);pg.wait_for_timeout(500)
         pg.evaluate("()=>{WY146.open=true;render()}");pg.wait_for_timeout(400)
-        fx=pg.evaluate("()=>[...document.querySelectorAll('details.wy146 .wb146 .tiny.muted')].map(e=>e.textContent).join(' / ')");print(tag,'보정:',fx)
-        ok('0 밑으로는 안 내려가요' in fx and '보정' in fx,tag+'0 밑 한계가 원인으로 적힘',fx)
+        fx=pg.inner_text('details.wy146 .eq146').replace('\n',' ');print(tag,'식:',fx)
+        ok('0 아래는 없음' in fx and '＝' in fx,tag+'0 아래 한계가 계산식 칩으로 적힘',fx)
         b.close()
 print('FAILS',len(F),F)
