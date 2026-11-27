@@ -20,10 +20,10 @@ render=(function(prev){return function(){let ch=false;try{ch=mig()}catch(e){cons
   try{if(!ch&&!C.f5mig148&&mig())setTimeout(()=>render(),0)}catch(e){console.error(e)}return r}})(render);   // w147 f4mig147가 이번 렌더에서 막 켜졌으면 뒤에서 한 번 더
 function barH(a){const c=care148(),v=c.v;
   const tip=`${a.name} · 🧺 관리 상태 — HP에 안 들어가요. ${c.n?`제때 ${c.ok}/${c.n}${c.late.length?` · 밀린 것 ${c.late.length}`:''}`:'관리 할 일 없음'} · 누르면 밀린 것`;
-  return `<div class="area k148" data-info="area:${esc(a.id)}" title="${esc(tip)}"><b>🧺 ${esc(a.name)}</b><div class="track"><div class="fill ${v!=null&&v<35?'low':''}" style="width:${v==null?0:v}%"></div></div><span class="num">${v==null?'—':v}</span></div>`}
+  return `<div class="area k148" data-info="area:${esc(a.id)}" title="${esc(tip)}"><b>${esc(a.name)}</b><div class="track"><div class="fill ${v!=null&&v<35?'low':''}" style="width:${v==null?0:v}%"></div></div><span class="num">${v==null?'—':v}</span></div>`}
 renderHome=(function(prev){return function(day,av){const r=prev.apply(this,arguments);
   try{if(on101()){const el=$('areaBars');if(el&&!el.querySelector('.k148')){const ks=C.areas.filter(a=>akOf101(a.id)==='k');
-    if(ks.length){const h=ks.map(barH).join(''),pg=el.querySelector('.pg101');if(pg)pg.insertAdjacentHTML('beforebegin',h);else el.insertAdjacentHTML('beforeend',h)}}}}catch(e){console.error(e)}
+    if(ks.length){const h=ks.map(barH).join(''),pg=el.querySelector('.pg101');if(pg)pg.insertAdjacentHTML('beforebegin',h);else el.insertAdjacentHTML('beforeend',h);el.classList.add('k3148')}}}}catch(e){console.error(e)}
   return r}})(renderHome);
 /* 진척 칩: 관리('k') 영역은 막대로 갔으니 칩에서 뺌 — w102 prog101을 그대로 옮기고 거르기만 바꿈 */
 prog101=function(){

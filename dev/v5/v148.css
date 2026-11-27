@@ -3,3 +3,7 @@
 .area.k148 b{white-space:nowrap}
 .cs148{border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:8px}
 .cs148 ul{margin:4px 0 6px 18px;padding:0}
+/* v13.28a: 몸·마음·생활 한 줄(사용자 요청) — 관리 막대가 있으면 3칸 */
+.ft90 .areas.k3148{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:10px}
+.ft90 .areas.k3148 .area{grid-template-columns:26px minmax(0,1fr) 28px;gap:3px}
+@media (max-width:600px){.ft90 .areas.k3148{column-gap:8px}.ft90 .areas.k3148 .area .num{font-size:11px}}

@@ -21,7 +21,11 @@ for W,H in((1400,900),(390,844)):
     h=json.loads(pg.evaluate("""()=>{const el=$('areaBars'),k=el&&el.querySelector('.area.k148');const pc=[...el.querySelectorAll('.pc101')].map(x=>x.dataset.aj67);
       const bars=[...el.querySelectorAll('.area')].map(x=>x.querySelector('b').textContent);return JSON.stringify({k:!!k,num:k&&k.querySelector('.num').textContent,w:k&&k.querySelector('.fill').style.width,pc,bars,ow:el.scrollWidth<=el.clientWidth+1})}"""))
     print(h)
-    ok(h['k'] and h['num']=='50' and h['w']=='50%','홈 영역 막대 줄에 관리 막대 50',h);ok('life' not in h['pc'],'진척 칩에서 생활 빠짐',h['pc']);ok(h['bars'][:2]==['몸','마음'],'몸·마음 막대 그대로',h['bars']);ok(h['ow'],'가로 안 넘침')
+    ok(h['k'] and h['num']=='50' and h['w']=='50%','홈 영역 막대 줄에 관리 막대 50',h);ok('life' not in h['pc'],'진척 칩에서 생활 빠짐',h['pc']);ok(h['bars'][:2]==['몸','마음'] and '생활' in h['bars'],'몸·마음 막대 그대로',h['bars']);ok(h['ow'],'가로 안 넘침')
+    g=json.loads(pg.evaluate("""()=>{const k=document.querySelector('#areaBars .area.k148'),bb=k.querySelector('b'),tr=k.querySelector('.track');const r1=bb.getBoundingClientRect(),r2=tr.getBoundingClientRect();return JSON.stringify({sw:bb.scrollWidth,cw:bb.clientWidth,gap:r2.left-r1.right})}"""))
+    ok(g['sw']<=g['cw']+1 and g['gap']>=0,'이름이 막대와 안 겹침',g)
+    y=json.loads(pg.evaluate("""()=>JSON.stringify([...document.querySelectorAll('#areaBars > .area')].map(x=>{const r=x.getBoundingClientRect(),t=x.querySelector('.track').getBoundingClientRect();return [Math.round(r.top),Math.round(t.width),x.querySelector('b').textContent]}))"""))
+    print(y);ok(len({r[0] for r in y[:3]})==1,'몸·마음·생활 한 줄',y);ok(all(r[1]>=40 for r in y[:3]),'막대 너비 40px 이상',y);ok(all('🧺' not in r[2] for r in y),'이름에 아이콘 없음')
     v=json.loads(pg.evaluate("""()=>{const d=curDay(),b0=hpParts101(d);applyEntry(d,{kind:'act',type:'bad',aid:'x',name:'생활 나쁜 일',cond:-30,xp:0,gold:0,area:'life'});const b1=hpParts101(d);return JSON.stringify({a:b0.inn,b:b1.inn})}"""))
     ok(v['a']==v['b'],'생활 점수는 HP에 안 들어감',v)
     pg.evaluate("()=>render()");pg.wait_for_timeout(300)
