@@ -3,7 +3,7 @@
    ② 영역마다 끝에 기존 `＋ 할 일·행동 추가 | 반복(습관)/한 번 | 추가` 입력 줄(영역은 그 영역으로 정해짐 — 맨 아래까지 안 내려가도 됨). 영역별로 묶어 볼 때 맨 아래 공용 줄은 숨김
    ③ '그냥 한 일'(홈 오늘 ✓ · 빠른 기록)은 카드를 안 만듦 → 알림에 `🃏 카드로 만들기` (옛 '한 번' 카드는 doneAt이 있으면 목록에서 빠져 있음 → ①의 찾기 줄에서 되살림)
    ④ 주 N회 칩을 날짜에 놓은 뒤 '오늘은 건너뛰기' → 오늘 자리(t.sl91[오늘])를 빼서 캘린더에서 사라짐(되돌리기 있음)
-   ⑤ 🛏 어젯밤 창 저장 → '8시간 이상 잤다'(옛 '7시간 이상 잤다' 이름·옵션 바꿈: 6시간 미만 0점 · 6~7 35% · 7~8 70% · 8+ 100%)(오늘, 일어난 시각) · '늦게 잠'(어제, 잠든 시각의 세부 옵션)을 자동 기록/고침/지움(e.sl141 표시 — 직접 적은 기록은 안 건드림)
+   ⑤ 🛏 어젯밤 창 저장 → '8시간 이상 잤다'(옛 '7시간 이상 잤다' 이름·옵션 바꿈: 6시간 미만 0점 · 6~7 35% · 7~8 70% · 8+ 100%)(오늘, 일어난 시각) · '늦게 잠'(어제, 잠든 시각의 세부 옵션 — v13.31부터 일어난 날·▲ 23시 전/자정 전, w151)을 자동 기록/고침/지움(e.sl141 표시 — 직접 적은 기록은 안 건드림)
    ⑥ 홈 `🍽 식사 · 몸무게` 칸(식사 ± / 체크 + 몸무게 kg 기록 — 기존 #wForm 저장을 그대로 씀) · 따로 `📌 자주 쓰는 것` 칸(기록하기에서 📌 고정한 행동, C.pin133) */
 (function(){
 const NORM141=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
@@ -118,11 +118,13 @@ skipToday61=(function(prev){return function(t){
 
 /* ---------- ⑤ 🛏 어젯밤 창 → 7시간 이상 잤다 · 늦게 잠 자동 ---------- */
 function hh141(s){const m=/^(\d{1,2}):(\d{2})$/.exec(String(s||''));return m?(+m[1])+(+m[2])/60:null}
-function lateOpt141(card,b){
-  const h=hh141(b);if(h==null||h>=9||!card||!Array.isArray(card.opts)||!card.opts.length)return null;   // 자정 전·아침 잠은 '늦게 잠' 아님
+function lateOpt141(card,b){   // v13.31: ▲ 23시 전(e0)·자정 전(e1) — 옵션이 있을 때만 · 자정 넘으면 ▼ s0~s4
+  const h=hh141(b);if(h==null||!card||!Array.isArray(card.opts)||!card.opts.length)return null;
+  const has=id=>card.opts.some(o=>o.id===id)?id:null;
+  if(h>=23)return has('e1');if(h>=18)return has('e0');if(h>=9)return null;   // 낮잠·아침 잠은 안 셈
   const i=h<1?0:h<2?1:h<3?2:h<4?3:4;
-  if(card.opts.length===5)return card.opts[i].id;
-  const byId=card.opts.find(o=>o.id==='s'+i);return byId?byId.id:null}
+  const byId=has('s'+i);if(byId)return byId;
+  const bad=card.opts.filter(o=>!o.tp||o.tp==='bad');return bad.length===5?bad[i].id:null}
 function log141a(day,a,o,key){
   const y=dayOf(day),seen=new Set((y.entries||[]).map(e=>e.id));
   try{withDay69(day,()=>doAction(a,{direct:true,at:o.at||null,vid:o.vid||undefined,note:o.note||''}))}catch(e){console.error(e);return false}
@@ -177,12 +179,14 @@ function sleepSync141(k){
       if(vid!==null&&!other){if(!(mine.length===1&&(mine[0].vid||'')===vid)){mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}});
         log141a(k,cb,{at:s.w,vid:vid||undefined,note:`🛏 어젯밤 창: ${Math.floor(m/60)}시간 ${m%60}분 잠 · ${verdict141(m)}`},'h6')}}
       else if(vid===null)mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}})}
-    // 늦게 잠 — 어제(yk) 기록, 잠든 시각에 맞는 세부 옵션
+    // 잠든 시각 — v13.31부터 일어난 날(k) 기록(사용자 11/28: 여파는 오늘 받으니까, e.sl141='bt151'). 예전 방식(어제 yk, 'late')은 이 창 몫이라 지우고 옮김
     const cl=typeof sleepCard73==='function'?sleepCard73():null;
-    if(cl){const es=dayOf(yk).entries||[],mine=es.filter(e=>e.aid===cl.id&&e.sl141==='late'),other=es.some(e=>e.aid===cl.id&&e.sl141!=='late');
-      const opt=s&&s.b?lateOpt141(cl,s.b):null;
-      if(opt&&!other){if(!(mine.length===1&&mine[0].vid===opt)){mine.forEach(e=>{try{removeEntry(yk,e.id)}catch(x){console.error(x)}});log141a(yk,cl,{at:s.b,vid:opt,note:'🛏 어젯밤 창: 잠든 시각으로 자동'},'late')}}
-      else if(!opt)mine.forEach(e=>{try{removeEntry(yk,e.id)}catch(x){console.error(x)}})}
+    if(cl){(dayOf(yk).entries||[]).filter(e=>e.aid===cl.id&&e.sl141==='late').forEach(e=>{try{removeEntry(yk,e.id)}catch(x){console.error(x)}});
+      const es=dayOf(k).entries||[],mine=es.filter(e=>e.aid===cl.id&&e.sl141==='bt151'),other=es.some(e=>e.aid===cl.id&&e.sl141!=='bt151');
+      const opt=s&&s.b?lateOpt141(cl,s.b):null,on=opt&&(cl.opts||[]).find(o=>o.id===opt);
+      const tg=on&&typeof vt149==='function'?{good:'▲',mid:'○',bad:'▼'}[vt149(cl,on)]:'';
+      if(opt&&!other){if(!(mine.length===1&&mine[0].vid===opt)){mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}});log141a(k,cl,{at:s.b,vid:opt,note:`🛏 어젯밤 창: ${s.b}에 잠 · ${tg} ${on?on.name:''}`.trim()},'bt151')}}
+      else if(!opt)mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}})}
     render();
   }catch(e){console.error(e)}}
 addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;

@@ -54,11 +54,11 @@ infoFor=(function(prev){return function(k){const r=prev.apply(this,arguments);
 (function(){
 const AC={id:null,m:null};
 const sg=v=>(v>0?'+':v<0?'−':'±')+Math.abs(Math.round(v));
-const ent=(a,k)=>{const d=DAYS[k];return d?(d.entries||[]).filter(e=>e&&e.kind==='act'&&e.aid===a.id):[]};
+const ent=(a,k)=>{const d=DAYS[k];if(!d)return [];const S=typeof mgIds151==='function'?mgIds151(a):null;return (d.entries||[]).filter(e=>e&&e.kind==='act'&&(e.aid===a.id||(S&&S.has(e.aid))))};   // v13.31: 합친 옛 카드 기록도(F5-③)
 const tpOn=a=>typeof hasTp149==='function'&&hasTp149(a),etp=e=>typeof etp149==='function'?etp149(e):(e.type==='bad'?'bad':'good');   // v13.29 F5-① 판정(▲○▼)
 function sum(a,keys){const o={n:0,days:0,cond:0,xp:0,gold:0,opt:{},tp:{good:0,mid:0,bad:0}};
   keys.forEach(k=>{const L=ent(a,k);if(!L.length)return;o.days++;L.forEach(e=>{const c=e.n||1;o.n+=c;o.cond+=e.cond||0;o.xp+=e.xp||0;o.gold+=e.gold||0;o.tp[etp(e)]+=c;
-    if(e.vid){const v=(a.opts||[]).find(x=>x.id===e.vid);const nm=(v?v.name:'옵션'),key=tpOn(a)&&v?VT149[vt149(a,v)][0]+' '+nm:nm;o.opt[key]=(o.opt[key]||0)+c}})});
+    const vd=e.aid!==a.id&&typeof mgVid151==='function'?mgVid151(e):e.vid;if(vd){const v=(a.opts||[]).find(x=>x.id===vd);const nm=(v?v.name:'옵션'),key=tpOn(a)&&v?VT149[vt149(a,v)][0]+' '+nm:nm;o.opt[key]=(o.opt[key]||0)+c}})});
   return o}
 function monthKeys(mk){const out=[],first=mk+'-01';for(let i=0;i<31;i++){const k=addDays(first,i);if(k.slice(0,7)!==mk)break;out.push(k)}return out}
 function prevM(mk){return addDays(mk+'-01',-1).slice(0,7)}

@@ -141,7 +141,7 @@ window.careMenu76=careMenu76;
      되돌리기(undo110)·지우기(del110)·참음으로 바꾸기면 그 기록도 지움. 기록 id는 x.geid/x.ghk(normDay 보존). */
 function badCard144(k){const re=k==='b'?/충동.*(구매|지출|소비)|(구매|지출|소비).*충동/:/(야식|폭식|과식)/;
   const id=((C.imp110||{}).bad144||{})[k];let a=id&&C.actions.find(x=>x.id===id&&x.type==='bad');
-  return a||C.actions.find(x=>x.type==='bad'&&!x.doneAt&&re.test(x.name||'')&&!/참/.test(x.name||''))||null}
+  return a||C.actions.find(x=>x.type==='bad'&&!x.doneAt&&re.test(x.name||'')&&!/참/.test(x.name||''))||C.actions.find(x=>x.type==='bad'&&x.mg&&re.test(x.name||'')&&!/참/.test(x.name||''))||null}   // v13.31: 합쳐서 숨은 옛 카드도(→ w151이 합친 카드로 돌림)
 function note144(x){const K=IK110[x.k]||['',''];const b=[K[0]+' '+x.n];if(x.t)b.push('적은 때 '+x.t);if(x.a)b.push('약 '+cm110(x.a)+'원');
   if((x.sit||[]).length)b.push('상황 '+x.sit.join('·'));if(x.m)b.push('“'+x.m+'”');if(x.fl)b.push('대응 '+x.fl);return b.join(' · ').slice(0,200)}
 normDay=(function(prev){return function(k,raw){const d=prev.apply(this,arguments);

@@ -1,0 +1,20 @@
+/* v13.31 (w151): F5-③ 카드 합치기 창 · 🔢 다음 ▼ · 자주 당기는 충동 */
+.sg151{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;padding:6px 8px;border:1px dashed var(--ink);border-radius:9px;margin:0 0 6px;font-size:13px}
+.mq151{width:100%;margin:0 0 6px}
+.pk151{display:grid;gap:6px;max-height:46vh;overflow:auto;padding:2px 0}
+.ag151{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.ag151>.tiny{flex:0 0 100%;margin-top:2px}
+.mc151[disabled]{opacity:.55;cursor:not-allowed}
+.mc151[aria-pressed="true"]{font-weight:700;outline:2px solid var(--ink);outline-offset:-2px}
+.mc151[aria-pressed="true"]::before{content:'✓ '}
+.mf151{position:sticky;bottom:0;background:var(--panel);padding:6px 0 0;gap:6px;align-items:center}
+.mn151{gap:6px;align-items:flex-end;flex-wrap:wrap}
+.mn151 .grow{flex:1 1 180px;display:flex;flex-direction:column;font-size:12px;color:var(--muted)}
+.mn151 select{width:auto}
+.ol151{list-style:none;padding:0;margin:2px 0 6px;display:grid;gap:3px;font-size:13.5px}
+.ol151 .tb149{display:inline-block;width:1.2em;text-align:center}
+.lk151 ul{margin:4px 0 0;padding-left:18px}
+.warn151{color:var(--ink);border-left:3px solid var(--ink);padding-left:6px;margin:4px 0}
+.mg151h{margin:2px 0 4px}
+.nx151{font-size:10.5px;font-weight:700;color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:0 3px;white-space:nowrap}
+.fr151{margin:4px 0 6px}

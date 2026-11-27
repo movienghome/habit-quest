@@ -35,8 +35,8 @@ actEntry=(function(prev){return function(a,o){o=o||{};
 /* ---- 누적 배수: 판정 칸이 있는 카드는 같은 카드의 나쁨 기록만 ---- */
 badMult=(function(prev){return function(a,date,exceptId){const r=prev.apply(this,arguments);
   try{if(!r||!a||!hasTp(C.actions.find(x=>x.id===a.id)||a))return r;
-    const P0=C.penalty||{},dt=date||curDay().date;let same=0;
-    for(let i=0;i<7;i++){const d=DAYS[addDays(dt,-i)];if(!d)continue;(d.entries||[]).forEach(e=>{if(e.kind==='act'&&e.aid===a.id&&e.id!==exceptId&&e.type==='bad')same+=1})}
+    const P0=C.penalty||{},dt=date||curDay().date,ids=typeof mgIds151==='function'?mgIds151(a):new Set([a.id]);let same=0;   // v13.31: 합친 옛 카드의 나쁨 기록도
+    for(let i=0;i<7;i++){const d=DAYS[addDays(dt,-i)];if(!d)continue;(d.entries||[]).forEach(e=>{if(e.kind==='act'&&ids.has(e.aid)&&e.id!==exceptId&&e.type==='bad')same+=1})}
     let mult=Math.min(+P0.max||3,1+(+P0.same||0)*same+(+P0.chain||0)*(r.chain||0));
     if(C.f3from147&&String(dt)>=C.f3from147)mult=Math.min(mult,Math.max(1,+C.mcap147||2));   // w147 상한 그대로
     return {mult,same,chain:r.chain}}catch(e){console.error(e);return r}}})(badMult);
