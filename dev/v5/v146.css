@@ -1,0 +1,14 @@
+/* v13.23 (w146): X2-① 왜 이 상태? */
+details.wy146{margin:2px 0 6px;font-size:13px}
+details.wy146>summary{cursor:pointer;list-style:none;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:3px 2px}
+details.wy146>summary::-webkit-details-marker{display:none}
+details.wy146>summary::before{content:'▸ ';color:var(--muted)}
+details.wy146[open]>summary::before{content:'▾ '}
+.wy146 .wb146{display:grid;gap:3px;padding:2px 2px 4px;line-height:1.45;font-size:13px}
+.wy146 .wm146>summary{cursor:pointer;list-style:none}
+.wy146 .wm146>summary::-webkit-details-marker{display:none}
+.wy146 .wm146>summary::before{content:'▸ ';color:var(--muted)}
+.wy146 .wm146[open]>summary::before{content:'▾ '}
+.wy146 .wm146>div{padding-left:14px}
+.pop146{border-bottom:1px solid var(--line);margin-bottom:6px;padding-bottom:4px}
+.pop146 .h146{margin:0 0 2px;font-size:12px;color:var(--muted)}
