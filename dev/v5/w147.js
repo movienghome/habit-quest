@@ -55,9 +55,10 @@ infoFor=(function(prev){return function(k){const r=prev.apply(this,arguments);
 const AC={id:null,m:null};
 const sg=v=>(v>0?'+':v<0?'−':'±')+Math.abs(Math.round(v));
 const ent=(a,k)=>{const d=DAYS[k];return d?(d.entries||[]).filter(e=>e&&e.kind==='act'&&e.aid===a.id):[]};
-function sum(a,keys){const o={n:0,days:0,cond:0,xp:0,gold:0,opt:{}};
-  keys.forEach(k=>{const L=ent(a,k);if(!L.length)return;o.days++;L.forEach(e=>{const c=e.n||1;o.n+=c;o.cond+=e.cond||0;o.xp+=e.xp||0;o.gold+=e.gold||0;
-    if(e.vid){const v=(a.opts||[]).find(x=>x.id===e.vid);const nm=v?v.name:'옵션';o.opt[nm]=(o.opt[nm]||0)+c}})});
+const tpOn=a=>typeof hasTp149==='function'&&hasTp149(a),etp=e=>typeof etp149==='function'?etp149(e):(e.type==='bad'?'bad':'good');   // v13.29 F5-① 판정(▲○▼)
+function sum(a,keys){const o={n:0,days:0,cond:0,xp:0,gold:0,opt:{},tp:{good:0,mid:0,bad:0}};
+  keys.forEach(k=>{const L=ent(a,k);if(!L.length)return;o.days++;L.forEach(e=>{const c=e.n||1;o.n+=c;o.cond+=e.cond||0;o.xp+=e.xp||0;o.gold+=e.gold||0;o.tp[etp(e)]+=c;
+    if(e.vid){const v=(a.opts||[]).find(x=>x.id===e.vid);const nm=(v?v.name:'옵션'),key=tpOn(a)&&v?VT149[vt149(a,v)][0]+' '+nm:nm;o.opt[key]=(o.opt[key]||0)+c}})});
   return o}
 function monthKeys(mk){const out=[],first=mk+'-01';for(let i=0;i<31;i++){const k=addDays(first,i);if(k.slice(0,7)!==mk)break;out.push(k)}return out}
 function prevM(mk){return addDays(mk+'-01',-1).slice(0,7)}
@@ -67,8 +68,11 @@ function html(a,mk){
   const first=mk+'-01',ws=weekStartD(first),nm=nextM(mk)+'-01';let cells='';
   for(let i=0;i<42;i++){const k=addDays(ws,i);if(i>=35&&k>=nm)break;const inm=k.slice(0,7)===mk,L=inm?ent(a,k):[];
     const c=L.reduce((t,e)=>t+(e.n||1),0),cd=L.reduce((t,e)=>t+(e.cond||0),0);
-    const t=L.length?`${fmtD(k)} · ${c}번 · 컨디션 ${sg(cd)}`:fmtD(k);
-    cells+=`<span class="rc132d${inm?'':' o'}${c?' ok':''}${k===td?' td':''}${k>td?' fu':''}" title="${esc(t)}">${+k.slice(8)}${c?`<i>${c>1?c:'✓'}</i>`:''}</span>`}
+    let mk2=c>1?c:'✓',bd=false,tt='';
+    if(c&&tpOn(a)){const by={good:0,mid:0,bad:0};L.forEach(e=>{by[etp(e)]+=e.n||1});const ks=['good','mid','bad'].filter(x=>by[x]);   // 달력 칸: ▲/○/▼ 모양(색만으로 구분 안 함)
+      mk2=ks.length===1?VT149[ks[0]][0]+(by[ks[0]]>1?by[ks[0]]:''):ks.map(x=>VT149[x][0]).join('');bd=ks.length===1&&ks[0]==='bad';tt=' · '+ks.map(x=>VT149[x][0]+' '+VT149[x][1]+' '+by[x]).join(' · ')}
+    const t=L.length?`${fmtD(k)} · ${c}번${tt} · 컨디션 ${sg(cd)}`:fmtD(k);
+    cells+=`<span class="rc132d${inm?'':' o'}${c&&!bd?' ok':''}${bd?' bd149':''}${k===td?' td':''}${k>td?' fu':''}" title="${esc(t)}">${+k.slice(8)}${c?`<i>${mk2}</i>`:''}</span>`}
   let last=null,n=0,days=[];for(let i=0;i<400;i++){const k=addDays(td,-i);if(ent(a,k).length){if(!last)last=k;days.push(k)}}
   const gap=days.length>1?Math.round((diffDays(days[0],days[days.length-1]))/(days.length-1)*10)/10:null;
   const [yy,mm]=mk.split('-');const bad=a.type==='bad';
@@ -77,7 +81,7 @@ function html(a,mk){
   return `<div class="rc132h"><button type="button" class="ib" data-ac147="-1" aria-label="이전 달">‹</button><b>${+yy}년 ${+mm}월</b><button type="button" class="ib" data-ac147="1" aria-label="다음 달"${mk>=td.slice(0,7)?' disabled':''}>›</button></div>
    <div class="rc132g">${WKH71().map(d=>`<span class="rc132w">${d}</span>`).join('')}${cells}</div>
    <div class="wb146">
-   ${row('이번 달 한 횟수',S.n+'번 ('+S.days+'일)')}${row('지난 달',P.n+'번 ('+P.days+'일)')}
+   ${row('이번 달 한 횟수',S.n+'번 ('+S.days+'일)')}${tpOn(a)?row('이번 달 판정',['good','mid','bad'].map(x=>VT149[x][0]+' '+S.tp[x]).join(' · ')):''}${row('지난 달',P.n+'번 ('+P.days+'일)')}
    ${row('이 달 컨디션',sg(S.cond))}${row('이 달 점수 합',`✨${sg(S.xp)} · 💰${sg(S.gold)}`)}
    ${row('마지막',last?fmtD(last)+' ('+diffDays(td,last)+'일 전)':'기록 없음')}${row('평균 간격(최근 400일)',gap==null?'—':gap+'일')}
    ${opts?`<div class="tiny muted">옵션별 ${opts}</div>`:''}

@@ -24,7 +24,7 @@ with sync_playwright() as pw:
         pg.click('#gl145>summary');pg.wait_for_timeout(300)
         ok(C_('.gr145')==30,tag+'처음 30건(기본 이번 달)',C_('.gr145'))
         ok('옛 벌이' not in pg.inner_text('#gl145b'),tag+'이번 달에는 60일 전 기록 없음')
-        click('f:out')
+        click('f:buy')   # v13.29: ▼ 쓴 것 → 🛒 쓴 것(구매) · ▼ 깎인 것(감점)
         r=pg.locator('.gr145').all_inner_texts()
         ok(len(r)==4 and all('▼' in x for x in r),tag+'쓴 것만(▼ 4건)',len(r))
         click('s:big');ok('치킨' in pg.locator('.gr145').first.inner_text(),tag+'큰 금액 순: 치킨이 먼저')

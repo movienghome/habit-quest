@@ -1,0 +1,11 @@
+/* v13.29 (w149): F5-① 기준형 카드 — 판정은 모양+글자(▲○▼ + 좋음·중립·나쁨), 색만으로 구분하지 않음 */
+.vtable.tp149t .vrow{grid-template-columns:30px minmax(0,1.6fr) repeat(3,minmax(0,.6fr)) repeat(2,minmax(0,.55fr)) 26px}
+@media (max-width:520px){.vtable.tp149t .vrow{grid-template-columns:30px minmax(0,1.4fr) repeat(3,minmax(0,.7fr)) 26px}}
+.tp149b{width:28px;height:28px;padding:0;border:1px dashed var(--line);border-radius:7px;background:none;color:var(--muted);font:inherit;font-size:14px;cursor:pointer}
+.tp149b.on{border-style:solid;border-color:var(--ink);color:var(--ink);font-weight:700}
+.optbtn.tp149 .tb149{font-weight:700}
+.optbtn.tp149.t-mid .sc2{color:var(--muted)}
+.optbtn.tp149.t-mid{border-style:dashed}
+.g96.tp149g{font-weight:700}
+.rc132d.bd149{outline:1px dashed var(--muted);outline-offset:-2px}
+.h149,.hp149{color:var(--muted)}

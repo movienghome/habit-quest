@@ -36,14 +36,16 @@ prog101=function(){
 /* v13.28b: 💰 경제 칩 = 이번 달 골드 ▲번 것 ▼쓴 것 + 참음 n번(금액 없이) — 실제 돈(원)은 안 보임(사용자: 가계부도 쓰는데 앱에서까지 돈을 보면 부담).
    골드는 기록(DAYS[날].entries)의 gold 합(골드 장부와 같은 셈). 참음 = 이번 달 충동 적기(imp110) 중 참음 확정(st110==='h')인 것 — 🍰·🛍 합.
    누르면 상점 → 📒 골드 장부를 펼침. 경제 종류('m') 영역이 여럿이어도 칩은 하나(골드는 하나라서). */
-window.econ148=function(){const td=gk76(),m0=td.slice(0,7)+'-01';let inn=0,out=0,hf=0,hb=0;
+/* v13.29: ▼를 🛒 쓴 것(상점 구매 kind 'buy')과 ▼ 깎인 것(나쁜 행동 감점 등)으로 나눔(사용자: 감점은 쓴 게 아님) ·
+   충동 = 참음(h) + 바꿈(w, 더 저렴한 것으로 — 사용자 11/27 '참음에 넣기') / 참지 못함(g) → 칩은 '참음 n/m'(m = 확정한 충동 수, 열린 건 안 셈) */
+window.econ148=function(){const td=gk76(),m0=td.slice(0,7)+'-01';let inn=0,buy=0,cut=0,hf=0,hb=0,sw=0,g=0;
   Object.keys(DAYS).forEach(k=>{if(k<m0||k>td)return;const d=DAYS[k];
-    ((d&&d.entries)||[]).forEach(e=>{const g=+(e&&e.gold)||0;if(g>0)inn+=g;else if(g<0)out-=g});
-    try{list110(k).forEach(x=>{if(st110(x)==='h'){if(x.k==='b')hb++;else hf++}})}catch(_){}});
-  return {inn,out,hf,hb,h:hf+hb}};
+    ((d&&d.entries)||[]).forEach(e=>{const v=+(e&&e.gold)||0;if(v>0)inn+=v;else if(v<0){if(e.kind==='buy')buy-=v;else cut-=v}});
+    try{list110(k).forEach(x=>{const s=st110(x);if(s==='h'||s==='w'){if(s==='w')sw++;if(x.k==='b')hb++;else hf++}else if(s==='g')g++})}catch(_){}});
+  const h=hf+hb;return {inn,buy,cut,out:buy+cut,hf,hb,sw,h,g,n:h+g}};
 function econH(a){const E=econ148(),n=v=>Math.round(v).toLocaleString();
-  const tip=`${a.name} · 이번 달 골드 ▲ 번 것 ${n(E.inn)} · ▼ 쓴 것 ${n(E.out)}${E.h?` · 참음 ${E.h}번(🍰 ${E.hf} · 🛍 ${E.hb})`:''} — HP에 안 들어가요. 실제 돈은 안 보여요. 누르면 골드 장부`;
-  return `<button type="button" class="pc101 ec148" data-ec148="1" title="${esc(tip)}">💰 <span class="nm102">${esc(a.name)}</span> <b class="num">▲${n(E.inn)}</b> <small class="num">▼${n(E.out)}</small>${E.h?` <small class="hd148">참음 ${E.h}</small>`:''}</button>`}
+  const tip=`${a.name} · 이번 달 골드 ▲ 번 것 ${n(E.inn)} · 🛒 쓴 것 ${n(E.buy)} · ▼ 깎인 것 ${n(E.cut)}${E.n?` · 충동 참음 ${E.h}번(🍰 ${E.hf} · 🛍 ${E.hb}${E.sw?` · 바꿈 ${E.sw}`:''}) · 참지 못함 ${E.g}번`:''} — HP에 안 들어가요. 실제 돈은 안 보여요. 누르면 골드 장부`;
+  return `<button type="button" class="pc101 ec148" data-ec148="1" title="${esc(tip)}" aria-label="${esc(tip)}">💰 <span class="nm102">${esc(a.name)}</span> <b class="num">▲${n(E.inn)}</b>${E.buy?` <small class="num">🛒${n(E.buy)}</small>`:''}${E.cut?` <small class="num">▼${n(E.cut)}</small>`:''}${E.n?` <small class="hd148">참음 ${E.h}/${E.n}</small>`:''}</button>`}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-ec148]');if(!b)return;e.preventDefault();e.stopPropagation();
   location.hash='#shop';setTimeout(()=>{try{const d=document.getElementById('gl145');if(d){d.open=true;d.scrollIntoView({block:'start',behavior:'smooth'})}}catch(_){}},250)},true);
 /* 영역 설명 창: 관리 영역이면 맨 위에 관리 상태 */
@@ -57,7 +59,7 @@ infoFor=(function(prev){return function(k){const r=prev.apply(this,arguments);
       <button type="button" class="chipbtn" data-c148="1">🧽 관리 창 열기</button></div>`+(r.b||'')}}catch(e){console.error(e)}
   return r}})(infoFor);
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
-  ['💰 경제 칩(골드·참음)','홈 전투 카드 영역 막대 밑 칩 줄 → 💰 경제 칩','이번 달 골드 ▲번 것·▼쓴 것과 충동을 참은 횟수(금액 없이)를 보여 줘요. 실제 돈은 안 보여요. 누르면 상점 → 📒 골드 장부.',()=>{location.hash='#home'}],
+  ['💰 경제 칩(골드·참음)','홈 전투 카드 영역 막대 밑 칩 줄 → 💰 경제 칩','이번 달 골드 ▲ 번 것 · 🛒 쓴 것(상점에서 산 것) · ▼ 깎인 것(나쁜 행동 감점 등)과 충동 참음 n/m(확정한 충동 m번 중 참은 n번, 더 저렴한 것으로 바꾼 것도 참음)을 보여 줘요. 0인 칸은 숨김. 실제 돈은 안 보여요. 누르면 상점 → 📒 골드 장부.',()=>{location.hash='#home'}],
   ['🧺 관리 상태 막대(생활)','홈 전투 카드 영역 막대 줄 → 🧺 생활 막대 누르기','관리 영역(생활)은 HP에 안 들어가고, 제때 하고 있는 관리 할 일 비율로 막대가 오르내려요. 누르면 밀린 관리 목록과 🧽 관리 창 열기.',()=>{location.hash='#home'}]])}})(F67);
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-c148]');if(!b)return;e.preventDefault();
   try{closeInfo()}catch(_){}setTimeout(()=>careSheet76(),0)});
