@@ -19990,14 +19990,16 @@ function homeDone144(){const L=$('htList');if(!L)return;const el=[...L.querySele
   d.addEventListener('toggle',()=>{HD144=d.open});el.replaceWith(d)}
 
 /* ---------- ⑦ 빠른 기록 묶기 (C.pg144: ''=안 묶음 · 'type'=좋음/나쁨 · 'area'=영역) — 끝의 작은 '묶기' 칩을 누를 때마다 바뀜 ---------- */
-const PG144=[['','안 묶음'],['type','좋음·나쁨'],['area','영역별']];
+const PG144=[['','안 묶음'],['type','좋음·나쁨'],['area','영역별'],['both','좋음·나쁨 × 영역']];
 function pinGroup144(){const pb=$('pin141');if(!pb||pb.querySelector('[data-g144]'))return;const box=pb.querySelector('.m141p');if(!box)return;
   const g=C.pg144||'',items=[...box.querySelectorAll(':scope > .pq141')];if(!items.length)return;
   const lab=(PG144.find(x=>x[0]===g)||PG144[0])[1];
-  const btn=`<button type="button" class="g144b" data-g144="1" title="빠른 기록 묶는 방식 바꾸기 (안 묶음 → 좋음·나쁨 → 영역별)">⊞ ${esc(lab)}</button>`;
+  const btn=`<button type="button" class="g144b" data-g144="1" title="빠른 기록 묶는 방식 바꾸기 (안 묶음 → 좋음·나쁨 → 영역별 → 좋음·나쁨 × 영역)">⊞ ${esc(lab)}</button>`;
   if(!g){box.insertAdjacentHTML('beforeend',btn);return}
   const key=a=>{if(!a)return ['~','기타'];if(g==='type'){const t=a.type==='bad'?['2','✖ 나쁨']:a.type==='good'?['1','✚ 좋음']:['3','○ 그 밖'];return t}
-    const ar=(C.areas||[]).find(x=>x.id===a.area);const i=(C.areas||[]).indexOf(ar);return [String(i<0?999:i).padStart(3,'0'),ar?ar.name:'영역 없음']};
+    const ar=(C.areas||[]).find(x=>x.id===a.area);const i=(C.areas||[]).indexOf(ar);
+    if(g==='both'){const t=a.type==='bad'?['2','✖']:a.type==='good'?['1','✚']:['3','○'];return [t[0]+String(i<0?999:i).padStart(3,'0'),t[1]+' '+(ar?ar.name:'영역 없음')]}
+    return [String(i<0?999:i).padStart(3,'0'),ar?ar.name:'영역 없음']};
   const G=new Map();items.forEach(el=>{const a=C.actions.find(x=>x.id===el.dataset.rowid);const [k,l]=key(a);if(!G.has(k))G.set(k,{l,els:[]});G.get(k).els.push(el)});
   const wrap=document.createElement('div');wrap.className='g144w';
   [...G.keys()].sort().forEach(k=>{const {l,els}=G.get(k);const row=document.createElement('div');row.className='m141p g144';row.dataset.drop='reorder:pin141';

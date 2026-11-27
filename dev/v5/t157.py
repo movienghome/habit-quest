@@ -18,6 +18,8 @@ with sync_playwright() as pw:
     J(pg,"document.querySelector('#pin141 [data-g144]').click()");pg.wait_for_timeout(600)
     ok(J(pg,"C.pg144==='area'&&document.querySelectorAll('#pin141 .m141p.g144').length>=1"),'영역별 묶기')
     J(pg,"document.querySelector('#pin141 [data-g144]').click()");pg.wait_for_timeout(600)
+    ok(J(pg,"C.pg144==='both'&&[...document.querySelectorAll('#pin141 .g144l')].some(x=>/✚.+\\S/.test(x.textContent))"),'좋음·나쁨 × 영역 합친 묶기',J(pg,"[...document.querySelectorAll('#pin141 .g144l')].map(x=>x.textContent)"))
+    J(pg,"document.querySelector('#pin141 [data-g144]').click()");pg.wait_for_timeout(600)
     ok(J(pg,"!C.pg144&&!document.querySelector('#pin141 .g144l')"),'다시 안 묶음')
     # 기록 버튼은 그대로 동작
     J(pg,"C.pg144='type';save('config');render()");pg.wait_for_timeout(600)
