@@ -77,7 +77,28 @@ async function start() {
   const rcount = n => { if (!(n > 0)) return; try { const k = rkey(); localStorage.setItem(k, String((+localStorage.getItem(k) || 0) + n));
     for (const x of Object.keys(localStorage)) if (x.startsWith('hq-reads-') && x < 'hq-reads-' + new Date(Date.now() - 3 * 864e5).toISOString().slice(0, 10)) localStorage.removeItem(x); } catch (e) {} };
   window.__hqReads = () => { try { return +localStorage.getItem(rkey()) || 0; } catch (e) { return 0; } };
-  const qcount = s => { try { if (s.metadata && s.metadata.fromCache) return; rcount(s.docChanges ? s.docChanges().length : s.size); } catch (e) {} };
+  /* v13.20: 계량기 바로잡기 — 실시간 연결이 30분 넘게 끊겼다(앱을 껐다 켬·탭을 오래 숨김·노트북 잠자기) 다시 이어지면
+     Firebase는 '바뀐 것'이 아니라 결과 전부를 읽은 것으로 셈. 예전 계량기는 바뀐 것(docChanges)만 세서 실제의 수십분의 1로 보였어요(11/27 1,027건인데 한도 초과).
+     듣는 칸마다 마지막으로 연결돼 있던 시각을 기기에 적어 두고, 다시 이어질 때 그 사이가 30분을 넘으면 결과 전부(size)를 더함. */
+  const LIVE = {}, SIZE = {};
+  const akey = k => 'hq-alive-' + NS + '-' + k;
+  const alive = k => { try { return +localStorage.getItem(akey(k)) || 0; } catch (e) { return 0; } };
+  const setAlive = (k, t) => { try { localStorage.setItem(akey(k), String(t || Date.now())); } catch (e) {} };
+  let lastTick = Date.now();
+  const markAll = t => { for (const k in LIVE) if (LIVE[k]) setAlive(k, t); };
+  setInterval(() => { const now = Date.now(), gap = now - lastTick;
+    // 기기가 잠들었다 깨어남(타이머가 멈춰 있었음): 그동안 연결도 끊겼으니 잠든 때를 마지막 연결로 적고, 30분 넘었으면 다시 읽기로 셈
+    if (gap > 120000) { for (const k in LIVE) if (LIVE[k]) { setAlive(k, lastTick); if (gap > 1800000 && !netOff) rcount(SIZE[k] || 0); setAlive(k, now); } }
+    else if (!netOff && !document.hidden) markAll(now);
+    lastTick = now; }, 30000);
+  addEventListener('pagehide', () => markAll()); document.addEventListener('visibilitychange', () => { if (document.hidden) markAll(); });
+  window.__hqSizes = () => Object.assign({}, SIZE);
+  const track = (k, s, size, changed) => { try {
+    if (s.metadata && s.metadata.fromCache) { if (LIVE[k]) { LIVE[k] = false; setAlive(k); } return; }
+    SIZE[k] = size;
+    if (!LIVE[k]) { LIVE[k] = true; const gap = Date.now() - alive(k); setAlive(k); rcount(gap > 1800000 ? size : changed); return; }
+    rcount(changed); } catch (e) {} };
+  const qcount = (s, k) => { try { track(k, s, s.size, s.docChanges ? s.docChanges().length : s.size); } catch (e) {} };
   const wrap = s => ({ id: s.id, exists: s.exists(), data: () => { const d = s.data(); return d == null ? d : dec(d); }, metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } });
   // 기기 사본에 바로 쓰고 서버 확인은 나중에. 오프라인에서도 앱이 기다리지 않게.
   let pending = 0;
@@ -105,19 +126,19 @@ async function start() {
         tx.set(r, enc(next)); return { data: next };
       }, { maxAttempts: 4 }), 12000),
       delete: () => fastWrite(F.deleteDoc(r)),
-      onSnapshot: (next, error, o) => (o && o.meta) ? F.onSnapshot(r, { includeMetadataChanges: true }, s => { if (!s.metadata.fromCache && s.exists()) rcount(1); next(wrap(s)); }, e => error && error(errOf(e))) : F.onSnapshot(r, s => { if (!s.metadata.fromCache && s.exists()) rcount(1); next(wrap(s)); }, e => error && error(errOf(e)))
+      onSnapshot: (next, error, o) => { const k = 'doc:' + r.id; return F.onSnapshot(r, ...((o && o.meta) ? [{ includeMetadataChanges: true }] : []), s => { track(k, s, 1, s.metadata.hasPendingWrites ? 0 : 1); next(wrap(s)); }, e => error && error(errOf(e))); }
     };
   }
-  function colApi(path, cons = []) {
+  function colApi(path, cons = [], lab = '') {
     const c = F.collection(fs, path);
-    const q = () => F.query(c, ...cons);
+    const q = () => F.query(c, ...cons), qk = path.split('/').pop() + lab;
     return {
       path, doc: id => docApi(path + '/' + (id || (Date.now().toString(36) + crypto.getRandomValues(new Uint32Array(2)).join('').slice(0, 12)))),
-      orderBy: (f, d) => colApi(path, [...cons, F.orderBy(f, d || 'asc')]),
-      where: (f, op, v) => colApi(path, [...cons, F.where(f, op, v)]),
-      limit: n => colApi(path, [...cons, F.limit(n)]),
+      orderBy: (f, d) => colApi(path, [...cons, F.orderBy(f, d || 'asc')], lab + '>' + f),
+      where: (f, op, v) => colApi(path, [...cons, F.where(f, op, v)], lab + '?' + f + op),
+      limit: n => colApi(path, [...cons, F.limit(n)], lab + '#' + n),
       get: async () => { const s = await F.getDocs(q()); rcount(s.size); return { docs: s.docs.map(wrap), size: s.size, empty: s.empty }; },
-      onSnapshot: (next, error, o) => F.onSnapshot(q(), ...((o && o.meta) ? [{ includeMetadataChanges: true }] : []), s => { qcount(s); next({ docs: s.docs.map(wrap), size: s.size, empty: s.empty, metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } }); }, e => error && error(errOf(e)))
+      onSnapshot: (next, error, o) => F.onSnapshot(q(), ...((o && o.meta) ? [{ includeMetadataChanges: true }] : []), s => { qcount(s, qk); next({ docs: s.docs.map(wrap), size: s.size, empty: s.empty, metadata: { fromCache: s.metadata.fromCache, hasPendingWrites: s.metadata.hasPendingWrites } }); }, e => error && error(errOf(e)))
     };
   }
 
@@ -128,10 +149,10 @@ async function start() {
   async function exportAll() {
     const out = { app: 'habit-quest', exportedAt: new Date().toISOString(), game: {}, days: {} };
     for (const id of ['config', 'progress']) { const s = await F.getDoc(F.doc(fs, `${root()}/game/${id}`)).catch(() => null); if (s && s.exists()) out.game[id] = dec(s.data()); }
-    const ds = await F.getDocs(F.collection(fs, `${root()}/days`));
+    const ds = await F.getDocs(F.collection(fs, `${root()}/days`)); rcount(ds.size + 2);
     ds.docs.forEach(d => out.days[d.id] = dec(d.data()));
     out.tasks = {};
-    const ts = await F.getDocs(F.collection(fs, `${root()}/tasks`)).catch(() => ({ docs: [] }));
+    const ts = await F.getDocs(F.collection(fs, `${root()}/tasks`)).catch(() => ({ docs: [] })); rcount(ts.docs.length);
     ts.docs.forEach(d => out.tasks[d.id] = dec(d.data()));
     return out;
   }

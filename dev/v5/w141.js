@@ -243,13 +243,15 @@ function reads141(){
     r.innerHTML='<span class="rt141"></span><button type="button" class="chipbtn" id="diag141" aria-label="진단 내용 복사">📋 진단 복사</button>'}
   const n=typeof window.__hqReads==='function'?window.__hqReads():0,pct=Math.min(100,Math.round(n/500));
   const t=r.querySelector('.rt141');
-  t.innerHTML=`<span class="small">📖 오늘 읽은 문서 <b class="num">${n.toLocaleString()}</b> / 50,000</span><span class="rbar141" role="img" aria-label="무료 읽기 한도의 ${pct}%"><i style="width:${pct}%"></i></span>${n>=40000?'<span class="small rwarn141">⚠ 한도 가까움 — 이 기기에서 많이 읽었어요</span>':''}`;
+  const sz=typeof window.__hqSizes==='function'?Object.values(window.__hqSizes()).reduce((x,y)=>x+(+y||0),0):0;
+  t.innerHTML=`<span class="small" title="이 기기 추정치 · 5만은 모든 기기·같은 Firebase를 쓰는 앱이 함께 쓰는 한도(한국시간 오후 5시 리셋)">📖 오늘 읽은 문서(이 기기) <b class="num">${n.toLocaleString()}</b> / 50,000${sz?` · 다시 열 때마다 ≈${sz.toLocaleString()}`:''}</span><span class="rbar141" role="img" aria-label="무료 읽기 한도의 ${pct}%"><i style="width:${pct}%"></i></span>${n>=40000?'<span class="small rwarn141">⚠ 한도 가까움 — 이 기기에서 많이 읽었어요</span>':''}`;
   if(n>=40000&&!ui.rw141){ui.rw141=1;toast('📖 오늘 읽은 문서가 4만을 넘었어요(한도 5만). 앱을 자주 껐다 켜지 마세요')}}
 function diagText141(){
   const dg=typeof window.__hqDiag==='function'?window.__hqDiag():{};
   const L=[`해비티카틱 진단 ${new Date().toLocaleString('ko-KR')}`,
     `화면: ${(document.querySelector('.banner b,#bannerVer')||{}).textContent||''} · ${location.pathname.includes('/beta/')?'베타':'본 앱'}`,
     `오늘 읽은 문서(이 브라우저): ${typeof window.__hqReads==='function'?window.__hqReads():'?'} / 50000`,
+    `듣는 칸 크기(30분 넘게 끊겼다 다시 열 때 이만큼 읽음): ${typeof window.__hqSizes==='function'?JSON.stringify(window.__hqSizes()):'?'}`,
     `저장 상태: ${($('syncState')||{}).textContent||'?'} · 온라인 ${navigator.onLine}`,
     `저장 대기: ${(dg.dirty||[]).join(',')||'없음'} · 이 기기에 보관 중: ${(dg.pend||[]).join(',')||'없음'}`,
     `최근 오류: ${Object.entries(dg.err||{}).map(([k,v])=>`${k} ${v.code} ${v.msg}`).join(' | ')||'없음'}`,
