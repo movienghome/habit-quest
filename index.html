@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.20b</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.20c</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -14138,7 +14138,7 @@ F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
     me.className='hero2 me90';me.innerHTML='';
     me.appendChild($('heroAv'));
     const info=document.createElement('div');info.className='mi90';
-    info.innerHTML=`<div class="mm90"></div><div class="track hp90" role="img" aria-label="HP ${ov}/100"><div class="fill hp ${ov<35?'low':''}" style="width:${ov}%"></div></div><div class="tiny num ml90"><span>HP ${ov}</span><span>💰${P.gold.toLocaleString()}</span><span>Lv.${L.lv}</span></div>`;
+    info.innerHTML=`<div class="mm90"></div><div class="track hp90" role="img" aria-label="HP ${ov}/100" data-info="hp"><div class="fill hp ${ov<35?'low':''}" style="width:${ov}%"></div></div><div class="tiny num ml90"><span data-info="hp">HP ${ov}</span><span>💰${P.gold.toLocaleString()}</span><span>Lv.${L.lv}</span></div>`;
     info.querySelector('.mm90').appendChild($('moodName'));
     info.querySelector('.ml90').appendChild($('equipped'));
     me.appendChild(info);

@@ -5,7 +5,7 @@ FAILS=[]
 def ok(c,msg,extra=''):
     print(('PASS ' if c else 'FAIL ')+msg+(' · '+str(extra) if extra!='' else ''))
     if not c:FAILS.append(msg)
-SEED="""(()=>{const td=midKey68(),tom=addDays(td,1);
+SEED="""(()=>{C.tm93at='00:00';const td=midKey68(),tom=addDays(td,1);   // 시계에 안 흔들리게 밤 시각을 0시로
   const mk=(title,o)=>{const t=newTask({title});Object.assign(t,o||{});saveTask(t);return t.id};
   window.__ids={fx:mk('하그둘 만남',{due:tom,list:'fixed'}),fxt:mk('치과',{due:tom,list:'fixed',time:'10:00',dur:60}),
     wk:mk('시나리오 쓰기',{due:addDays(td,6),rep:{f:'x',n:5,i:1},dur:25}),
@@ -28,8 +28,8 @@ with sync_playwright() as pw:
         g=pg.evaluate("()=>{const g=document.querySelector('#sheetC [data-w93g]'),r=g.getBoundingClientRect();return {t:r.top,l:r.left,w:r.width,s0:+g.dataset.s0}}")
         sc=pg.evaluate("()=>{const e=document.querySelector('#sheetC .tt93s');const r=e.getBoundingClientRect();return [r.top,r.bottom]}")
         yy=g['t']+(15*60-g['s0'])+2
-        if yy>sc[1]-4 or yy<sc[0]+4:
-            pg.evaluate(f"()=>{{const e=document.querySelector('#sheetC .tt93s');e.scrollTop+={yy}-({sc[0]}+{sc[1]})/2}}");pg.wait_for_timeout(100)
+        if yy>min(sc[1],H)-4 or yy<max(sc[0],0)+4:   # 폰은 시트가 스크롤돼서 시간표 아래쪽이 화면 밖일 수 있음
+            pg.evaluate(f"()=>{{const e=document.querySelector('#sheetC .tt93s');e.scrollTop+={yy}-(Math.max({sc[0]},0)+Math.min({sc[1]},{H}))/2}}");pg.wait_for_timeout(100)
             g=pg.evaluate("()=>{const g=document.querySelector('#sheetC [data-w93g]'),r=g.getBoundingClientRect();return {t:r.top,l:r.left,w:r.width,s0:+g.dataset.s0}}")
             yy=g['t']+(15*60-g['s0'])+2
         pg.mouse.click(g['l']+g['w']-12,yy);pg.wait_for_timeout(600)

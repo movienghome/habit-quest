@@ -52,7 +52,7 @@ with sync_playwright() as pw:
     safe(lambda:ok(J(pg,f"""(()=>{{const b=document.querySelector('#calMain .blk[data-ctask="{ids['o1']}"]'),i=b.querySelector('.ck58').getBoundingClientRect(),t=b.querySelector('.bt').getBoundingClientRect();return Math.abs(i.top-t.top)<6&&t.left>i.left}})()"""),'아이콘과 제목이 같은 줄'),'아이콘 줄')
     # 거르기: Limen만
     clk(pg,'#calFilterBtn',400)
-    ok(cnt(pg,'#sheetC [data-f77="kinds"]')==5 and cnt(pg,'#sheetC [data-f77="tags"]')>=1,'거르기 창에 종류 5개·태그 줄',cnt(pg,'#sheetC [data-f77="kinds"]'))
+    ok(cnt(pg,'#sheetC [data-f77="kinds"]')==6 and cnt(pg,'#sheetC [data-f77="tags"]')>=1,'거르기 창에 종류 6개(v13.19 🏷 칩 포함)·태그 줄',cnt(pg,'#sheetC [data-f77="kinds"]'))
     clk(pg,'#sheetC [data-f77="lists"][data-v="Llimen"]',500)
     a=J(pg,TITLES)
     ok(set(a)=={'리멘 일','끝낸 반복','어제 리멘'},'Limen만 고르면 Limen 것만(끝낸 일·어제 포함, 반복은 오늘 ✓ + 내일 차례)',a)
@@ -109,7 +109,7 @@ with sync_playwright() as pw:
     it=pg.locator('#m61 button',has_text='관리로')
     ok(it.count()==1 and it.first.is_enabled(),'반복 없는 할 일도 우클릭 → 관리로 가 눌림(예전엔 꺼져 있었음)')
     safe(lambda:(it.first.click(),pg.wait_for_timeout(400)),'관리로 누르기')
-    ok(cnt(pg,'#m61 .m61h')==1 and '며칠마다' in vis(pg,'#m61 .m61h').inner_text(),'며칠마다인지 묻는 메뉴가 뜸')
+    ok(cnt(pg,'#m61 .m61h')==1 and '얼마마다' in vis(pg,'#m61 .m61h').inner_text(),'얼마마다인지 묻는 메뉴가 뜸(v10.7: 며칠마다→얼마마다)')
     safe(lambda:(pg.locator('#m61 button',has_text='14일마다').first.click(),pg.wait_for_timeout(600)),'14일 고르기')
     ok(J(pg,f"(()=>{{const t=TASKS['{ids['toil']}'];return t.care76===1&&t.rep&&t.rep.f==='d'&&t.rep.i===14}})()"),'변기청소 = 관리 · 14일마다',J(pg,f"JSON.stringify(TASKS['{ids['toil']}'].rep)"))
     notoast(pg)

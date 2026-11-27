@@ -13,7 +13,7 @@
     me.className='hero2 me90';me.innerHTML='';
     me.appendChild($('heroAv'));
     const info=document.createElement('div');info.className='mi90';
-    info.innerHTML=`<div class="mm90"></div><div class="track hp90" role="img" aria-label="HP ${ov}/100"><div class="fill hp ${ov<35?'low':''}" style="width:${ov}%"></div></div><div class="tiny num ml90"><span>HP ${ov}</span><span>💰${P.gold.toLocaleString()}</span><span>Lv.${L.lv}</span></div>`;
+    info.innerHTML=`<div class="mm90"></div><div class="track hp90" role="img" aria-label="HP ${ov}/100" data-info="hp"><div class="fill hp ${ov<35?'low':''}" style="width:${ov}%"></div></div><div class="tiny num ml90"><span data-info="hp">HP ${ov}</span><span>💰${P.gold.toLocaleString()}</span><span>Lv.${L.lv}</span></div>`;
     info.querySelector('.mm90').appendChild($('moodName'));
     info.querySelector('.ml90').appendChild($('equipped'));
     me.appendChild(info);
