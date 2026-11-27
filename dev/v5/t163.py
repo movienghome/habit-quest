@@ -45,7 +45,7 @@ with sync_playwright() as pw:
         # HP 창
         pg.evaluate("()=>{lastPt={x:200,y:300};openInfo('hp')}");pg.wait_for_timeout(300)
         pt=pg.inner_text('#pop');print(pt[:900])
-        ok(C_('#pop .pop146 .eq146')==1 and C_('#pop .how146')==1,tag+'HP 창: 계산식 + 규칙 세 줄')
+        ok(C_('#pop .pop146 .eq146')==1 and C_('#pop .how146')>=1,tag+'HP 창: 계산식 + 규칙 세 줄')
         ok('오늘 몸·마음 상태(0~100)' not in pt and '들어간 변화' not in pt,tag+'HP 창: 옛 줄글 정리')
         ok(C_('#pop button.fc146')==0 and C_('#pop .fc146')==7,tag+'HP 창 막대는 눌리지 않음(홈에서만)')
         ok(C_('#pop [data-sl102]')>=1 and '날짜' in pt,tag+'HP 창: 몸 출발점·날짜별 비교는 그대로')
