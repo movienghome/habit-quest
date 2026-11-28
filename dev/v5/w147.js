@@ -56,8 +56,9 @@ const AC={id:null,m:null};
 const sg=v=>(v>0?'+':v<0?'−':'±')+Math.abs(Math.round(v));
 const ent=(a,k)=>{const d=DAYS[k];if(!d)return [];const S=typeof mgIds151==='function'?mgIds151(a):null;return (d.entries||[]).filter(e=>e&&e.kind==='act'&&(e.aid===a.id||(S&&S.has(e.aid))))};   // v13.31: 합친 옛 카드 기록도(F5-③)
 const tpOn=a=>typeof hasTp149==='function'&&hasTp149(a),etp=e=>typeof etp149==='function'?etp149(e):(e.type==='bad'?'bad':'good');   // v13.29 F5-① 판정(▲○▼)
-function sum(a,keys){const o={n:0,days:0,cond:0,xp:0,gold:0,opt:{},tp:{good:0,mid:0,bad:0}};
-  keys.forEach(k=>{const L=ent(a,k);if(!L.length)return;o.days++;L.forEach(e=>{const c=e.n||1;o.n+=c;o.cond+=e.cond||0;o.xp+=e.xp||0;o.gold+=e.gold||0;o.tp[etp(e)]+=c;
+function sum(a,keys){const o={n:0,days:0,cond:0,xp:0,gold:0,opt:{},tp:{good:0,mid:0,bad:0},q:0,qn:0};
+  keys.forEach(k=>{const L=ent(a,k);if(!L.length)return;o.days++;L.forEach(e=>{const c=e.n||1;o.n+=c;if(e.q152!=null&&!isNaN(+e.q152)){o.q+=+e.q152;o.qn++}   // v13.32 F5-④ 📏 양
+    o.cond+=e.cond||0;o.xp+=e.xp||0;o.gold+=e.gold||0;o.tp[etp(e)]+=c;
     const vd=e.aid!==a.id&&typeof mgVid151==='function'?mgVid151(e):e.vid;if(vd){const v=(a.opts||[]).find(x=>x.id===vd);const nm=(v?v.name:'옵션'),key=tpOn(a)&&v?VT149[vt149(a,v)][0]+' '+nm:nm;o.opt[key]=(o.opt[key]||0)+c}})});
   return o}
 function monthKeys(mk){const out=[],first=mk+'-01';for(let i=0;i<31;i++){const k=addDays(first,i);if(k.slice(0,7)!==mk)break;out.push(k)}return out}
@@ -82,7 +83,7 @@ function html(a,mk){
    <div class="rc132g">${WKH71().map(d=>`<span class="rc132w">${d}</span>`).join('')}${cells}</div>
    <div class="wb146">
    ${row('이번 달 한 횟수',S.n+'번 ('+S.days+'일)')}${tpOn(a)?row('이번 달 판정',['good','mid','bad'].map(x=>VT149[x][0]+' '+S.tp[x]).join(' · ')):''}${row('지난 달',P.n+'번 ('+P.days+'일)')}
-   ${row('이 달 컨디션',sg(S.cond))}${row('이 달 점수 합',`✨${sg(S.xp)} · 💰${sg(S.gold)}`)}
+   ${S.qn?row('이 달 양 📏',(()=>{const u=a.unit152||'',r=x=>Math.round(x*10)/10;return `평균 ${r(S.q/S.qn)}${u} · 합 ${r(S.q)}${u} (${S.qn}번)`})()):''}${row('이 달 컨디션',sg(S.cond))}${row('이 달 점수 합',`✨${sg(S.xp)} · 💰${sg(S.gold)}`)}
    ${row('마지막',last?fmtD(last)+' ('+diffDays(td,last)+'일 전)':'기록 없음')}${row('평균 간격(최근 400일)',gap==null?'—':gap+'일')}
    ${opts?`<div class="tiny muted">옵션별 ${opts}</div>`:''}
    <div class="tiny muted">${bad?'나쁜 행동은 누적 배수가 붙은 점수예요. ':''}기록 줄 눌러서 보는 건 홈·기록하기에서 해요.</div></div>`}

@@ -1,0 +1,12 @@
+/* v13.32 (w152): 📏 양 기준 · 합칠 만한 카드 · 이번 주 잠든 시각 */
+.q152r{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:center;margin:2px 0 6px;font-size:13.5px}
+.q152r label{display:inline-flex;gap:4px;align-items:center;font-weight:600}
+.q152r input{width:84px;padding:5px 6px;font-size:15px}
+.q152t{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.cr150p input.u150{width:70px;padding:4px 5px;font-size:13px}
+.sg152{border:1px dashed var(--line);border-radius:9px;padding:5px 8px;margin:0 0 8px;font-size:13px}
+.sg152>summary{cursor:pointer;font-weight:600}
+.sg152b{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:6px}
+.sg152p{display:inline-flex;align-items:center;gap:1px}
+.sg152x{min-width:24px;padding:0 4px;color:var(--muted)}
+.bw152{margin:4px 0 0}

@@ -21,8 +21,9 @@ const mgIds=window.mgIds151=a=>{const s=new Set();if(!a)return s;s.add(a.id);src
 /* 옛 기록 → 합친 카드의 옵션 id */
 window.mgVid151=e=>{if(!e)return null;const s=byId(e.aid);if(s&&s.mg&&s.mgo){const m=s.mgo;return (e.vid&&m[e.vid])||m['']||e.vid||null}return e.vid||null};
 const vt=(a,o)=>typeof vt149==='function'?vt149(a,o):(a&&a.type==='bad'?'bad':'good');
-const sleepish=a=>!!(a&&(a.sl141g||a.sl141b||a.bt151||a.morn72||(typeof sleepCard73==='function'&&sleepCard73()===a)));
-function why0(a){if(!a)return '없음';if(a.mg)return '이미 합침';if(a.doneAt)return '숨김';if(a.dopaOnly)return '도파민 메뉴 전용';if(sleepish(a))return '🛏 수면 자동 기록 카드 — F5-④에서 하나로';return ''}
+const sleepish=a=>!!(a&&(a.sl141g||a.sl141b||a.sl152||a.bt151||a.morn72||(typeof sleepCard73==='function'&&sleepCard73()===a)));
+function why0(a){if(!a)return '없음';if(a.mg)return '이미 합침';if(a.doneAt)return '숨김';if(a.dopaOnly)return '도파민 메뉴 전용';if(sleepish(a))return '🛏 수면 자동 기록 카드';return ''}
+window.why151=why0;
 const ab=a=>Math.abs(+a||0);
 
 /* ---------- 짝 카드 찾기 ---------- */
@@ -30,7 +31,11 @@ const TAIL=/(\s*(참음|참았다|참았음|참기|참은\s*날|못\s*참음|못
 const nm=s=>String(s||'').replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE0F}]/gu,' ').replace(/[·\-_/()\[\],.!?~]/g,' ').replace(/\s+/g,' ').trim();
 const stem=s=>nm(s).replace(TAIL,'').replace(/\s+/g,'');
 const STOP=new Set(['하기','했다','이상','넘게','시간','오늘','처음','한번','조금','많이','바로','안함']);
-const words=s=>nm(s).split(' ').map(w=>w.replace(/(을|를|이|가|은|는|에|로|으로|과|와)$/,'')).filter(w=>w.length>=2&&!STOP.has(w));
+/* v13.32: 같은 뜻 낱말 묶음 — '연락·마감 회피' ↔ '빠른 답장'처럼 낱말이 달라도 짝으로(사용자 11/28: 합칠까요?가 안 떴음) */
+const SYN=[['연락','답장','회신','메시지','메세지','카톡','문자','전화','메일','이메일','디엠','dm'],['야식','폭식','과식','간식','군것질','배달음식'],
+  ['충동구매','구매','쇼핑','소비','지름','결제'],['쇼츠','피드','릴스','유튜브','sns','스크롤','인스타'],['청소','정리','치우기'],['술','음주','맥주','소주','와인','과음','혼술'],['운동','헬스','근력']];
+const canon=w=>{const l=w.toLowerCase();for(let i=0;i<SYN.length;i++)if(SYN[i].some(g=>l===g||(g.length>=2&&l.startsWith(g))))return '§'+i;return w};
+const words=s=>nm(s).split(' ').map(w=>w.replace(/(을|를|이|가|은|는|에|로|으로|과|와)$/,'')).filter(w=>w.length>=2&&!STOP.has(w)).map(canon);
 function pairScore(a,b){if(!a||!b||a.id===b.id)return 0;const sa=stem(a.name),sb=stem(b.name);
   if(sa&&sa.length>=2&&sa===sb)return 3;
   if(sa.length>=2&&sb.length>=2&&(sa.startsWith(sb)||sb.startsWith(sa))&&a.type!==b.type)return 2;
@@ -62,6 +67,7 @@ function moveLinks(s,T,optId,mv){
   (C.watches||[]).slice().forEach(w=>{if(w.action!==s.id)return;
     if(C.watches.some(x=>x!==w&&x.action===T.id)){mv.push({k:'wd',w:clone(w)});C.watches=C.watches.filter(x=>x!==w)}
     else{mv.push({k:'w',a:s.id});w.action=T.id}})}
+window.mvLinks151=(s,T,optId,mv)=>moveLinks(s,T,optId,mv);   // v13.32 F5-④ 수면 카드 합치기가 씀
 function undoLinks(T,mv){
   (mv||[]).slice().reverse().forEach(m=>{try{
     if(m.k==='t'){const t=TASKS[m.id];if(t&&t.aid===T.id){t.aid=m.a;if(m.av)t.av151=m.av;else delete t.av151;saveTask(t)}}

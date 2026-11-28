@@ -10,6 +10,8 @@
 (function(){
 const P={d:['오늘','하루'],w:['이번 주','주'],m:['이번 달','달']};
 const hasCn=o=>!!(o&&o.cn&&P[o.cn.p]&&+o.cn.n>=0);
+const hasQ=o=>!!(o&&o.q&&typeof o.q==='object');   // v13.32 F5-④ 📏 양 기준 `o.q={lo,hi}`(이상~미만) · 단위 `a.unit152`
+const qTxt=o=>{const f=x=>x==null||x===''?'':String(+x);return f(o.q.lo)+'~'+f(o.q.hi)};
 const anyCn=window.anyCn150=a=>!!(a&&(a.opts||[]).some(hasCn));
 const tmOk=(o,h)=>o.from!=null&&o.to!=null&&o.from!==''&&o.to!==''&&h>=+o.from&&h<+o.to;
 let PKD=null;   // actEntry({date}) 동안의 날짜
@@ -60,17 +62,20 @@ drawDoneSheet=(function(prev){return function(){const r=prev.apply(this,argument
   return r}})(drawDoneSheet);
 
 /* ---- 카드 편집: 세부 옵션 '기준' 칸 ---- */
-function crLbl(o){if(hasCn(o))return tag(o);if(o.from!=null&&o.from!==''&&o.to!=null&&o.to!=='')return `⏰${o.from}–${o.to}`;return '기준'}
-function crTip(o){if(hasCn(o))return `🔢 ${P[o.cn.p][0]} ${o.cn.n}번 넘으면(${+o.cn.n+1}번째부터) 자동으로 이 옵션 — 누르면 바꿔요`;
+function crLbl(o){if(hasQ(o))return '📏'+qTxt(o);if(hasCn(o))return tag(o);if(o.from!=null&&o.from!==''&&o.to!=null&&o.to!=='')return `⏰${o.from}–${o.to}`;return '기준'}
+function crTip(o){if(hasQ(o)){const a=curA(),u=(a&&a.unit152)||'';const lo=o.q.lo,hi=o.q.hi;return `📏 ${lo!=null&&lo!==''?lo+u+' 이상':''}${hi!=null&&hi!==''?' '+hi+u+' 미만':''}이면 자동으로 이 옵션 — 누르면 바꿔요`}
+  if(hasCn(o))return `🔢 ${P[o.cn.p][0]} ${o.cn.n}번 넘으면(${+o.cn.n+1}번째부터) 자동으로 이 옵션 — 누르면 바꿔요`;
   if(crLbl(o)!=='기준')return `⏰ ${o.from}~${o.to}시에 자동으로 이 옵션 — 누르면 바꿔요`;return '기준 없음(직접 고름) — 누르면 ⏰ 시각·🔢 횟수 기준'}
 function crBtn(o,i){const on=crLbl(o)!=='기준';return `<button type="button" class="cr150b${on?' on':''}" data-cr150="${i}" title="${esc(crTip(o))}" aria-label="${esc(crTip(o))}">${esc(crLbl(o))}</button>`}
-function crPanel(o,i){const m=hasCn(o)?'c':(crLbl(o)!=='기준'||o.cr150t)?'t':'';const n=hasCn(o)?+o.cn.n:2,p=hasCn(o)?o.cn.p:'w';
+function crPanel(o,i){const m=hasQ(o)?'q':hasCn(o)?'c':(crLbl(o)!=='기준'||o.cr150t)?'t':'';const n=hasCn(o)?+o.cn.n:2,p=hasCn(o)?o.cn.p:'w';
   const v=x=>x==null?'':esc(String(x));
   return `<div class="cr150p" data-cr150p="${i}"><span class="tiny muted">'${esc(o.name)}'을 자동으로 고를 때</span>
-    <span class="seg150">${[['','직접 고름'],['t','⏰ 시각'],['c','🔢 횟수']].map(([k,l])=>`<button type="button" class="chipbtn" data-cr150m="${i}:${k}" aria-pressed="${m===k}">${l}</button>`).join('')}</span>
+    <span class="seg150">${[['','직접 고름'],['t','⏰ 시각'],['c','🔢 횟수'],['q','📏 양']].map(([k,l])=>`<button type="button" class="chipbtn" data-cr150m="${i}:${k}" aria-pressed="${m===k}">${l}</button>`).join('')}</span>
     ${m==='t'?`<span class="row150"><input type="number" min="0" max="30" step="0.5" data-cr150f="${i}:from" value="${v(o.from)}" aria-label="부터(시)">시부터 <input type="number" min="0" max="30" step="0.5" data-cr150f="${i}:to" value="${v(o.to)}" aria-label="까지(시)">시까지 <span class="tiny muted">자정 넘으면 24+(새벽 2시=26)</span></span>`:''}
     ${m==='c'?`<span class="row150"><select data-cr150f="${i}:p" aria-label="기간">${Object.keys(P).map(k=>`<option value="${k}" ${p===k?'selected':''}>${P[k][0]}</option>`).join('')}</select>에 <input type="number" min="0" max="99" data-cr150f="${i}:n" value="${n}" aria-label="몇 번">번 넘으면 → <b class="nx150">${n+1}번째부터</b> 이 옵션</span>
-      <span class="tiny muted">그 전에는 🔢 없는 옵션을 골라요(예: 주 2번까지 ○ 중립 · 3번째부터 ▼ 나쁨).</span>`:''}</div>`}
+      <span class="tiny muted">그 전에는 🔢 없는 옵션을 골라요(예: 주 2번까지 ○ 중립 · 3번째부터 ▼ 나쁨).</span>`:''}
+    ${m==='q'?(()=>{const a=curA(),u=(a&&a.unit152)||'';return `<span class="row150"><input type="number" step="any" min="0" data-cr150f="${i}:lo" value="${v(o.q.lo)}" aria-label="이상" placeholder="부터"> 이상 ~ <input type="number" step="any" min="0" data-cr150f="${i}:hi" value="${v(o.q.hi)}" aria-label="미만" placeholder="까지"> 미만 · 단위 <input class="u150" data-cr150f="${i}:u" value="${esc(u)}" maxlength="6" placeholder="시간·분·잔" aria-label="단위(카드 전체)"></span>
+      <span class="tiny muted">기록할 때 숫자를 적으면 범위에 맞는 옵션을 골라요(빈 칸 = 끝없음 · 단위는 이 카드 전체).</span>`})():''}</div>`}
 function curA(){const S=sheetCtx;return S&&S.aedit&&C.actions.find(x=>x.id===S.aedit)}
 function decoCr(){const a=curA();if(!a)return;const sc=$('sheetC');if(!sc)return;
   const tb=sc.querySelector('.vtable.tp149t')||(sc.querySelector('.vtable .vrow [data-aeo]')||{closest:()=>null}).closest('.vtable');if(!tb||tb.classList.contains('cr150t'))return;
@@ -92,13 +97,16 @@ addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-c
   const a=curA();if(!a)return;
   if(t.dataset.cr150!=null){const i=+t.dataset.cr150;redraw(i,!document.querySelector(`#sheetC [data-cr150p="${i}"]`));return}
   const [is,m]=t.dataset.cr150m.split(':'),i=+is,o=(a.opts||[])[i];if(!o)return;
-  if(m===''){delete o.cn;delete o.from;delete o.to;delete o.cr150t}
-  else if(m==='t'){delete o.cn;o.cr150t=1}
-  else if(m==='c'){delete o.from;delete o.to;delete o.cr150t;if(!hasCn(o))o.cn={p:'w',n:2}}
+  if(m===''){delete o.cn;delete o.from;delete o.to;delete o.cr150t;delete o.q}
+  else if(m==='t'){delete o.cn;delete o.q;o.cr150t=1}
+  else if(m==='c'){delete o.from;delete o.to;delete o.cr150t;delete o.q;if(!hasCn(o))o.cn={p:'w',n:2}}
+  else if(m==='q'){delete o.cn;delete o.from;delete o.to;delete o.cr150t;if(!hasQ(o))o.q={lo:null,hi:null}}
   save('config');redraw(i,true)},true);
 addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.cr150f==null)return;e.stopPropagation();
   const a=curA();if(!a)return;const [is,f]=t.dataset.cr150f.split(':'),i=+is,o=(a.opts||[])[i];if(!o)return;
-  if(f==='from'||f==='to'){const v=t.value===''?null:Math.abs(parseFloat(t.value));if(v==null||isNaN(v))delete o[f];else o[f]=Math.min(30,v);if(o.from!=null&&o.to!=null)delete o.cr150t}
+  if(f==='u'){a.unit152=String(t.value||'').trim().slice(0,6);if(!a.unit152)delete a.unit152;save('config');(a.opts||[]).forEach((x,j)=>{if(hasQ(x)&&j!==i)redraw(j,!!document.querySelector(`#sheetC [data-cr150p="${j}"]`))});redraw(i,true);return}
+  if(f==='lo'||f==='hi'){const q=hasQ(o)?o.q:(o.q={lo:null,hi:null});const v=t.value===''?null:Math.abs(parseFloat(t.value));q[f]=(v==null||isNaN(v))?null:v}
+  else if(f==='from'||f==='to'){const v=t.value===''?null:Math.abs(parseFloat(t.value));if(v==null||isNaN(v))delete o[f];else o[f]=Math.min(30,v);if(o.from!=null&&o.to!=null)delete o.cr150t}
   else{const c=hasCn(o)?o.cn:{p:'w',n:2};if(f==='p'&&P[t.value])c.p=t.value;if(f==='n'){const v=Math.round(Math.abs(+t.value));c.n=isNaN(v)?2:Math.min(99,v)}o.cn={p:c.p,n:c.n}}
   save('config');redraw(i,true);
   const fo=document.querySelector(`#sheetC [data-cr150f="${i}:${f}"]`);if(fo&&f!=='p')try{fo.focus()}catch(_){}},true);

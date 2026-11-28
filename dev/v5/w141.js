@@ -125,12 +125,12 @@ function lateOpt141(card,b){   // v13.31: ▲ 23시 전(e0)·자정 전(e1) — 
   const i=h<1?0:h<2?1:h<3?2:h<4?3:4;
   const byId=has('s'+i);if(byId)return byId;
   const bad=card.opts.filter(o=>!o.tp||o.tp==='bad');return bad.length===5?bad[i].id:null}
-function log141a(day,a,o,key){
+function log141a(day,a,o,key,q){
   const y=dayOf(day),seen=new Set((y.entries||[]).map(e=>e.id));
   try{withDay69(day,()=>doAction(a,{direct:true,at:o.at||null,vid:o.vid||undefined,note:o.note||''}))}catch(e){console.error(e);return false}
   const es=((DAYS[day]||{}).entries||[]).filter(x=>!seen.has(x.id));   // 기록은 시각순으로 끼어들 수 있어 '새로 생긴 것'을 id로 찾음
   const e=es.find(x=>x.kind==='act'&&x.aid===a.id)||es.find(x=>x.aid===a.id);
-  if(e){e.sl141=key;save(day);return true}
+  if(e){e.sl141=key;if(q!=null)e.q152=q;save(day);return true}
   return false}
 /* 수면 시간: 좋음/중립 = '8시간 이상 잤다' 카드(옵션 6~7 중립 · 7~8 좋음 · 8+ 최고) · 나쁨 = '6시간 미만 잤다' 나쁜 카드(옵션 5~6 · 4~5 · 4시간 미만, 컨디션 ↓) — 사용자 11/26 요청 */
 const SLEEPG141=[['h1','6~7시간',.35],['h2','7~8시간',.7],['h3','8시간 이상',1]];
@@ -165,6 +165,17 @@ function sleepSync141(k){
     if(!k||!C||typeof ready72==='function'&&!ready72())return;
     const d=DAYS[k],s=d&&d.sl102,yk=addDays(k,-1);
     const m=s&&s.b&&s.w?slMin102(s):null;
+    // v13.32 F5-④: 합친 '수면 시간' 카드(a.sl152, 📏 시간 범위) — 일어난 날(k) 한 줄. 옛 두 카드(8시간 이상·6시간 미만) 자동 기록은 지우고 옮김. 풀어서 숨은 수면 시간 카드의 자동 기록은 지움
+    const cq=(C.actions||[]).find(a=>a&&a.sl152&&!a.doneAt&&!a.mg)||null;
+    (C.actions||[]).filter(a=>a&&a.sl152&&a!==cq).forEach(a=>(dayOf(k).entries||[]).filter(e=>e.aid===a.id&&e.sl141==='q152').forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}}));
+    if(cq){const src=new Set((C.actions||[]).filter(x=>x&&x.mg===cq.id).map(x=>x.id));
+      (dayOf(k).entries||[]).filter(e=>src.has(e.aid)&&(e.sl141==='h7'||e.sl141==='h6')).forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}});
+      const es=dayOf(k).entries||[],mine=es.filter(e=>e.aid===cq.id&&e.sl141==='q152'),other=es.some(e=>e.aid===cq.id&&e.sl141!=='q152');
+      const hv=m!=null?Math.round(m/60*100)/100:null,o=hv!=null&&typeof qPick152==='function'?qPick152(cq,hv):null;
+      const tg=o&&typeof vt149==='function'?{good:'▲',mid:'○',bad:'▼'}[vt149(cq,o)]:'';
+      if(o&&!other){if(!(mine.length===1&&mine[0].vid===o.id&&+mine[0].q152===hv)){mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}});
+        log141a(k,cq,{at:s.w,vid:o.id,note:`🛏 어젯밤 창: ${Math.floor(m/60)}시간 ${m%60}분 잠 · ${tg} ${o.name}`},'q152',hv)}}
+      else if(!o)mine.forEach(e=>{try{removeEntry(k,e.id)}catch(x){console.error(x)}})}
     // 8시간 이상 잤다(옛 이름 '7시간 이상 잤다') — 일어난 날(k) 기록, 시각은 일어난 시각, 잔 시간으로 세부 옵션
     const c7=sleepGood141();
     if(c7){const es=dayOf(k).entries||[],mine=es.filter(e=>e.aid===c7.id&&e.sl141==='h7'),other=es.some(e=>e.aid===c7.id&&e.sl141!=='h7');
