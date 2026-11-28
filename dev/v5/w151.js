@@ -91,6 +91,8 @@ function undoLinks(T,mv){
     else if(m.k==='wd'){C.watches=C.watches||[];if(!C.watches.some(x=>x.action===m.w.action))C.watches.push(m.w)}}catch(e){console.error(e)}})}
 
 /* ---------- 합치기 · 풀기 ---------- */
+/* v13.35: 옵션 이름에서 앞의 합친 카드 이름 빼기 — doMerge와 미리 보기가 같이 씀 */
+function stripNm155(on,tn){on=String(on||'');tn=String(tn||'').trim();if(tn)for(const sep of [' · ',' ']){if(on.startsWith(tn+sep)&&on.length>tn.length+sep.length)return on.slice(tn.length+sep.length).trim()}return on}
 function doMerge(openId,selIds,name,area){
   const op=byId(openId);if(!op||!guard())return null;const add=!!op.mg151;
   const srcs=(add?[]:[op]).concat(selIds.map(byId).filter(x=>x&&!why0(x)&&x.id!==op.id));
@@ -108,7 +110,7 @@ function doMerge(openId,selIds,name,area){
     s.mgo=map;s.mg=T.id;if(s.doneAt)s.mgDone151=s.doneAt;s.doneAt=td;T.mg151.src.push(s.id);
     moveLinks(s,T,map[''],T.mg151.mv)});
   /* v13.34: 옵션 이름 앞에 합친 카드 이름이 또 붙으면 뺌('샤워' 카드의 '샤워 · 기상 직후' → '기상 직후', '파라모프' 카드의 '파라모프 미팅' → '미팅') */
-  {const tn=String(T.name||'').trim();if(tn)all.forEach(o=>{const on=String(o.name||'');for(const sep of [' · ',' ']){if(on.startsWith(tn+sep)&&on.length>tn.length+sep.length){o.name=on.slice(tn.length+sep.length).trim();break}}})}
+  all.forEach(o=>{o.name=stripNm155(o.name,T.name)});
   if(add)T.opts=(T.opts||[]).concat(all);
   else T.opts=all.map((o,i)=>[o,i]).sort((x,y)=>(ORD[x[0].tp]-ORD[y[0].tp])||(x[1]-y[1])).map(x=>x[0]);
   save('config');try{syncDailies(C)}catch(e){}
@@ -176,13 +178,13 @@ function prevH(){const op=byId(M.id);if(!op)return '';const add=!!op.mg151,dups=
   const L=[];srcs.forEach(s=>linksOf(s).forEach(l=>L.push([s,l])));
   let ne=0;const S=new Set(srcs.map(s=>s.id));Object.keys(DAYS).forEach(k=>((DAYS[k]||{}).entries||[]).forEach(e=>{if(e&&S.has(e.aid))ne++}));
   const nmV=add?op.name:srcs.map(s=>s.name).join('/');const area=add?op.area:op.area;const difA=new Set(srcs.map(s=>s.area)).size>1;
-  const row=([o,s])=>`<li><b class="tb149" aria-label="${VT()[o.tp][1]}">${VT()[o.tp][0]}</b> ${esc(o.name)} <span class="tiny muted num">${sc(o)}</span>${tw[o.id]?` <span class="tiny tw153">같은 이름 ${tw[o.id]}장 → 한 옵션</span>`:''}${s&&srcs.length>1&&!o.name.startsWith(s.name)?` <span class="tiny muted">← ${esc(s.name)}</span>`:''}</li>`;
+  const row=([o,s],nw)=>`<li><b class="tb149" aria-label="${VT()[o.tp][1]}">${VT()[o.tp][0]}</b> ${nw?`<span data-on155="${esc(o.name)}">${esc(stripNm155(o.name,nmV))}</span>`:esc(o.name)} <span class="tiny muted num">${sc(o)}</span>${tw[o.id]?` <span class="tiny tw153">같은 이름 ${tw[o.id]}장 → 한 옵션</span>`:''}${s&&srcs.length>1&&!o.name.startsWith(s.name)?` <span class="tiny muted">← ${esc(s.name)}</span>`:''}</li>`;
   return `<div class="sh"><h3>⇄ 합치기 미리 보기</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
     <div class="row mn151"><label class="grow">이름 <input data-mgn151="1" value="${esc(nmV)}" aria-label="합친 카드 이름"></label>
       <select data-mga151="1" aria-label="영역">${(C.areas||[]).map(x=>`<option value="${esc(x.id)}" ${x.id===area?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div>
     ${difA?`<p class="tiny warn151">영역이 달라요(${[...new Set(srcs.map(s=>(C.areas.find(x=>x.id===s.area)||{}).name||s.area))].join('·')}) — 앞으로 기록은 고른 영역으로 들어가요.</p>`:''}
     <p class="tiny muted" style="margin:6px 0 2px">옵션 ${keep.length+opts.length}개${add?` (지금 ${keep.length} + 새로 ${opts.length})`:''} · 기록할 때 고르고, 판정대로 점수가 들어가요</p>
-    <ul class="ol151">${keep.map(row).join('')}${opts.map(row).join('')}</ul>
+    <ul class="ol151">${keep.map(row).join('')}${opts.map(x=>row(x,1)).join('')}</ul>
     ${dupAll.length?`<p class="tiny dp153">${M.dupOff?'☐':'☑'} 같은 이름 카드 <b>${dupAll.length}</b>장도 같이 합쳐요 — ${dupAll.map(b=>`${mk(b)} ${esc(b.name)} <span class="muted">(${esc(an151(b.area))})</span>`).join(' · ')} <button type="button" class="linkbtn" data-mgdup153="1">${M.dupOff?'같이 합치기':'빼기'}</button></p>`:''}
     ${L.length?`<details class="lk151" open><summary class="small">🔗 옮길 연결 ${L.length}개</summary><ul class="tiny">${L.map(([s,l])=>`<li>${esc(l[2])} <span class="muted">(${esc(s.name)} → 합친 카드)</span></li>`).join('')}</ul></details>`:'<p class="tiny muted">옮길 연결 없음</p>'}
     <p class="tiny muted">옛 기록 ${ne}개는 고치지 않아요 — 📊 통계·누적 배수·방치 경보·🔢 횟수에 같이 셈. 옛 카드는 숨김(편집 → 카드 메뉴 ⇄ 합치기 풀기로 되돌림).</p>
@@ -209,6 +211,8 @@ addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset||!t.dataset.mq15
   clearTimeout(QT);QT=setTimeout(()=>{const p=document.querySelector('#sheetC .pk151');if(!p)return;const d=document.createElement('div');d.innerHTML=pickH();const np=d.querySelector('.pk151');if(np)p.replaceWith(np);
     const sg=document.querySelector('#sheetC .sg151'),ns=d.querySelector('.sg151');if(sg&&!ns)sg.remove()},150)},true);
 addEventListener('compositionend',e=>{const t=e.target;if(t&&t.dataset&&t.dataset.mq151)t.dispatchEvent(new Event('input',{bubbles:true}))},true);
+/* v13.35: 이름 칸을 고치면 미리 보기 옵션 줄도 그 이름 기준으로 앞을 뺀 모양(다시 그리지 않고 글자만) */
+addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset||!t.dataset.mgn151)return;const sc2=t.closest('#sheetC')||document;sc2.querySelectorAll('[data-on155]').forEach(x=>{x.textContent=stripNm155(x.dataset.on155,t.value)})},true);
 addEventListener('keydown',e=>{const t=e.target;if(t&&t.dataset&&(t.dataset.mq151||t.dataset.mgn151)&&e.key==='Enter'&&!e.isComposing){e.preventDefault()}},true);
 
 /* ---------- 입구: 카드 메뉴 · 편집 창 ---------- */
