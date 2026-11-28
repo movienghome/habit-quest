@@ -41,7 +41,19 @@ function pairScore(a,b){if(!a||!b||a.id===b.id)return 0;const sa=stem(a.name),sb
   if(sa.length>=2&&sb.length>=2&&(sa.startsWith(sb)||sb.startsWith(sa))&&a.type!==b.type)return 2;
   if(a.type!==b.type&&a.area===b.area){const w=new Set(words(a.name));if(words(b.name).some(x=>w.has(x)))return 1}
   return 0}
-const pairs151=window.pairs151=a=>A().filter(b=>!why0(b)&&b.id!==a.id).map(b=>[b,pairScore(a,b)]).filter(x=>x[1]>0).sort((x,y)=>y[1]-x[1]).map(x=>x[0]).slice(0,4);
+/* v13.33: 같은 이름 카드(사용자 11/28 '빠른 답장' 셋 중 하나만 합쳐져 남은 둘이 그대로 보였음) — 합친 카드는 옵션 이름과 같은 카드도 짝 */
+const sameNm=window.sameNm153=(a,tp)=>{if(!a)return [];const n=nm(a.name),t=tp||(a.type==='bad'?'bad':'good');return A().filter(b=>b&&b.id!==a.id&&!why0(b)&&!b.mg151&&nm(b.name)===n&&(b.type==='bad'?'bad':'good')===t&&!(b.opts||[]).filter(Boolean).length)};
+const optTwins=T=>{const out=[];if(!T||!T.mg151)return out;(T.opts||[]).forEach(o=>{if(!o)return;const n=nm(o.name);A().forEach(b=>{if(b&&b.id!==T.id&&!why0(b)&&!b.mg151&&nm(b.name)===n&&(b.type==='bad'?'bad':'good')===(o.tp||'good')&&!(b.opts||[]).filter(Boolean).length&&!out.includes(b))out.push(b)})});return out};
+window.optTwins153=optTwins;
+const pairs151=window.pairs151=a=>{const tw=optTwins(a);return tw.concat(A().filter(b=>!why0(b)&&b.id!==a.id&&!tw.includes(b)).map(b=>[b,pairScore(a,b)]).filter(x=>x[1]>0).sort((x,y)=>y[1]-x[1]).map(x=>x[0])).slice(0,4)};
+/* 고른 카드와 이름이 같은 카드(같이 합칠 후보) */
+function dupsFor(op,sel){const add=!!(op&&op.mg151),srcs=(add?[]:[op]).concat(sel.map(byId).filter(Boolean)),S=new Set(srcs.map(x=>x.id).concat(op?[op.id]:[])),out=[];
+  srcs.forEach(s=>sameNm(s).forEach(b=>{if(!S.has(b.id)&&!out.includes(b))out.push(b)}));
+  if(add)optTwins(op).forEach(b=>{if(!S.has(b.id)&&!out.includes(b)&&sel.length===0)out.push(b)});
+  return out}
+/* 옵션이 없는 카드는 이름·판정이 같은 옵션이 이미 있으면 그 옵션으로(새 옵션을 안 만듦) */
+function twinOpt(s,pool){if((s.opts||[]).filter(Boolean).length)return null;const n=nm(s.name),tp=s.type==='bad'?'bad':'good';
+  return pool.find(o=>o&&nm(String(o.name||'').split(' · ')[0])===n&&nm(o.name)===n&&(o.tp||'good')===tp)||null}
 
 /* ---------- 옵션 만들기 ---------- */
 function optsOf(s){const os=(s.opts||[]).filter(Boolean),map={},out=[];
@@ -90,7 +102,7 @@ function doMerge(openId,selIds,name,area){
     T.mg151={src:[],at:td,mv:[]};const i=A().indexOf(op);C.actions.splice(i<0?C.actions.length:i,0,T)}
   else{if(name&&name.trim())T.name=name.trim();if(area)T.area=area}
   const all=[];
-  srcs.forEach(s=>{const {out,map}=optsOf(s);all.push(...out);
+  srcs.forEach(s=>{let {out,map}=optsOf(s);const tw=twinOpt(s,(add?(T.opts||[]):[]).concat(all));if(tw){out=[];map={'':tw.id}}all.push(...out);
     s.mgo=map;s.mg=T.id;if(s.doneAt)s.mgDone151=s.doneAt;s.doneAt=td;T.mg151.src.push(s.id);
     moveLinks(s,T,map[''],T.mg151.mv)});
   if(add)T.opts=(T.opts||[]).concat(all);
@@ -134,10 +146,11 @@ window.st7_103=st7_103;
 /* ---------- 고르기 · 미리 보기 창 ---------- */
 const M={id:null,sel:[],q:'',step:'pick'};
 const mk=a=>a.type==='bad'?'▼':'▲';
+const an151=id=>((C.areas||[]).find(x=>x.id===id)||{}).name||id||'';
 const sc=o=>[o.tp==='good'&&+o.xp?`✨${o.xp}`:'',+o.cond?`🔋${o.tp==='bad'?'−':o.tp==='mid'?'':'+'}${o.cond}`:'',+o.gold?`💰${o.tp==='bad'?'−':'+'}${o.gold}`:''].filter(Boolean).join(' ')||(o.tp==='mid'?'점수 0':'');
 function chip(a,on){const y=why0(a);return `<button type="button" class="chipbtn mc151${a.type==='bad'?' bad':''}" data-mp151="${esc(a.id)}" aria-pressed="${!!on}"${y?` disabled title="${esc(y)}"`:''}>${mk(a)} ${esc(a.name)}${y?` <small class="muted">· ${esc(y.startsWith('🛏')?'🛏 자동':y)}</small>`:''}</button>`}
 function pickH(){const op=byId(M.id);if(!op)return '';const add=!!op.mg151,q=normN?normN(M.q||''):String(M.q||'').toLowerCase();
-  const sg=add?[]:pairs151(op).filter(b=>!M.sel.includes(b.id));
+  const sg=(add?optTwins(op):pairs151(op)).filter(b=>!M.sel.includes(b.id));
   const pool=A().filter(b=>b.id!==op.id&&!b.mg&&!b.doneAt&&!b.dopaOnly&&(!q||(normN?normN(b.name):b.name.toLowerCase()).includes(q)));
   const ars=[op.area].concat((C.areas||[]).map(x=>x.id).filter(x=>x!==op.area));
   const grp=ars.map(ar=>{const L=pool.filter(b=>b.area===ar);if(!L.length)return '';const an=(C.areas.find(x=>x.id===ar)||{}).name||ar;
@@ -151,26 +164,28 @@ function pickH(){const op=byId(M.id);if(!op)return '';const add=!!op.mg151,q=nor
     <input type="search" class="mq151" data-mq151="1" placeholder="🔍 카드 찾기" value="${esc(M.q||'')}" aria-label="합칠 카드 찾기">
     <div class="pk151">${grp||'<p class="tiny muted">맞는 카드가 없어요.</p>'}</div>
     <div class="row mf151"><span class="small">${M.sel.length?`<b>${M.sel.length}</b>개 고름`:'카드를 눌러 골라요'}</span><span style="flex:1"></span><button type="button" class="btn" data-mgnext151="1"${M.sel.length?'':' disabled'}>미리 보기 →</button></div>`}
-function prevH(){const op=byId(M.id);if(!op)return '';const add=!!op.mg151,sel=M.sel.map(byId).filter(Boolean),srcs=(add?[]:[op]).concat(sel);
-  let opts=[];srcs.forEach(s=>{optsOf(s).out.forEach(o=>opts.push([o,s]))});
+function selAll(){const op=byId(M.id);if(!op)return M.sel.slice();const d=M.dupOff?[]:dupsFor(op,M.sel).map(b=>b.id);return M.sel.concat(d.filter(id=>!M.sel.includes(id)))}
+function prevH(){const op=byId(M.id);if(!op)return '';const add=!!op.mg151,dups=M.dupOff?[]:dupsFor(op,M.sel),dupAll=dupsFor(op,M.sel),sel=M.sel.map(byId).filter(Boolean).concat(dups),srcs=(add?[]:[op]).concat(sel);
+  let opts=[];const tw={};srcs.forEach(s=>{const t=twinOpt(s,(add?(op.opts||[]):[]).concat(opts.map(x=>x[0])));if(t){tw[t.id]=(tw[t.id]||1)+1;return}optsOf(s).out.forEach(o=>opts.push([o,s]))});
   if(!add)opts=opts.map((x,i)=>[x,i]).sort((x,y)=>(ORD[x[0][0].tp]-ORD[y[0][0].tp])||(x[1]-y[1])).map(x=>x[0]);
   const keep=add?(op.opts||[]).map(o=>[o,null]):[];
   const L=[];srcs.forEach(s=>linksOf(s).forEach(l=>L.push([s,l])));
   let ne=0;const S=new Set(srcs.map(s=>s.id));Object.keys(DAYS).forEach(k=>((DAYS[k]||{}).entries||[]).forEach(e=>{if(e&&S.has(e.aid))ne++}));
   const nmV=add?op.name:srcs.map(s=>s.name).join('/');const area=add?op.area:op.area;const difA=new Set(srcs.map(s=>s.area)).size>1;
-  const row=([o,s])=>`<li><b class="tb149" aria-label="${VT()[o.tp][1]}">${VT()[o.tp][0]}</b> ${esc(o.name)} <span class="tiny muted num">${sc(o)}</span>${s&&srcs.length>1&&!o.name.startsWith(s.name)?` <span class="tiny muted">← ${esc(s.name)}</span>`:''}</li>`;
+  const row=([o,s])=>`<li><b class="tb149" aria-label="${VT()[o.tp][1]}">${VT()[o.tp][0]}</b> ${esc(o.name)} <span class="tiny muted num">${sc(o)}</span>${tw[o.id]?` <span class="tiny tw153">같은 이름 ${tw[o.id]}장 → 한 옵션</span>`:''}${s&&srcs.length>1&&!o.name.startsWith(s.name)?` <span class="tiny muted">← ${esc(s.name)}</span>`:''}</li>`;
   return `<div class="sh"><h3>⇄ 합치기 미리 보기</h3><button class="x" data-sheet="close" aria-label="닫기">×</button></div>
     <div class="row mn151"><label class="grow">이름 <input data-mgn151="1" value="${esc(nmV)}" aria-label="합친 카드 이름"></label>
       <select data-mga151="1" aria-label="영역">${(C.areas||[]).map(x=>`<option value="${esc(x.id)}" ${x.id===area?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div>
     ${difA?`<p class="tiny warn151">영역이 달라요(${[...new Set(srcs.map(s=>(C.areas.find(x=>x.id===s.area)||{}).name||s.area))].join('·')}) — 앞으로 기록은 고른 영역으로 들어가요.</p>`:''}
     <p class="tiny muted" style="margin:6px 0 2px">옵션 ${keep.length+opts.length}개${add?` (지금 ${keep.length} + 새로 ${opts.length})`:''} · 기록할 때 고르고, 판정대로 점수가 들어가요</p>
     <ul class="ol151">${keep.map(row).join('')}${opts.map(row).join('')}</ul>
+    ${dupAll.length?`<p class="tiny dp153">${M.dupOff?'☐':'☑'} 같은 이름 카드 <b>${dupAll.length}</b>장도 같이 합쳐요 — ${dupAll.map(b=>`${mk(b)} ${esc(b.name)} <span class="muted">(${esc(an151(b.area))})</span>`).join(' · ')} <button type="button" class="linkbtn" data-mgdup153="1">${M.dupOff?'같이 합치기':'빼기'}</button></p>`:''}
     ${L.length?`<details class="lk151" open><summary class="small">🔗 옮길 연결 ${L.length}개</summary><ul class="tiny">${L.map(([s,l])=>`<li>${esc(l[2])} <span class="muted">(${esc(s.name)} → 합친 카드)</span></li>`).join('')}</ul></details>`:'<p class="tiny muted">옮길 연결 없음</p>'}
     <p class="tiny muted">옛 기록 ${ne}개는 고치지 않아요 — 📊 통계·누적 배수·방치 경보·🔢 횟수에 같이 셈. 옛 카드는 숨김(편집 → 카드 메뉴 ⇄ 합치기 풀기로 되돌림).</p>
     <div class="row" style="gap:6px;margin-top:8px"><button type="button" class="btn ghost" data-mgback151="1">← 다시 고르기</button><span style="flex:1"></span><button type="button" class="btn" data-mggo151="1">⇄ 합치기</button></div>`}
 function draw(){const h=M.step==='prev'?prevH():pickH();sheetCtx={mg151:1};openSheet(h)}
 const open151=window.mgSheet151=function(id,pre){const a=byId(id);if(!a)return;const y=why0(a);if(y&&!a.mg151){toast(`'${a.name}'은 합칠 수 없어요 — ${y}`);return}
-  M.id=id;M.sel=pre?[pre]:[];M.q='';M.step=pre?'prev':'pick';draw()};
+  M.id=id;M.sel=pre?[pre]:[];M.q='';M.dupOff=false;M.step=pre?'prev':'pick';draw()};
 addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
   if((b=T.closest('[data-mg151]'))){e.preventDefault();e.stopPropagation();const id=b.dataset.mg151;try{closeSheet()}catch(_){}setTimeout(()=>open151(id),40);return}
   if((b=T.closest('[data-mgun151]'))){e.preventDefault();e.stopPropagation();const id=b.dataset.mgun151;try{closeSheet()}catch(_){}unmerge(id);return}
@@ -179,9 +194,10 @@ addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
     b.setAttribute('aria-pressed',String(i<0));const f=document.querySelector('#sheetC .mf151');if(f){const t=document.createElement('div');t.innerHTML=pickH();const nf=t.querySelector('.mf151');if(nf)f.replaceWith(nf)}return}
   if((b=T.closest('[data-mgsg151]'))){e.preventDefault();e.stopPropagation();M.sel=[b.dataset.mgsg151];M.step='prev';draw();return}
   if(T.closest('[data-mgnext151]')){e.preventDefault();e.stopPropagation();if(!M.sel.length)return;M.step='prev';draw();return}
+  if(T.closest('[data-mgdup153]')){e.preventDefault();e.stopPropagation();M.dupOff=!M.dupOff;draw();return}
   if(T.closest('[data-mgback151]')){e.preventDefault();e.stopPropagation();M.step='pick';draw();return}
   if(T.closest('[data-mggo151]')){e.preventDefault();e.stopPropagation();const sc2=$('sheetC'),n=(sc2.querySelector('[data-mgn151]')||{}).value,ar=(sc2.querySelector('[data-mga151]')||{}).value;
-    const T2=doMerge(M.id,M.sel,n,ar);if(!T2)return;closeSheet();render();
+    const T2=doMerge(M.id,selAll(),n,ar);if(!T2)return;closeSheet();render();
     toastAct(`⇄ '${T2.name}' — 옵션 ${(T2.opts||[]).length}개로 합쳤어요 · 옛 카드 ${T2.mg151.src.length}개 숨김`,'되돌리기',()=>unmerge(T2.id),8000);return}
 },true);
 let QT=0;

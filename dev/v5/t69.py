@@ -106,7 +106,7 @@ with sync_playwright() as pw:
 
     # ---------- C. 지난 날 기록 · 그날 기록 보너스 ----------
     b,pg=dev(pw,'D');settle(pg,ms=800)
-    a=J(pg,"(()=>{const a=C.actions.find(x=>x.type==='bad'&&/술/.test(x.name))||C.actions.find(x=>x.type==='bad');window._a=a.id;return a.name})()")
+    a=J(pg,"(()=>{const a=C.actions.find(x=>x.type==='bad'&&/술/.test(x.name)&&!(window.anyQ152&&anyQ152(x)))||C.actions.find(x=>x.type==='bad'&&!(window.anyQ152&&anyQ152(x)));window._a=a.id;return a.name})()")
     J(pg,"openDoneSheet({a:C.actions.find(x=>x.id===window._a)})");pg.wait_for_timeout(300)
     ok('date row in done sheet (v7.0: 언제? 하나로)',J(pg,"!!document.querySelector('#sheetC .w70')&&!document.querySelector('#sheetC .d69')"))
     pg.screenshot(path=SP+'t69_sheet.png')

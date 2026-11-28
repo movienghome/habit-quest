@@ -7,7 +7,7 @@
    계산식이 안 맞는 몫은 칩으로: 0 아래는 없음/100 넘는 건 잘림/기타. 옛 규칙 날(new101 아님)은 이유 목록 없음. 펼침 상태는 이 화면 동안만(저장 안 함).
    + 점수 점검 글(`scoreDiag146`)을 📋 진단 복사 맨 끝에 붙임(w141). */
 (function(){
-const WY=window.WY146={open:false,more:false,upm:false,flow:false};
+const WY=window.WY146={open:false,more:false,upm:false,flow:false,q5:false};
 const sg=v=>(v>0?'+':v<0?'−':'±')+Math.abs(Math.round(v));
 const an=id=>{const a=C.areas.find(x=>x.id===id);return a?a.name:String(id||'')};
 /* HP에 들어간 기록을 이름별로 합침(그날 `d`는 spDay103 거친 것). adl=영역별 변화 합을 모을 곳 */
@@ -50,8 +50,24 @@ function data146(day){
     v:(adl[a.id]||0)-(S&&a.id===b?cut:0)}));
   const downs=L.filter(x=>x.v<0).sort((a,b)=>a.v-b.v);
   downs.forEach(x=>{if(x.e&&day.date)x.s=streak146(day.date,x.n)});
-  return{start,now,S,cut,downs,ar,flow:day.date?flow146(day.date,now):null,
+  return{start,now,S,cut,downs,ar,flow:day.date?flow146(day.date,now):null,up:day.date&&day.date===gk76()?up153(day,S,av,b):null,
     ups:L.filter(x=>x.v>0).sort((a,b)=>b.v-a.v)}}
+/* v13.33 X2-③ 올리려면: 오늘 아직 안 한 좋은 카드(HP에 들어가는 영역) 중 컨디션 효과 큰 순 3개.
+   몸 막대가 몸 최대에 닿았으면 몸 카드는 '🔒 상한'(뒤로). ⏱ 5분 = 카드 시간 5분 이하이거나 '바로 되는 것'. 누르면 기록 창. 읽기만(점수 규칙 그대로). */
+function up153(day,S,av,b){const ids=new Set(C.areas.map(a=>a.id));
+  const did=a=>{const s=typeof mgIds151==='function'?mgIds151(a):new Set([a.id]);return (day.entries||[]).some(e=>e&&e.kind==='act'&&s.has(e.aid))};
+  const full=!!(S&&b&&av&&av[b]!=null&&av[b]>=S.cap-0.5);
+  const eff=a=>{let v=a.type==='good'?ab0(a.cond):0;(a.opts||[]).forEach(o=>{if(!o)return;const tp=typeof vt149==='function'?vt149(a,o):'good';if(tp==='good'){const c=o.cond!=null&&o.cond!==''?ab0(o.cond):ab0(a.cond);if(c>v)v=c}});return v};
+  const L=(C.actions||[]).filter(a=>a&&a.type==='good'&&!a.doneAt&&!a.mg&&!a.sl152&&!a.bt151&&!a.sl141g&&ids.has(a.area)&&akOf101(a.area)==='c'&&!did(a))
+    .map(a=>({a,v:eff(a),cap:full&&a.area===b,q:(+a.dur>0&&+a.dur<=5)||a.effort==='quick'})).filter(x=>x.v>0)
+    .sort((x,y)=>(x.cap-y.cap)||(y.v-x.v));
+  return{L,full}}
+const ab0=v=>Math.abs(+v||0);
+window.data146=(d)=>data146(d);
+function upH153(U){if(!U||!U.L.length)return '';const L=(WY.q5?U.L.filter(x=>x.q):U.L).slice(0,3),nq=U.L.filter(x=>x.q).length;
+  return `<div class="up153b"><div class="sh146 up153h"><b>⬆ 올리려면</b><button type="button" class="chipbtn q5153${WY.q5?' on':''}" data-q5153="1" aria-pressed="${!!WY.q5}" title="카드 시간 5분 이하이거나 바로 되는 것만">⏱ 5분 안에 ${nq}</button></div>`
+    +(L.length?L.map(x=>`<button type="button" class="r146 up153" data-up153="${esc(x.a.id)}" aria-label="${esc(x.a.name)} 기록하기"><span class="n146">○ ${esc(x.a.name)}${+x.a.dur?` <span class="mu146">${+x.a.dur}분</span>`:''}${x.cap?' <span class="mu146">🔒 몸 최대라 덜 올라요</span>':''}</span><span class="ar146">${esc(an(x.a.area))}</span><b class="v146 num">${x.cap?'🔒':'+'+x.v}</b></button>`).join('')
+      :'<div class="tiny muted">5분 안에 되는 카드가 없어요 — 카드 편집에서 시간(분)을 적어 두면 여기 떠요</div>')+'</div>'}
 const aTag=x=>{const t=x.as?x.as.map(an).join('·'):(x.a?an(x.a):'');return t?`<span class="ar146">${esc(t)}</span>`:'<span></span>'};
 const row=x=>`<div class="r146"><span class="n146">${esc(x.n)}${x.c>1&&!x.nl?` <span class="mu146">×${x.c}</span>`:''}${x.m>1?` <span class="mu146">누적 ×${+(+x.m).toFixed(2)}</span>`:''}${x.s>1?` <span class="st146">(${x.s}일째)</span>`:''}</span>${aTag(x)}<b class="v146 num">${sg(x.v)}</b></div>`
   +(x.nl?x.nl.map(w=>`<div class="r146 sub146"><span class="n146">└ ${esc(w.n)} · ${w.since}일째 안 함 <span class="mu146">(기준 ${w.days}일)</span></span><span class="ar146">${esc(an(w.a))}</span><b class="v146 num">${sg(-w.pen)}</b></div>`).join(''):'');
@@ -83,7 +99,7 @@ function body146(D,pop){
       :'<div class="sh146 muted"><b>▼ 깎인 기록 없음</b></div>')
     +(ups.length?`<div class="sh146"><b>▲ 오른 것 ${ups.length}건</b><b class="num">${sg(uS)}</b></div>${upT.map(row).join('')}`
       +(upR.length?`<details class="wu146"${WY.upm?' open':''}><summary>그 밖에 ${upR.length}건 ${sg(upR.reduce((t,x)=>t+x.v,0))}</summary>${upR.map(row).join('')}</details>`:''):'')
-    +cap+flowH146(D.flow,pop)+'</div>'}
+    +cap+upH153(D.up)+flowH146(D.flow,pop)+'</div>'}
 function sum146(D){const t=D.downs.slice(0,2);
   return `HP ${D.now}`+(t.length?t.map(x=>' · '+esc(x.n)+' '+sg(x.v)).join(''):' · 깎인 기록 없음')}
 /* HP 설명 창: 옛 글 줄줄이를 '들어가요/안 들어가요/계산' 세 줄로 */
@@ -119,6 +135,12 @@ document.addEventListener('toggle',e=>{const t=e.target;if(!t||!t.classList)retu
   else if(t.classList.contains('wu146'))WY.upm=t.open;
   else if(t.classList.contains('fw146'))WY.flow=t.open;
   else if(t.classList.contains('wy146')&&t.tagName==='DETAILS')WY.open=t.open},true);
+/* 올리려면: ⏱ 5분 거르기 · 누르면 기록 창 */
+addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
+  if((b=T.closest('[data-q5153]'))){e.preventDefault();e.stopPropagation();WY.q5=!WY.q5;const D=data146(curDay());
+    document.querySelectorAll('.up153b').forEach(x=>{if(D)x.outerHTML=upH153(D.up)});return}
+  if((b=T.closest('[data-up153]'))){e.preventDefault();e.stopPropagation();const a=(C.actions||[]).find(x=>x.id===b.dataset.up153);if(!a)return;ui.off=0;
+    try{if(typeof closeSheet==='function'&&document.querySelector('.sheet.on,#sheet.on'))closeSheet()}catch(_){}setTimeout(()=>openDoneSheet({a}),60);return}},true);
 /* 막대 한 칸을 누르면 홈 날짜 칩이 그 날로(보기 전용 ui.hl142) */
 addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('button[data-fk146]');if(!b)return;
   e.preventDefault();e.stopPropagation();const k=b.dataset.fk146;if(!k)return;

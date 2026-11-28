@@ -28,6 +28,8 @@ const vt=(a,o)=>typeof vt149==='function'?vt149(a,o):(a&&a.type==='bad'?'bad':'g
 function parseQ(s){s=String(s==null?'':s).trim();if(!s)return null;let m=/^(\d+)\s*[:시]\s*(\d{1,2})\s*분?$/.exec(s);if(m)return (+m[1])+(+m[2])/60;
   m=/^(\d+(?:[.,]\d+)?)/.exec(s);if(!m)return null;const v=parseFloat(m[1].replace(',','.'));return isNaN(v)?null:Math.max(0,v)}
 window.parseQ152=parseQ;
+/* v13.33: 단위가 분이면 '1:20'·'1시간 20분' = 80분 */
+function parseQU(s,a){const u=unit(a);s=String(s==null?'':s).trim();if(u==='분'){let m=/^(\d+)\s*(?::|시간)\s*(\d{1,2})\s*분?$/.exec(s);if(m)return (+m[1])*60+(+m[2]);m=/^(\d+(?:[.,]\d+)?)\s*시간$/.exec(s);if(m)return Math.round(parseFloat(m[1].replace(',','.'))*60)}return parseQ(s)}
 let QV=null;   // 기록 창을 닫고 doAction이 도는 동안의 양
 const qOf=a=>{if(!a)return null;if(QV&&QV.id===a.id)return QV.v;const S=sheetCtx;if(S&&S.a&&S.a.id===a.id&&S.q152!=null)return S.q152;return null};
 
@@ -39,12 +41,12 @@ actEntry=(function(prev){return function(a,o){if(!anyQ(a))return prev.apply(this
   if(q!=null&&!o.vid){const v=qPick(a,q);if(v)o.vid=v.id}
   const e=prev.call(this,a,o);try{if(e&&q!=null)e.q152=Math.round(+q*100)/100}catch(_){}return e}})(actEntry);
 sheetOK=(function(prev){return function(){const S=sheetCtx;
-  try{if(S&&S.a&&anyQ(S.a)){const inp=document.querySelector('#sheetC [data-q152]');if(inp){S.q152=parseQ(inp.value);S.q152raw=inp.value;if(S.q152!=null&&!S.vidMan){const o=qPick(S.a,S.q152);if(o)S.vid=o.id}}
+  try{if(S&&S.a&&anyQ(S.a)){const inp=document.querySelector('#sheetC [data-q152]');if(inp){S.q152=parseQU(inp.value,S.a);S.q152raw=inp.value;if(S.q152!=null&&!S.vidMan){const o=qPick(S.a,S.q152);if(o)S.vid=o.id}}
     if(!S.vid){toast(`📏 얼마나 했는지(${unit(S.a)||'숫자'}) 적거나 옵션을 하나 골라요`);if(inp)try{inp.focus()}catch(_){}return}
     QV={id:S.a.id,v:S.q152}}}catch(e){console.error(e)}
   try{return prev.apply(this,arguments)}finally{QV=null}}})(sheetOK);
 sheetSave=(function(prev){return function(){const S=sheetCtx;
-  try{if(S&&S.a&&anyQ(S.a)){const inp=document.querySelector('#sheetC [data-q152]');if(inp){S.q152=parseQ(inp.value);S.q152raw=inp.value}QV={id:S.a.id,v:S.q152}}}catch(e){console.error(e)}
+  try{if(S&&S.a&&anyQ(S.a)){const inp=document.querySelector('#sheetC [data-q152]');if(inp){S.q152=parseQU(inp.value,S.a);S.q152raw=inp.value}QV={id:S.a.id,v:S.q152}}}catch(e){console.error(e)}
   try{return prev.apply(this,arguments)}finally{QV=null}}})(sheetSave);
 
 /* ---------- 기록 창: 📏 얼마나? 한 줄 ---------- */
@@ -56,15 +58,24 @@ drawDoneSheet=(function(prev){return function(){const S=sheetCtx;
     const v=S.q152,hit=v!=null?qPick(a,v):null,u=unit(a);
     const hint=v!=null?(hit?`→ ${VT()[vt(a,hit)][0]} ${esc(hit.name)}`:'맞는 범위가 없어요 — 옵션을 직접 골라요'):'적으면 범위에 맞는 옵션을 골라요';
     const raw=S.q152raw!=null?S.q152raw:(v!=null?r2(v):'');
-    box.insertAdjacentHTML('beforebegin',`<div class="q152r"><label>📏 얼마나? <input data-q152="1" inputmode="decimal" autocomplete="off" value="${esc(raw)}" placeholder="${u==='시간'?'예 7.5 · 7:30':'숫자'}" aria-label="얼마나${u?'('+esc(u)+')':''}"> ${esc(u)}</label> <span class="tiny muted q152h">${hint}</span></div>`);
+    const rc=recentQ153(a,3).filter(x=>r2(x)!==String(raw));
+    box.insertAdjacentHTML('beforebegin',`<div class="q152r"><label>📏 얼마나? <input data-q152="1" inputmode="decimal" autocomplete="off" value="${esc(raw)}" placeholder="${u==='시간'?'예 7.5 · 7:30':'숫자'}" aria-label="얼마나${u?'('+esc(u)+')':''}"> ${esc(u)}</label>${rc.map(x=>`<button type="button" class="chipbtn rq153" data-rq153="${esc(r2(x))}" title="최근에 적은 값 — 누르면 채워요">${esc(r2(x))}</button>`).join('')} <span class="tiny muted q152h">${hint}</span></div>`);
     sc.querySelectorAll('[data-sopt]').forEach(b=>{const o=(a.opts||[]).find(x=>x.id===b.dataset.sopt);if(!hasQ(o)||/\d/.test(o.name)||b.querySelector('.q152t'))return;
       (b.firstElementChild||b).insertAdjacentHTML('beforeend',` <small class="q152t">📏${esc(qTxt(o))}${esc(u)}</small>`)});
     if(!S.e&&hit&&S.vid===hit.id){const s=sc.querySelector('.w70s');if(s&&!s.querySelector('.why152')){const sp=document.createElement('span');sp.className='why152';sp.textContent=` — 📏 ${raw||r2(v)}${u}라서`;
       const tn=[...s.childNodes].find(n=>n.nodeType===3&&/골라 둠/.test(n.nodeValue));const old=s.querySelector('.why150');if(old)old.remove();
       if(tn){const i=tn.nodeValue.indexOf('골라 둠')+4,rest=tn.splitText(i);s.insertBefore(sp,rest)}else{const bb=s.querySelector('b');if(bb)bb.after(sp)}}}}catch(e){console.error(e)}
   return r}})(drawDoneSheet);
+/* v13.33: 최근 적은 숫자(같은 카드·합친 옛 카드, 새것부터 겹치지 않게) */
+function recentQ153(a,n){const ids=typeof mgIds151==='function'?mgIds151(a):new Set([a.id]),out=[];
+  const ks=Object.keys(DAYS).sort().reverse();for(const k of ks){const es=((DAYS[k]||{}).entries||[]).map((e,i)=>[e,i]).sort((x,y)=>String((y[0]||{}).t||'').localeCompare(String((x[0]||{}).t||''))||(y[1]-x[1])).map(x=>x[0]);
+    for(const e of es){if(!e||!ids.has(e.aid)||e.q152==null||isNaN(+e.q152))continue;const v=Math.round(+e.q152*100)/100;if(!out.includes(v))out.push(v);if(out.length>=n)return out}
+    if(out.length>=n)break}return out}
+window.recentQ153=recentQ153;
+addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-rq153]');if(!b)return;e.preventDefault();e.stopPropagation();
+  const i=document.querySelector('#sheetC [data-q152]');if(i)i.value=b.dataset.rq153;clearTimeout(QT);applyQ(b.dataset.rq153,false)},true);
 let QT=0;
-function applyQ(val,live){const S=sheetCtx;if(!S||!S.a||!anyQ(S.a))return;const v=parseQ(val);
+function applyQ(val,live){const S=sheetCtx;if(!S||!S.a||!anyQ(S.a))return;const v=parseQU(val,S.a);
   if(String(S.q152raw||'')===String(val||'')&&S.q152===v&&live)return;
   S.q152=v;S.q152raw=val;if(v!=null){const o=qPick(S.a,v);if(o){S.vid=o.id;S.vidMan=false}}
   try{sheetRead()}catch(_){}drawDoneSheet();
@@ -97,7 +108,7 @@ function migSleep(){
   if(C.mig152sl||!C.mig141t||typeof ready72!=='function'||!ready72())return false;
   C.mig152sl=1;const g=sGood(),b=sBad();if(!g&&!b){save('config');return true}
   const td=gk76(),base=g||b;
-  const T={id:uid(),name:'수면 시간',type:'good',area:base.area,cond:0,gold:0,xp:0,marble:(g&&g.marble)||'',once:'',unit152:'시간',sl152:1,desc:SDESC,opts:buildSleep(g,b)};
+  const T={id:A().some(a=>a&&a.id==='sl152q')?uid():'sl152q',name:'수면 시간',type:'good',area:base.area,cond:0,gold:0,xp:0,marble:(g&&g.marble)||'',once:'',unit152:'시간',sl152:1,desc:SDESC,opts:buildSleep(g,b)};
   const t6=T.opts.find(o=>o.id==='q6');T.cond=t6.cond;T.xp=t6.xp;T.gold=t6.gold;
   if(g&&g.ar2){T.ar2=clone(g.ar2);if(g.r2!=null)T.r2=clone(g.r2)}
   T.mg151={src:[],at:td,mv:[]};const i=A().indexOf(base);C.actions.splice(i<0?C.actions.length:i,0,T);
@@ -133,11 +144,14 @@ addEventListener('click',e=>{const T=e.target;if(!T||!T.closest)return;let b;
 /* ---------- ④ 🛏 어젯밤 창: 이번 주 23시 전 · 자정 넘김 ---------- */
 const hh=s=>{const m=/^(\d{1,2}):(\d{2})$/.exec(String(s||''));return m?(+m[1])+(+m[2])/60:null};
 window.bedWeek152=function(k){k=k||gk76();const s0=weekStart(k);let e=0,l=0,n=0;
-  for(let i=0;i<7;i++){const d=addDays(s0,i);if(d>k)break;const h=hh(((DAYS[d]||{}).sl102||{}).b);if(h==null)continue;n++;if(h>=18&&h<23)e++;else if(h<9)l++}
-  return{e,l,n}};
+  let mS=0,mN=0;
+  for(let i=0;i<7;i++){const d=addDays(s0,i);if(d>k)break;const sl=(DAYS[d]||{}).sl102||{};
+    try{if(sl.b&&sl.w&&typeof slMin102==='function'){const m=slMin102(sl);if(m>0&&m<24*60){mS+=m;mN++}}}catch(_){}
+    const h=hh(sl.b);if(h==null)continue;n++;if(h>=18&&h<23)e++;else if(h<9)l++}
+  return{e,l,n,avg:mN?Math.round(mS/mN/6)/10:null}};
 slSheet102=(function(prev){return function(){const r=prev.apply(this,arguments);
   try{const sc=$('sheetC'),f=sc&&sc.querySelector('.sl102f');if(f&&!sc.querySelector('.bw152')){const w=bedWeek152(SL102.k||gk76());
-    if(w.n)f.insertAdjacentHTML('afterend',`<p class="tiny bw152 num">🌙 이번 주 <b>23시 전 ${w.e}일</b> · <b>자정 넘김 ${w.l}일</b> <span class="muted">(적은 날 ${w.n}일)</span></p>`)}}catch(e){console.error(e)}
+    if(w.n)f.insertAdjacentHTML('afterend',`<p class="tiny bw152 num">🌙 이번 주 <b>23시 전 ${w.e}일</b> · <b>자정 넘김 ${w.l}일</b> ${w.avg!=null?` · 평균 <b>${w.avg}시간</b> 잠`:''} <span class="muted">(적은 날 ${w.n}일)</span></p>`)}}catch(e){console.error(e)}
   return r}})(slSheet102);
 
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
