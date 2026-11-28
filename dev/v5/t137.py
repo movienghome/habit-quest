@@ -26,6 +26,13 @@ def T(pg,id):return json.loads(J(pg,f"JSON.stringify(TASKS[{json.dumps(id)}])"))
 SEED="""(()=>{const td=midKey68();const mk=(n,d,dur)=>{const t=addTaskFrom(n);t.due=addDays(td,d);if(dur)t.dur=dur;saveTask(t);return t.id};
   const r={a:mk('빨래 %3',-5,30),b:mk('거울 닦기 %7',2,20),c:mk('설거지 %1',0,15),d:mk('가계부 기록 %4',-1,45)};render();return r})()"""
 def mitem(pg,txt):return pg.locator('#m61 [data-m61]',has_text=txt).first
+def nextwk(pg,sel):
+  # '다음 주'는 토요일엔 '모레'와, 일요일엔 '내일'과 같은 날이라 메뉴에서 빠짐(중복 날짜 제거) → 같은 날짜를 가리키는 항목을 고름
+  want=pg.evaluate("fmtD(addDays(weekStart(midKey68()),7))")
+  for t in ('다음 주','모레','내일'):
+    loc=pg.locator(sel,has_text=t)
+    if loc.count() and want in loc.first.inner_text():return t
+  return '다음 주'
 with sync_playwright() as pw:
   # ---------- ① 관리 창 하나로 ----------
   for W,H,touch in [(1200,950,False),(390,860,True)]:
@@ -109,7 +116,7 @@ with sync_playwright() as pw:
   ok(any(l.startswith('⏩ 미루기') for l in labels) and not any('다음 주 월요일로' in l for l in labels) and not any('내일로 미루기' in l for l in labels),'③ 할 일 우클릭 → ⏩ 미루기… 하나로',labels)
   mitem(pg,'⏩ 미루기').click();pg.wait_for_timeout(300)
   ok(J(pg,"!!document.querySelector('#m61 #dm130')"),'③ 미루기 → 같은 날짜 고르기 메뉴')
-  mitem(pg,'다음 주').click();pg.wait_for_timeout(500)
+  mitem(pg,nextwk(pg,'#m61 [data-m61]')).click();pg.wait_for_timeout(500)
   ok(T(pg,tid)['due']==J(pg,"addDays(weekStart(midKey68()),7)"),'③ 다음 주로 미룸',T(pg,tid)['due'])
   rid=J(pg,"(()=>{const t=addTaskFrom('스트레칭 매일');t.due=midKey68();saveTask(t);render();return t.id})()")
   J(pg,f"taskMenu61(TASKS['{rid}'],200,200)");pg.wait_for_timeout(200)

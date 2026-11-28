@@ -3,7 +3,7 @@
    ① 복귀: 모두 몇 번 · 이번 주(보고 있는 주) 몇 번 · 평균 며칠 쉬고 돌아왔나 · 마지막 복귀 · 최근 5번(어디서 돌아왔나: 쉼·힘든 날·비운 날).
    ② 용기: 보고 있는 주에 용기 낸 일 목록(날짜·이름·✨, 나중에 붙인 건 🕘) + 지금까지 총 몇 번. 12줄 넘으면 '…외 n번'.
    reviewHTML59를 맨 바깥에서 감싸 '왼쪽 메뉴' 칸 바로 앞에 끼움(그 칸이 없으면 맨 뒤). 색만으로 구분 안 함 — 아이콘·글자. */
-const FROM100={rest:'😴 쉼',low:'🪫 힘든 날',gap:'📭 비운 날'};
+const FROM100={rest:'😴 쉼',low:'🥀 힘든 날',gap:'📭 비운 날'};
 function brv100(e){return !!(e&&e.type==='good'&&(e.kind==='courage'||e.brave))}
 function ev100(ws){const out=[];for(let i=0;i<7;i++){const k=addDays(ws,i),d=DAYS[k];(d&&d.entries||[]).forEach(e=>{if(brv100(e))out.push([k,e])})}
   out.sort((a,b)=>a[0]===b[0]?String(b[1].t||'').localeCompare(String(a[1].t||'')):(a[0]<b[0]?1:-1));return out}

@@ -23,6 +23,7 @@ for W,H in((1400,900),(390,844)):
     row=pg.locator('#actGroups .act[data-info="act:b8"]').first
     if not row.is_visible():
       pg.evaluate("()=>{const r=document.querySelector('#actGroups .act[data-info=\"act:b8\"]');r&&r.scrollIntoView()}");pg.wait_for_timeout(200)
+    pg.evaluate("()=>{document.querySelectorAll('.toast').forEach(t=>{t.classList.remove('on');t.style.pointerEvents='none'})}");pg.wait_for_timeout(200)
     bb=row.bounding_box();pg.mouse.click(bb['x']+bb['width']*0.6,bb['y']+bb['height']/2);pg.wait_for_timeout(300)
     mi=pg.locator('#m61 [data-m61]',has_text='다른 카드와 합치기')
     ok(mi.count()==1,'카드 메뉴에 ⇄ 다른 카드와 합치기')

@@ -319,7 +319,7 @@ addEventListener('pointerdown',e=>{lastPT61=e.pointerType||'mouse';const m=$('m6
 function closeMenu61(){M61=null;const m=$('m61');if(m){m.hidden=true;m.innerHTML=''}}
 function menu61At(x,y,html){let m=$('m61');if(!m){m=document.createElement('div');m.id='m61';m.className='ctxmenu';m.setAttribute('role','menu');document.body.appendChild(m)}
   m.innerHTML=html;m.hidden=false;M61=M61||{};const r=m.getBoundingClientRect();m.style.left=clamp(x,8,innerWidth-r.width-8)+'px';m.style.top=clamp(y,8,innerHeight-r.height-8)+'px'}
-function menu61(x,y,title,items){M61={items};menu61At(x,y,`${title?`<div class="m61h">${title}</div>`:''}${items.map((it,i)=>it==='-'?'<hr>':it.html?it.html:`<button type="button" role="menuitem" data-m61="${i}" ${it.dis?'disabled':''} class="${it.bad?'bad':''}">${it.l}</button>`).join('')}`);M61={items}}
+function menu61(x,y,title,items){M61={items};menu61At(x,y,`${title?`<div class="m61h">${title}</div>`:''}${items.map((it,i)=>it==='-'?'<hr>':('html' in it)?(it.html||''):`<button type="button" role="menuitem" data-m61="${i}" ${it.dis?'disabled':''} class="${it.bad?'bad':''}">${it.l}</button>`).join('')}`);M61={items}}
 addEventListener('click',e=>{const m=$('m61');if(!M61||!m||!m.contains(e.target))return;const b=e.target.closest('[data-m61]');if(!b)return;e.preventDefault();e.stopPropagation();const it=M61.items[+b.dataset.m61];if(!it)return;if(it.keep){it.f(b);return}closeMenu61();try{it.f()}catch(x){console.error(x)}},true);
 addEventListener('keydown',e=>{if(e.key==='Escape'&&M61){e.preventDefault();e.stopImmediatePropagation();closeMenu61()}},true);
 var LCOL61=[['','색 없음'],['#d64545','빨강'],['#e07a10','주황'],['#c9a227','노랑'],['#3f9a4a','초록'],['#8a5cc7','보라'],['#d14f92','분홍'],['#8a6a4a','갈색'],['#7d8594','회색']];

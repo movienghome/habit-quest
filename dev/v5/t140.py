@@ -4,6 +4,13 @@ os.environ.setdefault('HQURL','file:///home/claude/habit-quest/beta/index.html')
 exec(open('/home/claude/habit-quest/dev/v5/h61.py').read())
 URL=os.environ.get('HQURL',URL)
 ONLY=sys.argv[1:]
+def nextwk(pg,sel):
+  # '다음 주'는 토요일엔 '모레'와, 일요일엔 '내일'과 같은 날이라 메뉴에서 빠짐(중복 날짜 제거) → 같은 날짜를 가리키는 항목을 고름
+  want=pg.evaluate("fmtD(addDays(weekStart(midKey68()),7))")
+  for t in ('다음 주','모레','내일'):
+    loc=pg.locator(sel,has_text=t)
+    if loc.count() and want in loc.first.inner_text():return t
+  return '다음 주'
 FAILS=[]
 def ok(c,msg,extra=''):
     print(('PASS ' if c else 'FAIL ')+msg+(' · '+str(extra)[:300] if extra!='' else ''))
@@ -50,7 +57,7 @@ with sync_playwright() as pw:
     ok(J(pg,"!!document.querySelector('#m61:not([hidden]) .dm130, #m61:not([hidden]) [role=menuitem]')"),f'[{W}] W2 길게 누르면 날짜 메뉴')
     before=J(pg,"late132().length")
     ok(before==5,f'[{W}] W2 길게 눌러도 바로 안 옮겨짐(밀린 5)',before)
-    pg.locator('#m61 [role=menuitem]',has_text='다음 주').first.click();pg.wait_for_timeout(500)
+    pg.locator('#m61 [role=menuitem]',has_text=nextwk(pg,'#m61 [role=menuitem]')).first.click();pg.wait_for_timeout(500)
     ns=J(pg,"(()=>{const w=addDays(weekStart(midKey68()),7);return Object.values(TASKS).filter(t=>/^밀린/.test(t.title)).map(t=>t.due===w)})()")
     ok(all(ns) and len(ns)==5,f'[{W}] W2 다음 주로 5개 이동',ns)
     J(pg,"(()=>{Object.values(TASKS).filter(t=>/^밀린/.test(t.title)).forEach((t,i)=>{t.due=addDays(midKey68(),-1-i);saveTask(t)});render()})()");notoast(pg);pg.wait_for_timeout(300)
