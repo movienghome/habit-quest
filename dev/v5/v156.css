@@ -1,0 +1,2 @@
+/* v13.36 (w156) — 홈 '오늘 한 일': 기록하기로 옮기는 '전체 보기' 대신 목록 끝 펼치기 */
+.hblock[data-hid="todaylog"] .ptitle a[href="#log"]{display:none}
