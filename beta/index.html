@@ -3,7 +3,7 @@
 <script>
 (()=>{let res;const ready=new Promise(r=>res=r);window.__hqResolve=res;window.HQ_READY=ready;
   window.claude={use:async n=>{const api=await ready;return api&&api[n]||null}};
-  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.33</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
+  if(location.pathname.includes('/beta/')){document.title='씩씩 β';addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.className='betabar';b.innerHTML='<span><b>β 베타 v13.34</b> · 시험용 복사본이에요. 여기서 바꾼 기록은 실제 게임에 안 들어가요.</span><button type="button">실제 기록 다시 복사</button>';document.body.prepend(b);const btn=b.querySelector('button');let armed=false;btn.onclick=async()=>{if(!armed){armed=true;btn.textContent='한 번 더 누르면 덮어써요';setTimeout(()=>{armed=false;btn.textContent='실제 기록 다시 복사'},4000);return}btn.disabled=true;btn.textContent='복사하는 중…';try{await (await ready).copyFromLive();location.reload()}catch(e){btn.textContent='복사하지 못했어요'}}})}
   if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||rl)return;rl=true;if(window.__swNew69)window.__swNew69();else if(document.hidden)location.reload()});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}))}})();
 </script>
 </head><body>
@@ -20986,7 +20986,9 @@ function pairScore(a,b){if(!a||!b||a.id===b.id)return 0;const sa=stem(a.name),sb
   return 0}
 /* v13.33: 같은 이름 카드(사용자 11/28 '빠른 답장' 셋 중 하나만 합쳐져 남은 둘이 그대로 보였음) — 합친 카드는 옵션 이름과 같은 카드도 짝 */
 const sameNm=window.sameNm153=(a,tp)=>{if(!a)return [];const n=nm(a.name),t=tp||(a.type==='bad'?'bad':'good');return A().filter(b=>b&&b.id!==a.id&&!why0(b)&&!b.mg151&&nm(b.name)===n&&(b.type==='bad'?'bad':'good')===t&&!(b.opts||[]).filter(Boolean).length)};
-const optTwins=T=>{const out=[];if(!T||!T.mg151)return out;(T.opts||[]).forEach(o=>{if(!o)return;const n=nm(o.name);A().forEach(b=>{if(b&&b.id!==T.id&&!why0(b)&&!b.mg151&&nm(b.name)===n&&(b.type==='bad'?'bad':'good')===(o.tp||'good')&&!(b.opts||[]).filter(Boolean).length&&!out.includes(b))out.push(b)})});return out};
+/* v13.34: 합친 카드 이름을 앞에서 뺀 옵션('파라모프' 카드의 '리허설')도 '파라모프 리허설' 카드와 같은 이름으로 봄 */
+const onm=(tn,o)=>{const n=nm(o&&o.name),s=[n];if(tn){s.push(nm(tn+' '+(o.name||'')))}return s};
+const optTwins=T=>{const out=[];if(!T||!T.mg151)return out;(T.opts||[]).forEach(o=>{if(!o)return;const ns=onm(T.name,o);A().forEach(b=>{if(b&&b.id!==T.id&&!why0(b)&&!b.mg151&&ns.includes(nm(b.name))&&(b.type==='bad'?'bad':'good')===(o.tp||'good')&&!(b.opts||[]).filter(Boolean).length&&!out.includes(b))out.push(b)})});return out};
 window.optTwins153=optTwins;
 const pairs151=window.pairs151=a=>{const tw=optTwins(a);return tw.concat(A().filter(b=>!why0(b)&&b.id!==a.id&&!tw.includes(b)).map(b=>[b,pairScore(a,b)]).filter(x=>x[1]>0).sort((x,y)=>y[1]-x[1]).map(x=>x[0])).slice(0,4)};
 /* 고른 카드와 이름이 같은 카드(같이 합칠 후보) */
@@ -20995,8 +20997,8 @@ function dupsFor(op,sel){const add=!!(op&&op.mg151),srcs=(add?[]:[op]).concat(se
   if(add)optTwins(op).forEach(b=>{if(!S.has(b.id)&&!out.includes(b)&&sel.length===0)out.push(b)});
   return out}
 /* 옵션이 없는 카드는 이름·판정이 같은 옵션이 이미 있으면 그 옵션으로(새 옵션을 안 만듦) */
-function twinOpt(s,pool){if((s.opts||[]).filter(Boolean).length)return null;const n=nm(s.name),tp=s.type==='bad'?'bad':'good';
-  return pool.find(o=>o&&nm(String(o.name||'').split(' · ')[0])===n&&nm(o.name)===n&&(o.tp||'good')===tp)||null}
+function twinOpt(s,pool,tn){if((s.opts||[]).filter(Boolean).length)return null;const n=nm(s.name),tp=s.type==='bad'?'bad':'good';
+  return pool.find(o=>o&&((nm(String(o.name||'').split(' · ')[0])===n&&nm(o.name)===n)||(tn&&nm(tn+' '+(o.name||''))===n))&&(o.tp||'good')===tp)||null}
 
 /* ---------- 옵션 만들기 ---------- */
 function optsOf(s){const os=(s.opts||[]).filter(Boolean),map={},out=[];
@@ -21045,9 +21047,11 @@ function doMerge(openId,selIds,name,area){
     T.mg151={src:[],at:td,mv:[]};const i=A().indexOf(op);C.actions.splice(i<0?C.actions.length:i,0,T)}
   else{if(name&&name.trim())T.name=name.trim();if(area)T.area=area}
   const all=[];
-  srcs.forEach(s=>{let {out,map}=optsOf(s);const tw=twinOpt(s,(add?(T.opts||[]):[]).concat(all));if(tw){out=[];map={'':tw.id}}all.push(...out);
+  srcs.forEach(s=>{let {out,map}=optsOf(s);const tw=twinOpt(s,(add?(T.opts||[]):[]).concat(all),add?T.name:'');if(tw){out=[];map={'':tw.id}}all.push(...out);
     s.mgo=map;s.mg=T.id;if(s.doneAt)s.mgDone151=s.doneAt;s.doneAt=td;T.mg151.src.push(s.id);
     moveLinks(s,T,map[''],T.mg151.mv)});
+  /* v13.34: 옵션 이름 앞에 합친 카드 이름이 또 붙으면 뺌('샤워' 카드의 '샤워 · 기상 직후' → '기상 직후', '파라모프' 카드의 '파라모프 미팅' → '미팅') */
+  {const tn=String(T.name||'').trim();if(tn)all.forEach(o=>{const on=String(o.name||'');for(const sep of [' · ',' ']){if(on.startsWith(tn+sep)&&on.length>tn.length+sep.length){o.name=on.slice(tn.length+sep.length).trim();break}}})}
   if(add)T.opts=(T.opts||[]).concat(all);
   else T.opts=all.map((o,i)=>[o,i]).sort((x,y)=>(ORD[x[0].tp]-ORD[y[0].tp])||(x[1]-y[1])).map(x=>x[0]);
   save('config');try{syncDailies(C)}catch(e){}
@@ -21109,7 +21113,7 @@ function pickH(){const op=byId(M.id);if(!op)return '';const add=!!op.mg151,q=nor
     <div class="row mf151"><span class="small">${M.sel.length?`<b>${M.sel.length}</b>개 고름`:'카드를 눌러 골라요'}</span><span style="flex:1"></span><button type="button" class="btn" data-mgnext151="1"${M.sel.length?'':' disabled'}>미리 보기 →</button></div>`}
 function selAll(){const op=byId(M.id);if(!op)return M.sel.slice();const d=M.dupOff?[]:dupsFor(op,M.sel).map(b=>b.id);return M.sel.concat(d.filter(id=>!M.sel.includes(id)))}
 function prevH(){const op=byId(M.id);if(!op)return '';const add=!!op.mg151,dups=M.dupOff?[]:dupsFor(op,M.sel),dupAll=dupsFor(op,M.sel),sel=M.sel.map(byId).filter(Boolean).concat(dups),srcs=(add?[]:[op]).concat(sel);
-  let opts=[];const tw={};srcs.forEach(s=>{const t=twinOpt(s,(add?(op.opts||[]):[]).concat(opts.map(x=>x[0])));if(t){tw[t.id]=(tw[t.id]||1)+1;return}optsOf(s).out.forEach(o=>opts.push([o,s]))});
+  let opts=[];const tw={};srcs.forEach(s=>{const t=twinOpt(s,(add?(op.opts||[]):[]).concat(opts.map(x=>x[0])),add?op.name:'');if(t){tw[t.id]=(tw[t.id]||1)+1;return}optsOf(s).out.forEach(o=>opts.push([o,s]))});
   if(!add)opts=opts.map((x,i)=>[x,i]).sort((x,y)=>(ORD[x[0][0].tp]-ORD[y[0][0].tp])||(x[1]-y[1])).map(x=>x[0]);
   const keep=add?(op.opts||[]).map(o=>[o,null]):[];
   const L=[];srcs.forEach(s=>linksOf(s).forEach(l=>L.push([s,l])));
@@ -21457,6 +21461,19 @@ render=(function(prev){return function(){const r=prev.apply(this,arguments);
 F67=(function(prev){return function(){return prev.apply(this,arguments).concat([
   ['⇄ 같은 이름 카드 같이 합치기','편집 → 행동/습관 → 카드 메뉴 ⇄ 합치기 → 미리 보기','고른 카드와 이름이 같은 카드가 더 있으면 같이 합쳐서 한 옵션으로 모아요(빼기 가능). 합친 카드에도 같은 이름 카드가 남아 있으면 `합칠까요?`에 떠요.',()=>{location.hash='edit'},'합치기 같은 이름 중복 카드'],
   ['📏 최근 숫자','기록하기 → 📏 양 카드 □ → 기록 창 📏 얼마나? 칸 옆','최근에 적은 숫자 3개가 칩으로 보여요 — 누르면 채워지고 옵션이 골라져요. 분 단위 카드는 1:20처럼 적어도 80분.',()=>{location.hash='log'},'양 최근 숫자 칩 걷기 술 잔 분']])}})(F67);
+})();
+
+/* ================= v13.34 (w154): 합쳐서 숨은 카드의 📌 정리 (사용자 11/28 '알아서 합쳐 줘') =================
+   ① 📌 빠른 기록(C.pin133)에 합쳐서 숨은 옛 카드(a.mg+a.doneAt) id가 남아 있었음 — 합칠 땐 moveLinks가 바꿨지만,
+      다른 기기의 옛 목록이 merge3로 다시 섞여 들어옴('빠른 답장' k87j06c). → normConfig 뒤 숨은 옛 카드 id를 합친 카드 id로 바꾸고 겹침 지움.
+   ② 옵션 이름 앞의 합친 카드 이름 빼기·그 이름으로도 같은 이름 짝 찾기는 w151(직접 고침: onm·twinOpt·doMerge). */
+(function(){
+function pinFix154(c){try{if(!c||!Array.isArray(c.pin133)||!Array.isArray(c.actions))return c;const m={};
+  c.actions.forEach(a=>{if(a&&a.mg&&a.doneAt&&a.mg!==a.id)m[a.id]=a.mg});if(!Object.keys(m).length)return c;
+  const s=new Set(),o=[];c.pin133.forEach(id=>{const k=m[id]||id;if(s.has(k))return;s.add(k);o.push(k)});
+  if(o.length!==c.pin133.length||o.some((x,i)=>x!==c.pin133[i]))c.pin133=o}catch(e){console.error(e)}return c}
+window.pinFix154=pinFix154;
+{const _nc=normConfig;normConfig=function(){return pinFix154(_nc.apply(this,arguments))}}
 })();
 
 route();boot();
