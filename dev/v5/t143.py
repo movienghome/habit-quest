@@ -17,7 +17,7 @@ with sync_playwright() as pw:
     J(pg,"""(()=>{const r=rtNew61('Eos',[{name:'산책',min:10},{name:'명상',min:5},{name:'세수',min:2}]);setRt60(r,[0,1,2,3,4,5,6]);syncDailies(C);save('config');render();window.__rid=r.id;sync62(r);ensure117(r);save('config');render()})()""")
     pg.wait_for_timeout(600);notoast(pg)
     if mode=='edit':
-        J(pg,"goEdit('routines')");pg.wait_for_timeout(700);SC=f"#rt60-'+window.__rid+'"
+        J(pg,"window.RT155=window.__rid;goEdit('routines')");pg.wait_for_timeout(700);SC=f"#rt60-'+window.__rid+'"
         S=lambda q:f"document.getElementById('rt60-'+window.__rid).querySelector('{q}')"
         SA=lambda q:f"document.getElementById('rt60-'+window.__rid).querySelectorAll('{q}')"
     else:
